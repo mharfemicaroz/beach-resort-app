@@ -2017,7 +2017,7 @@ export default {
             bookid = this.bookings[this.itemIndex].itemID;
           } catch (error) {
             bookid = "walkin";
-          }
+          } 
 
           try {
             const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
