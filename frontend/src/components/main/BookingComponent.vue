@@ -200,8 +200,8 @@
                     <input type="number" class="form-control" id="cashAmount" v-model="cashAmount">
                   </div>
                   <div v-if="paymentMethod === 'non-cash'" class="form-group">
-                    <label for="transactionId">Transaction ID:</label>
-                    <input type="text" class="form-control" id="transactionId" v-model="transactionId">
+                    <label for="nonCashReference">Reference No.:</label>
+                    <input type="text" class="form-control" id="nonCashReference" v-model="nonCashReference">
                   </div>
                   <div class="form-group">
                     <label for="discountMode">Discount mode:</label>
@@ -245,97 +245,221 @@
       <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
         <div class="container-fluid">
 
-
           <div class="row">
-            <div class="col-md-3">
-              <div>
-                <div class="form-group">
-                  <label for="search">Search Transaction:</label>
-                  <div class="input-group">
-                    <div class="input-group-append">
-                      <button class="btn btn-outline-secondary" type="button" @click="searchTransactions">
-                        <i class="fa fa-search"></i>
-                      </button>
+            <div class="row">
+              <div class="col-sm-1">
+                <ul class="nav nav-tabs flex-column">
+                  <li class="nav-item">
+                    <a class="nav-link rotated-text active" data-bs-toggle="tab" href="#reservations">Reservations</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link rotated-text" data-bs-toggle="tab" href="#transactions">Transactions</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-sm-11">
+                <div class="tab-content">
+                  <div id="reservations" class="tab-pane active">
+
+
+                    <div class="row">
+                      <div class="col-md-3">
+                        <div>
+                          <div class="form-group">
+                            <label for="search">Search Reservation:</label>
+                            <div class="input-group">
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button">
+                                  <i class="fa fa-search"></i>
+                                </button>
+                              </div>
+                              <input type="text" class="form-control" placeholder="Search reservation"
+                                v-model="searchTerm2">
+
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="date-filter">Date Filter:</label>
+                            <select class="form-control" id="date-filter" v-model="resdateFilter">
+                              <option value="any">Any</option>
+                              <option value="range">Date Range</option>
+                            </select>
+                            <div v-if="resdateFilter === 'range'">
+                              <div class="form-group">
+                                <input type="date" class="form-control" v-model="resfromDate">
+                              </div>
+                              <div class="form-group">
+                                <input type="date" class="form-control" v-model="restoDate">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="payment-method-filter">Payment Status:</label>
+                            <select class="form-control" id="payment-method-filter" v-model="respaymentStatusFilter">
+                              <option value="">Any</option>
+                              <option value="no">No Payment</option>
+                              <option value="partial">Partial</option>
+                              <option value="yes">Full</option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label for="status-filter">Status:</label>
+                            <select class="form-control" id="status-filter" v-model="resstatusFilter">
+                              <option value="">Any</option>
+                              <option value="cancelled">Cancelled</option>
+                              <option value="reserved">Reserved</option>
+                              <option value="checkedin">Occupied</option>
+                              <option value="checkedout">Checked Out</option>
+                            </select>
+                          </div>
+                          <div class="form-group mt-2">
+                            <button type="button" class="btn btn-primary"
+                              @click="printReservationHistory">Print</button>&nbsp;
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-9">
+                        <div id="reservationHistory">
+                          <h2>Reservation History</h2>
+
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th>No.</th>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Address</th>
+                                <th>Checkin Date</th>
+                                <th>Checkout Date</th>
+                                <th>Room</th>
+                                <th>Status</th>
+                                <th>Payment</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="reservation in filteredReservationsHistory" :key="reservation.transactionID">
+                                <td>{{ reservation.id }}</td>
+                                <td>{{ reservation.name }}</td>
+                                <td>{{ reservation.contactNumber }}</td>
+                                <td>{{ reservation.clientaddress }}</td>
+                                <td>{{ reservation.checkinDate }}</td>
+                                <td>{{ reservation.checkoutDate }}</td>
+                                <td>{{ reservation.room_name }}</td>
+                                <td>{{ reservation.status }}</td>
+                                <td>{{ reservation.isPaid }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+
+                      </div>
                     </div>
-                    <input type="text" class="form-control" placeholder="Search transaction" v-model="searchTerm"
-                      id="search">
+                  </div>
+                  <div id="transactions" class="tab-pane">
+
+                    <div class="row">
+                      <div class="col-md-3">
+                        <div>
+                          <div class="form-group">
+                            <label for="search">Search Transaction:</label>
+                            <div class="input-group">
+                              <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button">
+                                  <i class="fa fa-search"></i>
+                                </button>
+                              </div>
+                              <input type="text" class="form-control" placeholder="Search transaction"
+                                v-model="searchTerm" id="search">
+
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="date-filter">Date Filter:</label>
+                            <select class="form-control" id="date-filter" v-model="dateFilter">
+                              <option value="any">Any</option>
+                              <option value="range">Date Range</option>
+                            </select>
+                            <div v-if="dateFilter === 'range'">
+                              <div class="form-group">
+                                <input type="date" class="form-control" v-model="fromDate">
+                              </div>
+                              <div class="form-group">
+                                <input type="date" class="form-control" v-model="toDate">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="payment-method-filter">Payment Method:</label>
+                            <select class="form-control" id="payment-method-filter" v-model="paymentMethodFilter">
+                              <option value="">Any</option>
+                              <option value="cash">Cash</option>
+                              <option value="non-cash">Non-cash</option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label for="status-filter">Status:</label>
+                            <select class="form-control" id="status-filter" v-model="statusFilter">
+                              <option value="">Any</option>
+                              <option value="full">Full</option>
+                              <option value="partial">Partial</option>
+                            </select>
+                          </div>
+                          <div class="form-group mt-2">
+                            <button type="button" class="btn btn-primary"
+                              @click="printTransactionHistory">Print</button>&nbsp;
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-9">
+                        <div id="transactionHistory">
+                          <h2>Transaction History</h2>
+
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th>No.</th>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Address</th>
+                                <th>Total Amount</th>
+                                <th>Payment Method</th>
+                                <th>Cash</th>
+                                <th>Discount</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                                <th>Transaction Date</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="transaction in filteredTransactions" :key="transaction.transactionID">
+                                <td>{{ transaction.id }}</td>
+                                <td>{{ transaction.clientname }}</td>
+                                <td>{{ transaction.clientcontact }}</td>
+                                <td>{{ transaction.clientaddress }}</td>
+                                <td>{{ transaction.totalAmountToPay }}</td>
+                                <td>{{ transaction.paymentMethod }}</td>
+                                <td>{{ transaction.cashAmountPay }}</td>
+                                <td>{{ transaction.discountValue }}{{ transaction.discountMode }}</td>
+                                <td>{{ transaction.balance }}</td>
+                                <td>{{ transaction.payStatus }}</td>
+                                <td>{{ transaction.transaction_date }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                      </div>
+                    </div>
 
                   </div>
-                </div>
-                <div class="form-group">
-                  <label for="date-filter">Date Filter:</label>
-                  <select class="form-control" id="date-filter" v-model="dateFilter">
-                    <option value="any">Any</option>
-                    <option value="range">Date Range</option>
-                  </select>
-                  <div v-if="dateFilter === 'range'">
-                    <div class="form-group">
-                      <input type="date" class="form-control" v-model="fromDate">
-                    </div>
-                    <div class="form-group">
-                      <input type="date" class="form-control" v-model="toDate">
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="payment-method-filter">Payment Method:</label>
-                  <select class="form-control" id="payment-method-filter" v-model="paymentMethodFilter">
-                    <option value="">Any</option>
-                    <option v-for="paymentMethod in paymentMethods" :value="paymentMethod">{{ paymentMethod }}</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="status-filter">Status:</label>
-                  <select class="form-control" id="status-filter" v-model="statusFilter">
-                    <option value="">Any</option>
-                    <option v-for="status in statuses" :value="status">{{ status }}</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label for="category-filter">Category:</label>
-                  <select class="form-control" id="category-filter" v-model="categoryFilter">
-                    <option value="">Any</option>
-                    <option v-for="category in categories" :value="category">{{ category }}</option>
-                  </select>
                 </div>
               </div>
             </div>
-            <div class="col-md-9">
-              <h2>Transaction History</h2>
 
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Contact</th>
-                    <th>Address</th>
-                    <th>Total Amount</th>
-                    <th>Payment Method</th>
-                    <th>Cash</th>
-                    <th>Discount</th>
-                    <th>Balance</th>
-                    <th>Status</th>
-                    <th>Transaction Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="transaction in transactions" :key="transaction.transactionID">
-                    <td>{{ transaction.clientname }}</td>
-                    <td>{{ transaction.clientcontact }}</td>
-                    <td>{{ transaction.clientaddress }}</td>
-                    <td>{{ transaction.totalAmountToPay }}</td>
-                    <td>{{ transaction.paymentMethod }}</td>
-                    <td>{{ transaction.cashAmountPay }}</td>
-                    <td>{{ transaction.discountValue }}{{ transaction.discountMode }}</td>
-                    <td>{{ transaction.balance }}</td>
-                    <td>{{ transaction.payStatus }}</td>
-                    <td>{{ transaction.transaction_date }}</td>
-                  </tr>
-                </tbody>
-              </table>
-
-            </div>
           </div>
+
+
 
           <div class="row">
 
@@ -363,11 +487,6 @@
 
     <div id="billing-details" class="container-fluid billing">
       <div class="container">
-        <div class="row no-print">
-          <div class="col-md-12 text-right">
-            <button class="btn btn-danger" onclick="window.print()">Print Billing Statement</button>
-          </div>
-        </div>
         <div class="row justify-content-between">
           <div class="col-4">
             <img src="http://localhost:5173/src/assets/pantukan-waterworld-logo.jpg" width="60" height="60"
@@ -1011,7 +1130,7 @@ ChartJS.register(
 //helper functions
 function parseDate(dateString) {
   const [day, month, year] = dateString.split('/');
-  return new Date(`${year}-${month}-${day}`);
+  return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
 }
 
 export default {
@@ -1022,6 +1141,18 @@ export default {
   },
   data() {
     return {
+      resdateFilter: 'any',
+      resfromDate: null,
+      restoDate: null,
+      respaymentStatusFilter: '',
+      resstatusFilter: '',
+
+      dateFilter: 'any',
+      fromDate: null,
+      toDate: null,
+      paymentMethodFilter: '',
+      statusFilter: '',
+
       convDate: "",
       optionsArray1: [
         {
@@ -1125,7 +1256,7 @@ export default {
 
       paymentMethod: 'cash',
       cashAmount: 0,
-      transactionId: '',
+      nonCashReference: '',
       discountMode: 'percentage',
       discountValue: 0,
       partialPayment: 0,
@@ -1169,6 +1300,8 @@ export default {
       searchText2: "",
       searchText3: "",
       searchText4: "",
+      searchTerm: "",
+      searchTerm2: "",
       walkinStatus: false
     };
   },
@@ -1178,6 +1311,72 @@ export default {
     this.loadTransactionData();
   },
   computed: {
+    filteredReservationsHistory() {
+      let filtered = this.bookings.filter(reservation => {
+        // Filter by date range
+        if (this.resdateFilter === 'range' && this.resfromDate && this.restoDate) {
+          const checkinDate = parseDate(reservation.checkinDate);
+          const checkoutDate = parseDate(reservation.checkoutDate);
+          const fromDate = parseDate(this.resfromDate);
+          const toDate = parseDate(this.restoDate);
+          return fromDate <= checkoutDate && toDate >= checkinDate;
+        }
+        return true;
+      }).filter(reservation => {
+        // Filter by payment method
+        if (this.respaymentStatusFilter) {
+          return reservation.isPaid === this.respaymentStatusFilter;
+        }
+        return true;
+      }).filter(reservation => {
+        // Filter by status
+        if (this.resstatusFilter) {
+          return reservation.status === this.resstatusFilter;
+        }
+        return true;
+      });
+
+      return filtered.map(item => {
+        const searchCode = Object.values(item).join("~");
+        return {
+          ...item,
+          searchCode
+        };
+      }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchTerm2.toLowerCase()));
+    },
+
+    filteredTransactions() {
+      let filtered = this.transactions;
+
+      // Filter by date
+      if (this.dateFilter === 'range' && this.fromDate && this.toDate) {
+        filtered = filtered.filter(transaction => {
+          return parseDate(transaction.transaction_date) >= parseDate(this.fromDate) && parseDate(transaction.transaction_date) <= parseDate(this.toDate);
+        });
+      }
+
+      // Filter by payment method
+      if (this.paymentMethodFilter) {
+        filtered = filtered.filter(transaction => {
+          return transaction.paymentMethod === this.paymentMethodFilter;
+        });
+      }
+
+      // Filter by status
+      if (this.statusFilter) {
+        filtered = filtered.filter(transaction => {
+          return transaction.payStatus === this.statusFilter;
+        });
+      }
+
+      return filtered.map(item => {
+        const searchCode = Object.values(item).join("~");
+        return {
+          ...item,
+          searchCode
+        };
+      }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchTerm.toLowerCase()));
+    },
     filteredRoomBookings() {
       const isCancelled = this.activeTab === 'cancelled';
       const isReserved = this.activeTab === 'reserved';
@@ -1270,11 +1469,7 @@ export default {
       return this.subtotal - this.discount - this.partialPayment;
     },
     change() {
-      if (this.paymentMethod === 'cash') {
-        return this.cashAmount - this.total;
-      } else {
-        return '';
-      }
+      return this.cashAmount - this.total;
     },
     countInclusion() {
       return this.cart.filter(item => item.category === 'inclusion').length;
@@ -1334,6 +1529,8 @@ export default {
       this.billing.clientEmail = this.walkinreservation.clientEmail;
       this.billing.clientPhone = this.walkinreservation.clientPhone;
       this.billing.clientAddress = this.walkinreservation.clientAddress;
+      this.billing.clientNationality = this.walkinreservation.clientNationality;
+      this.billing.clientType = this.walkinreservation.clientType;
       this.walkinStatus = true;
       this.toggleAddAccountModal();
     },
@@ -1846,7 +2043,7 @@ export default {
         let classes = '';
 
         if (booking.status === 'reserved') {
-          if (booking.isPaid === 'partial') {
+          if (booking.isPaid === 'partial' || booking.isPaid === 'yes') {
             classes = ['custom-date-class-violet'];
           } else {
             classes = ['custom-date-class-red'];
@@ -1991,7 +2188,7 @@ export default {
 
       if (parseFloat(this.cashAmount) > 0) {
 
-        if(this.walkinStatus && parseFloat(this.cashAmount) < parseFloat(this.total)){
+        if (this.walkinStatus && parseFloat(this.cashAmount) < parseFloat(this.total)) {
           await this.$swal.fire({
             title: 'Error',
             text: 'There is no partial payment for walkin guests.',
@@ -2017,16 +2214,22 @@ export default {
             bookid = this.bookings[this.itemIndex].itemID;
           } catch (error) {
             bookid = "walkin";
-          } 
+          }
 
           try {
-            const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-              columnName: 'bookingID',
-              columnKey: bookid
-            });
+            let existingTransaction = {
+              data: []
+            };
+            if (bookid !== "walkin") {
+              existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+                columnName: 'bookingID',
+                columnKey: bookid
+              });
+            }
             const payStatus = (parseFloat(this.total) - parseFloat(this.cashAmount)) <= 0 ? 'full' : 'partial';
             if (existingTransaction.data.length === 0) {
               // Create a new transaction if it doesn't exist yet
+              const updatedcashamount = parseFloat(this.cashAmount) > parseFloat(this.total) ? parseFloat(this.total) : parseFloat(this.cashAmount);
               const transactionData = {
                 clientname: this.billing.clientName,
                 clientemail: this.billing.clientEmail,
@@ -2034,19 +2237,21 @@ export default {
                 clientaddress: this.billing.clientAddress,
                 clientnationality: this.billing.clientNationality,
                 clientType: this.billing.clientType,
-                transaction_date: new Date(),
+                nonCashReference: this.nonCashReference,
                 totalAmountToPay: parseFloat(this.total),
                 paymentMethod: this.paymentMethod,
-                cashAmountPay: parseFloat(this.cashAmount) > parseFloat(this.total) ? parseFloat(this.total) : parseFloat(this.cashAmount),
-                balance: parseFloat(this.total) - parseFloat(this.cashAmount),
+                cashAmountPay: updatedcashamount,
+                balance: parseFloat(this.total) - updatedcashamount,
                 payStatus: (parseFloat(this.total) - parseFloat(this.cashAmount)) <= 0 ? 'full' : 'partial',
                 discountMode: this.discountMode,
                 discountValue: this.discountValue,
-                bookingID: this.bookings[this.itemIndex].itemID
+                bookingID: bookid
               };
 
               await axios.post(`${this.API_URL}transaction/`, transactionData);
-              this.bookings[this.itemIndex].partialPayment = transactionData.cashAmountPay;
+              if (bookid !== "walkin") {
+                this.bookings[this.itemIndex].partialPayment = transactionData.cashAmountPay;
+              }
 
             } else {
               // Update the transaction if it already exists
@@ -2063,30 +2268,32 @@ export default {
                 clientaddress: this.billing.clientAddress,
                 clientnationality: this.billing.clientNationality,
                 clientType: this.billing.clientType,
-                transaction_date: new Date(),
                 totalAmountToPay: parseFloat(this.total),
                 paymentMethod: this.paymentMethod,
+                nonCashReference: this.nonCashReference,
                 cashAmountPay: newcashAmountPay,
                 balance: newbalance,
                 payStatus: payStatus,
                 discountMode: this.discountMode,
                 discountValue: this.discountValue,
-                bookingID: this.bookings[this.itemIndex].itemID
+                bookingID: bookid
               };
               await axios.put(`${this.API_URL}transaction/${existingTransaction.data[0].id}/`, transactionData);
               this.bookings[this.itemIndex].partialPayment = existingTransaction.data[0].totalAmountToPay - newbalance;
             }
 
-            if (payStatus === "partial") {
-              this.bookings[this.itemIndex].isPaid = "partial";
+            if (bookid !== "walkin") {
+              if (payStatus === "partial") {
+                this.bookings[this.itemIndex].isPaid = "partial";
 
-            } else {
-              this.bookings[this.itemIndex].isPaid = "yes";
+              } else {
+                this.bookings[this.itemIndex].isPaid = "yes";
+              }
+
+              this.updateBookings(this.bookings[this.itemIndex].id);
+              this.reloadData();
+              this.populateCalendarItems();
             }
-
-            this.updateBookings(this.bookings[this.itemIndex].id);
-            this.reloadData();
-            this.populateCalendarItems();
 
             // Show a success message using SweetAlert
             await this.$swal.fire({
@@ -2095,6 +2302,7 @@ export default {
               icon: 'success'
             });
             this.walkinStatus = false;
+            document.location.reload();
           } catch (error) {
             // Show an error message using SweetAlert
             await this.$swal.fire({
@@ -2114,18 +2322,27 @@ export default {
       }
 
     },
-    generateBillingStatement() {
-      const section = document.getElementById('billing-details');
+    printSection(idstring, pLength, pWidth) {
+      const section = document.getElementById(idstring);
       const sectionHTML = section.outerHTML;
-      const bootstrapCSS = '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 0.5;padding: 0.5in;}table {margin-top: 0.5in;margin-bottom: 0.5in;}.container {width: 8.5in;height: 13in;padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}}</style>';
+      const printBtn = '<div class="row no-print"><div class="col-md-12 text-right"><button class="btn btn-danger" onclick="window.print()">Print Now</button></div></div>';
+      const bootstrapCSS = `<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 0.5;padding: 0.5in;}table {margin-top: 0.5in;margin-bottom: 0.5in;}.container {width: ${pWidth};height: ${pLength};padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}}</style>`;
       const bootstrapJS = '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">';
-      const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${sectionHTML}${bootstrapJS}</body></html>`;
+      const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${printBtn}${sectionHTML}${bootstrapJS}</body></html>`;
       const blob = new Blob([html], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       const features = 'height=600,width=800,resizable=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no';
       const win = window.open('', '_blank', features);
       win.document.write(`<iframe src="${url}" style="border: none; width: 100%; height: 100%;"></iframe>`);
-
+    },
+    generateBillingStatement() {
+      this.printSection('billing-details', '13in', '8.5in');
+    },
+    printReservationHistory() {
+      this.printSection('reservationHistory', '8.5in', '13in');
+    },
+    printTransactionHistory() {
+      this.printSection('transactionHistory', '8.5in', '13in');
     },
     async reloadItemsData() {
       try {
@@ -2505,5 +2722,12 @@ img {
 .cv-item.custom-date-class-yellow {
   background-color: #bce40c;
   color: antiquewhite;
+}
+
+.rotated-text {
+  writing-mode: vertical-lr;
+  /* For modern browsers */
+  transform: rotate(180deg);
+  /* For older browsers */
 }
 </style>
