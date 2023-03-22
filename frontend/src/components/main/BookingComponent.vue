@@ -20,10 +20,10 @@
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
                 <img src="@/assets/user-avatar.png" class="rounded-circle" alt="User Avatar" height="32" width="32">
-                John Doe
+                {{ userdata.fName }} {{ userdata.lName }}
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Logout</a></li>
+                <li><a class="dropdown-item" href="#" @click=logout()>Logout</a></li>
               </ul>
             </li>
           </ul>
@@ -1098,7 +1098,7 @@
   </vue-simple-context-menu>
 </template>
 <script>
-
+import { useAuthStore } from "@/stores/authStore";
 import "/node_modules/vue-simple-calendar/dist/style.css"
 import "/node_modules/vue-simple-calendar/dist/css/default.css"
 import "/node_modules/vue-simple-calendar/dist/css/holidays-us.css"
@@ -1313,6 +1313,11 @@ export default {
     this.loadTransactionData();
   },
   computed: {
+    userdata() {
+      const authStore = useAuthStore();
+      const user = authStore.user;
+      return user;
+    },
     filteredReservationsHistory() {
       let filtered = this.bookings.filter(reservation => {
         // Filter by date range
@@ -1526,6 +1531,9 @@ export default {
     },
   },
   methods: {
+    logout(){
+
+    },
     addWalkInGuest() {
       this.billing.clientName = this.walkinreservation.clientName;
       this.billing.clientEmail = this.walkinreservation.clientEmail;
@@ -2025,7 +2033,8 @@ export default {
           cancellationDate: this.bookings[this.itemIndex].cancellationDate,
           isPaid: this.bookings[this.itemIndex].isPaid,
           totalPrice: this.bookings[this.itemIndex].totalPrice,
-          partialPayment: this.bookings[this.itemIndex].partialPayment
+          partialPayment: this.bookings[this.itemIndex].partialPayment,
+          processedBy: this.userdata.fName + " " + this.userdata.lName
         });
 
       } catch (error) {
@@ -2111,7 +2120,8 @@ export default {
           isPaid: 'no',
           created_at: new Date(),
           totalPrice: (numDays + 1) * parseFloat(roomPrice),
-          partialPayment: 0
+          partialPayment: 0,
+          processedBy: this.userdata.fName + " " + this.userdata.lName
         });
 
         this.bookings.push({
@@ -2128,7 +2138,8 @@ export default {
           room_price: (this.rooms.findIndex(o => o.name === this.reservation.roomName.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === this.reservation.roomName.name)].price : '',
           room_type: (this.rooms.findIndex(o => o.name === this.reservation.roomName.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === this.reservation.roomName.name)].type : '',
           numGuests: this.reservation.numGuests,
-          contactNumber: this.reservation.clientPhone
+          contactNumber: this.reservation.clientPhone,
+          processedBy: this.userdata.fName + " " + this.userdata.lName
         })
 
         this.reloadData();
@@ -2247,7 +2258,8 @@ export default {
                 payStatus: (parseFloat(this.total) - parseFloat(this.cashAmount)) <= 0 ? 'full' : 'partial',
                 discountMode: this.discountMode,
                 discountValue: this.discountValue,
-                bookingID: bookid
+                bookingID: bookid,
+                processedBy: this.userdata.fName + " " + this.userdata.lName
               };
 
               await axios.post(`${this.API_URL}transaction/`, transactionData);
@@ -2278,7 +2290,8 @@ export default {
                 payStatus: payStatus,
                 discountMode: this.discountMode,
                 discountValue: this.discountValue,
-                bookingID: bookid
+                bookingID: bookid,
+                processedBy: this.userdata.fName + " " + this.userdata.lName
               };
               await axios.put(`${this.API_URL}transaction/${existingTransaction.data[0].id}/`, transactionData);
               this.bookings[this.itemIndex].partialPayment = existingTransaction.data[0].totalAmountToPay - newbalance;

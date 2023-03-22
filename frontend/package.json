@@ -20,6 +20,8 @@
     "mdb-vue-ui-kit": "^3.2.0",
     "moment": "^2.29.4",
     "pdfkit": "^0.13.0",
+    "pinia": "^2.0.33",
+    "pinia-plugin-persist": "^1.0.0",
     "sweetalert2": "^11.4.8",
     "vue": "^3.2.47",
     "vue-bootstrap-modal": "^0.1.13",

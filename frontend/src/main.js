@@ -1,5 +1,5 @@
 import { createApp } from "vue";
-
+import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 import vSelect from "vue-select";
@@ -15,7 +15,7 @@ app.config.globalProperties = {
 }
 
 app.use(router);
-
+app.use(createPinia());
 app.use(VueSweetalert2);
 
 app.component("v-select", vSelect).component('vue-simple-context-menu', VueSimpleContextMenu).mount("#app");

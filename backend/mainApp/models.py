@@ -32,6 +32,7 @@ class Booking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     totalPrice = models.DecimalField(max_digits=8, decimal_places=2)
     partialPayment = models.DecimalField(max_digits=8, decimal_places=2)
+    processedBy = models.CharField(max_length=128)
 
 class Room(models.Model):
     id = models.AutoField(primary_key=True)
@@ -65,6 +66,7 @@ class Transaction(models.Model):
     discountMode = models.CharField(max_length=50, blank=True)
     discountValue = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     bookingID = models.CharField(max_length=255)
+    processedBy = models.CharField(max_length=128)
 
 class TransactionItem(models.Model):
     id = models.AutoField(primary_key=True)

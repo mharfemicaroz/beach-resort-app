@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import { useAuthStore } from "@/stores/authStore"; // Import the authStore
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
@@ -40,6 +41,7 @@ export default {
   },
   methods: {
     login() {
+      const authStore = useAuthStore(); // Access the authStore
       // API call for login authentication
       const apiLink = this.API_URL + "login/"; // replace with your actual API link
       axios.post(apiLink, {
@@ -75,6 +77,7 @@ export default {
               text: "You have successfully logged in.",
               icon: "success",
             });
+            authStore.setUser(response.data);
           } else {
             Swal.fire({
               title: "Error!",
