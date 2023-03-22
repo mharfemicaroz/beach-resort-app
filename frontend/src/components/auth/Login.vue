@@ -1,14 +1,14 @@
 <template>
-  <div class="container">
-    <div class="row justify-content-center mt-5">
+  <div class="container-fluid login-background">
+    <div class="row justify-content-center align-items-center vh-100">
       <div class="col-md-6">
-        <div class="card">
+        <div class="card animated-form">
           <div class="card-header text-center">
-            <img src="@/assets/pantukan-waterworld-logo.jpg" alt="Pantukan Waterworld Logo" class="img-fluid" style="max-width: 200px;">
+            <img src="@/assets/pantukan-waterworld-logo.jpg" alt="Pantukan Waterworld Logo" class="img-fluid mx-auto d-block" style="max-width: 200px;">
             <h4 class="text-center mt-3">Login</h4>
           </div>
           <div class="card-body">
-            <form @submit.prevent="login">
+            <form @submit.prevent="login" class="">
               <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" v-model="username" class="form-control" id="username" aria-describedby="usernameHelp" placeholder="Enter username">
@@ -32,6 +32,14 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 export default {
+  mounted() {
+    // Hide scrollbar on mount
+    document.body.style.overflow = 'hidden';
+  },
+  destroyed() {
+    // Restore scrollbar on destroy
+    document.body.style.overflow = 'auto';
+  },
   name: "Login",
   data() {
     return {
@@ -102,4 +110,28 @@ export default {
 
 <style>
 /* Add custom styles here */
+.login-background {
+  background: url("@/assets/beach-resort-background.jpg") no-repeat center center fixed;
+  background-size: cover;
+  background-position: center;
+}
+.animated-form {
+  animation: fly-in 0.5s ease-out;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes fly-in {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+
 </style>

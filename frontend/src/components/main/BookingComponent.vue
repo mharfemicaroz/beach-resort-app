@@ -1532,7 +1532,9 @@ export default {
   },
   methods: {
     logout(){
-
+      const authStore = useAuthStore();
+      authStore.logout();
+      this.$router.push('/');
     },
     addWalkInGuest() {
       this.billing.clientName = this.walkinreservation.clientName;
