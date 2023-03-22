@@ -332,6 +332,7 @@
                                 <th>Checkin Date</th>
                                 <th>Checkout Date</th>
                                 <th>Room</th>
+                                <th>Cost</th>
                                 <th>Status</th>
                                 <th>Payment</th>
                               </tr>
@@ -345,6 +346,7 @@
                                 <td>{{ reservation.checkinDate }}</td>
                                 <td>{{ reservation.checkoutDate }}</td>
                                 <td>{{ reservation.room_name }}</td>
+                                <td>{{ reservation.totalPrice }}</td>
                                 <td>{{ reservation.status }}</td>
                                 <td>{{ reservation.isPaid }}</td>
                               </tr>
