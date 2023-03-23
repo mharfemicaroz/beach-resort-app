@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-=nry54q2o&a&c#(iu4mk16q)dr&%e7^^gh#-fqd(jn9*ksnzqb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -82,6 +82,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 import pymysql
 pymysql.install_as_MySQLdb()
 
+# In your settings.py file
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -89,9 +90,15 @@ DATABASES = {
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': 3306
+        'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'autocommit': True,
+            'sql_mode': 'traditional',
+        },
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -127,7 +134,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
