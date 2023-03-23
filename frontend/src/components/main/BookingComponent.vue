@@ -1841,6 +1841,7 @@ export default {
     checkinGuest() {
       this.bookings[this.itemIndex].status = "checkedin";
       this.updateBookings(this.bookings[this.itemIndex].id);
+      this.populateCalendarItems();
       this.changeItemColor("checkedin");
       this.toggleItemModal();
       this.$swal.fire({
@@ -2274,8 +2275,8 @@ export default {
 
               const transaction = existingTransaction.data[0];
               const existingCashAmountPay = parseFloat(transaction.cashAmountPay);
-              const newcashAmountPay = existingCashAmountPay + parseFloat(this.cashAmount);
-              const newbalance = parseFloat(transaction.totalAmountToPay) - parseFloat(newcashAmountPay);
+              const newcashAmountPay = (existingCashAmountPay + parseFloat(this.cashAmount)<parseFloat(this.subtotal))?existingCashAmountPay + parseFloat(this.cashAmount):parseFloat(this.subtotal);
+              const newbalance = (existingCashAmountPay + parseFloat(this.cashAmount)<parseFloat(this.subtotal))?parseFloat(transaction.totalAmountToPay) - parseFloat(newcashAmountPay):0;
 
               const transactionData = {
                 clientname: this.billing.clientName,
@@ -2284,7 +2285,7 @@ export default {
                 clientaddress: this.billing.clientAddress,
                 clientnationality: this.billing.clientNationality,
                 clientType: this.billing.clientType,
-                totalAmountToPay: parseFloat(this.total),
+                totalAmountToPay: parseFloat(this.subtotal),
                 paymentMethod: this.paymentMethod,
                 nonCashReference: this.nonCashReference,
                 cashAmountPay: newcashAmountPay,
@@ -2417,11 +2418,10 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       }
       return true; // Room is available
     },
-    addToCart(item, index) {
+    async addToCart(item, index) {
       if (this.billing.clientName !== "") {
         if (this.isItemAvailableInCart(item.item)) {
           if (this.howMany[index] > 0) {
-            this.itemCart.id = this.cart.length + 1;
             this.itemCart.name = item.item;
             this.itemCart.type = item.type;
             this.itemCart.rate = item.rate;
@@ -2451,10 +2451,10 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
               // Access property here
               data.bookingID = this.bookings[this.itemIndex].itemID;
               // Make a POST request to the API to save the data
-              axios.post(this.API_URL + 'transaction/item/', data)
+              await axios.post(this.API_URL + 'transaction/item/', data)
                 .then(response => {
                   // Log a success message to the console
-                  console.log('Data saved:', response.data);
+                  this.itemCart.id = response.data.id;
                 })
                 .catch(error => {
                   // Log an error message to the console
@@ -2464,7 +2464,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
               // Handle the error here
               data.bookingID = "walkin";
             }
-
+            console.log(this.itemCart)
             this.cart.push(this.itemCart);
             this.howMany[index] = '';
             this.itemCart = {
