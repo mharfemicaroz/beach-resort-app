@@ -1502,12 +1502,12 @@ export default {
       const mainRoomItems = this.cart.filter(item => item.category === 'main' && item.itemOption === 'room');
       const originalPrice = mainRoomItems.reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
       if (this.discount === 0) {
-        return { original: originalPrice.toFixed(2), discounted: '' };
+        return { original: originalPrice, discounted: '' };
       }
       const discountedPrice = originalPrice - this.discount;
-      const discountAmount = this.discountMode === 'percentage' ? `${this.discountValue}%` : `₱${this.discountValue.toFixed(2)}`;
-      const formattedOriginalPrice = `<del class="text-danger">${originalPrice.toFixed(2)}</del>`;
-      const formattedDiscountedPrice = `<sup class="text-danger font-weight-bold">${discountAmount} off</sup> <span class="text-success font-weight-bold">${discountedPrice.toFixed(2)}</span>`;
+      const discountAmount = this.discountMode === 'percentage' ? `${this.discountValue}%` : `₱${this.discountValue}`;
+      const formattedOriginalPrice = `<del class="text-danger">${originalPrice}</del>`;
+      const formattedDiscountedPrice = `<sup class="text-danger font-weight-bold">${discountAmount} off</sup> <span class="text-success font-weight-bold">${discountedPrice}</span>`;
       return { original: formattedOriginalPrice, discounted: formattedDiscountedPrice };
     },
     subaddons() {
@@ -1746,11 +1746,18 @@ export default {
                 columnName: 'bookingID',
                 columnKey: bookingID
       });
-      if(existingTransaction.length !== 0){
+      try {
+        if(existingTransaction.length !== 0){
         let transaction = existingTransaction.data[0];
         this.discountMode = transaction.discountMode;
         this.discountValue = transaction.discountValue;
-        this.alreadyDiscounted = true;
+        if(transaction.discountValue > 0){
+          this.alreadyDiscounted = true;
+        }
+        
+      } 
+      } catch (error) {
+        
       }
 
       const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
@@ -1795,11 +1802,17 @@ export default {
                 columnName: 'bookingID',
                 columnKey: bookingID
       });
-      if(existingTransaction.length !== 0){
+      try {
+        if(existingTransaction.length !== 0){
         let transaction = existingTransaction.data[0];
         this.discountMode = transaction.discountMode;
         this.discountValue = transaction.discountValue;
-        this.alreadyDiscounted = true;
+        if(transaction.discountValue > 0){
+          this.alreadyDiscounted = true;
+        }
+      } 
+      } catch (error) {
+        
       }
 
       const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
