@@ -1901,24 +1901,26 @@ export default {
       return new Date(t.getFullYear(), t.getMonth(), d, h || 0, m || 0)
     },
     onClickDay(d) {
-      this.selectionStart = null
-      this.selectionEnd = null
-      this.message = `You clicked: ${d.toLocaleDateString()}`
+      let today = new Date();
+      if(d.setHours(0,0,0,0)>=today.setHours(0,0,0,0)){
+        this.selectionStart = null
+        this.selectionEnd = null
+        this.message = `You clicked: ${d.toLocaleDateString()}`
 
-      this.toggleItemModal();
-      this.reservation.clientName = "";
-      this.reservation.clientEmail = "";
-      this.reservation.clientAddress = "";
-      this.reservation.clientNationality = "";
-      this.reservation.clientType = "";
-      this.reservation.roomName = "";
-      this.reservation.numGuests = "";
-      this.reservation.clientPhone = "";
-      this.reservation.checkinDate = d.toLocaleDateString('en-GB');
-      this.reservation.checkoutDate = d.toLocaleDateString('en-GB');
+        this.toggleItemModal();
+        this.reservation.clientName = "";
+        this.reservation.clientEmail = "";
+        this.reservation.clientAddress = "";
+        this.reservation.clientNationality = "";
+        this.reservation.clientType = "";
+        this.reservation.roomName = "";
+        this.reservation.numGuests = "";
+        this.reservation.clientPhone = "";
+        this.reservation.checkinDate = d.toLocaleDateString('en-GB');
+        this.reservation.checkoutDate = d.toLocaleDateString('en-GB');
 
-      this.reservation.status = "vacant";
-
+        this.reservation.status = "vacant";
+      }
     },
     onClickItem(e) {
 
@@ -1949,6 +1951,11 @@ export default {
       this.selectionStart = dateRange[0]
     },
     finishSelection(dateRange) {
+      const currentDate = new Date(); // get current date
+      if (dateRange[0].setHours(0,0,0,0) < currentDate.setHours(0,0,0,0)) { // check if start date is before current date
+        // prompt user to select a valid start date
+        return;
+      }
       this.setSelection(dateRange)
       this.message = `You selected: ${this.selectionStart.toLocaleDateString()} -${this.selectionEnd.toLocaleDateString()}`
 
@@ -1970,6 +1977,12 @@ export default {
 
     },
     onDrop(item, date) {
+
+      const currentDate = new Date(); // get current date
+      if (date.setHours(0,0,0,0) < currentDate.setHours(0,0,0,0)) { // check if start date is before current date
+        // prompt user to select a valid start date
+        return;
+      }      
 
       this.itemIndex = this.bookings.findIndex(
         o => o.itemID === item.id
