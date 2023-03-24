@@ -78,3 +78,4 @@ class TransactionItem(models.Model):
     totalCost = models.DecimalField(max_digits=10, decimal_places=2)
     dateCreated = models.DateTimeField(auto_now_add=True)
     category = models.CharField(max_length=50)
+    itemOption = models.CharField(max_length=50)

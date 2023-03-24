@@ -84,7 +84,7 @@
             <div class="col-md-3">
               <h2>Add-ons</h2>
               <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3">
-              <div class="wrapper-content" style="max-height:400px;height: 400px;">
+              <div class="wrapper-content" style="max-height:570px;height: 570px;">
                 <table class="table">
                   <thead>
                     <tr>
@@ -111,78 +111,82 @@
               </div>
             </div>
             <div class="col-md-3">
-              <h2>Inclusion</h2>
 
+              <div class="d-flex align-items-center">
+                <h2 class="position-relative">
+                  <i class="bi bi-cart-fill me-2"></i>Inclusion
+                </h2>
+                <button type="button" class="btn btn-danger ms-auto" @click="moveInclusionCartToMain()">Add all</button>
+              </div>
               <div class="card">
                 <div class="card-body">
                   <span><strong>No. of items:</strong> {{ countInclusion }}</span><br />
                   <span><strong>Total:</strong> {{ sumInclusion }}</span>
                 </div>
               </div>
-              <div class="wrapper-content">
-                <div class="card-deck" style="max-height:330px;height: 330px;">
-                  <div class="card" v-for="(item, index) in filteredInclusionCart" :key="item.id">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                      <h5 class="card-title">{{ item.name }}</h5>
-                      <button v-if="item.category === 'inclusion'" type="button" class="btn btn-sm btn-close"
-                        aria-label="Close" @click="cancelItem(item)"></button>
-                    </div>
-                    <div class="card-body">
-                      <p class="card-text">Type: {{ item.type }}</p>
-                      <p class="card-text">Price Rate: {{ item.priceRate }}</p>
-                      <p class="card-text">Purchase Qty.:{{ item.purqty }}</p>
-                      <p class="card-text">Total Price: {{ item.totalCartPrice }}</p>
+
+              <div class="card-deck" style="  max-height: 545px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
+                <div class="card" v-for="(item, index) in filteredInclusionCart" :key="item.id">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <button v-if="item.category === 'inclusion'" type="button" class="btn btn-sm btn-close"
+                      aria-label="Close" @click="cancelItem(item)"></button>
+                  </div>
+                  <div class="card-body">
+                    <p class="card-text">Type: {{ item.type }}</p>
+                    <p class="card-text">Price Rate: {{ item.priceRate }}</p>
+                    <p class="card-text">Purchase Qty.:{{ item.purqty }}</p>
+                    <p class="card-text">Total Price: {{ item.totalCartPrice }}</p>
 
 
-                    </div>
                   </div>
                 </div>
               </div>
-              <button type="button" class="btn btn-danger mt-2" @click="moveInclusionCartToMain()">Add to Order
-                Summary</button>
+
+
             </div>
             <div class="col-md-3">
               <div class="d-flex align-items-center">
                 <h2 class="position-relative">
-                  <i class="bi bi-cart-fill me-2"></i>Order Summary
+                  Order Summary
                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                     style="font-size: 0.75rem;">
                     {{ numItemCart }}
                     <span class="visually-hidden">items in cart</span>
                   </span>
                 </h2>
-                <button type="button" class="btn btn-primary ms-auto" @click="toggleAddAccountModal()">
+                <button v-if="this.itemIndex === -1" type="button" class="btn btn-primary ms-auto" @click="toggleAddAccountModal()">
                   <i class="bi bi-plus"></i>
                 </button>
               </div>
 
-              <div class="wrapper-content">
-                <div class="card">
-                  <div class="card-body">
-                    <span><strong>Name:</strong> {{ billing.clientName }}</span><br />
-                    <span><strong>Email:</strong> {{ billing.clientEmail }}</span><br />
-                    <span><strong>Phone:</strong> {{ billing.clientPhone }}</span><br />
-                    <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
-                  </div>
+
+              <div class="card">
+                <div class="card-body">
+                  <span><strong>Name:</strong> {{ billing.clientName }}</span><br />
+                  <span><strong>Email:</strong> {{ billing.clientEmail }}</span><br />
+                  <span><strong>Phone:</strong> {{ billing.clientPhone }}</span><br />
+                  <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
                 </div>
-                <div class="card-deck" style="max-height: 500px!important;">
-                  <div class="card" v-for="(item, index) in filteredCart" :key="item.id">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                      <h5 class="card-title">{{ item.name }}</h5>
-                      <button v-if="item.category === 'inclusion'" type="button" class="btn btn-sm btn-close"
-                        aria-label="Close" @click="cancelItem(item)"></button>
-                    </div>
-                    <div class="card-body">
-                      <p class="card-text">Type: {{ item.type }}</p>
-                      <p class="card-text">Price Rate: {{ item.priceRate }}</p>
-                      <p class="card-text">Purchase Qty.:{{ item.purqty }}</p>
-                      <p class="card-text">Total Price: {{ item.totalCartPrice }}</p>
+              </div>
+              <div class="card-deck wrapper-content" style="max-height: 500px!important;">
+                <div class="card" v-for="(item, index) in filteredCart" :key="item.id">
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <button v-if="item.category === 'inclusion'" type="button" class="btn btn-sm btn-close"
+                      aria-label="Close" @click="cancelItem(item)"></button>
+                  </div>
+                  <div class="card-body">
+                    <p class="card-text">Type: {{ item.type }}</p>
+                    <p class="card-text">Price Rate: {{ item.priceRate }}</p>
+                    <p class="card-text">Purchase Qty.:{{ item.purqty }}</p>
+                    <p class="card-text">Total Price: {{ item.totalCartPrice }}</p>
 
 
-                    </div>
                   </div>
                 </div>
               </div>
+
             </div>
             <div class="col-md-3">
               <h2>Payment Transaction</h2>
@@ -203,14 +207,14 @@
                     <label for="nonCashReference">Reference No.:</label>
                     <input type="text" class="form-control" id="nonCashReference" v-model="nonCashReference">
                   </div>
-                  <div class="form-group">
+                  <div v-if="alreadyDiscounted === false" class="form-group">
                     <label for="discountMode">Discount mode:</label>
                     <select class="form-control" id="discountMode" v-model="discountMode">
                       <option value="percentage">Percentage</option>
                       <option value="fixed">Fixed amount</option>
                     </select>
                   </div>
-                  <div class="form-group">
+                  <div v-if="alreadyDiscounted === false" class="form-group">
                     <label for="discountValue">Discount value:</label>
                     <div class="input-group">
                       <div class="input-group-prepend">
@@ -221,18 +225,42 @@
                     </div>
                   </div>
                   <div class="form-group mb-2">
-                    <label>Summary:</label>
-                    <div class="form-control">
-                      <span>Subtotal: {{ subtotal }}</span><br />
-                      <span>Partial: {{ partialPayment }}</span><br />
-                      <span>Total: {{ total }}</span><br />
-                      <span>Discount: {{ discount }}</span><br />
-                      <span>Change: {{ change }}</span>
+                    <label class="font-weight-bold">Summary:</label>
+                    <div class="form-control p-3">
+                      <div class="row mb-2">
+                        <div class="col-6"><strong>Reservation:</strong></div>
+                        <div class="col-6 text-right" v-html="subroom.original + ' ' + subroom.discounted"></div>
+                      </div>
+
+                      <div class="row mb-2">
+                        <div class="col-6"><strong>Add-ons:</strong></div>
+                        <div class="col-6 text-right">{{ subaddons }}</div>
+                      </div>
+                      <hr class="my-2">
+                      <div class="row mb-2">
+                        <div class="col-6"><strong>Subtotal:</strong></div>
+                        <div class="col-6 text-right">{{ subtotal }}</div>
+                      </div>
+                      <div class="row mb-2">
+                        <div class="col-6"><strong>Partial Payment:</strong></div>
+                        <div class="col-6 text-right">{{ partialPayment }}</div>
+                      </div>
+                      <div class="row mb-2">
+                        <div class="col-6"><strong class="text-primary" style="font-size: 24px;">Total:</strong></div>
+                        <div class="col-6 text-right"><strong style="font-size: 24px;">{{ total }}</strong></div>
+                      </div>
+                      <div class="row">
+                        <div class="col-6"><strong style="font-size: 24px;">Change:</strong></div>
+                        <div class="col-6 text-right" style="font-size: 24px;">{{ change }}</div>
+                      </div>
                     </div>
                   </div>
+
+
+
                   <button type="button" class="btn btn-primary" @click="generateBillingStatement">Generate
                     BS</button>&nbsp;
-                  <button type="button" class="btn btn-success" @click="placeOrder" :disabled="total <= 0">Place
+                  <button type="button" class="btn btn-success" @click="placeOrder" :disabled="total <= 0 || countInclusion > 0">Place
                     Order</button>
                 </form>
               </div>
@@ -529,11 +557,12 @@
                   <td>{{ item.type }}</td>
                   <td>{{ item.priceRate }}</td>
                   <td>{{ item.purqty }}</td>
-                  <td>{{ item.totalCartPrice }}</td>
+                  <td v-if="item.itemOption !== 'room'">{{ item.totalCartPrice }}</td>
+                  <td v-else v-html="subroom.original + ' ' + subroom.discounted"></td>
                 </tr>
                 <tr>
                   <td colspan="4" class="text-right"><strong>Total Due:</strong></td>
-                  <td><strong>Php {{ subtotal }}</strong></td>
+                  <td><strong>Php {{ total }}</strong></td>
                 </tr>
               </tbody>
             </table>
@@ -1294,7 +1323,8 @@ export default {
         counter: "",
         purqty: "",
         totalCartPrice: "",
-        category: ""
+        category: "",
+        itemOption: ""
       },
       billing: {
         clientName: "",
@@ -1312,7 +1342,8 @@ export default {
       searchText4: "",
       searchTerm: "",
       searchTerm2: "",
-      walkinStatus: false
+      walkinStatus: false,
+      alreadyDiscounted: false
     };
   },
   created() {
@@ -1467,24 +1498,39 @@ export default {
       }
       return new Date().toLocaleString('en-US', options)
     },
+    subroom() {
+      const mainRoomItems = this.cart.filter(item => item.category === 'main' && item.itemOption === 'room');
+      const originalPrice = mainRoomItems.reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
+      if (this.discount === 0) {
+        return { original: originalPrice.toFixed(2), discounted: '' };
+      }
+      const discountedPrice = originalPrice - this.discount;
+      const discountAmount = this.discountMode === 'percentage' ? `${this.discountValue}%` : `₱${this.discountValue.toFixed(2)}`;
+      const formattedOriginalPrice = `<del class="text-danger">${originalPrice.toFixed(2)}</del>`;
+      const formattedDiscountedPrice = `<sup class="text-danger font-weight-bold">${discountAmount} off</sup> <span class="text-success font-weight-bold">${discountedPrice.toFixed(2)}</span>`;
+      return { original: formattedOriginalPrice, discounted: formattedDiscountedPrice };
+    },
+    subaddons() {
+      return this.cart.filter(item => item.category === 'main' && item.itemOption === 'addons').reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
+    },
     subtotal() {
-      return this.cart.filter(item => item.category === 'main').reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
+      return this.cart.filter(item => item.category === 'main').reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0) - this.discount;
     },
     sumInclusion() {
       return this.cart.filter(item => item.category === 'inclusion').reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
     },
     discount() {
       if (this.discountMode === 'percentage') {
-        return this.subtotal * this.discountValue / 100;
+        return (this.cart.filter(item => item.category === 'main').reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0) - this.subaddons) * this.discountValue / 100;
       } else {
         return this.discountValue;
       }
     },
     total() {
-      return this.subtotal - this.discount - this.partialPayment;
+      return this.subtotal - this.partialPayment;
     },
     change() {
-      return this.cashAmount - this.total;
+      return (this.cashAmount > this.total) ? this.cashAmount - this.total : 0;
     },
     countInclusion() {
       return this.cart.filter(item => item.category === 'inclusion').length;
@@ -1539,7 +1585,7 @@ export default {
     },
   },
   methods: {
-    logout(){
+    logout() {
       const authStore = useAuthStore();
       authStore.logout();
       this.$router.push('/');
@@ -1582,7 +1628,8 @@ export default {
                 itemPriceRate: item.priceRate,
                 purchaseQty: item.purqty,
                 totalCost: item.totalCartPrice,
-                category: 'main'
+                category: 'main',
+                itemOption: 'addons',
               };
 
               try {
@@ -1651,6 +1698,7 @@ export default {
         totalCartPrice: "",
         category: ""
       }
+      this.alreadyDiscounted = false;
       this.itemIndex = -1;
       this.walkinStatus = false;
       if (no === 1 && this.billing.clientName === "") {
@@ -1693,6 +1741,18 @@ export default {
       const item = this.bookings[this.itemIndex];
       const bookingID = item.itemID;
       this.cart = [];
+
+      let existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+                columnName: 'bookingID',
+                columnKey: bookingID
+      });
+      if(existingTransaction.length !== 0){
+        let transaction = existingTransaction.data[0];
+        this.discountMode = transaction.discountMode;
+        this.discountValue = transaction.discountValue;
+        this.alreadyDiscounted = true;
+      }
+
       const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
         { "columnName": "bookingID", "columnKey": bookingID },
       ])
@@ -1706,7 +1766,8 @@ export default {
               priceRate: item.itemPriceRate,
               purqty: item.purchaseQty,
               totalCartPrice: item.totalCost,
-              category: item.category
+              category: item.category,
+              itemOption: item.itemOption
             };
             this.cart.push(newItem);
           });
@@ -1729,6 +1790,18 @@ export default {
     async moveToCart() {
       const item = this.bookings[this.itemIndex];
       const bookingID = item.itemID;
+
+      let existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+                columnName: 'bookingID',
+                columnKey: bookingID
+      });
+      if(existingTransaction.length !== 0){
+        let transaction = existingTransaction.data[0];
+        this.discountMode = transaction.discountMode;
+        this.discountValue = transaction.discountValue;
+        this.alreadyDiscounted = true;
+      }
+
       const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
         { "columnName": "bookingID", "columnKey": bookingID },
         { "columnName": "itemName", "columnKey": item.room_name }
@@ -1744,6 +1817,7 @@ export default {
         this.itemCart.purqty = numDays + 1;
         this.itemCart.totalCartPrice = parseFloat(item.room_price) * (numDays + 1);
         this.itemCart.category = "main";
+        this.itemCart.itemOption = "room";
 
         const data = {
           bookingID: this.bookings[this.itemIndex].itemID,
@@ -1753,6 +1827,7 @@ export default {
           purchaseQty: this.itemCart.purqty,
           totalCost: this.itemCart.totalCartPrice,
           category: this.itemCart.category,
+          itemOption: this.itemCart.itemOption,
           dateCreated: new Date(), // Set the dateCreated field to the current date and time
         };
 
@@ -1784,7 +1859,8 @@ export default {
                 priceRate: item.itemPriceRate,
                 purqty: item.purchaseQty,
                 totalCartPrice: item.totalCost,
-                category: item.category
+                category: item.category,
+                itemOption: item.itemOption
               };
               this.cart.push(newItem);
             });
@@ -1902,7 +1978,7 @@ export default {
     },
     onClickDay(d) {
       let today = new Date();
-      if(d.setHours(0,0,0,0)>=today.setHours(0,0,0,0)){
+      if (d.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)) {
         this.selectionStart = null
         this.selectionEnd = null
         this.message = `You clicked: ${d.toLocaleDateString()}`
@@ -1952,7 +2028,7 @@ export default {
     },
     finishSelection(dateRange) {
       const currentDate = new Date(); // get current date
-      if (dateRange[0].setHours(0,0,0,0) < currentDate.setHours(0,0,0,0)) { // check if start date is before current date
+      if (dateRange[0].setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) { // check if start date is before current date
         // prompt user to select a valid start date
         return;
       }
@@ -1979,10 +2055,10 @@ export default {
     onDrop(item, date) {
 
       const currentDate = new Date(); // get current date
-      if (date.setHours(0,0,0,0) < currentDate.setHours(0,0,0,0)) { // check if start date is before current date
+      if (date.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) { // check if start date is before current date
         // prompt user to select a valid start date
         return;
-      }      
+      }
 
       this.itemIndex = this.bookings.findIndex(
         o => o.itemID === item.id
@@ -2246,6 +2322,36 @@ export default {
         });
 
         if (result.isConfirmed) {
+
+          const countdownMessage = 'Transaction will be saved in <span id="countdown">5</span> seconds. Do you want to cancel?';
+          let countdownResult;
+          countdownResult = await this.$swal.fire({
+            title: 'Please wait',
+            html: countdownMessage,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirm now',
+            cancelButtonText: 'Cancel',
+            didOpen: () => {
+              const countdownEl = document.querySelector('#countdown');
+              let count = 5;
+              const timerId = setInterval(() => {
+                countdownEl.textContent = count;
+                count--;
+                if (count < 0) {
+                  clearInterval(timerId);
+                  this.$swal.close();
+                }
+              }, 1000);
+            }
+          });
+
+          if (!countdownResult.isConfirmed) {
+            return;
+          }
+
           let bookid = null;
           try {
             bookid = this.bookings[this.itemIndex].itemID;
@@ -2296,9 +2402,8 @@ export default {
 
               const transaction = existingTransaction.data[0];
               const existingCashAmountPay = parseFloat(transaction.cashAmountPay);
-              const newcashAmountPay = (existingCashAmountPay + parseFloat(this.cashAmount)<parseFloat(this.subtotal))?existingCashAmountPay + parseFloat(this.cashAmount):parseFloat(this.subtotal);
-              const newbalance = (existingCashAmountPay + parseFloat(this.cashAmount)<parseFloat(this.subtotal))?parseFloat(transaction.totalAmountToPay) - parseFloat(newcashAmountPay):0;
-
+              const newcashAmountPay = (existingCashAmountPay + parseFloat(this.cashAmount) < parseFloat(this.subtotal)) ? existingCashAmountPay + parseFloat(this.cashAmount) : parseFloat(this.subtotal);
+              const newbalance = (existingCashAmountPay + parseFloat(this.cashAmount) < parseFloat(this.subtotal)) ? parseFloat(transaction.totalAmountToPay) - parseFloat(newcashAmountPay) : 0;
               const transactionData = {
                 clientname: this.billing.clientName,
                 clientemail: this.billing.clientEmail,
@@ -2368,12 +2473,12 @@ export default {
       const bootstrapCSS = `<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 0.5;padding: 0.5in;}table {margin-top: 0.5in;margin-bottom: 0.5in;}.container {width: ${pWidth}px;height: ${pLength}px;padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}html, body {width: ${pWidth}px;height: ${pLength}px;margin: 0;padding: 0;}}</style>`;
       const bootstrapJS = '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">';
       const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${printBtn}${sectionHTML}${bootstrapJS}</body></html>`;
-  // Create a new jsPDF instance
+      // Create a new jsPDF instance
 
 
-  const options = "height=500,width=800,scrollbars=no,status=no,toolbar=no,location=no";
-const newWindow = window.open("", "_blank", options);
-newWindow.document.write(html);
+      const options = "height=500,width=800,scrollbars=no,status=no,toolbar=no,location=no";
+      const newWindow = window.open("", "_blank", options);
+      newWindow.document.write(html);
 
     },
     generateBillingStatement() {
@@ -2452,6 +2557,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
             this.itemCart.priceRate = item.priceRate + "/" + item.counter;
             this.itemCart.purqty = this.howMany[index];
             this.itemCart.category = "inclusion";
+            this.itemCart.itemOption = "addons";
             this.itemCart.totalCartPrice = parseFloat(item.priceRate) * parseFloat(this.howMany[index]);
             this.$swal.fire({
               title: "Success!",
@@ -2467,6 +2573,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
               purchaseQty: this.itemCart.purqty,
               totalCost: this.itemCart.totalCartPrice,
               category: this.itemCart.category,
+              itemOption: this.itemCart.itemOption,
               dateCreated: new Date(), // Set the dateCreated field to the current date and time
             };
 
@@ -2659,6 +2766,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     },
   },
   mounted() {
+    document.documentElement.requestFullscreen();
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {
