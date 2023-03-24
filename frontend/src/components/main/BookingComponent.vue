@@ -928,6 +928,10 @@
                   </thead>
                   <tbody>
                     <tr>
+                      <td>Cancelled</td>
+                      <td style="background-color: gray; width: 25px;"></td>
+                    </tr>
+                    <tr>
                       <td>Reserved</td>
                       <td style="background-color: red; width: 25px;"></td>
                     </tr>
@@ -946,6 +950,10 @@
                     <tr>
                       <td>Checked In (paid)</td>
                       <td style="background-color: yellow; width: 25px;"></td>
+                    </tr>
+                    <tr>
+                      <td>Checked Out (paid)</td>
+                      <td style="background-color: orange; width: 25px;"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -2344,23 +2352,25 @@ export default {
       const section = document.getElementById(idstring);
       const sectionHTML = section.outerHTML;
       const printBtn = '<div class="row no-print"><div class="col-md-12 text-right"><button class="btn btn-danger" onclick="window.print()">Print Now</button></div></div>';
-      const bootstrapCSS = `<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 0.5;padding: 0.5in;}table {margin-top: 0.5in;margin-bottom: 0.5in;}.container {width: ${pWidth};height: ${pLength};padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}}</style>`;
+      const bootstrapCSS = `<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 0.5;padding: 0.5in;}table {margin-top: 0.5in;margin-bottom: 0.5in;}.container {width: ${pWidth}px;height: ${pLength}px;padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}html, body {width: ${pWidth}px;height: ${pLength}px;margin: 0;padding: 0;}}</style>`;
       const bootstrapJS = '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">';
       const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${printBtn}${sectionHTML}${bootstrapJS}</body></html>`;
-      const blob = new Blob([html], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const features = 'height=600,width=800,resizable=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no';
-      const win = window.open('', '_blank', features);
-      win.document.write(`<iframe src="${url}" style="border: none; width: 100%; height: 100%;"></iframe>`);
+  // Create a new jsPDF instance
+
+
+  const options = "height=500,width=800,scrollbars=no,status=no,toolbar=no,location=no";
+const newWindow = window.open("", "_blank", options);
+newWindow.document.write(html);
+
     },
     generateBillingStatement() {
-      this.printSection('billing-details', '13in', '8.5in');
+      this.printSection('billing-details', 1300, 850);
     },
     printReservationHistory() {
-      this.printSection('reservationHistory', '8.5in', '13in');
+      this.printSection('reservationHistory', 850, 1300);
     },
     printTransactionHistory() {
-      this.printSection('transactionHistory', '8.5in', '13in');
+      this.printSection('transactionHistory', 850, 1300);
     },
     async reloadItemsData() {
       try {
