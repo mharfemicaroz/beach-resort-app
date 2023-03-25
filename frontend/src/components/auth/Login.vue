@@ -56,13 +56,13 @@ export default {
               case "superuser":
                 this.$router.push("/main");
                 break;
-              case "staff1":
+              case "reservationist":
                 this.$router.push("/booking");
                 break;
-              case "staff2":
+              case "cashier":
                 this.$router.push("/cashier");
                 break;
-              case "staff3":
+              case "inventorymanager":
                 this.$router.push("/inventory");
                 break;
               default:
