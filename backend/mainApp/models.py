@@ -4,11 +4,12 @@ from django.db import models
 class CustomUser(models.Model):
     id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=50, unique=True)
-    password = models.CharField(max_length=128)
+    password = models.CharField(max_length=128,null=True)
     FirstName = models.CharField(max_length=50)
     LastName = models.CharField(max_length=50)
     role = models.CharField(max_length=50)
     lastAccessed = models.DateTimeField(auto_now=True)
+    isActive= models.BooleanField(default=True)
 
 class Booking(models.Model):
     id = models.AutoField(primary_key=True)

@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid login-background">
     <div class="row justify-content-center align-items-center vh-100">
-      <div class="col-md-6">
+      <div class="col-md-3">
         <div class="card animated-form">
           <div class="card-header text-center">
             <img src="@/assets/pantukan-waterworld-logo.jpg" alt="Pantukan Waterworld Logo" class="img-fluid mx-auto d-block" style="max-width: 200px;">
@@ -42,15 +42,30 @@ export default {
   },
   methods: {
     login() {
-      const authStore = useAuthStore(); // Access the authStore
-      // API call for login authentication
-      const apiLink = this.API_URL + "login/"; // replace with your actual API link
-      axios.post(apiLink, {
-        username: this.username,
-        password: this.password
-      })
-        .then((response) => {
-          if (response.data.status) {
+  const authStore = useAuthStore(); // Access the authStore
+  // API call for login authentication
+  const apiLink = this.API_URL + "login/"; // replace with your actual API link
+  axios.post(apiLink, {
+    username: this.username,
+    password: this.password
+  })
+    .then((response) => {
+      if (response.data.isActive) {
+        Swal.fire({
+                  title: "Error!",
+                  text: "User is already logged in.",
+                  icon: "error",
+                });
+      } else {
+        // Set user as active using API call
+        const user = {
+          username: response.data.username,
+          FirstName: response.data.fName,
+          LastName: response.data.lName,
+          role: response.data.role
+        }
+        axios.put(`${this.API_URL}users/${response.data.id}/`, {...user, isActive: true })
+          .then(() => {
             const role = response.data.role;
             switch (role) {
               case "superuser":
@@ -79,24 +94,27 @@ export default {
               icon: "success",
             });
             authStore.setUser(response.data);
-          } else {
+          })
+          .catch((error) => {
             Swal.fire({
               title: "Error!",
-              text: "Invalid username or password.",
+              text: "An error occurred while logging in.",
               icon: "error",
             });
-          }
-          console.log(response.data); // replace with your own success handling
-        })
-        .catch((error) => {
-          Swal.fire({
-            title: "Error!",
-            text: "An error occurred while logging in.",
-            icon: "error",
+            console.log(error); // replace with your own error handling
           });
-          console.log(error); // replace with your own error handling
-        });
-    },
+      }
+    })
+    .catch((error) => {
+      Swal.fire({
+        title: "Error!",
+        text: "Invalid username or password.",
+        icon: "error",
+      });
+      console.log(error); // replace with your own error handling
+    });
+},
+
   },
 };
 </script>

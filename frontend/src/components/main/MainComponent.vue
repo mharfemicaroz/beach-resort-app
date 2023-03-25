@@ -57,13 +57,7 @@
                                 Leisures
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#settings">
-                                <i class="fas fa-cog fa-2x"></i>
-                                <br>
-                                Settings
-                            </a>
-                        </li>
+
                     </ul>
                     <div class="tab-content">
                         <div id="users" class="tab-pane active">
@@ -114,6 +108,7 @@
                                                     <th>First Name</th>
                                                     <th>Last Name</th>
                                                     <th>Role</th>
+                                                    <th>Is Active now?</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -123,10 +118,16 @@
                                                     <td>{{ user.FirstName }}</td>
                                                     <td>{{ user.LastName }}</td>
                                                     <td>{{ user.role }}</td>
+                                                    <td v-if="user.isActive"><span
+                                                            class="bg-success text-white">online</span></td>
+                                                    <td v-else><span class="bg-danger text-white">inactive</span></td>
                                                     <td>
                                                         <button type="button" class="btn btn-primary btn-sm"
                                                             @click="editUser(user.id)"><i
                                                                 class="fas fa-edit"></i></button>&nbsp;
+                                                        <button v-if="user.isActive" type="button" class="btn btn-danger btn-sm"
+                                                            @click="logoutUser(user)"><i
+                                                                class="fas fa-sign-out-alt"></i></button>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -289,9 +290,7 @@
 
                             </div>
                         </div>
-                        <div id="settings" class="tab-pane">
-                            <!-- Settings content here -->
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -352,10 +351,24 @@ export default {
         },
     },
     methods: {
-        logout() {
+        async logout() {
             const authStore = useAuthStore();
-            authStore.logout();
-            this.$router.push('/');
+            const user = {
+                username: authStore.user.username,
+                FirstName: authStore.user.fName,
+                LastName: authStore.user.lName,
+                role: authStore.user.role
+            }
+            const response = await axios.put(`${this.API_URL}users/${authStore.user.id}/`, { ...user, isActive: false })
+            if (response.data !== undefined) {
+                authStore.logout();
+                this.$router.push('/');
+            } else {
+                this.$swal({
+                    icon: "error",
+                    title: "Logout error. Please contact your admin for assistance!"
+                });
+            }
         },
         getUsers() {
             axios
@@ -514,7 +527,7 @@ export default {
                             title: "Item updated successfully"
                         });
                         this.getLeisures();
-                        this.leisure= {
+                        this.leisure = {
                             id: null,
                             item: '',
                             type: '',
@@ -562,6 +575,36 @@ export default {
                     .catch(error => {
                         console.log(error);
                     });
+            }
+        },
+        async logoutUser(item) {
+            const user = {
+                username: item.username,
+                FirstName: item.FirstName,
+                LastName: item.LastName,
+                role: item.role,
+            };
+
+            // Show a confirmation dialog
+
+            const result = await this.$swal.fire({
+                title: 'Confirmation',
+                text: 'Do you really want to log out this user?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, do it!',
+                cancelButtonText: 'Cancel'
+            });
+
+            if (result.isConfirmed) {
+                // User clicked "OK", so proceed with the logout
+                await axios.put(`${this.API_URL}users/${item.id}/`, {
+                    ...user,
+                    isActive: false,
+                });
+                this.getUsers();
             }
         },
         editUser(id) {

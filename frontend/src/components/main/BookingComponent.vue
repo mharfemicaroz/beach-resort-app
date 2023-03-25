@@ -1590,10 +1590,24 @@ export default {
     },
   },
   methods: {
-    logout() {
+    async logout() {
       const authStore = useAuthStore();
-      authStore.logout();
-      this.$router.push('/');
+            const user = {
+                username: authStore.user.username,
+                FirstName: authStore.user.fName,
+                LastName: authStore.user.lName,
+                role: authStore.user.role
+            }
+            const response = await axios.put(`${this.API_URL}users/${authStore.user.id}/`, { ...user, isActive: false })
+            if (response.data !== undefined) {
+                authStore.logout();
+                this.$router.push('/');
+            } else {
+                this.$swal({
+                    icon: "error",
+                    title: "Logout error. Please contact your admin for assistance!"
+                });
+            }
     },
     addWalkInGuest() {
       this.billing.clientName = this.walkinreservation.clientName;
@@ -1669,6 +1683,7 @@ export default {
     },
 
     resetSummary(no) {
+      this.checkAccountStatus();
       this.cart = [];
       this.billing = {
         clientName: "",

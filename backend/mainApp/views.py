@@ -27,7 +27,7 @@ def login(request):
         password = data.get('password')
         try:
             user = CustomUser.objects.get(username=username, password=password)
-            response_data = {'status': True,'role':user.role,'fName':user.FirstName,'lName':user.LastName}
+            response_data = {'status': True,'role':user.role,'fName':user.FirstName,'lName':user.LastName,'username':user.username,'isActive':user.isActive,'id':user.id}
         except CustomUser.DoesNotExist:
             response_data = {'status': False}
         return JsonResponse(response_data)
