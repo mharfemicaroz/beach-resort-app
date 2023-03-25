@@ -2800,7 +2800,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     },
   },
   mounted() {
-    document.body.style.overflow = 'auto';
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {
