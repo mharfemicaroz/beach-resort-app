@@ -2478,7 +2478,7 @@ export default {
       } else {
         await this.$swal.fire({
           title: 'Error',
-          text: 'Invalid entry for cash tendered.',
+          text: 'Invalid entry for cash tendered.', 
           icon: 'error'
         });
       }
