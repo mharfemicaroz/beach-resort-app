@@ -1390,7 +1390,12 @@ export default {
         };
       }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchTerm2.toLowerCase()));
     },
-
+    filteredTransactionsTotal(){
+      return this.filteredTransactions.reduce((acc, item) => acc + parseFloat(item.cashAmountPay), 0);
+    },
+    filteredTransactionsBalance(){
+      return this.filteredTransactions.reduce((acc, item) => acc + parseFloat(item.balance), 0);
+    },
     filteredTransactions() {
       let filtered = this.transactions;
 
@@ -2483,9 +2488,10 @@ export default {
       const section = document.getElementById(idstring);
       const sectionHTML = section.outerHTML;
       const printBtn = '<div class="row no-print"><div class="col-md-12 text-right"><button class="btn btn-danger" onclick="window.print()">Print Now</button></div></div>';
+      const footerSummary = `<p class="text-right">Total = ${this.filteredTransactionsTotal}</p><p class="text-right">Collectibles = ${this.filteredTransactionsBalance}</p>`;
       const bootstrapCSS = `<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 0.5;padding: 0.5in;}table {margin-top: 0.5in;margin-bottom: 0.5in;}.container {width: ${pWidth}px;height: ${pLength}px;padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}html, body {width: ${pWidth}px;height: ${pLength}px;margin: 0;padding: 0;}}</style>`;
       const bootstrapJS = '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">';
-      const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${printBtn}${sectionHTML}${bootstrapJS}</body></html>`;
+      const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${printBtn}${sectionHTML}${footerSummary}${bootstrapJS}</body></html>`;
       // Create a new jsPDF instance
 
 
@@ -2780,6 +2786,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
   },
   mounted() {
     document.documentElement.requestFullscreen();
+    document.body.style.overflow = 'auto';
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {

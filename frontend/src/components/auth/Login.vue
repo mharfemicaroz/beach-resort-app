@@ -32,14 +32,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 
 export default {
-  mounted() {
-    // Hide scrollbar on mount
-    document.body.style.overflow = 'hidden';
-  },
-  destroyed() {
-    // Restore scrollbar on destroy
-    document.body.style.overflow = 'auto';
-  },
+
   name: "Login",
   data() {
     return {
