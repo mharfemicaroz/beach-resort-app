@@ -2512,7 +2512,7 @@ export default {
     async reloadItemsData() {
       try {
         const response = await axios.get(this.API_URL + "leisures/");
-        this.items = response.data;
+        this.items = response.data.filter(item => item.isAvailable === true);
       } catch (error) {
         console.log(error);
       }
@@ -2520,7 +2520,7 @@ export default {
     async reloadData() {
       try {
         const roomsResponse = await axios.get(this.API_URL + "rooms/");
-        this.rooms = roomsResponse.data;
+        this.rooms = roomsResponse.data.filter(item => item.isAvailable === true);
 
         /*
 this.bookings.filter(booking => booking.room_name === this.bookings[this.itemIndex].room_name );

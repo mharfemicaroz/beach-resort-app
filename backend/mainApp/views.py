@@ -126,6 +126,10 @@ def users_filter(request):
 def room_list(request, pk=None):
     return generic_list(request, Room, RoomSerializer, pk)
 
+@csrf_exempt    
+def rooms_filter(request):
+    return filter_model(request, Room)
+
 @csrf_exempt
 def room_delete(request, pk=None):
     return generic_delete(request, Room, pk)
@@ -141,6 +145,10 @@ def booking_delete(request, pk=None):
 @csrf_exempt    
 def leisure_list(request, pk=None):
     return generic_list(request, LeisureItem, LeisureItemSerializer, pk)
+
+@csrf_exempt    
+def leisure_filter(request):
+    return filter_model(request, LeisureItem)
 
 @csrf_exempt    
 def transaction_list(request, pk=None):

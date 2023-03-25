@@ -1,5 +1,5 @@
 from django.urls import re_path
-from .views import login, users_list, user_delete, users_filter, booking_list, room_list, room_delete, booking_delete, leisure_list, transaction_list, transactionitem_list, booking_status_counts, transaction_filter, transactionitem_filter, transactionitem_delete
+from .views import login, users_list, user_delete, users_filter, booking_list, room_list, rooms_filter, room_delete, booking_delete, leisure_list, leisure_filter, transaction_list, transactionitem_list, booking_status_counts, transaction_filter, transactionitem_filter, transactionitem_delete
 
 urlpatterns = [
     re_path(r'^login/$', login, name='login'),
@@ -13,8 +13,11 @@ urlpatterns = [
     re_path(r'^bookings/delete/(?P<pk>\d+)/$', booking_delete, name='booking-delete'),    
     re_path(r'^rooms/$', room_list, name='room-list'),
     re_path(r'^rooms/(?P<pk>\d+)/$', room_list, name='room-detail'), 
+    re_path(r'^rooms/filter/$', rooms_filter, name='rooms-filter'),
     re_path(r'^rooms/delete/(?P<pk>\d+)/$', room_delete, name='room-delete'), 
     re_path(r'^leisures/$', leisure_list, name='leisure-list'),
+    re_path(r'^leisures/(?P<pk>\d+)/$',leisure_list, name='leisure-detail'), 
+    re_path(r'^leisures/filter/$', leisure_filter, name='leisure-filter'),
     re_path(r'^transaction/$', transaction_list, name='transaction-list'),
     re_path(r'^transaction/(?P<pk>\d+)/$', transaction_list, name='transaction-detail'), 
     re_path(r'^transaction/filter/$', transaction_filter, name='transaction-filter'),
