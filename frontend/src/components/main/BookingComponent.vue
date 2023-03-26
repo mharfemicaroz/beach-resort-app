@@ -1683,7 +1683,6 @@ export default {
     },
 
     resetSummary(no) {
-      this.checkAccountStatus();
       this.cart = [];
       this.billing = {
         clientName: "",
