@@ -5,7 +5,7 @@ import Main from "../components/main/MainComponent.vue";
 import Booking from "../components/main/BookingComponent.vue";
 import Cashier from "../components/main/CashierComponent.vue";
 import Inventory from "../components/main/InventoryComponent.vue";
-import Calendar from "../components/main/CalendarComponent.vue";
+import ExpiredPage from "../components/main/ExpiredPage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,18 +13,18 @@ const router = createRouter({
     {
       path: "/",
       name: "login",
-      component: login,
+      component: ExpiredPage,
     },
     {
       path: "/main",
       name: "main",
-      component: Main,
+      component: ExpiredPage,//Main,
       meta: { requiresAuth: true },
     },
     {
       path: "/booking",
       name: "booking",
-      component: Booking,     
+      component: ExpiredPage,//Booking,     
       meta: { requiresAuth: true },
     },    
     {

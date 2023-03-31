@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'mainApp.apps.MainappConfig'    
 ]
 
+
 CORS_ORIGIN_ALLOW_ALL = True
 
 MIDDLEWARE = [
