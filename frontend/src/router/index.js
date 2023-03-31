@@ -13,18 +13,18 @@ const router = createRouter({
     {
       path: "/",
       name: "login",
-      component: ExpiredPage,
+      component: login,
     },
     {
       path: "/main",
       name: "main",
-      component: ExpiredPage,//Main,
+      component: Main,
       meta: { requiresAuth: true },
     },
     {
       path: "/booking",
       name: "booking",
-      component: ExpiredPage,//Booking,     
+      component: Booking,     
       meta: { requiresAuth: true },
     },    
     {
