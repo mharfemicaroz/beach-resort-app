@@ -561,6 +561,10 @@
                   <td v-else v-html="subroom.original + ' ' + subroom.discounted"></td>
                 </tr>
                 <tr>
+                  <td colspan="4" class="text-right"><strong>Partial Payment:</strong></td>
+                  <td class="text-danger"><strong>-Php {{ partialPayment}}</strong></td>
+                </tr>
+                <tr>
                   <td colspan="4" class="text-right"><strong>Total Due:</strong></td>
                   <td><strong>Php {{ total }}</strong></td>
                 </tr>
@@ -604,7 +608,7 @@
   <!-- Modals -->
   <div class="modal fade show" id="showall-modal" tabindex="-1" role="dialog" aria-labelledby="showall-modalLabel"
     style="display: none; padding-right: 17px;" aria-modal="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
 
@@ -764,6 +768,9 @@
                       <th>Contact Number</th>
                       <th>Email</th>
                       <th>Status</th>
+                      <th>Room Price (total)</th>
+                      <th>Partial Payment</th>
+                      <th>Balance</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -775,6 +782,9 @@
                       <td>{{ reservation.contactNumber }}</td>
                       <td>{{ reservation.clientemail }}</td>
                       <td>{{ reservation.status }}</td>
+                      <td>{{ reservation.totalPrice }}</td>
+                      <td>{{ reservation.partialPayment }}</td>
+                      <td>{{ parseFloat(reservation.totalPrice) - parseFloat(reservation.partialPayment) }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -784,6 +794,7 @@
 
         </div>
         <div class="modal-footer">
+          <button type="button" class="btn btn-primary" @click="printViewReservation">Print</button> &NonBreakingSpace;
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
@@ -2498,11 +2509,12 @@ export default {
       }
 
     },
-    printSection(idstring, pLength, pWidth) {
+    printSection(idstring, pLength, pWidth,ft) {
       const section = document.getElementById(idstring);
       const sectionHTML = section.outerHTML;
       const printBtn = '<div class="row no-print"><div class="col-md-12 text-right"><button class="btn btn-danger" onclick="window.print()">Print Now</button></div></div>';
-      const footerSummary = `<p class="text-right">Total = ${this.filteredTransactionsTotal}</p><p class="text-right">Collectibles = ${this.filteredTransactionsBalance}</p>`;
+      const footerContent = `<p class="text-right">Total = ${this.filteredTransactionsTotal}</p><p class="text-right">Collectibles = ${this.filteredTransactionsBalance}</p>`;
+      const footerSummary = (ft)? footerContent:'';
       const bootstrapCSS = `<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 0.5;padding: 0.5in;}table {margin-top: 0.5in;margin-bottom: 0.5in;}.container {width: ${pWidth}px;height: ${pLength}px;padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}html, body {width: ${pWidth}px;height: ${pLength}px;margin: 0;padding: 0;}}</style>`;
       const bootstrapJS = '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">';
       const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${printBtn}${sectionHTML}${footerSummary}${bootstrapJS}</body></html>`;
@@ -2515,13 +2527,16 @@ export default {
 
     },
     generateBillingStatement() {
-      this.printSection('billing-details', 1300, 850);
+      this.printSection('billing-details', 1300, 850,false);
     },
     printReservationHistory() {
-      this.printSection('reservationHistory', 850, 1300);
+      this.printSection('reservationHistory', 850, 1300,true);
     },
     printTransactionHistory() {
-      this.printSection('transactionHistory', 850, 1300);
+      this.printSection('transactionHistory', 850, 1300,true);
+    },
+    printViewReservation(){
+      this.printSection(this.activeTab, 850, 1300,false);
     },
     async reloadItemsData() {
       try {
