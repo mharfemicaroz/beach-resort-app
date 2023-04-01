@@ -823,7 +823,7 @@
               </div>
               <label for="email" class="col-sm-2 col-form-label">Email:</label>
               <div class="col-sm-4">
-                <input type="email" class="form-control" id="email" v-model="walkinreservation.clientEmail" required>
+                <input type="email" class="form-control" id="email" v-model="walkinreservation.clientEmail">
               </div>
             </div>
             <div class="form-group row">
@@ -1031,7 +1031,7 @@
               </div>
               <label for="email" class="col-sm-2 col-form-label">Email:</label>
               <div class="col-sm-4">
-                <input type="email" class="form-control" id="email" v-model="reservation.clientEmail" required>
+                <input type="email" class="form-control" id="email" v-model="reservation.clientEmail">
               </div>
             </div>
             <div class="form-group row">
