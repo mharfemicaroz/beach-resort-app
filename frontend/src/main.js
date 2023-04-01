@@ -12,7 +12,7 @@ const app = createApp(App);
 
 app.config.globalProperties = {
     //API_URL : "http://192.168.1.59:8081/"
-    API_URL : "http://192.168.1.222:8081/" 
+    API_URL : "http://192.168.1.41:8081/" 
 }
 
 app.use(router);
