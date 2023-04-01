@@ -6,6 +6,7 @@ import Booking from "../components/main/BookingComponent.vue";
 import Cashier from "../components/main/CashierComponent.vue";
 import Inventory from "../components/main/InventoryComponent.vue";
 import ExpiredPage from "../components/main/ExpiredPage.vue";
+import CalendarVue from "../components/main/CalendarComponent.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
