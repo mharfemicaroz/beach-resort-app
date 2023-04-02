@@ -14,18 +14,18 @@ const router = createRouter({
     {
       path: "/",
       name: "login",
-      component: login,
+      component: ExpiredPage,//login,
     },
     {
       path: "/main",
       name: "main",
-      component: Main,
+      component: ExpiredPage,//Main,
       meta: { requiresAuth: true },
     },
     {
       path: "/booking",
       name: "booking",
-      component: Booking,     
+      component: ExpiredPage,//Booking,     
       meta: { requiresAuth: true },
     },    
     {
