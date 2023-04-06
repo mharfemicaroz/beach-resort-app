@@ -89,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bra_db',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'Euler143!',
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
