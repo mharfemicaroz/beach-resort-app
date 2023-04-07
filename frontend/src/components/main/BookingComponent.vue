@@ -2545,7 +2545,7 @@ export default {
               if (bookid.charAt(0) === "f") {
                 bookid = "f" + existingTransaction.data.length + this.generateUniqueString();
               }
-              
+              payStatus = (parseFloat(this.total) - parseFloat(this.cashAmount)) <= 0 ? 'full' : 'partial';
               const updatedcashamount = parseFloat(this.cashAmount) > parseFloat(this.total) ? parseFloat(this.total) : parseFloat(this.cashAmount);
               const transactionData = {
                 clientname: this.billing.clientName,
@@ -2559,7 +2559,7 @@ export default {
                 paymentMethod: this.paymentMethod,
                 cashAmountPay: updatedcashamount,
                 balance: parseFloat(this.total) - updatedcashamount,
-                payStatus: (parseFloat(this.total) - parseFloat(this.cashAmount)) <= 0 ? 'full' : 'partial',
+                payStatus: payStatus,
                 discountMode: this.discountMode,
                 discountValue: this.discountValue,
                 bookingID: bookid,
