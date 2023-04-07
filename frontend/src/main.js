@@ -7,6 +7,8 @@ import VueSweetalert2 from 'vue-sweetalert2';
 import VueSimpleContextMenu from 'vue-simple-context-menu';
 import 'vue-simple-context-menu/dist/vue-simple-context-menu.css';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import moment from 'moment-timezone'
+moment.tz.setDefault('Asia/Hongkong')
 
 const app = createApp(App);
 

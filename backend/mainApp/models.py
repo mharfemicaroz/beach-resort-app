@@ -30,7 +30,7 @@ class Booking(models.Model):
     actualCheckoutDate = models.CharField(max_length=50,blank=True)
     cancellationDate = models.CharField(max_length=50,blank=True)
     isPaid = models.CharField(max_length=50,blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
     totalPrice = models.DecimalField(max_digits=8, decimal_places=2)
     partialPayment = models.DecimalField(max_digits=8, decimal_places=2)
     processedBy = models.CharField(max_length=128)
@@ -70,6 +70,20 @@ class Transaction(models.Model):
     bookingID = models.CharField(max_length=255)
     processedBy = models.CharField(max_length=128)
 
+class TransactionRecord(models.Model):
+    transactionrecord_id = models.AutoField(primary_key=True)
+    transaction = models.IntegerField()
+    transaction_date = models.DateField(auto_now_add=True)
+    paymentMethod = models.CharField(max_length=50)
+    nonCashReference = models.CharField(max_length=128,null=True, blank=True)
+    totalAmountToPay = models.DecimalField(max_digits=10, decimal_places=2)
+    cashAmountPay = models.DecimalField(max_digits=10, decimal_places=2)
+    balance = models.DecimalField(max_digits=10, decimal_places=2)
+    discountMode = models.CharField(max_length=50, blank=True)
+    discountValue = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    processedBy = models.CharField(max_length=128)
+    payStatus = models.CharField(max_length=50) 
+
 class TransactionItem(models.Model):
     id = models.AutoField(primary_key=True)
     bookingID = models.CharField(max_length=255)
@@ -78,6 +92,7 @@ class TransactionItem(models.Model):
     itemPriceRate = models.CharField(max_length=255)
     purchaseQty = models.IntegerField()
     totalCost = models.DecimalField(max_digits=10, decimal_places=2)
-    dateCreated = models.DateTimeField(auto_now_add=True)
+    dateCreated = models.DateField(auto_now_add=True)
     category = models.CharField(max_length=50)
     itemOption = models.CharField(max_length=50)
+    transid = models.CharField(max_length=255,null=True, blank=True)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Booking, Room, LeisureItem, Transaction, TransactionItem
+from .models import CustomUser, Booking, Room, LeisureItem, Transaction, TransactionItem, TransactionRecord
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,11 +25,16 @@ class LeisureItemSerializer(serializers.ModelSerializer):
         model = LeisureItem
         fields = '__all__'     
 
+class TransactionRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransactionRecord
+        fields = '__all__'   
+
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
-        fields = '__all__'     
-
+        fields = '__all__'
+        
 class TransactionItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransactionItem

@@ -1,13 +1,14 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
-from .models import CustomUser, Booking, Room, LeisureItem, Transaction, TransactionItem
-from .serializers import CustomUserSerializer, BookingSerializer, RoomSerializer, LeisureItemSerializer, TransactionSerializer, TransactionItemSerializer
+from .models import CustomUser, Booking, Room, LeisureItem, Transaction, TransactionItem, TransactionRecord
+from .serializers import CustomUserSerializer, BookingSerializer, RoomSerializer, LeisureItemSerializer, TransactionSerializer, TransactionItemSerializer, TransactionRecordSerializer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.db.models.functions import TruncMonth
 from django.db.models import Count
+from django.db.models import Prefetch
 
 @csrf_exempt
 def booking_status_counts(request):
@@ -109,6 +110,14 @@ def generic_delete(request, o, pk=None):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt    
+def transactionrecord_list(request, pk=None):
+    return generic_list(request, TransactionRecord, TransactionRecordSerializer, pk)
+
+@csrf_exempt    
+def transactionrecord_filter(request):
+    return filter_model(request, TransactionRecord)
 
 @csrf_exempt    
 def users_list(request, pk=None):
