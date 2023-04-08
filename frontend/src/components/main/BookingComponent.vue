@@ -1099,6 +1099,34 @@
     </div>
   </div>
 
+  <div class="modal fade" id="dayMenuModal" tabindex="-1" aria-labelledby="dayMenuModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="dayMenuModalLabel">Room Reservation for {{ dayreserve.toLocaleDateString('en-GB') }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <a href="#" @click="clickDay" class="d-flex flex-column align-items-center">
+                <i class="bi bi-calendar-plus"></i>
+                <span>Create</span>
+              </a>
+            </div>
+            <div class="col-md-6">
+              <a href="#" @click="viewAllReservation" class="d-flex flex-column align-items-center">
+                <i class="bi bi-calendar-check"></i>
+                <span>View</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <div class="modal fade show" id="BookDayModal" tabindex="-1" role="dialog" aria-labelledby="BookDayModalLabel"
     style="display: none; padding-right: 17px;" aria-modal="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -1280,6 +1308,7 @@ export default {
   },
   data() {
     return {
+      dayreserve:new Date(),
       showTable: {},
       toggleAll: true,
       resdateFilter: 'any',
@@ -1881,6 +1910,9 @@ export default {
       const action = event.option.slug;
       window.alert(action);
     },
+    toggledayMenuModal(){
+      $("#dayMenuModal").modal("toggle");
+    },
     toggleAddAccountModal() {
       $("#addAccountModal").modal("toggle");
     },
@@ -2155,13 +2187,12 @@ export default {
       const t = new Date()
       return new Date(t.getFullYear(), t.getMonth(), d, h || 0, m || 0)
     },
-    onClickDay(d) {
+    clickDay(){
       let today = new Date();
-      if (d.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)) {
+      if (this.dayreserve.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)) {
         this.selectionStart = null
         this.selectionEnd = null
-        this.message = `You clicked: ${d.toLocaleDateString()}`
-
+        this.toggledayMenuModal();
         this.toggleItemModal();
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
@@ -2171,10 +2202,26 @@ export default {
         this.reservation.roomName = "";
         this.reservation.numGuests = "";
         this.reservation.clientPhone = "";
-        this.reservation.checkinDate = d.toLocaleDateString('en-GB');
-        this.reservation.checkoutDate = d.toLocaleDateString('en-GB');
+        this.reservation.checkinDate = this.dayreserve.toLocaleDateString('en-GB');
+        this.reservation.checkoutDate = this.dayreserve.toLocaleDateString('en-GB');
 
         this.reservation.status = "vacant";
+      }
+    },
+    viewAllReservation(){
+      this.convDate = this.dayreserve.toLocaleDateString('en-GB');
+      this.toggledayMenuModal();
+      this.toggleShowAllModal();
+    },
+    onClickDay(d) {
+      this.dayreserve = d;
+      if ("ontouchstart" in document.documentElement)
+      {
+        this.toggledayMenuModal();
+      }
+      else
+      {
+        this.clickDay(d);
       }
     },
     onClickItem(e) {
@@ -3024,7 +3071,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {
-      document.body.addEventListener('contextmenu', this.handleContextMenu);
+      //document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
   }
 };
@@ -3090,6 +3137,10 @@ img {
     max-width: 100%;
   }
 }
+
+* {
+      touch-action: manipulation;
+  }
 
 .cv-item.custom-date-class-gray {
   background-color: rgb(219, 212, 212);

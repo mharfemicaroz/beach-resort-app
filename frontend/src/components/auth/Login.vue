@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid login-background">
     <div class="row justify-content-center align-items-center vh-100">
-      <div class="col-md-3">
+      <div class="col-md-4">
         <div class="card animated-form">
           <div class="card-header text-center">
             <img src="@/assets/pantukan-waterworld-logo.jpg" alt="Pantukan Waterworld Logo" class="img-fluid mx-auto d-block" style="max-width: 200px;">
