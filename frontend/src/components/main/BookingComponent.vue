@@ -1397,7 +1397,7 @@ export default {
 
       paymentMethod: 'cash',
       cashAmount: 0,
-      nonCashPayPlatform: 'GCash',
+      nonCashPayPlatform: '',
       nonCashReference: '',
       discountMode: 'percentage',
       discountValue: 0,
