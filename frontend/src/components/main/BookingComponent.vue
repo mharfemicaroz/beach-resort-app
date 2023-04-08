@@ -1179,7 +1179,7 @@
               <label for="room" class="col-sm-2 col-form-label">Room:</label>
               <div v-if="this.reservation.status == 'vacant'" class="col-sm-4">
 
-                <v-select :options="updatedRooms" label="name" v-model="reservation.roomName" required>
+                <v-select multiple :options="updatedRooms" label="name" v-model="reservation.roomName" required>
                   <template #option="{ name, type, price }">
                     <h6 style="margin: 0">{{ name }}</h6>
                     <em><small>{{ type }}</small></em>
@@ -2368,62 +2368,65 @@ export default {
     },
     async clickTestAddItem() {
 
-      let id = "e" + this.bookings.length + this.generateUniqueString();
-      let startDate = this.reservation.checkinDate.split('/')[2] + "-" + this.reservation.checkinDate.split('/')[1] + "-" + this.reservation.checkinDate.split('/')[0];
-      let endDate = this.reservation.checkoutDate.split('/')[2] + "-" + this.reservation.checkoutDate.split('/')[1] + "-" + this.reservation.checkoutDate.split('/')[0];
-      let title = this.reservation.roomName.name + "-" + this.reservation.clientName;
-
       try {
 
+        let roomBooked = this.reservation.roomName;
 
-        const numDays = Math.ceil((
-          new Date(this.reservation.checkoutDate.split('/')[2] + "-" + this.reservation.checkoutDate.split('/')[1] + "-" + this.reservation.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0)
-          -
-          new Date(this.reservation.checkinDate.split('/')[2] + "-" + this.reservation.checkinDate.split('/')[1] + "-" + this.reservation.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)
-        ) / (1000 * 60 * 60 * 24));
+        roomBooked.forEach(async res => {
+          let id = "e" + this.bookings.length + this.generateUniqueString();
+          let startDate = this.reservation.checkinDate.split('/')[2] + "-" + this.reservation.checkinDate.split('/')[1] + "-" + this.reservation.checkinDate.split('/')[0];
+          let endDate = this.reservation.checkoutDate.split('/')[2] + "-" + this.reservation.checkoutDate.split('/')[1] + "-" + this.reservation.checkoutDate.split('/')[0];
+          let title = res.name + "-" + this.reservation.clientName;
 
-        const roomPrice = (this.rooms.findIndex(o => o.name === this.reservation.roomName.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === this.reservation.roomName.name)].price : 0;
-        const roomType = (this.rooms.findIndex(o => o.name === this.reservation.roomName.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === this.reservation.roomName.name)].type : '';
+          const numDays = Math.ceil((
+            new Date(this.reservation.checkoutDate.split('/')[2] + "-" + this.reservation.checkoutDate.split('/')[1] + "-" + this.reservation.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0)
+            -
+            new Date(this.reservation.checkinDate.split('/')[2] + "-" + this.reservation.checkinDate.split('/')[1] + "-" + this.reservation.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)
+          ) / (1000 * 60 * 60 * 24));
 
-        const response = await axios.post(this.API_URL + "bookings/", {
-          itemID: id,
-          status: "reserved",
-          name: this.reservation.clientName,
-          clientemail: this.reservation.clientEmail,
-          clientaddress: this.reservation.clientAddress,
-          clientnationality: this.reservation.clientNationality,
-          clientType: this.reservation.clientType,
-          checkinDate: this.reservation.checkinDate,
-          checkoutDate: this.reservation.checkoutDate,
-          room_name: this.reservation.roomName.name,
-          room_price: roomPrice,
-          room_type: roomType,
-          numGuests: this.reservation.numGuests,
-          contactNumber: this.reservation.clientPhone,
-          isPaid: 'no',
-          created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
-          totalPrice: (numDays + 1) * parseFloat(roomPrice),
-          partialPayment: 0,
-          processedBy: this.userdata.fName + " " + this.userdata.lName
+          const roomPrice = (this.rooms.findIndex(o => o.name === res.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === res.name)].price : 0;
+          const roomType = (this.rooms.findIndex(o => o.name === res.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === res.name)].type : '';
+
+          const response = await axios.post(this.API_URL + "bookings/", {
+            itemID: id,
+            status: "reserved",
+            name: this.reservation.clientName,
+            clientemail: this.reservation.clientEmail,
+            clientaddress: this.reservation.clientAddress,
+            clientnationality: this.reservation.clientNationality,
+            clientType: this.reservation.clientType,
+            checkinDate: this.reservation.checkinDate,
+            checkoutDate: this.reservation.checkoutDate,
+            room_name: res.name,
+            room_price: roomPrice,
+            room_type: roomType,
+            numGuests: this.reservation.numGuests,
+            contactNumber: this.reservation.clientPhone,
+            isPaid: 'no',
+            created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
+            totalPrice: (numDays + 1) * parseFloat(roomPrice),
+            partialPayment: 0,
+            processedBy: this.userdata.fName + " " + this.userdata.lName
+          });
+
+          this.bookings.push({
+            itemID: id,
+            status: "reserved",
+            name: this.reservation.clientName,
+            clientemail: this.reservation.clientEmail,
+            clientaddress: this.reservation.clientAddress,
+            clientnationality: this.reservation.clientNationality,
+            clienttype: this.reservation.clientType,
+            checkinDate: this.reservation.checkinDate,
+            checkoutDate: this.reservation.checkoutDate,
+            room_name: res.name,
+            room_price: roomPrice,
+            room_type: roomType,
+            numGuests: this.reservation.numGuests,
+            contactNumber: this.reservation.clientPhone,
+            processedBy: this.userdata.fName + " " + this.userdata.lName
+          })
         });
-
-        this.bookings.push({
-          itemID: id,
-          status: "reserved",
-          name: this.reservation.clientName,
-          clientemail: this.reservation.clientEmail,
-          clientaddress: this.reservation.clientAddress,
-          clientnationality: this.reservation.clientNationality,
-          clienttype: this.reservation.clientType,
-          checkinDate: this.reservation.checkinDate,
-          checkoutDate: this.reservation.checkoutDate,
-          room_name: this.reservation.roomName.name,
-          room_price: (this.rooms.findIndex(o => o.name === this.reservation.roomName.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === this.reservation.roomName.name)].price : '',
-          room_type: (this.rooms.findIndex(o => o.name === this.reservation.roomName.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === this.reservation.roomName.name)].type : '',
-          numGuests: this.reservation.numGuests,
-          contactNumber: this.reservation.clientPhone,
-          processedBy: this.userdata.fName + " " + this.userdata.lName
-        })
 
         this.reloadData();
 
@@ -2453,7 +2456,7 @@ export default {
 
 
       } catch (error) {
-        console.error(error);
+        console.log(error);
         this.$swal.fire({
           title: "error",
           text: "There is an error!",
