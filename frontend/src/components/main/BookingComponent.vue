@@ -2215,14 +2215,8 @@ export default {
     },
     onClickDay(d) {
       this.dayreserve = d;
-      if ("ontouchstart" in document.documentElement)
-      {
-        this.toggledayMenuModal();
-      }
-      else
-      {
-        this.clickDay(d);
-      }
+      this.toggledayMenuModal();
+
     },
     onClickItem(e) {
 
@@ -3055,14 +3049,14 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       if (event.target.classList.contains('cv-item')) {
         //this.$refs.vueSimpleContextMenu1.showMenu(event, event.target.innerHTML);
       } else if (event.target.classList.contains('cv-day')) {
-        const item = event.target.outerHTML.toString()
-        const strDate = item.split(" ")[4].replace('d', '');
-        const strDateDay = strDate.split("-")[2];
-        const strDateMos = strDate.split("-")[1];
-        const strDateYer = strDate.split("-")[0];
-        const convDate = strDateDay + "/" + strDateMos + "/" + strDateYer
-        this.convDate = convDate;
-        this.toggleShowAllModal();
+        // const item = event.target.outerHTML.toString()
+        // const strDate = item.split(" ")[4].replace('d', '');
+        // const strDateDay = strDate.split("-")[2];
+        // const strDateMos = strDate.split("-")[1];
+        // const strDateYer = strDate.split("-")[0];
+        // const convDate = strDateDay + "/" + strDateMos + "/" + strDateYer
+        // this.convDate = convDate;
+        // this.toggleShowAllModal();
 
       }
     },
@@ -3071,7 +3065,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {
-      //document.body.addEventListener('contextmenu', this.handleContextMenu);
+      document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
   }
 };
