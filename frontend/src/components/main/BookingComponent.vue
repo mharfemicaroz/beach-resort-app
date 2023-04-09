@@ -36,11 +36,11 @@
         <button class="nav-link active" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking" type="button"
           role="tab" aria-controls="booking" aria-selected="true" @click="resetSummary(0)">Booking & Reservation</button>
       </li>
-      <li class="nav-item" role="presentation">
+      <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
         <button class="nav-link" id="others-tab" data-bs-toggle="tab" data-bs-target="#others" type="button" role="tab"
           aria-controls="others" aria-selected="false" @click="resetSummary(1)">Account</button>
       </li>
-      <li class="nav-item" role="presentation">
+      <li v-if="userdata.role !== 'reservationist' &&  userdata.role !== 'frontdesk'" class="nav-item" role="presentation">
         <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab"
           aria-controls="reports" aria-selected="false" @click="resetSummary(2)">Reports</button>
       </li>
@@ -85,7 +85,7 @@
               <h2>Add-ons</h2>
               <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3">
               <div class="wrapper-content" style="max-height:570px;height: 570px;">
-                <table class="table">
+                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th style="white-space: nowrap;">Item</th>
@@ -208,7 +208,8 @@
                     <label for="nonCashReference">Reference No.:</label>
                     <div class="input-group">
                       <div class="input-group-prepend">
-                        <select class="form-control selectpicker" data-style="btn-primary" data-width="fit" v-model="nonCashPayPlatform">
+                        <select class="form-control selectpicker" data-style="btn-primary" data-width="fit"
+                          v-model="nonCashPayPlatform">
                           <option>GCash</option>
                           <option>PayMaya</option>
                           <option>Debit Card</option>
@@ -503,7 +504,7 @@
                                   <td colspan="11">
                                     <div>
                                       <h5 class="bg-primary text-white">History</h5>
-                                      <table class="table">
+                                      <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                                         <thead>
                                           <tr>
                                             <th>Method</th>
@@ -536,7 +537,7 @@
                                     </div>
                                     <div v-if="showTable[transaction.id]">
                                       <h5 class="bg-success text-white">Purchased Items</h5>
-                                      <table class="table">
+                                      <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                                         <thead>
                                           <tr>
                                             <th>Name</th>
@@ -630,7 +631,7 @@
         <div class="row">
           <div class="col-12">
             <h5>Order Details:</h5>
-            <table class="table">
+            <table class="table" style="table-layout: fixed;word-wrap: break-word;">
               <thead>
                 <tr>
                   <th>Item Name</th>
@@ -738,7 +739,7 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cancelled' }" id="cancelled"
               role="tabpanel" aria-labelledby="cancelled-tab">
               <div class="container-fluid">
-                <table class="table table-striped">
+                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th>Room Name</th>
@@ -765,7 +766,7 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'reserved' }" id="reserved" role="tabpanel"
               aria-labelledby="reserved-tab">
               <div class="container-fluid">
-                <table class="table table-striped">
+                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th>Room Name</th>
@@ -792,7 +793,7 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'occupied' }" id="occupied" role="tabpanel"
               aria-labelledby="occupied-tab">
               <div class="container-fluid">
-                <table class="table table-striped">
+                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th>Room Name</th>
@@ -819,7 +820,7 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'checkedout' }" id="checkedout"
               role="tabpanel" aria-labelledby="checkedout-tab">
               <div class="container-fluid">
-                <table class="table table-striped">
+                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th>Room Name</th>
@@ -847,7 +848,7 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'all' }" id="all" role="tabpanel"
               aria-labelledby="all-tab">
               <div class="container-fluid">
-                <table class="table table-striped">
+                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th>Room Name</th>
@@ -1048,7 +1049,7 @@
 
             <div class="col-md-6">
               <div class="form-group">
-                <table class="table">
+                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th scope="col">Status</th>
@@ -1103,7 +1104,8 @@
     <div class="modal-dialog modal-sm modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="dayMenuModalLabel">Room Reservation for {{ dayreserve.toLocaleDateString('en-GB') }}</h5>
+          <h5 class="modal-title" id="dayMenuModalLabel">Room Reservation for {{ dayreserve.toLocaleDateString('en-GB') }}
+          </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -1226,25 +1228,30 @@
             <div class="form-group row">
               <div class="mt-3 mb-3 d-flex flex-row-reverse">
                 <div v-if="this.reservation.status == 'reserved'">
-                  <button type="button" class="btn btn-primary" @click="cancelReservation()">Cancel
+                  <button v-if="userdata.role !== 'frontdesk'" type="button" class="btn btn-primary" @click="cancelReservation()">Cancel
                     Reservation</button>&nbsp;
-                  <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
-                    type="button" class="btn btn-success">Down Payment</button>
-                  &nbsp;
-                  <button type="button" class="btn btn-success" @click="checkinGuest()">Check-in</button>
+                  <span v-if="userdata.role !== 'reservationist'">
+                    <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
+                      type="button" class="btn btn-success">Down Payment</button>
+                    &nbsp;
+                    <button v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(this.reservation.checkinDate)" type="button"
+                      class="btn btn-success" @click="checkinGuest()">Check-in</button>
+                  </span>
                 </div>
-                <div v-else-if="this.reservation.status == 'checkedin'">
-                  <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
-                    type="button" class="btn btn-success">Pay Now</button>
-                  <button v-else-if="this.reservation.isPaid == 'partial'" @click="moveToCart()" type="button"
-                    class="btn btn-success">Pay Now</button>
-                  <div v-else>
-                    <button type="button" class="btn btn-success" @click="viewSummary()">View Summary</button>&nbsp;
-                    <button type="button" class="btn btn-success" @click="checkOutGuest()">Check-out</button>
-                  </div>
 
+                <div v-else-if="this.reservation.status == 'checkedin'">
+                  <span v-if="userdata.role !== 'reservationist'">
+                    <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
+                      type="button" class="btn btn-success">Pay Now</button>
+                    <button v-else-if="this.reservation.isPaid == 'partial'" @click="moveToCart()" type="button"
+                      class="btn btn-success">Pay Now</button>
+                    <div v-else>
+                      <button type="button" class="btn btn-success" @click="viewSummary()">View Summary</button>&nbsp;
+                      <button type="button" class="btn btn-success" @click="checkOutGuest()">Check-out</button>
+                    </div>
+                  </span>
                 </div>
-                <button v-else-if="this.reservation.status == 'vacant'" type="submit" class="btn btn-primary">Book
+                <button v-else-if="this.reservation.status == 'vacant' && userdata.role !== 'frontdesk'" type="submit" class="btn btn-primary">Book
                   Now</button> &nbsp;
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
@@ -1308,7 +1315,7 @@ export default {
   },
   data() {
     return {
-      dayreserve:new Date(),
+      dayreserve: new Date(),
       showTable: {},
       toggleAll: true,
       resdateFilter: 'any',
@@ -1723,6 +1730,10 @@ export default {
     },
   },
   methods: {
+    parseDate2(dateString) {
+      const [day, month, year] = dateString.split('/');
+      return new Date(`${month}/${day}/${year}`).setHours(0, 0, 0, 0);
+    },
     async logout() {
       const authStore = useAuthStore();
       const user = {
@@ -1910,7 +1921,7 @@ export default {
       const action = event.option.slug;
       window.alert(action);
     },
-    toggledayMenuModal(){
+    toggledayMenuModal() {
       $("#dayMenuModal").modal("toggle");
     },
     toggleAddAccountModal() {
@@ -2187,7 +2198,7 @@ export default {
       const t = new Date()
       return new Date(t.getFullYear(), t.getMonth(), d, h || 0, m || 0)
     },
-    clickDay(){
+    clickDay() {
       let today = new Date();
       if (this.dayreserve.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)) {
         this.selectionStart = null
@@ -2208,7 +2219,7 @@ export default {
         this.reservation.status = "vacant";
       }
     },
-    viewAllReservation(){
+    viewAllReservation() {
       this.convDate = this.dayreserve.toLocaleDateString('en-GB');
       this.toggledayMenuModal();
       this.toggleShowAllModal();
@@ -3133,8 +3144,8 @@ img {
 }
 
 * {
-      touch-action: manipulation;
-  }
+  touch-action: manipulation;
+}
 
 .cv-item.custom-date-class-gray {
   background-color: rgb(219, 212, 212);
@@ -3176,5 +3187,4 @@ img {
   /* For modern browsers */
   transform: rotate(180deg);
   /* For older browsers */
-}
-</style>
+}</style>

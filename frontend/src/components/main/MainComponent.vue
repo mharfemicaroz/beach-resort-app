@@ -89,7 +89,8 @@
                                                 <label for="role" class="form-label">Role</label>
                                                 <select class="form-select" id="role" v-model="user.role" required>
                                                     <option value="">-- Select Role --</option>
-                                                    <option value="reservationist">Front Desk</option>
+                                                    <option value="reservationist">Reservationist</option>
+                                                    <option value="frontdesk">Front Desk</option>
                                                     <option value="cashier">Cashier</option>
                                                     <option value="inventorymanager">Inventory Manager</option>
                                                 </select>
