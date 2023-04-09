@@ -91,7 +91,6 @@
                                                     <option value="">-- Select Role --</option>
                                                     <option value="reservationist">Reservationist</option>
                                                     <option value="frontdesk">Front Desk</option>
-                                                    <option value="cashier">Cashier</option>
                                                     <option value="inventorymanager">Inventory Manager</option>
                                                 </select>
                                             </div>

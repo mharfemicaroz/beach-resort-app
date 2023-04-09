@@ -77,9 +77,6 @@ export default {
               case "frontdesk":
                 this.$router.push("/booking");
                 break;
-              case "cashier":
-                this.$router.push("/booking");
-                break;
               case "inventorymanager":
                 this.$router.push("/inventory");
                 break;
