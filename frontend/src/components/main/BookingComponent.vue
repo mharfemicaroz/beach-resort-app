@@ -1228,7 +1228,7 @@
             <div class="form-group row">
               <div class="mt-3 mb-3 d-flex flex-row-reverse">
                 <div v-if="this.reservation.status == 'reserved'">
-                  <button v-if="userdata.role !== 'frontdesk'" type="button" class="btn btn-primary" @click="cancelReservation()">Cancel
+                  <button type="button" class="btn btn-primary" @click="cancelReservation()">Cancel
                     Reservation</button>&nbsp;
                   <span v-if="userdata.role !== 'reservationist'">
                     <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
@@ -1251,7 +1251,7 @@
                     </div>
                   </span>
                 </div>
-                <button v-else-if="this.reservation.status == 'vacant' && userdata.role !== 'frontdesk'" type="submit" class="btn btn-primary">Book
+                <button v-else-if="this.reservation.status == 'vacant'" type="submit" class="btn btn-primary">Book
                   Now</button> &nbsp;
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
