@@ -1,24 +1,11 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
-from .models import CustomUser, Booking, Room, LeisureItem, Transaction, TransactionItem, TransactionRecord
-from .serializers import CustomUserSerializer, BookingSerializer, RoomSerializer, LeisureItemSerializer, TransactionSerializer, TransactionItemSerializer, TransactionRecordSerializer
+from .models import *
+from .serializers import *
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.db.models.functions import TruncMonth
-from django.db.models import Count
-from django.db.models import Prefetch
-
-@csrf_exempt
-def booking_status_counts(request):
-    counts = {
-        'reserved': list(Booking.objects.annotate(month=TruncMonth('checkinDate')).values('month').annotate(count=Count('id')).filter(status='reserved')),
-        'cancelled': list(Booking.objects.annotate(month=TruncMonth('checkinDate')).values('month').annotate(count=Count('id')).filter(status='cancelled')),
-        'checkedin': list(Booking.objects.annotate(month=TruncMonth('checkinDate')).values('month').annotate(count=Count('id')).filter(status='checkedin')),
-        'checkedout': list(Booking.objects.annotate(month=TruncMonth('checkinDate')).values('month').annotate(count=Count('id')).filter(status='checkedout')),
-    }
-    return JsonResponse(counts)
 
 @csrf_exempt
 def login(request):
@@ -110,6 +97,46 @@ def generic_delete(request, o, pk=None):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt    
+def sales_list(request, pk=None):
+    return generic_list(request, Sales, SalesSerializer, pk)
+
+@csrf_exempt    
+def sales_filter(request):
+    return filter_model(request, Sales)
+
+@csrf_exempt    
+def purchases_list(request, pk=None):
+    return generic_list(request, Purchases, PurchasesSerializer, pk)
+
+@csrf_exempt    
+def purchases_filter(request):
+    return filter_model(request, Purchases)
+
+@csrf_exempt    
+def inventoryitemrecord_list(request, pk=None):
+    return generic_list(request, InventoryItemRecord, InventoryItemRecordSerializer, pk)
+
+@csrf_exempt    
+def inventoryitemrecord_filter(request):
+    return filter_model(request, InventoryItemRecord)
+
+@csrf_exempt    
+def supplier_list(request, pk=None):
+    return generic_list(request, Supplier, SupplierSerializer, pk)
+
+@csrf_exempt    
+def supplier_filter(request):
+    return filter_model(request, Supplier)
+
+@csrf_exempt    
+def stockitem_list(request, pk=None):
+    return generic_list(request, StockItem, StockItemSerializer, pk)
+
+@csrf_exempt    
+def stockitem_filter(request):
+    return filter_model(request, StockItem)
 
 @csrf_exempt    
 def transactionrecord_list(request, pk=None):

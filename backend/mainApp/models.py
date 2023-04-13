@@ -96,3 +96,56 @@ class TransactionItem(models.Model):
     category = models.CharField(max_length=50)
     itemOption = models.CharField(max_length=50)
     transid = models.CharField(max_length=255,null=True, blank=True)
+
+class StockItem(models.Model):
+    id = models.AutoField(primary_key=True)
+    sku = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+    category = models.CharField(max_length=255)
+    quantity = models.PositiveIntegerField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    isAvailable = models.BooleanField(default=True) 
+
+class Supplier(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    contact = models.CharField(max_length=20)
+    email = models.EmailField()
+    address = models.CharField(max_length=255)
+    tinno= models.CharField(max_length=255)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    isAvailable = models.BooleanField(default=True) 
+
+class Purchases(models.Model):
+    id = models.AutoField(primary_key=True)
+    supplier_id = models.IntegerField()
+    supplier_name = models.CharField(max_length=255)
+    totalPrice = models.DecimalField(max_digits=10, decimal_places=2)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+class Sales(models.Model):
+    id = models.AutoField(primary_key=True)
+    customer_name = models.CharField(max_length=255)
+    totalPrice = models.DecimalField(max_digits=10, decimal_places=2)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+class InventoryItemRecord(models.Model):
+    id = models.AutoField(primary_key=True)
+    supplier_id = models.IntegerField(null=True, blank=True)
+    supplier_name = models.CharField(max_length=255,null=True, blank=True)
+    customer_name = models.CharField(max_length=255,null=True, blank=True)
+    purchase_id = models.IntegerField(null=True, blank=True)
+    sales_id = models.IntegerField(null=True, blank=True)
+    stock_id = models.IntegerField()
+    stock_sku = models.CharField(max_length=50)
+    stock_name = models.CharField(max_length=255)
+    priceRate = models.DecimalField(max_digits=10, decimal_places=2)
+    purchaseQty = models.IntegerField()
+    totalCost = models.DecimalField(max_digits=10, decimal_places=2)
+    stock_type = models.CharField(max_length=50)
+    date_created = models.DateTimeField(auto_now_add=True)

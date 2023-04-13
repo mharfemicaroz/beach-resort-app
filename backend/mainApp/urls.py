@@ -1,17 +1,31 @@
 from django.urls import re_path
-from .views import transactionrecord_filter, login, users_list, user_delete, users_filter, booking_list, room_list, rooms_filter, room_delete, booking_delete, leisure_list, leisure_filter, transaction_list, transactionitem_list, booking_status_counts, transaction_filter, transactionitem_filter, transactionitem_delete, transactionrecord_list
+from .views import *
 
 urlpatterns = [ 
     re_path(r'^login/$', login, name='login'),
     re_path(r'^transaction/record/$', transactionrecord_list, name='transactionRecord-list'),
     re_path(r'^transaction/record/(?P<pk>\d+)/$', transactionrecord_list, name='transactionRecord-detail'),
     re_path(r'^transaction/record/filter/$', transactionrecord_filter, name='transaction-record-filter'),
+    re_path(r'^sales/$',sales_list , name='sales-list'),
+    re_path(r'^sales/(?P<pk>\d+)/$',sales_list, name='sales-detail'), 
+    re_path(r'^sales/filter/$', sales_filter, name='sales-filter'),
+    re_path(r'^purchases/$',purchases_list , name='purchases-list'),
+    re_path(r'^purchases/(?P<pk>\d+)/$',purchases_list, name='purchases-detail'), 
+    re_path(r'^purchases/filter/$', purchases_filter, name='purchases-filter'),
+    re_path(r'^inventory/item/$',inventoryitemrecord_list , name='inventoryitemrecord-list'),
+    re_path(r'^inventory/item/(?P<pk>\d+)/$',inventoryitemrecord_list, name='inventoryitemrecord-detail'), 
+    re_path(r'^inventory/item/filter/$', inventoryitemrecord_filter, name='inventoryitemrecord-filter'),
+    re_path(r'^supplier/$',supplier_list , name='supplier-list'),
+    re_path(r'^supplier/(?P<pk>\d+)/$',supplier_list, name='supplier-detail'), 
+    re_path(r'^supplier/filter/$', supplier_filter, name='supplier-filter'),
+    re_path(r'^stockitem/$',stockitem_list , name='stockitem-list'),
+    re_path(r'^stockitem/(?P<pk>\d+)/$',stockitem_list, name='stockitem-detail'), 
+    re_path(r'^stockitem/filter/$', stockitem_filter, name='stockitem-filter'),
     re_path(r'^users/$',users_list , name='users-list'),
     re_path(r'^users/(?P<pk>\d+)/$',users_list, name='users-detail'), 
     re_path(r'^users/filter/$', users_filter, name='users-filter'),
     re_path(r'^user/delete/(?P<pk>\d+)/$', user_delete, name='user-delete'), 
     re_path(r'^bookings/$',booking_list , name='booking-list'),
-    re_path(r'^bookings/stats/$', booking_status_counts, name='booking-stats'),
     re_path(r'^bookings/(?P<pk>\d+)/$', booking_list, name='booking-detail'), 
     re_path(r'^bookings/delete/(?P<pk>\d+)/$', booking_delete, name='booking-delete'),    
     re_path(r'^rooms/$', room_list, name='room-list'),
