@@ -52,7 +52,7 @@
 
             <div class="col-md-12">
               <h2>Calendar <a href="#" class="btn btn-link text-decoration-none" @click="toggleSettingsModal()"><i
-                    class="bi bi-gear" style="font-size: 1.25em;"></i></a></h2>
+                    class="fa fa-bars" style="font-size: 1.25em;"></i></a></h2>
 
 
               <div class="calendar-parent">
@@ -102,7 +102,7 @@
                       </td>
                       <td>
                         <button class="btn btn-success" @click="addToCart(item, index)" :disabled="!item.isAvailable">
-                          <i class="bi bi-cart-plus"></i>
+                          <i class="fa fa-cart-plus"></i>
                         </button>
                       </td>
                     </tr>
@@ -114,7 +114,7 @@
 
               <div class="d-flex align-items-center">
                 <h2 class="position-relative">
-                  <i class="bi bi-cart-fill me-2"></i>Inclusion
+                  <i class="fa fa-cart-arrow-down me-2"></i>Inclusion
                 </h2>
                 <button type="button" class="btn btn-danger ms-auto" @click="moveInclusionCartToMain()">Add all</button>
               </div>
@@ -157,7 +157,7 @@
                 </h2>
                 <button v-if="this.itemIndex === -1" type="button" class="btn btn-primary ms-auto"
                   @click="toggleAddAccountModal()">
-                  <i class="bi bi-plus"></i>
+                  <i class="fa fa-plus"></i>
                 </button>
               </div>
 
@@ -1112,13 +1112,13 @@
           <div class="row">
             <div class="col-md-6">
               <a href="#" @click="clickDay" class="d-flex flex-column align-items-center">
-                <i class="bi bi-calendar-plus"></i>
+                <i class="fa fa-calendar-plus"></i>
                 <span>Create</span>
               </a>
             </div>
             <div class="col-md-6">
               <a href="#" @click="viewAllReservation" class="d-flex flex-column align-items-center">
-                <i class="bi bi-calendar-check"></i>
+                <i class="fa fa-calendar-check"></i>
                 <span>View</span>
               </a>
             </div>
@@ -1233,6 +1233,9 @@
                   <span v-if="userdata.role !== 'reservationist'">
                     <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
                       type="button" class="btn btn-success">Down Payment</button>
+                    &nbsp;
+                    <button v-else-if="this.reservation.isPaid == 'partial'" @click="moveToCart()"
+                      type="button" class="btn btn-success">Partial Payment</button>
                     &nbsp;
                     <button v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(this.reservation.checkinDate)" type="button"
                       class="btn btn-success" @click="checkinGuest()">Check-in</button>

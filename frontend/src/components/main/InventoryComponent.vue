@@ -103,11 +103,6 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="quantity" class="form-label">Quantity</label>
-                                                <input type="number" min="0" class="form-control" id="quantity"
-                                                    v-model="stock.quantity" required>
-                                            </div>
-                                            <div class="mb-3">
                                                 <label for="is-available" class="form-label">Availability</label>
                                                 <select class="form-select" id="is-available" v-model="stock.isAvailable"
                                                     required>
@@ -174,20 +169,24 @@
                                                                 style="table-layout: fixed;word-wrap: break-word;">
                                                                 <thead>
                                                                     <tr>
+                                                                        
                                                                         <th>Status</th>
                                                                         <th>Price</th>
                                                                         <th>Qty</th>
                                                                         <th>Total</th>
+                                                                        <th>Date</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                     <template v-for="(item, index) in item.items"
                                                                         :key="index">
                                                                         <tr>
+                                                                            
                                                                             <td>{{ item.stock_type }}</td>
                                                                             <td>{{ item.priceRate }}</td>
                                                                             <td>{{ item.purchaseQty }}</td>
                                                                             <td>{{ item.totalCost }}</td>
+                                                                            <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}</td>
                                                                         </tr>
                                                                     </template>
                                                                 </tbody>
@@ -373,7 +372,7 @@
                                                         <td>{{ item.id }}</td>
                                                         <td>{{ item.supplier_name }}</td>
                                                         <td>{{ item.totalPrice }}</td>
-                                                        <td>{{ item.date_created }}</td>
+                                                        <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}</td>
                                                         <td>
                                                             <button type="button" @click="toggleTable(item.id)"
                                                                 class="btn btn-primary btn-sm">
@@ -395,6 +394,7 @@
                                                                         <th>Price</th>
                                                                         <th>Qty</th>
                                                                         <th>Total</th>
+                                                                        <th>Date</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -406,6 +406,7 @@
                                                                             <td>{{ item.priceRate }}</td>
                                                                             <td>{{ item.purchaseQty }}</td>
                                                                             <td>{{ item.totalCost }}</td>
+                                                                            <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}</td>
                                                                         </tr>
                                                                     </template>
                                                                 </tbody>
@@ -495,7 +496,7 @@
                                                         <td>{{ item.id }}</td>
                                                         <td>{{ item.customer_name }}</td>
                                                         <td>{{ item.totalPrice }}</td>
-                                                        <td>{{ item.date_created }}</td>
+                                                        <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}</td>
                                                         <td>
                                                             <button type="button" @click="toggleTable2(item.id)"
                                                                 class="btn btn-primary btn-sm">
@@ -517,6 +518,7 @@
                                                                         <th>Price</th>
                                                                         <th>Qty</th>
                                                                         <th>Total</th>
+                                                                        <th>Date</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -528,6 +530,7 @@
                                                                             <td>{{ item.priceRate }}</td>
                                                                             <td>{{ item.purchaseQty }}</td>
                                                                             <td>{{ item.totalCost }}</td>
+                                                                            <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}</td>
                                                                         </tr>
                                                                     </template>
                                                                 </tbody>
@@ -780,6 +783,12 @@ export default {
                         }
                         try {
                             await axios.post(api, itemsdata);
+                            const response = await axios.get(`${this.API_URL}stockitem/${itemsdata.stock_id}/`);
+                            await axios.put(`${this.API_URL}stockitem/${itemsdata.stock_id}/`,{
+                                ...response.data,
+                                quantity : parseFloat(response.data.quantity) - itemsdata.purchaseQty
+                            });
+                            this.getInventory();
                         } catch (error) {
 
                         }
@@ -846,6 +855,12 @@ export default {
                         }
                         try {
                             await axios.post(api, itemsdata);
+                            const response = await axios.get(`${this.API_URL}stockitem/${itemsdata.stock_id}/`);
+                            await axios.put(`${this.API_URL}stockitem/${itemsdata.stock_id}/`,{
+                                ...response.data,
+                                quantity : parseFloat(response.data.quantity) + itemsdata.purchaseQty
+                            });
+                            this.getInventory();
                         } catch (error) {
 
                         }
