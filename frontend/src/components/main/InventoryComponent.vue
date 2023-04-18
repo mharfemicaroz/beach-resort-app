@@ -119,83 +119,13 @@
                                     </div>
                                     <div class="col-md-9"
                                         style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
-                                        <div class="input-group mt-2">
-                                            <input type="text" class="form-control" placeholder="Search Inventory"
-                                                v-model="searchInventory">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary" type="button">
-                                                    <i class="fa fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Description</th>
-                                                    <th>SKU</th>
-                                                    <th>Category</th>
-                                                    <th>Qty</th>
-                                                    <th>Is Available?</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <template v-for="item in filteredstocks" :key="item.id">
-                                                    <tr>
-                                                        <td>{{ item.name }}</td>
-                                                        <td>{{ item.description }}</td>
-                                                        <td>{{ item.sku }}</td>
-                                                        <td>{{ item.category }}</td>
-                                                        <td>{{ item.quantity }}</td>
-                                                        <td v-if="item.isAvailable">Yes</td>
-                                                        <td v-else>No</td>
-                                                        <td>
-                                                            <button type="button" class="btn btn-primary btn-sm"
-                                                                @click="editInventory(item.id)"><i
-                                                                    class="fas fa-edit"></i></button>&nbsp;
-                                                            <button type="button" @click="toggleTable3(item.id)"
-                                                                    class="btn btn-primary btn-sm">
-                                                                    <span v-if="!showTable3[item.id]">+</span>
-                                                                    <span v-else>-</span>
-                                                                </button>
-                                                        </td>
-                                                    </tr>
 
-                                                    <tr v-if="showTable3[item.id]">
-                                                        <td colspan="7">
-                                                            <h5 class="bg-primary text-white">Records</h5>
-                                                            <table class="table"
-                                                                style="table-layout: fixed;word-wrap: break-word;">
-                                                                <thead>
-                                                                    <tr>
-                                                                        
-                                                                        <th>Status</th>
-                                                                        <th>Price</th>
-                                                                        <th>Qty</th>
-                                                                        <th>Total</th>
-                                                                        <th>Date</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <template v-for="(item, index) in item.items"
-                                                                        :key="index">
-                                                                        <tr>
-                                                                            
-                                                                            <td>{{ item.stock_type }}</td>
-                                                                            <td>{{ item.priceRate }}</td>
-                                                                            <td>{{ item.purchaseQty }}</td>
-                                                                            <td>{{ item.totalCost }}</td>
-                                                                            <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}</td>
-                                                                        </tr>
-                                                                    </template>
-                                                                </tbody>
-                                                            </table>                                                            
-                                                        </td>
-                                                    </tr>
-                                                </template>
-                                            </tbody>
-                                        </table>
+
+
+                                        <div>
+                                            <table-component :mainHeaders=stocksOptions :mainItems="filteredstocks" :subHeaders="stockssubOptions"
+                                                @edit-action="editInventory" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -356,6 +286,15 @@
 
                                     </div>
                                     <div class="col-md-7">
+                                        <div class="input-group mt-2">
+                                            <input type="text" class="form-control" placeholder="Search Purchases"
+                                                v-model="searchPurchases">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                         <table class="table">
                                             <thead>
                                                 <tr>
@@ -363,26 +302,32 @@
                                                     <th>Supplier</th>
                                                     <th>Total Purchased Price</th>
                                                     <th>Purchased Date</th>
-                                                    <th>Action</th>
+                                                    <th>Action <button class="btn btn-sm btn-primary"
+                                                            @click="toggleAllTD(2)">
+                                                            <span v-if="toggleAll2 === true">+</span>
+                                                            <span v-else>-</span>
+                                                        </button></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <template v-for="item in purchases" :key="item.id">
+                                                <template v-for="item in filteredpurchases" :key="item.id">
                                                     <tr>
                                                         <td>{{ item.id }}</td>
                                                         <td>{{ item.supplier_name }}</td>
                                                         <td>{{ item.totalPrice }}</td>
-                                                        <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}</td>
+                                                        <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}
+                                                        </td>
                                                         <td>
-                                                            <button type="button" @click="toggleTable(item.id)"
-                                                                class="btn btn-primary btn-sm">
-                                                                <span v-if="!showTable[item.id]">+</span>
+                                                            <button type="button"
+                                                                @click="toggleTableWithType(item.id, 'purchase')"
+                                                                class="btn btn-primary btn-sm toggle2">
+                                                                <span v-if="!showTable2[item.id]">+</span>
                                                                 <span v-else>-</span>
                                                             </button>
                                                         </td>
                                                     </tr>
 
-                                                    <tr v-if="showTable[item.id]">
+                                                    <tr v-if="showTable2[item.id]">
                                                         <td colspan="6">
                                                             <h5 class="bg-primary text-white">Items</h5>
                                                             <table class="table"
@@ -394,7 +339,6 @@
                                                                         <th>Price</th>
                                                                         <th>Qty</th>
                                                                         <th>Total</th>
-                                                                        <th>Date</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -406,7 +350,6 @@
                                                                             <td>{{ item.priceRate }}</td>
                                                                             <td>{{ item.purchaseQty }}</td>
                                                                             <td>{{ item.totalCost }}</td>
-                                                                            <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}</td>
                                                                         </tr>
                                                                     </template>
                                                                 </tbody>
@@ -416,6 +359,21 @@
                                                 </template>
                                             </tbody>
                                         </table>
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination justify-content-center">
+                                                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                                                    <a class="page-link" href="#" @click="prevPage">Previous</a>
+                                                </li>
+                                                <li class="page-item" :class="{ active: pageNumber === currentPage }"
+                                                    v-for="pageNumber in pages" :key="pageNumber">
+                                                    <a class="page-link" href="#" @click="changePage(pageNumber)">{{
+                                                        pageNumber }}</a>
+                                                </li>
+                                                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                                                    <a class="page-link" href="#" @click="nextPage">Next</a>
+                                                </li>
+                                            </ul>
+                                        </nav>
                                     </div>
                                 </div>
                             </div>
@@ -480,6 +438,15 @@
                                         </form>
                                     </div>
                                     <div class="col-md-7">
+                                        <div class="input-group mt-2">
+                                            <input type="text" class="form-control" placeholder="Search Sales"
+                                                v-model="searchSales">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                         <table class="table">
                                             <thead>
                                                 <tr>
@@ -487,26 +454,32 @@
                                                     <th>Customer</th>
                                                     <th>Total</th>
                                                     <th>Transaction Date</th>
-                                                    <th>Action</th>
+                                                    <th>Action <button class="btn btn-sm btn-primary"
+                                                            @click="toggleAllTD(3)">
+                                                            <span v-if="toggleAll3 === true">+</span>
+                                                            <span v-else>-</span>
+                                                        </button></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <template v-for="item in sales" :key="item.id">
+                                                <template v-for="item in filteredsales" :key="item.id">
                                                     <tr>
                                                         <td>{{ item.id }}</td>
                                                         <td>{{ item.customer_name }}</td>
                                                         <td>{{ item.totalPrice }}</td>
-                                                        <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}</td>
+                                                        <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}
+                                                        </td>
                                                         <td>
-                                                            <button type="button" @click="toggleTable2(item.id)"
-                                                                class="btn btn-primary btn-sm">
-                                                                <span v-if="!showTable2[item.id]">+</span>
+                                                            <button type="button"
+                                                                @click="toggleTableWithType(item.id, 'sales')"
+                                                                class="btn btn-primary btn-sm toggle3">
+                                                                <span v-if="!showTable3[item.id]">+</span>
                                                                 <span v-else>-</span>
                                                             </button>
                                                         </td>
                                                     </tr>
 
-                                                    <tr v-if="showTable2[item.id]">
+                                                    <tr v-if="showTable3[item.id]">
                                                         <td colspan="6">
                                                             <h5 class="bg-primary text-white">Items</h5>
                                                             <table class="table"
@@ -518,7 +491,6 @@
                                                                         <th>Price</th>
                                                                         <th>Qty</th>
                                                                         <th>Total</th>
-                                                                        <th>Date</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -530,7 +502,6 @@
                                                                             <td>{{ item.priceRate }}</td>
                                                                             <td>{{ item.purchaseQty }}</td>
                                                                             <td>{{ item.totalCost }}</td>
-                                                                            <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}</td>
                                                                         </tr>
                                                                     </template>
                                                                 </tbody>
@@ -556,14 +527,70 @@
   
 <script>
 import { useAuthStore } from "@/stores/authStore";
+import TableComponent from "@/components/common/GenericTable.vue";
 import axios from 'axios';
 
 export default {
+    components: {
+        TableComponent,
+    },
     data() {
         return {
-            showTable: {},
+            toggleAll1: true,
+            toggleAll2: true,
+            toggleAll3: true,
+            showTable1: {},
             showTable2: {},
-            showTable3:{},
+            showTable3: {},
+            stocksOptions: [{
+                'label': '',
+                'field': 'toggle',
+                'sortable': true
+            }, {
+                'label': 'Name',
+                'field': 'Name',
+                'sortable': true
+            }, {
+                'label': 'Description',
+                'field': 'Description',
+                'sortable': true
+            }, {
+                'label': 'SKU',
+                'field': 'SKU',
+                'sortable': true
+            }, {
+                'label': 'Category',
+                'field': 'Category',
+                'sortable': true
+            }, {
+                'label': 'Qty',
+                'field': 'Quantity',
+                'sortable': true
+            }, {
+                'label': 'Is Available?',
+                'field': 'isAvailable',
+                'sortable': true
+            }, {
+                'label': '',
+                'field': 'action',
+                'sortable': true
+            }],
+            stockssubOptions: [{
+                'label': 'Status',
+                'field': 'stock_type'
+            }, {
+                'label': 'Price',
+                'field': 'priceRate'
+            }, {
+                'label': 'Qty',
+                'field': 'purchaseQty'
+            }, {
+                'label': 'Total',
+                'field': 'totalCost'
+            }, {
+                'label': 'Date',
+                'field': 'date_created'
+            }],
             stocks: [],
             suppliers: [],
             purchases: [],
@@ -590,7 +617,7 @@ export default {
                 sku: "",
                 category: "",
                 quantity: 0,
-                isAvailable: ""
+                isAvailable: "",
             },
             supplier: {
                 id: null,
@@ -605,6 +632,8 @@ export default {
             isUpdatingSupplier: false,
             searchInventory: '',
             searchSupplier: '',
+            searchPurchases: '',
+            searchSales: '',
         };
     },
     created() {
@@ -618,9 +647,6 @@ export default {
             const authStore = useAuthStore();
             const user = authStore.user;
             return user;
-        },
-        totalPurchasePrice() {
-
         },
         filteredstocks() {
             return this.stocks.map(o => {
@@ -640,75 +666,80 @@ export default {
                 };
             }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchSupplier.toLowerCase()));
         },
+        filteredpurchases() {
+            return this.purchases.map(o => {
+                const searchCode = Object.values(o).join("~");
+                return {
+                    ...o,
+                    searchCode
+                };
+            }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchPurchases.toLowerCase()));
+        },
+        filteredsales() {
+            return this.sales.map(o => {
+                const searchCode = Object.values(o).join("~");
+                return {
+                    ...o,
+                    searchCode
+                };
+            }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchSales.toLowerCase()));
+        },
     },
     methods: {
-        async toggleTable(id) {
-            this.showTable[id] = !this.showTable[id];
-            if (this.showTable[id]) {
-                try {
-                    const response = await axios.post(`${this.API_URL}inventory/item/filter/`, [
-                        { "columnName": "purchase_id", "columnKey": id },
-                    ])
-                    const o = response.data;
-                    this.purchases = this.purchases.map(t => {
-
-                        if (t.id === id) {
-                            t.items = o;
-                        }
-
-                        return t;
-                    });
-
-                } catch (error) {
-
-                }
-
-            }
+        toggleAllTD(n) {
+            const propKey = `showTable${n}`;
+            const toggleKey = `toggleAll${n}`;
+            this[toggleKey] = !this[toggleKey];
+            Object.keys(this[propKey]).forEach(prop => {
+                this[propKey][prop] = this[toggleKey];
+            });
+            $(`.toggle${n}`).trigger('click');
         },
-        async toggleTable2(id) {
-            this.showTable2[id] = !this.showTable2[id];
-            if (this.showTable2[id]) {
-                try {
-                    const response = await axios.post(`${this.API_URL}inventory/item/filter/`, [
-                        { "columnName": "sales_id", "columnKey": id },
-                    ])
-                    const o = response.data;
-                    this.sales = this.sales.map(t => {
-
-                        if (t.id === id) {
-                            t.items = o;
-                        }
-
-                        return t;
-                    });
-
-                } catch (error) {
-
-                }
-
+        async toggleTableWithType(id, type) {
+            let showTable = {};
+            let columnKey = '';
+            switch (type) {
+                case 'purchase':
+                    showTable = this.showTable2;
+                    columnKey = 'purchase_id';
+                    break;
+                case 'sales':
+                    showTable = this.showTable3;
+                    columnKey = 'sales_id';
+                    break;
+                case 'stock':
+                    showTable = this.showTable1;
+                    columnKey = 'stock_id';
+                    break;
             }
-        },
-        async toggleTable3(id) {
-            this.showTable3[id] = !this.showTable3[id];
-            if (this.showTable3[id]) {
+            showTable[id] = !showTable[id];
+            if (showTable[id]) {
                 try {
+                    let items = [];
+                    switch (type) {
+                        case 'purchase':
+                            items = this.purchases;
+                            break;
+                        case 'sales':
+                            items = this.sales;
+                            break;
+                        case 'stock':
+                            items = this.stocks;
+                            break;
+                    }
                     const response = await axios.post(`${this.API_URL}inventory/item/filter/`, [
-                        { "columnName": "stock_id", "columnKey": id },
-                    ])
+                        { "columnName": columnKey, "columnKey": id },
+                    ]);
                     const o = response.data;
-                    this.stocks = this.stocks.map(t => {
-
+                    items = items.map(t => {
                         if (t.id === id) {
                             t.items = o;
                         }
-
                         return t;
                     });
-
                 } catch (error) {
-
+                    // handle error
                 }
-
             }
         },
         addItem(o) {
@@ -784,9 +815,9 @@ export default {
                         try {
                             await axios.post(api, itemsdata);
                             const response = await axios.get(`${this.API_URL}stockitem/${itemsdata.stock_id}/`);
-                            await axios.put(`${this.API_URL}stockitem/${itemsdata.stock_id}/`,{
+                            await axios.put(`${this.API_URL}stockitem/${itemsdata.stock_id}/`, {
                                 ...response.data,
-                                quantity : parseFloat(response.data.quantity) - itemsdata.purchaseQty
+                                quantity: parseFloat(response.data.quantity) - itemsdata.purchaseQty
                             });
                             this.getInventory();
                         } catch (error) {
@@ -856,9 +887,9 @@ export default {
                         try {
                             await axios.post(api, itemsdata);
                             const response = await axios.get(`${this.API_URL}stockitem/${itemsdata.stock_id}/`);
-                            await axios.put(`${this.API_URL}stockitem/${itemsdata.stock_id}/`,{
+                            await axios.put(`${this.API_URL}stockitem/${itemsdata.stock_id}/`, {
                                 ...response.data,
-                                quantity : parseFloat(response.data.quantity) + itemsdata.purchaseQty
+                                quantity: parseFloat(response.data.quantity) + itemsdata.purchaseQty
                             });
                             this.getInventory();
                         } catch (error) {
@@ -888,10 +919,23 @@ export default {
                 .get(`${this.API_URL}stockitem/`)
                 .then(response => {
                     this.stocks = response.data;
+                    this.stocks.forEach(async (item, index) => {
+                        try {
+                            const res = await axios.post(`${this.API_URL}inventory/item/filter/`, [
+                                { "columnName": 'stock_id', "columnKey": item.id },
+                            ]);
+                            const o = res.data;
+                            this.stocks[index].items = o;
+                        } catch (error) {
+
+                        }
+                    });
+                    console.log(this.stocks)
                 })
                 .catch(error => {
                     console.log(error);
                 });
+
         },
         getSuppliers() {
             axios
