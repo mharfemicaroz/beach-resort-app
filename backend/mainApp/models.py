@@ -53,7 +53,7 @@ class LeisureItem(models.Model):
 class Transaction(models.Model):
     id = models.AutoField(primary_key=True)
     clientname = models.CharField(max_length=255)
-    clientemail = models.EmailField()
+    clientemail = models.EmailField(null=True, blank=True)
     clientcontact = models.CharField(max_length=20)
     clientaddress = models.CharField(max_length=255)
     clientnationality = models.CharField(max_length=50)

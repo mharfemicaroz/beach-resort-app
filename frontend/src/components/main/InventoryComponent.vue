@@ -177,48 +177,10 @@
                                     </div>
                                     <div class="col-md-9"
                                         style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
-                                        <!-- <div>
-                                            <table-component :mainHeaders=suppliersOptions :mainItems="suppliers"  :editable="true" :toggleable="false"
+                                        <div>
+                                            <table-component :mainHeaders=suppliersOptions :mainItems="suppliers" :editable="true" @edit-action="editSupplier" :toggleable="false"
                                                  />
-                                        </div> -->
-                                        <div class="input-group mt-2">
-                                            <input type="text" class="form-control" placeholder="Search Supplier"
-                                                v-model="searchSupplier">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary" type="button">
-                                                    <i class="fa fa-search"></i>
-                                                </button>
-                                            </div>
                                         </div>
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Contact</th>
-                                                    <th>Email</th>
-                                                    <th>Address</th>
-                                                    <th>TIN No.</th>
-                                                    <th>Is Available?</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="supplier in filteredsuppliers" :key="supplier.id">
-                                                    <td>{{ supplier.name }}</td>
-                                                    <td>{{ supplier.contact }}</td>
-                                                    <td>{{ supplier.email }}</td>
-                                                    <td>{{ supplier.address }}</td>
-                                                    <td>{{ supplier.tinno }}</td>
-                                                    <td v-if="supplier.isAvailable">Yes</td>
-                                                    <td v-else>No</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-primary btn-sm"
-                                                            @click="editSupplier(supplier.id)"><i
-                                                                class="fas fa-edit"></i></button>&nbsp;
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
 
                                     </div>
                                 </div>
@@ -531,13 +493,17 @@ export default {
                 'field': 'address',
                 'sortable': true
             }, {
-                'label': 'Address',
-                'field': 'address',
+                'label': 'TIN No.',
+                'field': 'tinno',
                 'sortable': true
             }, {
-                'label': 'Address',
-                'field': 'address',
+                'label': 'Is Available?',
+                'field': 'isAvailable',
                 'sortable': true
+            }, {
+                'label': '',
+                'field': 'action',
+                'sortable': false
             }],
             stocks: [],
             suppliers: [],
