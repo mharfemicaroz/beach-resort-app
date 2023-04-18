@@ -1234,11 +1234,11 @@
                     <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
                       type="button" class="btn btn-success">Down Payment</button>
                     &nbsp;
-                    <button v-else-if="this.reservation.isPaid == 'partial'" @click="moveToCart()"
-                      type="button" class="btn btn-success">Partial Payment</button>
+                    <button v-else-if="this.reservation.isPaid == 'partial'" @click="moveToCart()" type="button"
+                      class="btn btn-success">Partial Payment</button>
                     &nbsp;
-                    <button v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(this.reservation.checkinDate)" type="button"
-                      class="btn btn-success" @click="checkinGuest()">Check-in</button>
+                    <button v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(this.reservation.checkinDate)"
+                      type="button" class="btn btn-success" @click="checkinGuest()">Check-in</button>
                   </span>
                 </div>
 
@@ -2542,6 +2542,15 @@ export default {
 
       if (parseFloat(this.cashAmount) > 0) {
 
+        let bookid = null;
+        let reserveStatus = null;
+        try {
+          bookid = this.bookings[this.itemIndex].itemID;
+          reserveStatus = this.bookings[this.itemIndex].status
+        } catch (error) {
+          bookid = "f";
+        }
+
         if (this.walkinStatus && parseFloat(this.cashAmount) < parseFloat(this.total)) {
           await this.$swal.fire({
             title: 'Error',
@@ -2550,6 +2559,16 @@ export default {
           });
           return false;
         }
+
+        if (reserveStatus === "reserved" && parseFloat(this.cashAmount) > parseFloat(this.total) * 0.50) {
+          await this.$swal.fire({
+            title: 'Error',
+            text: 'The maximum allowable downpayment/partial payment is 50% of the total cost, and it cannot exceed this limit.',
+            icon: 'error'
+          });
+          return false;
+        }
+
         const confirmMessage = 'Are you sure you want to save this transaction?';
         const result = await this.$swal.fire({
           title: 'Confirmation',
@@ -2591,13 +2610,6 @@ export default {
 
           if (!countdownResult.isConfirmed) {
             return;
-          }
-
-          let bookid = null;
-          try {
-            bookid = this.bookings[this.itemIndex].itemID;
-          } catch (error) {
-            bookid = "f";
           }
 
           try {
@@ -2858,74 +2870,96 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     },
     async addToCart(item, index) {
       if (this.billing.clientName !== "") {
+        // if (this.isItemAvailableInCart(item.item)) {
+        let reserveStatus = null;
+        try {
+          reserveStatus = this.bookings[this.itemIndex].status
+        } catch (error) {
+          reserveStatus = "n/a";
+        }
 
-          if (this.howMany[index] > 0) {
-            this.itemCart.name = item.item;
-            this.itemCart.type = item.type;
-            this.itemCart.rate = item.rate;
-            this.itemCart.counter = item.counter;
-            this.itemCart.priceRate = item.priceRate + "/" + item.counter;
-            this.itemCart.purqty = this.howMany[index];
-            this.itemCart.category = "inclusion";
-            this.itemCart.itemOption = "addons";
-            this.itemCart.totalCartPrice = parseFloat(item.priceRate) * parseFloat(this.howMany[index]);
-            this.$swal.fire({
-              title: "Success!",
-              text: "Added to cart!",
-              icon: "success",
-            });
-            // Define the data to be sent to the API
-            const data = {
+        if (reserveStatus === "reserved") {
+          await this.$swal.fire({
+            title: 'Error',
+            text: 'No purchase of add-ons until guest is checked in.',
+            icon: 'error'
+          });
+          return false;
+        }
+        
+        if (this.howMany[index] > 0) {
+          this.itemCart.name = item.item;
+          this.itemCart.type = item.type;
+          this.itemCart.rate = item.rate;
+          this.itemCart.counter = item.counter;
+          this.itemCart.priceRate = item.priceRate + "/" + item.counter;
+          this.itemCart.purqty = this.howMany[index];
+          this.itemCart.category = "inclusion";
+          this.itemCart.itemOption = "addons";
+          this.itemCart.totalCartPrice = parseFloat(item.priceRate) * parseFloat(this.howMany[index]);
+          this.$swal.fire({
+            title: "Success!",
+            text: "Added to cart!",
+            icon: "success",
+          });
+          // Define the data to be sent to the API
+          const data = {
 
-              itemName: this.itemCart.name,
-              itemType: this.itemCart.type,
-              itemPriceRate: this.itemCart.priceRate,
-              purchaseQty: this.itemCart.purqty,
-              totalCost: this.itemCart.totalCartPrice,
-              category: this.itemCart.category,
-              itemOption: this.itemCart.itemOption,
-              dateCreated: new Date(), // Set the dateCreated field to the current date and time
-            };
+            itemName: this.itemCart.name,
+            itemType: this.itemCart.type,
+            itemPriceRate: this.itemCart.priceRate,
+            purchaseQty: this.itemCart.purqty,
+            totalCost: this.itemCart.totalCartPrice,
+            category: this.itemCart.category,
+            itemOption: this.itemCart.itemOption,
+            dateCreated: new Date(), // Set the dateCreated field to the current date and time
+          };
 
-            try {
-              // Access property here
-              data.bookingID = this.bookings[this.itemIndex].itemID;
-              // Make a POST request to the API to save the data
-              await axios.post(this.API_URL + 'transaction/item/', data)
-                .then(response => {
-                  // Log a success message to the console
-                  this.itemCart.id = response.data.id;
-                })
-                .catch(error => {
-                  // Log an error message to the console
-                  console.error('Error saving data:', error);
-                });
-            } catch (e) {
-              // Handle the error here
-              data.bookingID = "walkin";
-            }
-            console.log(this.itemCart)
-            this.cart.push(this.itemCart);
-            this.howMany[index] = '';
-            this.itemCart = {
-              id: 0,
-              name: "",
-              priceRate: "",
-              rate: "",
-              counter: "",
-              purqty: "",
-              totalCartPrice: "",
-              category: ""
-            }
-          } else {
-            this.$swal.fire({
-              title: "Error!",
-              text: "Invalid entry for quantity.",
-              icon: "error",
-            });
+          try {
+            // Access property here
+            data.bookingID = this.bookings[this.itemIndex].itemID;
+            // Make a POST request to the API to save the data
+            await axios.post(this.API_URL + 'transaction/item/', data)
+              .then(response => {
+                // Log a success message to the console
+                this.itemCart.id = response.data.id;
+              })
+              .catch(error => {
+                // Log an error message to the console
+                console.error('Error saving data:', error);
+              });
+          } catch (e) {
+            // Handle the error here
+            data.bookingID = "walkin";
           }
+          console.log(this.itemCart)
+          this.cart.push(this.itemCart);
+          this.howMany[index] = '';
+          this.itemCart = {
+            id: 0,
+            name: "",
+            priceRate: "",
+            rate: "",
+            counter: "",
+            purqty: "",
+            totalCartPrice: "",
+            category: ""
+          }
+        } else {
+          this.$swal.fire({
+            title: "Error!",
+            text: "Invalid entry for quantity.",
+            icon: "error",
+          });
+        }
 
-
+        // } else {
+        //   this.$swal.fire({
+        //     title: "Error!",
+        //     text: "Item is already in the cart.",
+        //     icon: "error",
+        //   });
+        // }
       } else {
         this.$swal.fire({
           title: "Error!",
@@ -3184,4 +3218,5 @@ img {
   /* For modern browsers */
   transform: rotate(180deg);
   /* For older browsers */
-}</style>
+}
+</style>

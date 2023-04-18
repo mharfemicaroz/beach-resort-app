@@ -123,8 +123,8 @@
 
 
                                         <div>
-                                            <table-component :mainHeaders=stocksOptions :mainItems="filteredstocks" :subHeaders="stockssubOptions"
-                                                @edit-action="editInventory" :editable="true" />
+                                            <table-component :mainHeaders=stocksOptions :mainItems="stocks" :subHeaders="stockssubOptions"
+                                                @edit-action="editInventory" :editable="true" :toggleable="true" />
                                         </div>
                                     </div>
                                 </div>
@@ -177,6 +177,10 @@
                                     </div>
                                     <div class="col-md-9"
                                         style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
+                                        <!-- <div>
+                                            <table-component :mainHeaders=suppliersOptions :mainItems="suppliers"  :editable="true" :toggleable="false"
+                                                 />
+                                        </div> -->
                                         <div class="input-group mt-2">
                                             <input type="text" class="form-control" placeholder="Search Supplier"
                                                 v-model="searchSupplier">
@@ -287,7 +291,7 @@
                                     </div>
                                     <div class="col-md-7">
                                         <div>
-                                            <table-component :mainHeaders=purchasesOptions :mainItems="filteredpurchases" :subHeaders="purchasessubOptions" :editable="false"
+                                            <table-component :mainHeaders=purchasesOptions :mainItems="purchases" :subHeaders="purchasessubOptions" :editable="false" :toggleable="true"
                                                  />
                                         </div>
                                     </div>
@@ -354,79 +358,10 @@
                                         </form>
                                     </div>
                                     <div class="col-md-7">
-                                        <div class="input-group mt-2">
-                                            <input type="text" class="form-control" placeholder="Search Sales"
-                                                v-model="searchSales">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary" type="button">
-                                                    <i class="fa fa-search"></i>
-                                                </button>
-                                            </div>
+                                        <div>
+                                            <table-component :mainHeaders=salesOptions :mainItems="sales" :subHeaders="salessubOptions"
+                                                @edit-action="editInventory" :editable="true" :toggleable="true" />
                                         </div>
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Invoice #</th>
-                                                    <th>Customer</th>
-                                                    <th>Total</th>
-                                                    <th>Transaction Date</th>
-                                                    <th>Action <button class="btn btn-sm btn-primary"
-                                                            @click="toggleAllTD(3)">
-                                                            <span v-if="toggleAll3 === true">+</span>
-                                                            <span v-else>-</span>
-                                                        </button></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <template v-for="item in filteredsales" :key="item.id">
-                                                    <tr>
-                                                        <td>{{ item.id }}</td>
-                                                        <td>{{ item.customer_name }}</td>
-                                                        <td>{{ item.totalPrice }}</td>
-                                                        <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}
-                                                        </td>
-                                                        <td>
-                                                            <button type="button"
-                                                                @click="toggleTableWithType(item.id, 'sales')"
-                                                                class="btn btn-primary btn-sm toggle3">
-                                                                <span v-if="!showTable3[item.id]">+</span>
-                                                                <span v-else>-</span>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr v-if="showTable3[item.id]">
-                                                        <td colspan="6">
-                                                            <h5 class="bg-primary text-white">Items</h5>
-                                                            <table class="table"
-                                                                style="table-layout: fixed;word-wrap: break-word;">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>SKU</th>
-                                                                        <th>Name</th>
-                                                                        <th>Price</th>
-                                                                        <th>Qty</th>
-                                                                        <th>Total</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <template v-for="(item, index) in item.items"
-                                                                        :key="index">
-                                                                        <tr>
-                                                                            <td>{{ item.stock_sku }}</td>
-                                                                            <td>{{ item.stock_name }}</td>
-                                                                            <td>{{ item.priceRate }}</td>
-                                                                            <td>{{ item.purchaseQty }}</td>
-                                                                            <td>{{ item.totalCost }}</td>
-                                                                        </tr>
-                                                                    </template>
-                                                                </tbody>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </template>
-                                            </tbody>
-                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -452,12 +387,6 @@ export default {
     },
     data() {
         return {
-            toggleAll1: true,
-            toggleAll2: true,
-            toggleAll3: true,
-            showTable1: {},
-            showTable2: {},
-            showTable3: {},
             stocksOptions: [{
                 'label': '',
                 'field': 'toggle',
@@ -544,6 +473,72 @@ export default {
                 'label': 'Total',
                 'field': 'totalCost'
             }],
+            salesOptions: [{
+                'label': '',
+                'field': 'toggle',
+                'sortable': false,
+            }, {
+                'label': 'Invoice #',
+                'field': 'id',
+                'sortable': true
+            }, {
+                'label': 'Customer Name',
+                'field': 'customer_name',
+                'sortable': true
+            }, {
+                'label': 'Total',
+                'field': 'totalPrice',
+                'sortable': true
+            }, {
+                'label': 'Transaction Date',
+                'field': 'date_created',
+                'sortable': true
+            }],
+            salessubOptions: [{
+                'label': 'SKU',
+                'field': 'stock_sku'
+            }, {
+                'label': 'Name',
+                'field': 'stock_name'
+            }, {
+                'label': 'Price',
+                'field': 'priceRate'
+            }, {
+                'label': 'Qty',
+                'field': 'purchaseQty'
+            }, {
+                'label': 'Total',
+                'field': 'totalCost'
+            }],
+            suppliersOptions: [{
+                'label': 'Name',
+                'field': 'name',
+                'sortable': true
+            }, {
+                'label': 'Contact',
+                'field': 'contact',
+                'sortable': true
+            }, {
+                'label': 'Email',
+                'field': 'email',
+                'sortable': true
+            }, {
+                'label': 'Address',
+                'field': 'address',
+                'sortable': true
+            }, {
+                'label': 'Address',
+                'field': 'address',
+                'sortable': true
+            }, {
+                'label': 'Address',
+                'field': 'address',
+                'sortable': true
+            }, {
+                'label': 'Address',
+                'field': 'address',
+                'sortable': true
+            }],
             stocks: [],
             suppliers: [],
             purchases: [],
@@ -601,15 +596,6 @@ export default {
             const user = authStore.user;
             return user;
         },
-        filteredstocks() {
-            return this.stocks.map(o => {
-                const searchCode = Object.values(o).join("~");
-                return {
-                    ...o,
-                    searchCode
-                };
-            }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchInventory.toLowerCase()));
-        },
         filteredsuppliers() {
             return this.suppliers.map(o => {
                 const searchCode = Object.values(o).join("~");
@@ -619,82 +605,8 @@ export default {
                 };
             }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchSupplier.toLowerCase()));
         },
-        filteredpurchases() {
-            return this.purchases.map(o => {
-                const searchCode = Object.values(o).join("~");
-                return {
-                    ...o,
-                    searchCode
-                };
-            }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchPurchases.toLowerCase()));
-        },
-        filteredsales() {
-            return this.sales.map(o => {
-                const searchCode = Object.values(o).join("~");
-                return {
-                    ...o,
-                    searchCode
-                };
-            }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchSales.toLowerCase()));
-        },
     },
     methods: {
-        toggleAllTD(n) {
-            const propKey = `showTable${n}`;
-            const toggleKey = `toggleAll${n}`;
-            this[toggleKey] = !this[toggleKey];
-            Object.keys(this[propKey]).forEach(prop => {
-                this[propKey][prop] = this[toggleKey];
-            });
-            $(`.toggle${n}`).trigger('click');
-        },
-        async toggleTableWithType(id, type) {
-            let showTable = {};
-            let columnKey = '';
-            switch (type) {
-                case 'purchase':
-                    showTable = this.showTable2;
-                    columnKey = 'purchase_id';
-                    break;
-                case 'sales':
-                    showTable = this.showTable3;
-                    columnKey = 'sales_id';
-                    break;
-                case 'stock':
-                    showTable = this.showTable1;
-                    columnKey = 'stock_id';
-                    break;
-            }
-            showTable[id] = !showTable[id];
-            if (showTable[id]) {
-                try {
-                    let items = [];
-                    switch (type) {
-                        case 'purchase':
-                            items = this.purchases;
-                            break;
-                        case 'sales':
-                            items = this.sales;
-                            break;
-                        case 'stock':
-                            items = this.stocks;
-                            break;
-                    }
-                    const response = await axios.post(`${this.API_URL}inventory/item/filter/`, [
-                        { "columnName": columnKey, "columnKey": id },
-                    ]);
-                    const o = response.data;
-                    items = items.map(t => {
-                        if (t.id === id) {
-                            t.items = o;
-                        }
-                        return t;
-                    });
-                } catch (error) {
-                    // handle error
-                }
-            }
-        },
         addItem(o) {
             const arr = (o === 0) ? this.purchase : this.sale;
             arr.items.push({ stock: '', pricePerItem: null, quantity: null });
@@ -926,6 +838,17 @@ export default {
                 .get(`${this.API_URL}sales/`)
                 .then(response => {
                     this.sales = response.data;
+                    this.sales.forEach(async (item, index) => {
+                        try {
+                            const res = await axios.post(`${this.API_URL}inventory/item/filter/`, [
+                                { "columnName": 'sales_id', "columnKey": item.id },
+                            ]);
+                            const o = res.data;
+                            this.sales[index].items = o;
+                        } catch (error) {
+
+                        }
+                    });
                 })
                 .catch(error => {
                     console.log(error);

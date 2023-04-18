@@ -23,7 +23,7 @@
                 <thead>
                     <tr>
                         <template v-for="(header, index) in mainHeaders" :key="index">
-                            <th v-if="header.field === 'toggle'">
+                            <th v-if="header.field === 'toggle' && toggleable">
                                 <button class="btn btn-sm btn-primary" @click="toggleAll()">
                                     <span v-if="showAll === false">+</span>
                                     <span v-else>-</span>
@@ -51,7 +51,7 @@
                                     <span v-if="mainItem[header.field]">Yes</span>
                                     <span v-else>No</span>
                                 </template>
-                                <template v-else-if="header.field === 'toggle'">
+                                <template v-else-if="header.field === 'toggle' && toggleable">
                                     <button type="button" @click="toggleTable(mainItem.id)"
                                         class="btn btn-primary btn-sm toggle">
                                         <span v-if="!showTable[mainItem.id]">+</span>
@@ -69,7 +69,7 @@
                                 </template>
                             </td>
                         </tr>
-                        <tr v-if="showTable[mainItem.id]">
+                        <tr v-if="showTable[mainItem.id] && toggleable">
                             <td :colspan="mainHeaders.length + 1">
                                 <h5 class="bg-primary text-white">Records</h5>
                                 <table class="table" style="table-layout: fixed;word-wrap: break-word;">
@@ -163,6 +163,10 @@ export default {
         editable: {
             type: Boolean,
             required: true,
+        },
+        toggleable: {
+            type: Boolean,
+            required: true,            
         }
     },
     data() {
