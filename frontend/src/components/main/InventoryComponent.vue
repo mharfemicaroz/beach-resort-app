@@ -124,7 +124,7 @@
 
                                         <div>
                                             <table-component :mainHeaders=stocksOptions :mainItems="filteredstocks" :subHeaders="stockssubOptions"
-                                                @edit-action="editInventory" />
+                                                @edit-action="editInventory" :editable="true" />
                                         </div>
                                     </div>
                                 </div>
@@ -286,94 +286,10 @@
 
                                     </div>
                                     <div class="col-md-7">
-                                        <div class="input-group mt-2">
-                                            <input type="text" class="form-control" placeholder="Search Purchases"
-                                                v-model="searchPurchases">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-outline-secondary" type="button">
-                                                    <i class="fa fa-search"></i>
-                                                </button>
-                                            </div>
+                                        <div>
+                                            <table-component :mainHeaders=purchasesOptions :mainItems="filteredpurchases" :subHeaders="purchasessubOptions" :editable="false"
+                                                 />
                                         </div>
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Purchase #</th>
-                                                    <th>Supplier</th>
-                                                    <th>Total Purchased Price</th>
-                                                    <th>Purchased Date</th>
-                                                    <th>Action <button class="btn btn-sm btn-primary"
-                                                            @click="toggleAllTD(2)">
-                                                            <span v-if="toggleAll2 === true">+</span>
-                                                            <span v-else>-</span>
-                                                        </button></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <template v-for="item in filteredpurchases" :key="item.id">
-                                                    <tr>
-                                                        <td>{{ item.id }}</td>
-                                                        <td>{{ item.supplier_name }}</td>
-                                                        <td>{{ item.totalPrice }}</td>
-                                                        <td>{{ new Date(item.date_created).toLocaleDateString('en-GB') }}
-                                                        </td>
-                                                        <td>
-                                                            <button type="button"
-                                                                @click="toggleTableWithType(item.id, 'purchase')"
-                                                                class="btn btn-primary btn-sm toggle2">
-                                                                <span v-if="!showTable2[item.id]">+</span>
-                                                                <span v-else>-</span>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-
-                                                    <tr v-if="showTable2[item.id]">
-                                                        <td colspan="6">
-                                                            <h5 class="bg-primary text-white">Items</h5>
-                                                            <table class="table"
-                                                                style="table-layout: fixed;word-wrap: break-word;">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>SKU</th>
-                                                                        <th>Name</th>
-                                                                        <th>Price</th>
-                                                                        <th>Qty</th>
-                                                                        <th>Total</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <template v-for="(item, index) in item.items"
-                                                                        :key="index">
-                                                                        <tr>
-                                                                            <td>{{ item.stock_sku }}</td>
-                                                                            <td>{{ item.stock_name }}</td>
-                                                                            <td>{{ item.priceRate }}</td>
-                                                                            <td>{{ item.purchaseQty }}</td>
-                                                                            <td>{{ item.totalCost }}</td>
-                                                                        </tr>
-                                                                    </template>
-                                                                </tbody>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </template>
-                                            </tbody>
-                                        </table>
-                                        <nav aria-label="Page navigation example">
-                                            <ul class="pagination justify-content-center">
-                                                <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                                                    <a class="page-link" href="#" @click="prevPage">Previous</a>
-                                                </li>
-                                                <li class="page-item" :class="{ active: pageNumber === currentPage }"
-                                                    v-for="pageNumber in pages" :key="pageNumber">
-                                                    <a class="page-link" href="#" @click="changePage(pageNumber)">{{
-                                                        pageNumber }}</a>
-                                                </li>
-                                                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                                                    <a class="page-link" href="#" @click="nextPage">Next</a>
-                                                </li>
-                                            </ul>
-                                        </nav>
                                     </div>
                                 </div>
                             </div>
@@ -545,7 +461,7 @@ export default {
             stocksOptions: [{
                 'label': '',
                 'field': 'toggle',
-                'sortable': false
+                'sortable': false,
             }, {
                 'label': 'Name',
                 'field': 'name',
@@ -590,6 +506,43 @@ export default {
             }, {
                 'label': 'Date',
                 'field': 'date_created'
+            }],
+            purchasesOptions: [{
+                'label': '',
+                'field': 'toggle',
+                'sortable': false,
+            }, {
+                'label': 'Purchase #',
+                'field': 'id',
+                'sortable': true
+            }, {
+                'label': 'Supplier Name',
+                'field': 'supplier_name',
+                'sortable': true
+            }, {
+                'label': 'Total Purchased Price',
+                'field': 'totalPrice',
+                'sortable': true
+            }, {
+                'label': 'Purchased Date',
+                'field': 'date_created',
+                'sortable': true
+            }],
+            purchasessubOptions: [{
+                'label': 'SKU',
+                'field': 'stock_sku'
+            }, {
+                'label': 'Name',
+                'field': 'stock_name'
+            }, {
+                'label': 'Price',
+                'field': 'priceRate'
+            }, {
+                'label': 'Qty',
+                'field': 'purchaseQty'
+            }, {
+                'label': 'Total',
+                'field': 'totalCost'
             }],
             stocks: [],
             suppliers: [],
@@ -930,7 +883,6 @@ export default {
 
                         }
                     });
-                    console.log(this.stocks)
                 })
                 .catch(error => {
                     console.log(error);
@@ -952,10 +904,22 @@ export default {
                 .get(`${this.API_URL}purchases/`)
                 .then(response => {
                     this.purchases = response.data;
+                    this.purchases.forEach(async (item, index) => {
+                        try {
+                            const res = await axios.post(`${this.API_URL}inventory/item/filter/`, [
+                                { "columnName": 'purchase_id', "columnKey": item.id },
+                            ]);
+                            const o = res.data;
+                            this.purchases[index].items = o;
+                        } catch (error) {
+
+                        }
+                    });
                 })
                 .catch(error => {
                     console.log(error);
                 });
+                
         },
         getSales() {
             axios

@@ -2858,7 +2858,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     },
     async addToCart(item, index) {
       if (this.billing.clientName !== "") {
-        if (this.isItemAvailableInCart(item.item)) {
+
           if (this.howMany[index] > 0) {
             this.itemCart.name = item.item;
             this.itemCart.type = item.type;
@@ -2925,13 +2925,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
             });
           }
 
-        } else {
-          this.$swal.fire({
-            title: "Error!",
-            text: "Item is already in the cart.",
-            icon: "error",
-          });
-        }
+
       } else {
         this.$swal.fire({
           title: "Error!",

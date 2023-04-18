@@ -25,7 +25,7 @@
                         <template v-for="(header, index) in mainHeaders" :key="index">
                             <th v-if="header.field === 'toggle'">
                                 <button class="btn btn-sm btn-primary" @click="toggleAll()">
-                                    <span v-if="showAll === true">+</span>
+                                    <span v-if="showAll === false">+</span>
                                     <span v-else>-</span>
                                 </button>
                             </th>
@@ -58,14 +58,14 @@
                                         <span v-else>-</span>
                                     </button>
                                 </template>
-                                <template v-else-if="header.field === 'action'">
+                                <template v-else-if="header.field === 'action' && this.editable">
                                     <button type="button" class="btn btn-primary btn-sm"
                                         @click="$emit('edit-action', mainItem.id)">
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 </template>
                                 <template v-else>
-                                    {{ mainItem[header.field.toLowerCase()] }}
+                                    {{ mainItem[header.field] }}
                                 </template>
                             </td>
                         </tr>
@@ -159,6 +159,10 @@ export default {
         subHeaders: {
             type: Array,
             required: true,
+        },
+        editable: {
+            type: Boolean,
+            required: true,
         }
     },
     data() {
@@ -167,7 +171,7 @@ export default {
             currentPage: 1,
             maxVisiblePages: 10,
             rowsPerPage: 10,
-            showAll: true,
+            showAll: false,
             showTable: {},
             searchText: '',
             sortColumn: null,
@@ -186,10 +190,10 @@ export default {
             sortedItems.sort((a, b) => {
                 const aValue = a[this.sortColumn];
                 const bValue = b[this.sortColumn];
-                let bool = this.sortDirection === 1 ? true:false;
-                if (typeof aValue === 'number' && typeof bValue === 'number') {
+                let bool = this.sortDirection === 1 ? true : false;
+                if (!isNaN(aValue) && !isNaN(bValue)) {
                     // Sort numbers numerically
-                    return bool ? aValue - bValue : bValue - aValue;
+                    return bool ? parseFloat(aValue) - parseFloat(bValue) : parseFloat(bValue) - parseFloat(aValue);
                 } else {
                     // Sort strings alphabetically
                     const aString = (aValue || '').toString().toLowerCase(); // Add check for undefined
@@ -248,15 +252,16 @@ export default {
                 this.sortDirection = 1
             }
         },
+
         toggleAll() {
             const propKey = `showTable`;
             const toggleKey = `showAll`;
             this[toggleKey] = !this[toggleKey];
-            Object.keys(this[propKey]).forEach(prop => {
-                this[propKey][prop] = this[toggleKey];
+            this.filteredItems.forEach((item) => {
+                this[propKey] = Object.assign({}, this[propKey], { [item.id]: this[toggleKey] });
             });
-            $(`.toggle`).trigger('click');
         },
+
         toggleTable(id) {
             this.showTable[id] = !this.showTable[id];
         },
