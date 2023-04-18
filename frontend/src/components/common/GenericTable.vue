@@ -29,7 +29,17 @@
                                     <span v-else>-</span>
                                 </button>
                             </th>
-                            <th v-else>{{ header.label }}</th>
+                            <th v-else @click="sort(header.field)" :class="{ 'sortable': header.sortable }">
+                                {{ header.label }}
+                                <span v-if="header.sortable" class="sort-icon">
+                                    <i :class="[
+                                        'fas',
+                                        sortColumn === header.field && sortDirection === 1
+                                            ? 'fa-sort-alpha-up'
+                                            : 'fa-sort-alpha-down',
+                                    ]"></i>
+                                </span>
+                            </th>
                         </template>
                     </tr>
                 </thead>
@@ -55,7 +65,7 @@
                                     </button>
                                 </template>
                                 <template v-else>
-                                    {{ mainItem[header.field.toLowerCase()] }}
+                                    {{ mainItem[header.field].toString() }}
                                 </template>
                             </td>
                         </tr>
@@ -90,7 +100,9 @@
                 <nav aria-label="Table pagination">
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <p class="mb-0">
-                            Showing {{ Math.min((currentPage - 1) * rowsPerPage + 1, filteredItems.length) }} to {{ Math.min(currentPage * rowsPerPage, filteredItems.length) }} of {{ filteredItems.length }} entries{{ searchText ? ' (filtered from ' + mainItems.length + ' total entries)' : '' }}
+                            Showing {{ Math.min((currentPage - 1) * rowsPerPage + 1, filteredItems.length) }} to {{
+                                Math.min(currentPage * rowsPerPage, filteredItems.length) }} of {{ filteredItems.length }}
+                            entries{{ searchText ? ' (filtered from ' + mainItems.length + ' total entries)' : '' }}
                         </p>
 
                         <ul class="pagination mb-0">
@@ -158,6 +170,8 @@ export default {
             showAll: true,
             showTable: {},
             searchText: '',
+            sortColumn: null,
+            sortDirection: 'asc',
         };
     },
     computed: {
@@ -167,14 +181,42 @@ export default {
             return this.mainItems.slice(startIndex, endIndex);
         },
         filteredItems() {
-            return this.paginatedMainItems.map(o => {
-                const searchCode = Object.values(o).join("~");
-                return {
-                    ...o,
-                    searchCode
-                };
+            const sortedItems = [...this.paginatedMainItems];
+
+            sortedItems.sort((a, b) => {
+                const aValue = a[this.sortColumn];
+                const bValue = b[this.sortColumn];
+
+                if (typeof aValue === 'number' && typeof bValue === 'number') {
+                    // Sort numbers numerically
+                    return this.sortDirection ? aValue - bValue : bValue - aValue;
+                } else {
+                    // Sort strings alphabetically
+                    const aString = (aValue || '').toString().toLowerCase(); // Add check for undefined
+                    const bString = (bValue || '').toString().toLowerCase(); // Add check for undefined
+                    if (aString < bString) {
+                        return this.sortDirection ? -1 : 1;
+                    } else if (aString > bString) {
+                        return this.sortDirection ? 1 : -1;
+                    } else {
+                        return 0;
+                    }
+                }
+            });
+
+            return sortedItems.map(o => {
+                if (o) { // Add check for undefined
+                    const searchCode = Object.values(o).join("~");
+                    return {
+                        ...o,
+                        searchCode
+                    };
+                }
             }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchText.toLowerCase()));
         },
+
+
+
         pageCount() {
             return Math.ceil(this.mainItems.length / this.rowsPerPage);
         },
@@ -201,6 +243,14 @@ export default {
 
     },
     methods: {
+        sort(field) {
+            if (this.sortColumn === field) {
+                this.sortDirection = !this.sortDirection;
+            } else {
+                this.sortColumn = field;
+                this.sortDirection = 1
+            }
+        },
         toggleAll() {
             const propKey = `showTable`;
             const toggleKey = `showAll`;

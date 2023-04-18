@@ -545,26 +545,26 @@ export default {
             stocksOptions: [{
                 'label': '',
                 'field': 'toggle',
-                'sortable': true
+                'sortable': false
             }, {
                 'label': 'Name',
-                'field': 'Name',
+                'field': 'name',
                 'sortable': true
             }, {
                 'label': 'Description',
-                'field': 'Description',
+                'field': 'description',
                 'sortable': true
             }, {
                 'label': 'SKU',
-                'field': 'SKU',
+                'field': 'sku',
                 'sortable': true
             }, {
                 'label': 'Category',
-                'field': 'Category',
+                'field': 'category',
                 'sortable': true
             }, {
                 'label': 'Qty',
-                'field': 'Quantity',
+                'field': 'quantity',
                 'sortable': true
             }, {
                 'label': 'Is Available?',
@@ -573,7 +573,7 @@ export default {
             }, {
                 'label': '',
                 'field': 'action',
-                'sortable': true
+                'sortable': false
             }],
             stockssubOptions: [{
                 'label': 'Status',
