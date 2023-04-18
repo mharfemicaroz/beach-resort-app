@@ -65,7 +65,7 @@
                                     </button>
                                 </template>
                                 <template v-else>
-                                    {{ mainItem[header.field].toString() }}
+                                    {{ mainItem[header.field.toLowerCase()] }}
                                 </template>
                             </td>
                         </tr>
@@ -186,18 +186,18 @@ export default {
             sortedItems.sort((a, b) => {
                 const aValue = a[this.sortColumn];
                 const bValue = b[this.sortColumn];
-
+                let bool = this.sortDirection === 1 ? true:false;
                 if (typeof aValue === 'number' && typeof bValue === 'number') {
                     // Sort numbers numerically
-                    return this.sortDirection ? aValue - bValue : bValue - aValue;
+                    return bool ? aValue - bValue : bValue - aValue;
                 } else {
                     // Sort strings alphabetically
                     const aString = (aValue || '').toString().toLowerCase(); // Add check for undefined
                     const bString = (bValue || '').toString().toLowerCase(); // Add check for undefined
                     if (aString < bString) {
-                        return this.sortDirection ? -1 : 1;
+                        return bool ? -1 : 1;
                     } else if (aString > bString) {
-                        return this.sortDirection ? 1 : -1;
+                        return bool ? 1 : -1;
                     } else {
                         return 0;
                     }
@@ -214,9 +214,6 @@ export default {
                 }
             }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchText.toLowerCase()));
         },
-
-
-
         pageCount() {
             return Math.ceil(this.mainItems.length / this.rowsPerPage);
         },
@@ -245,7 +242,7 @@ export default {
     methods: {
         sort(field) {
             if (this.sortColumn === field) {
-                this.sortDirection = !this.sortDirection;
+                this.sortDirection = -this.sortDirection;
             } else {
                 this.sortColumn = field;
                 this.sortDirection = 1
