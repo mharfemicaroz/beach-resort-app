@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm no-print">
             <div class="container-fluid">
                 <!-- Logo and Search Bar -->
                 <a class="navbar-brand" href="#">
@@ -35,7 +35,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-12">
-                    <ul class="nav nav-tabs justify-content-left">
+                    <ul class="nav nav-tabs justify-content-left no-print">
                         <li class="nav-item">
                             <a class="nav-link active text-center" data-bs-toggle="tab" href="#inventory">
                                 <i class="fas fa-warehouse fa-2x"></i>
@@ -73,7 +73,7 @@
                             <div id="inventory" class="tab-pane active">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <form @submit.prevent="saveInventory">
+                                        <form @submit.prevent="saveInventory" class="no-print">
                                             <div class="mb-3">
                                                 <label for="name" class="form-label">Name</label>
                                                 <input type="text" class="form-control" id="name" v-model="stock.name"
@@ -118,7 +118,7 @@
                                         </form>
                                     </div>
                                     <div class="col-md-9"
-                                        style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
+                                        >
 
 
 
@@ -135,7 +135,7 @@
                             <div id="supplier" class="tab-pane">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <form @submit.prevent="saveSupplier">
+                                        <form @submit.prevent="saveSupplier" class="no-print">
                                             <div class="mb-3">
                                                 <label for="name" class="form-label">Name</label>
                                                 <input type="text" class="form-control" id="name" v-model="supplier.name"
@@ -190,7 +190,7 @@
                             <div id="purchases" class="tab-pane">
                                 <div class="row">
                                     <div class="col-md-5">
-                                        <form>
+                                        <form class="no-print"> 
                                             <div class="mb-3">
                                                 <h4>Supplier </h4>
                                                 <hr />
@@ -264,7 +264,7 @@
                             <div id="sales" class="tab-pane">
                                 <div class="row">
                                     <div class="col-md-5">
-                                        <form>
+                                        <form class="no-print">
                                             <div class="mb-3">
                                                 <h4>Customer </h4>
                                                 <hr />

@@ -8,30 +8,34 @@
         </div>
         <div v-else>
             <div class="d-flex justify-content-between align-items-center mt-3">
-                <p class="mb-0">
+                <p class="mb-0 no-print">
                     <label>Show <select v-model="rowsPerPage" aria-controls="example" class="form-input">
                             <option value="10">10</option>
                             <option value="25">25</option>
                             <option value="50">50</option>
                             <option value="100">100</option>
-                        </select> entries</label>
+                        </select> entries</label> &NonBreakingSpace;
+                    <button class="btn btn-sm btn-primary" @click="printSection">
+                        <i class="fas fa-print"></i>
+                    </button>
+
                 </p>
-                <p class="mb-0">Search: <input type="text" class="form-input mt-2" v-model="searchText"></p>
+                <p class="mb-0 no-print">Search: <input type="text" class="form-input mt-2" v-model="searchText"></p>
             </div>
 
-            <table class="table">
+            <table class="table" id="dataTable">
                 <thead>
                     <tr>
                         <template v-for="(header, index) in mainHeaders" :key="index">
                             <th v-if="header.field === 'toggle' && toggleable">
-                                <button class="btn btn-sm btn-primary" @click="toggleAll()">
+                                <button class="btn btn-sm btn-primary no-print" @click="toggleAll()">
                                     <span v-if="showAll === false">+</span>
                                     <span v-else>-</span>
                                 </button>
                             </th>
                             <th v-else @click="sort(header.field)" :class="{ 'sortable': header.sortable }">
                                 {{ header.label }}
-                                <span v-if="header.sortable" class="sort-icon">
+                                <span v-if="header.sortable" class="sort-icon no-print">
                                     <i :class="[
                                         'fas',
                                         sortColumn === header.field && sortDirection === 1
@@ -53,13 +57,13 @@
                                 </template>
                                 <template v-else-if="header.field === 'toggle' && toggleable">
                                     <button type="button" @click="toggleTable(mainItem.id)"
-                                        class="btn btn-primary btn-sm toggle">
+                                        class="btn btn-primary btn-sm toggle no-print">
                                         <span v-if="!showTable[mainItem.id]">+</span>
                                         <span v-else>-</span>
                                     </button>
                                 </template>
                                 <template v-else-if="header.field === 'action' && this.editable">
-                                    <button type="button" class="btn btn-primary btn-sm"
+                                    <button type="button" class="btn btn-primary btn-sm no-print"
                                         @click="$emit('edit-action', mainItem.id)">
                                         <i class="fas fa-edit"></i>
                                     </button>
@@ -95,7 +99,7 @@
                     </template>
                 </tbody>
             </table>
-            <div>
+            <div class="no-print">
 
                 <nav aria-label="Table pagination">
                     <div class="d-flex justify-content-between align-items-center mt-3">
@@ -166,7 +170,7 @@ export default {
         },
         toggleable: {
             type: Boolean,
-            required: true,            
+            required: true,
         }
     },
     data() {
@@ -269,6 +273,21 @@ export default {
         toggleTable(id) {
             this.showTable[id] = !this.showTable[id];
         },
+        printSection() {
+    // Hide the elements that should not be printed
+    const elementsToHide = document.querySelectorAll('.no-print');
+    elementsToHide.forEach((el) => {
+      el.style.display = 'none';
+    });
+
+    // Print the table
+    window.print();
+
+    // Show the hidden elements
+    elementsToHide.forEach((el) => {
+      el.style.display = '';
+    });
+  }
     },
 };
 </script>
