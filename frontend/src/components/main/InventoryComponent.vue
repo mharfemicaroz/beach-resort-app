@@ -1,35 +1,6 @@
 <template>
     <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm no-print">
-            <div class="container-fluid">
-                <!-- Logo and Search Bar -->
-                <a class="navbar-brand" href="#">
-                    <img src="@/assets/pantukan-waterworld-logo.jpg" width="45" height="45" class="d-inline-block align-top"
-                        alt="Pantukan Waterworld Logo">
-                    Pantukan Waterworld Beach Resort
-                </a>
-
-                <!-- Navigation Links -->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto">
-
-                    </ul>
-                    <ul class="navbar-nav">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="@/assets/user-avatar.png" class="rounded-circle" alt="User Avatar" height="32"
-                                    width="32">
-                                {{ userdata.fName }} {{ userdata.lName }}
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#" @click=logout()>Logout</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <TopNavBarComponent />
 
 
         <div class="container-fluid">
@@ -340,11 +311,13 @@
   
 <script>
 import { useAuthStore } from "@/stores/authStore";
+import TopNavBarComponent from "@/components/common/TopNavBar.vue";
 import TableComponent from "@/components/common/GenericTable.vue";
 import axios from 'axios';
 
 export default {
     components: {
+        TopNavBarComponent,
         TableComponent,
     },
     data() {

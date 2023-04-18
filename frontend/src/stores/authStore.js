@@ -21,6 +21,9 @@ export const useAuthStore = defineStore({
     isAuthenticated(state) {
       return !!state.user;
     },
+    role(state){
+      return state.role;
+    },
   },
   actions: {
     setUser(userData) {

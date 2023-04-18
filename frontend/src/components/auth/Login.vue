@@ -50,7 +50,7 @@ export default {
     password: this.password
   })
     .then((response) => {
-      if (response.data.isActive) {
+      if (response.data.isActive && response.data.role !== "superuser") {
         Swal.fire({
                   title: "Error!",
                   text: "User is already logged in.",

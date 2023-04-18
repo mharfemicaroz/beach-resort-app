@@ -1,35 +1,7 @@
 <template>
   <div class="container-fluid">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-      <div class="container-fluid">
-        <!-- Logo and Search Bar -->
-        <a class="navbar-brand" href="#">
-          <img src="@/assets/pantukan-waterworld-logo.jpg" width="45" height="45" class="d-inline-block align-top"
-            alt="Pantukan Waterworld Logo">
-          Pantukan Waterworld Beach Resort
-        </a>
-
-        <!-- Navigation Links -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
-
-          </ul>
-          <ul class="navbar-nav">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <img src="@/assets/user-avatar.png" class="rounded-circle" alt="User Avatar" height="32" width="32">
-                {{ userdata.fName }} {{ userdata.lName }}
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#" @click=logout()>Logout</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+    <TopNavBarComponent />
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
@@ -1274,6 +1246,7 @@
 </template>
 <script>
 import { useAuthStore } from "@/stores/authStore";
+import TopNavBarComponent from "@/components/common/TopNavBar.vue";
 import "/node_modules/vue-simple-calendar/dist/style.css"
 import "/node_modules/vue-simple-calendar/dist/css/default.css"
 import "/node_modules/vue-simple-calendar/dist/css/holidays-us.css"
@@ -1315,6 +1288,7 @@ export default {
     Line,
     CalendarView,
     CalendarViewHeader,
+    TopNavBarComponent,
   },
   data() {
     return {
@@ -2800,7 +2774,9 @@ export default {
       newWindow.document.write(html);
 
     },
-    generateBillingStatement() {
+    async generateBillingStatement() {
+      // const response = await axios.get(this.API_URL + "transaction/");
+      // this.billing.bookingID = response.data.length.toString()
       this.printSection('billing-details', 1300, 850, false);
     },
     printReservationHistory() {
