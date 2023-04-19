@@ -88,14 +88,14 @@
                                             }}</button>
                                         </form>
                                     </div>
-                                    <div class="col-md-9"
-                                        >
+                                    <div class="col-md-9">
 
 
 
                                         <div>
-                                            <table-component :mainHeaders=stocksOptions :mainItems="stocks" :subHeaders="stockssubOptions"
-                                                @edit-action="editInventory" :editable="true" :toggleable="true" />
+                                            <table-component :mainHeaders=stocksOptions :mainItems="stocks"
+                                                :subHeaders="stockssubOptions" @edit-action="editInventory" :editable="true"
+                                                :toggleable="true" />
                                         </div>
                                     </div>
                                 </div>
@@ -149,8 +149,8 @@
                                     <div class="col-md-9"
                                         style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
                                         <div>
-                                            <table-component :mainHeaders=suppliersOptions :mainItems="suppliers" :editable="true" @edit-action="editSupplier" :toggleable="false"
-                                                 />
+                                            <table-component :mainHeaders=suppliersOptions :mainItems="suppliers"
+                                                :editable="true" @edit-action="editSupplier" :toggleable="false" />
                                         </div>
 
                                     </div>
@@ -161,7 +161,7 @@
                             <div id="purchases" class="tab-pane">
                                 <div class="row">
                                     <div class="col-md-5">
-                                        <form class="no-print"> 
+                                        <form class="no-print">
                                             <div class="mb-3">
                                                 <h4>Supplier </h4>
                                                 <hr />
@@ -224,8 +224,8 @@
                                     </div>
                                     <div class="col-md-7">
                                         <div>
-                                            <table-component :mainHeaders=purchasesOptions :mainItems="purchases" :subHeaders="purchasessubOptions" :editable="false" :toggleable="true"
-                                                 />
+                                            <table-component :mainHeaders=purchasesOptions :mainItems="purchases"
+                                                :subHeaders="purchasessubOptions" :editable="false" :toggleable="true" />
                                         </div>
                                     </div>
                                 </div>
@@ -250,7 +250,8 @@
                                                     <label class="col-form-label">Stock:</label>
                                                     <select class="form-control" v-model="item.stock">
                                                         <option value="">-- Select Stock --</option>
-                                                        <option v-for="stock in stocks" :value="stock">{{ stock.name }}
+                                                        <option v-for="stock in filteredstocks" :value="stock">{{ stock.name
+                                                        }}
                                                         </option>
                                                     </select>
                                                 </div>
@@ -292,8 +293,9 @@
                                     </div>
                                     <div class="col-md-7">
                                         <div>
-                                            <table-component :mainHeaders=salesOptions :mainItems="sales" :subHeaders="salessubOptions"
-                                                @edit-action="editInventory" :editable="true" :toggleable="true" />
+                                            <table-component :mainHeaders=salesOptions :mainItems="sales"
+                                                :subHeaders="salessubOptions" @edit-action="editInventory" :editable="true"
+                                                :toggleable="true" />
                                         </div>
                                     </div>
                                 </div>
@@ -535,14 +537,8 @@ export default {
             const user = authStore.user;
             return user;
         },
-        filteredsuppliers() {
-            return this.suppliers.map(o => {
-                const searchCode = Object.values(o).join("~");
-                return {
-                    ...o,
-                    searchCode
-                };
-            }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchSupplier.toLowerCase()));
+        filteredstocks() { //remove stocks with zero quantity
+            return this.stocks.filter(item => item.quantity > 0);
         },
     },
     methods: {
@@ -580,15 +576,26 @@ export default {
             if (this.sale.customer.name === "") {
                 this.$swal({
                     icon: "error",
-                    title: "Supply customer name!"
+                    title: "Please provide customer name!"
                 });
                 return;
             }
+
             for (const item of this.sale.items) {
                 if (item.stock.name === undefined || item.pricePerItem === null || item.quantity < 1) {
                     this.$swal({
                         icon: "error",
-                        title: "Invalid product details!"
+                        title: "Please provide valid product details!"
+                    });
+                    return;
+                }
+            }
+
+            for (const item of this.sale.items) {
+                if (item.stock.quantity < item.quantity) {
+                    this.$swal({
+                        icon: "error",
+                        title: "I'm sorry, but your request for " + item.quantity + " units of " + item.stock.name + " cannot be fulfilled as there are only " + item.stock.quantity + " units left in stock."
                     });
                     return;
                 }
@@ -599,66 +606,80 @@ export default {
                 totalPrice: this.sale.items.reduce((acc, item) => {
                     return acc + item.pricePerItem * item.quantity;
                 }, 0)
-            }
-            axios
-                .post(`${this.API_URL}sales/`, data)
-                .then(response => {
-                    this.sale.items.forEach(async (item, index) => {
-                        const api = `${this.API_URL}inventory/item/`;
-                        const itemsdata = {
-                            customer_name: data.customer_name,
-                            sales_id: response.data.id,
-                            stock_id: item.stock.id,
-                            stock_sku: item.stock.sku,
-                            stock_name: item.stock.name,
-                            priceRate: item.pricePerItem,
-                            purchaseQty: item.quantity,
-                            stock_type: "stock-out",
-                            totalCost: this.calculatePrice(item)
-                        }
-                        try {
-                            await axios.post(api, itemsdata);
-                            const response = await axios.get(`${this.API_URL}stockitem/${itemsdata.stock_id}/`);
-                            await axios.put(`${this.API_URL}stockitem/${itemsdata.stock_id}/`, {
-                                ...response.data,
-                                quantity: parseFloat(response.data.quantity) - itemsdata.purchaseQty
-                            });
-                            this.getInventory();
-                        } catch (error) {
+            };
 
-                        }
-                    });
-                    this.$swal({
-                        icon: "success",
-                        title: "Transaction added successfully"
-                    });
-                    this.sale = {
-                        customer: {
-                            name: '',
-                        },
-                        items: [
-                            { stock: '', pricePerItem: 0, quantity: 0 },
-                        ],
+            this.$swal({
+                icon: "warning",
+                title: "Are you sure you want to add this transaction?",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        axios
+                            .post(`${this.API_URL}sales/`, data)
+                            .then(response => {
+                                this.sale.items.forEach(async (item, index) => {
+                                    const api = `${this.API_URL}inventory/item/`;
+                                    const itemsdata = {
+                                        customer_name: data.customer_name,
+                                        sales_id: response.data.id,
+                                        stock_id: item.stock.id,
+                                        stock_sku: item.stock.sku,
+                                        stock_name: item.stock.name,
+                                        priceRate: item.pricePerItem,
+                                        purchaseQty: item.quantity,
+                                        stock_type: "stock-out",
+                                        totalCost: this.calculatePrice(item)
+                                    };
+                                    try {
+                                        await axios.post(api, itemsdata);
+                                        const response = await axios.get(`${this.API_URL}stockitem/${itemsdata.stock_id}/`);
+                                        await axios.put(`${this.API_URL}stockitem/${itemsdata.stock_id}/`, {
+                                            ...response.data,
+                                            quantity: parseFloat(response.data.quantity) - itemsdata.purchaseQty
+                                        });
+                                        this.getInventory();
+                                    } catch (error) {
+                                        console.log(error);
+                                    }
+                                });
+                                this.$swal({
+                                    icon: "success",
+                                    title: "Transaction added successfully"
+                                });
+                                this.sale = {
+                                    customer: {
+                                        name: '',
+                                    },
+                                    items: [
+                                        { stock: '', pricePerItem: 0, quantity: 0 },
+                                    ],
+                                };
+                                this.getSales();
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
                     }
-                    this.getSales();
-                })
-                .catch(error => {
-                    console.log(error);
                 });
         },
+
         addPurchases() {
             if (this.purchase.supplier.name === "") {
                 this.$swal({
                     icon: "error",
-                    title: "Supply supplier name!"
+                    title: "Please provide supplier name!"
                 });
                 return;
             }
+
             for (const item of this.purchase.items) {
                 if (item.stock.name === undefined || item.pricePerItem === null || item.quantity < 1) {
                     this.$swal({
                         icon: "error",
-                        title: "Invalid product details!"
+                        title: "Please provide valid product details!"
                     });
                     return;
                 }
@@ -670,54 +691,67 @@ export default {
                 totalPrice: this.purchase.items.reduce((acc, item) => {
                     return acc + item.pricePerItem * item.quantity;
                 }, 0)
-            }
-            axios
-                .post(`${this.API_URL}purchases/`, data)
-                .then(response => {
-                    this.purchase.items.forEach(async (item, index) => {
-                        const api = `${this.API_URL}inventory/item/`;
-                        const itemsdata = {
-                            supplier_id: data.supplier_id,
-                            supplier_name: data.supplier_name,
-                            purchase_id: response.data.id,
-                            stock_id: item.stock.id,
-                            stock_sku: item.stock.sku,
-                            stock_name: item.stock.name,
-                            priceRate: item.pricePerItem,
-                            purchaseQty: item.quantity,
-                            stock_type: "stock-in",
-                            totalCost: this.calculatePrice(item)
-                        }
-                        try {
-                            await axios.post(api, itemsdata);
-                            const response = await axios.get(`${this.API_URL}stockitem/${itemsdata.stock_id}/`);
-                            await axios.put(`${this.API_URL}stockitem/${itemsdata.stock_id}/`, {
-                                ...response.data,
-                                quantity: parseFloat(response.data.quantity) + itemsdata.purchaseQty
-                            });
-                            this.getInventory();
-                        } catch (error) {
+            };
 
-                        }
-                    });
-                    this.$swal({
-                        icon: "success",
-                        title: "Purchase added successfully"
-                    });
-                    this.purchase = {
-                        supplier: {
-                            name: '',
-                        },
-                        items: [
-                            { stock: '', pricePerItem: 0, quantity: 0 },
-                        ],
+            this.$swal({
+                icon: "warning",
+                title: "Are you sure you want to add this purchase?",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No"
+            })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        axios
+                            .post(`${this.API_URL}purchases/`, data)
+                            .then(response => {
+                                this.purchase.items.forEach(async (item, index) => {
+                                    const api = `${this.API_URL}inventory/item/`;
+                                    const itemsdata = {
+                                        supplier_id: data.supplier_id,
+                                        supplier_name: data.supplier_name,
+                                        purchase_id: response.data.id,
+                                        stock_id: item.stock.id,
+                                        stock_sku: item.stock.sku,
+                                        stock_name: item.stock.name,
+                                        priceRate: item.pricePerItem,
+                                        purchaseQty: item.quantity,
+                                        stock_type: "stock-in",
+                                        totalCost: this.calculatePrice(item)
+                                    };
+                                    try {
+                                        await axios.post(api, itemsdata);
+                                        const response = await axios.get(`${this.API_URL}stockitem/${itemsdata.stock_id}/`);
+                                        await axios.put(`${this.API_URL}stockitem/${itemsdata.stock_id}/`, {
+                                            ...response.data,
+                                            quantity: parseFloat(response.data.quantity) + itemsdata.purchaseQty
+                                        });
+                                        this.getInventory();
+                                    } catch (error) {
+                                        console.log(error);
+                                    }
+                                });
+                                this.$swal({
+                                    icon: "success",
+                                    title: "Purchase added successfully"
+                                });
+                                this.purchase = {
+                                    supplier: {
+                                        name: '',
+                                    },
+                                    items: [
+                                        { stock: '', pricePerItem: 0, quantity: 0 },
+                                    ],
+                                };
+                                this.getPurchases();
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
                     }
-                    this.getPurchases();
-                })
-                .catch(error => {
-                    console.log(error);
                 });
         },
+
         getInventory() {
             axios
                 .get(`${this.API_URL}stockitem/`)
@@ -770,7 +804,7 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
-                
+
         },
         getSales() {
             axios
