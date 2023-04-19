@@ -236,7 +236,7 @@
                       </div>
                       <div class="row">
                         <div class="col-6"><strong style="font-size: 24px;">Change:</strong></div>
-                        <div class="col-6 text-right" style="font-size: 24px;">{{ change }}</div>
+                        <div class="col-6 text-right text-danger" style="font-size: 24px;">{{ change }}</div>
                       </div>
                     </div>
                   </div>
@@ -1031,31 +1031,31 @@
                   <tbody>
                     <tr>
                       <td>Cancelled</td>
-                      <td style="background-color: gray; width: 25px;"></td>
+                      <td style="background-color: rgb(219, 212, 212); width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Reserved</td>
-                      <td style="background-color: red; width: 25px;"></td>
+                      <td style="background-color: #f66; width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Reserved (partially paid)</td>
-                      <td style="background-color: violet; width: 25px;"></td>
+                      <td style="background-color: rgb(219, 13, 175); width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Checked In</td>
-                      <td style="background-color: green; width: 25px;"></td>
+                      <td style="background-color: #0b9d17; width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Checked In (partially paid)</td>
-                      <td style="background-color: blue; width: 25px;"></td>
+                      <td style="background-color: rgb(11, 14, 214); width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Checked In (paid)</td>
-                      <td style="background-color: yellow; width: 25px;"></td>
+                      <td style="background-color: #bce40c; width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Checked Out (paid)</td>
-                      <td style="background-color: orange; width: 25px;"></td>
+                      <td style="background-color: rgb(240, 169, 18); width: 25px;"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -1198,7 +1198,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <div class="mt-3 mb-3 d-flex flex-row-reverse">
+              <div class="mt-3 mb-3 d-flex justify-content-end">
                 <div v-if="this.reservation.status == 'reserved'">
                   <button type="button" class="btn btn-primary" @click="cancelReservation()">Cancel
                     Reservation</button>&nbsp;
@@ -1215,6 +1215,7 @@
                 </div>
 
                 <div v-else-if="this.reservation.status == 'checkedin'">
+                  
                   <span v-if="userdata.role !== 'reservationist'">
                     <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
                       type="button" class="btn btn-success">Pay Now</button>
@@ -1226,8 +1227,10 @@
                     </div>
                   </span>
                 </div>
+                
                 <button v-else-if="this.reservation.status == 'vacant'" type="submit" class="btn btn-primary">Book
                   Now</button> &nbsp;
+                
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
@@ -1247,6 +1250,7 @@
 <script>
 import { useAuthStore } from "@/stores/authStore";
 import TopNavBarComponent from "@/components/common/TopNavBar.vue";
+import TableComponent from "@/components/common/GenericTable.vue";
 import "/node_modules/vue-simple-calendar/dist/style.css"
 import "/node_modules/vue-simple-calendar/dist/css/default.css"
 import "/node_modules/vue-simple-calendar/dist/css/holidays-us.css"
@@ -1289,9 +1293,67 @@ export default {
     CalendarView,
     CalendarViewHeader,
     TopNavBarComponent,
+    TableComponent
   },
   data() {
     return {
+      transactionsOptions: [{
+                'label': '',
+                'field': 'toggle',
+                'sortable': false,
+            }, {
+                'label': '#',
+                'field': 'id',
+                'sortable': true
+            }, {
+                'label': 'Name',
+                'field': 'clientname',
+                'sortable': true
+            }, {
+                'label': 'Contact',
+                'field': 'clientcontact',
+                'sortable': true
+            }, {
+                'label': 'Address',
+                'field': 'clientaddress',
+                'sortable': true
+            }, {
+                'label': 'Total Amount',
+                'field': 'totalAmountToPay',
+                'sortable': true
+            }, {
+                'label': 'Total Cash',
+                'field': 'cashAmountPay',
+                'sortable': true
+            }, {
+                'label': 'New Balance',
+                'field': 'balance',
+                'sortable': true
+            }, {
+                'label': 'Latest Status',
+                'field': 'payStatus',
+                'sortable': true
+            }, {
+                'label': 'Latest Transaction Date',
+                'field': 'transaction_date',
+                'sortable': true
+            }],
+            transactionssubOptions: [{
+                'label': 'Status',
+                'field': 'stock_type'
+            }, {
+                'label': 'Price',
+                'field': 'priceRate'
+            }, {
+                'label': 'Qty',
+                'field': 'purchaseQty'
+            }, {
+                'label': 'Total',
+                'field': 'totalCost'
+            }, {
+                'label': 'Date',
+                'field': 'date_created'
+            }],
       dayreserve: new Date(),
       showTable: {},
       toggleAll: true,
@@ -2507,6 +2569,17 @@ export default {
       try {
         const response = await axios.get(this.API_URL + 'transaction/');
         this.transactions = response.data;
+        this.transactions.forEach(async (item, index) => {
+                        try {
+                            const res = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+                                { "columnName": 'bookingID', "columnKey": item.bookingID },
+                            ]);
+                            const o = res.data;
+                            this.transactions[index].items = o;
+                        } catch (error) {
+
+                        }
+                    });
       } catch (error) {
         console.error(error); // log any errors
         this.transactions = []; // return an empty array in case of errors
@@ -2675,8 +2748,10 @@ export default {
               const existingCashAmountPay = parseFloat(transaction.cashAmountPay);
               const newcashAmountPay = (existingCashAmountPay + parseFloat(this.cashAmount) < parseFloat(this.subtotal)) ? existingCashAmountPay + parseFloat(this.cashAmount) : parseFloat(this.subtotal);
               const existingbalance = transaction.balance;
+              let origCash = parseFloat(this.cashAmount) > parseFloat(this.total) ? parseFloat(this.total) : parseFloat(this.cashAmount);
               const newbalance = (existingCashAmountPay + parseFloat(this.cashAmount) < parseFloat(this.subtotal)) ? parseFloat(transaction.totalAmountToPay) - parseFloat(newcashAmountPay) : 0;
-              const payamountnow = existingbalance - newbalance;
+              const origbal = parseFloat(this.subtotal)-newcashAmountPay;
+              const payamountnow = (existingbalance - newbalance <= 0)?  origCash : existingbalance - newbalance;
               const transactionData = {
                 clientname: this.billing.clientName,
                 clientemail: this.billing.clientEmail,
@@ -2688,7 +2763,7 @@ export default {
                 paymentMethod: this.paymentMethod,
                 nonCashReference: this.nonCashPayPlatform + '-' + this.nonCashReference,
                 cashAmountPay: newcashAmountPay,
-                balance: newbalance,
+                balance: origbal,
                 payStatus: payStatus,
                 discountMode: this.discountMode,
                 discountValue: this.discountValue,
@@ -2697,7 +2772,6 @@ export default {
               };
 
               let doneTransaction = await axios.put(`${this.API_URL}transaction/${existingTransaction.data[0].id}/`, transactionData);
-
               let transactionRecordData = {
                 transaction: doneTransaction.data.id,
                 transaction_date: doneTransaction.data.transaction_date,
@@ -2705,7 +2779,7 @@ export default {
                 nonCashReference: doneTransaction.data.nonCashReference,
                 totalAmountToPay: doneTransaction.data.totalAmountToPay,
                 cashAmountPay: payamountnow,
-                balance: doneTransaction.data.balance,
+                balance: parseFloat(doneTransaction.data.balance),
                 discountMode: doneTransaction.data.discountMode,
                 discountValue: doneTransaction.data.discountValue,
                 processedBy: doneTransaction.data.processedBy,
@@ -2714,7 +2788,7 @@ export default {
 
               await axios.post(`${this.API_URL}transaction/record/`, transactionRecordData);
 
-              this.bookings[this.itemIndex].partialPayment = existingTransaction.data[0].totalAmountToPay - newbalance;
+              this.bookings[this.itemIndex].partialPayment = newcashAmountPay;
             }
 
             if (bookid.charAt(0) !== "f") {
@@ -3082,9 +3156,9 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
   mounted() {
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
-    this.$nextTick(() => {
-      document.body.addEventListener('contextmenu', this.handleContextMenu);
-    });
+    // this.$nextTick(() => {
+    //   document.body.addEventListener('contextmenu', this.handleContextMenu);
+    // });
   }
 };
 </script>

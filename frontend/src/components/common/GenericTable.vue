@@ -68,6 +68,9 @@
                                         <i class="fas fa-edit"></i>
                                     </button>
                                 </template>
+                                <template v-else-if="header.field.includes('date')">
+                                    {{ formatDate(new Date(mainItem[header.field])) }}
+                                </template>
                                 <template v-else>
                                     {{ mainItem[header.field] }}
                                 </template>
@@ -273,21 +276,32 @@ export default {
         toggleTable(id) {
             this.showTable[id] = !this.showTable[id];
         },
+        formatDate(date) {
+            const options = {
+                month: '2-digit',
+                day: '2-digit',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric'
+            };
+            return new Intl.DateTimeFormat('en-US', options).format(date);
+        },
         printSection() {
-    // Hide the elements that should not be printed
-    const elementsToHide = document.querySelectorAll('.no-print');
-    elementsToHide.forEach((el) => {
-      el.style.display = 'none';
-    });
+            // Hide the elements that should not be printed
+            const elementsToHide = document.querySelectorAll('.no-print');
+            elementsToHide.forEach((el) => {
+                el.style.display = 'none';
+            });
 
-    // Print the table
-    window.print();
+            // Print the table
+            window.print();
 
-    // Show the hidden elements
-    elementsToHide.forEach((el) => {
-      el.style.display = '';
-    });
-  }
+            // Show the hidden elements
+            elementsToHide.forEach((el) => {
+                el.style.display = '';
+            });
+        }
     },
 };
 </script>
