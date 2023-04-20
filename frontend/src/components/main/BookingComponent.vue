@@ -2607,14 +2607,14 @@ export default {
           return false;
         }
 
-        if (reserveStatus === "reserved" && parseFloat(this.cashAmount) > parseFloat(this.total) * 0.50) {
-          await this.$swal.fire({
-            title: 'Error',
-            text: 'The maximum allowable downpayment/partial payment is 50% of the total cost, and it cannot exceed this limit.',
-            icon: 'error'
-          });
-          return false;
-        }
+        // if (reserveStatus === "reserved" && parseFloat(this.cashAmount) > parseFloat(this.total) * 0.50) {
+        //   await this.$swal.fire({
+        //     title: 'Error',
+        //     text: 'The maximum allowable downpayment/partial payment is 50% of the total cost, and it cannot exceed this limit.',
+        //     icon: 'error'
+        //   });
+        //   return false;
+        // }
 
         const confirmMessage = 'Are you sure you want to save this transaction?';
         const result = await this.$swal.fire({
