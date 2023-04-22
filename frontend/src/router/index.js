@@ -7,7 +7,6 @@ import Cashier from "../components/main/CashierComponent.vue";
 import Inventory from "../components/main/InventoryComponent.vue";
 import Error403 from "../components/main/ErrorPage.vue";
 import ExpiredPage from "../components/main/ExpiredPage.vue";
-import CalendarVue from "../components/main/CalendarComponent.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

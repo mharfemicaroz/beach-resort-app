@@ -3165,6 +3165,57 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
 <style>
 @import "vue-select/dist/vue-select.css";
 
+html,
+body {
+    background-color: #f7fcff;
+}
+
+#app {
+
+    font-family: Calibri, sans-serif;
+    width: 95vw;
+    min-width: 30rem;
+    max-width: 100rem;
+    min-height: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.calendar-parent {
+
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 720px;
+    max-height: 720px;
+    background-color: white;
+}
+
+/* For long calendars, ensure each week gets sufficient height. The body of the calendar will scroll if needed */
+.cv-wrapper.period-month.periodCount-2 .cv-week,
+.cv-wrapper.period-month.periodCount-3 .cv-week,
+.cv-wrapper.period-year .cv-week {
+    min-height: 6rem;
+}
+
+/* These styles are optional, to illustrate the flexbility of styling the calendar purely with CSS. */
+
+/* Add some styling for items tagged with the "birthday" class */
+.theme-default .cv-item.birthday {
+    background-color: #e0f0e0;
+    border-color: #d7e7d7;
+}
+
+.theme-default .cv-item.birthday::before {
+    content: "\1F382";
+    /* Birthday cake */
+    margin-right: 0.5em;
+}
+
+/* The following classes style the classes computed in myDateClasses and passed to the component's dateClasses prop. */
+.theme-default .cv-day.ides {
+    background-color: #ffe0e0;
+}
+
 img {
   max-width: 100%;
   height: auto;

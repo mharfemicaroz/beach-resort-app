@@ -23,7 +23,7 @@
                 <p class="mb-0 no-print">Search: <input type="text" class="form-input mt-2" v-model="searchText"></p>
             </div>
 
-            <table class="table" id="dataTable">
+            <table class="table" v-bind:id="uniqueID">
                 <thead>
                     <tr>
                         <template v-for="(header, index) in mainHeaders" :key="index">
@@ -49,7 +49,7 @@
                 </thead>
                 <tbody>
                     <template v-for="(mainItem, mainIndex) in filteredItems" :key="mainItem.id">
-                        <tr>
+                        <tr :class="{ 'table-active': showTable[mainItem.id] }">
                             <td v-for="(header, index) in mainHeaders" :key="index">
                                 <template v-if="header.field === 'isAvailable'">
                                     <span v-if="mainItem[header.field]">Yes</span>
@@ -78,25 +78,35 @@
                         </tr>
                         <tr v-if="showTable[mainItem.id] && toggleable">
                             <td :colspan="mainHeaders.length + 1">
-                                <h5 class="bg-primary text-white">Records</h5>
-                                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                                    <thead>
-                                        <tr>
-                                            <template v-for="(subHeader, index) in subHeaders" :key="index">
-                                                <th>{{ subHeader.label }}</th>
-                                            </template>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <template v-for="(subItem, subIndex) in mainItem.items" :key="subIndex">
-                                            <tr>
-                                                <template v-for="(subHeader, index) in subHeaders" :key="index">
-                                                    <td>{{ subItem[subHeader.field] }}</td>
+                                <div style="padding-left: 60px;">
+                                    <div v-if="mainItem.items.length > 0">
+                                        <h5 class="bg-primary text-white">Records</h5>
+                                        <table class="table" style="table-layout: fixed;word-wrap: break-word;">
+                                            <thead>
+                                                <tr>
+                                                    <template v-for="(subHeader, index) in subHeaders" :key="index">
+                                                        <th>{{ subHeader.label }}</th>
+                                                    </template>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template v-for="(subItem, subIndex) in mainItem.items" :key="subIndex">
+                                                    <tr>
+                                                        <template v-for="(subHeader, index) in subHeaders" :key="index">
+                                                            <template v-if="subHeader.field.includes('date')">
+                                                                {{ formatDate(new Date(subItem[subHeader.field])) }}
+                                                            </template>
+                                                            <template v-else>
+                                                                <td>{{ subItem[subHeader.field] }}</td>
+                                                            </template>
+
+                                                        </template>
+                                                    </tr>
                                                 </template>
-                                            </tr>
-                                        </template>
-                                    </tbody>
-                                </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </template>
@@ -155,6 +165,13 @@
 <script>
 export default {
     props: {
+        uniqueID: {
+            type: String,
+            default: () => {
+                const affix = 'table';
+                return `${affix}-${Math.random().toString(36).substring(7)}`;
+            },
+        },
         mainHeaders: {
             type: Array,
             required: true,
@@ -221,7 +238,7 @@ export default {
 
             return sortedItems.map(o => {
                 if (o) { // Add check for undefined
-                    const searchCode = Object.values(o).join("~");
+                    const searchCode = Object.values(o).join("~") + (o.items ? o.items.map(item => Object.values(item).join(" ")).join(", ") : []);
                     return {
                         ...o,
                         searchCode
@@ -288,20 +305,44 @@ export default {
             return new Intl.DateTimeFormat('en-US', options).format(date);
         },
         printSection() {
-            // Hide the elements that should not be printed
-            const elementsToHide = document.querySelectorAll('.no-print');
-            elementsToHide.forEach((el) => {
-                el.style.display = 'none';
-            });
+            // Add Bootstrap stylesheet to the head
+            const bootstrapLink = document.createElement('link');
+            bootstrapLink.rel = 'stylesheet';
+            bootstrapLink.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css';
+            document.head.appendChild(bootstrapLink);
 
-            // Print the table
+            // Set the media query for landscape printing
+            const mediaQuery = '@media print{@page {size: legal landscape; margin:auto} .no-print{display: none;}}';
+            const style = document.createElement('style');
+            style.appendChild(document.createTextNode(mediaQuery));
+            document.head.appendChild(style);
+
+            // Get the dataTable section and create a new element to hold it
+            const dataTable = document.getElementById(this.uniqueID);
+            const printElement = document.createElement('div');
+            printElement.appendChild(dataTable.cloneNode(true));
+
+            // Hide everything else on the page except the printElement
+            const bodyChildren = document.body.children;
+            for (let i = 0; i < bodyChildren.length; i++) {
+                if (bodyChildren[i] !== printElement) {
+                    bodyChildren[i].classList.add('no-print');
+                }
+            }
+
+            // Add the printElement to the body and call the print function
+            document.body.appendChild(printElement);
             window.print();
 
-            // Show the hidden elements
-            elementsToHide.forEach((el) => {
-                el.style.display = '';
-            });
+            // Restore the original page state
+            for (let i = 0; i < bodyChildren.length; i++) {
+                bodyChildren[i].classList.remove('no-print');
+            }
+            document.head.removeChild(style);
+            document.head.removeChild(bootstrapLink);
+            document.body.removeChild(printElement);
         }
+
     },
 };
 </script>
