@@ -909,31 +909,31 @@
                   <tbody>
                     <tr>
                       <td>Cancelled</td>
-                      <td style="background-color: rgb(219, 212, 212); width: 25px;"></td>
+                      <td style="background-color: #bdbdbd; width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Reserved</td>
-                      <td style="background-color: #f66; width: 25px;"></td>
+                      <td style="background-color: #ef5350; width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Reserved (partially paid)</td>
-                      <td style="background-color: rgb(219, 13, 175); width: 25px;"></td>
+                      <td style="background-color: #5c6bc0; width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Checked In</td>
-                      <td style="background-color: #0b9d17; width: 25px;"></td>
+                      <td style="background-color: #66bb6a; width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Checked In (partially paid)</td>
-                      <td style="background-color: rgb(11, 14, 214); width: 25px;"></td>
+                      <td style="background-color: #42a5f5; width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Checked In (paid)</td>
-                      <td style="background-color: #bce40c; width: 25px;"></td>
+                      <td style="background-color: #ffee58; width: 25px;"></td>
                     </tr>
                     <tr>
                       <td>Checked Out (paid)</td>
-                      <td style="background-color: rgb(240, 169, 18); width: 25px;"></td>
+                      <td style="background-color: #ff7043; width: 25px;"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -2463,30 +2463,30 @@ export default {
         const endDate = booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0];
         const title = `${booking.room_name}-${booking.name}<span style="display:none">~${booking.itemID}~</span>`;
         const id = booking.itemID;
-        const tooltip = `${booking.room_name}-${booking.name}`;
+        const tooltip = `${booking.room_name}-${booking.name}\n*${booking.status}-${booking.isPaid}`;
         let classes = '';
 
         if (booking.status === 'reserved') {
-          if (booking.isPaid === 'partial' || booking.isPaid === 'yes') {
-            classes = ['custom-date-class-violet'];
-          } else {
-            classes = ['custom-date-class-red'];
-          }
+  if (booking.isPaid === 'partial' || booking.isPaid === 'yes') {
+    classes = ['hotel-reserved'];
+  } else {
+    classes = ['hotel-reserved-unpaid'];
+  }
 
-        } else if (booking.status === 'checkedin') {
-          if (booking.isPaid === 'no' || booking.isPaid === '') {
-            classes = ['custom-date-class-green'];
-          } else if (booking.isPaid === 'partial') {
-            classes = ['custom-date-class-blue'];
-          } else {
-            classes = ['custom-date-class-yellow'];
-          }
+} else if (booking.status === 'checkedin') {
+  if (booking.isPaid === 'no' || booking.isPaid === '') {
+    classes = ['hotel-checkedin-unpaid'];
+  } else if (booking.isPaid === 'partial') {
+    classes = ['hotel-checkedin-partial'];
+  } else {
+    classes = ['hotel-checkedin-paid'];
+  }
 
-        } else if (booking.status === 'cancelled') {
-          classes = ['custom-date-class-gray'];
-        } else if (booking.status === 'checkedout') {
-          classes = ['custom-date-class-orange'];
-        }
+} else if (booking.status === 'cancelled') {
+  classes = ['hotel-cancelled'];
+} else if (booking.status === 'checkedout') {
+  classes = ['hotel-checkedout'];
+}
 
         return { startDate, endDate, title, id, classes, tooltip };
       });
@@ -3367,4 +3367,33 @@ img {
   transform: rotate(180deg);
   /* For older browsers */
 }
+
+.cv-item.hotel-reserved {
+  background-color: #5c6bc0; /* adjust the color as needed */
+}
+
+.cv-item.hotel-reserved-unpaid {
+  background-color: #ef5350; /* adjust the color as needed */
+}
+
+.cv-item.hotel-checkedin-unpaid {
+  background-color: #66bb6a; /* adjust the color as needed */
+}
+
+.cv-item.hotel-checkedin-partial {
+  background-color: #42a5f5; /* adjust the color as needed */
+}
+
+.cv-item.hotel-checkedin-paid {
+  background-color: #ffee58; /* adjust the color as needed */
+}
+
+.cv-item.hotel-cancelled {
+  background-color: #bdbdbd; /* adjust the color as needed */
+}
+
+.cv-item.hotel-checkedout {
+  background-color: #ff7043; /* adjust the color as needed */
+}
+
 </style>
