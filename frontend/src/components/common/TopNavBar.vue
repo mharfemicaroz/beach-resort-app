@@ -70,7 +70,8 @@ export default {
                 username: authStore.user.username,
                 FirstName: authStore.user.fName,
                 LastName: authStore.user.lName,
-                role: authStore.user.role
+                role: authStore.user.role,
+                route: authStore.user.route,
             }
             const response = await axios.put(`${this.API_URL}users/${authStore.user.id}/`, { ...user, isActive: false })
             if (response.data !== undefined) {

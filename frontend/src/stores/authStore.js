@@ -1,15 +1,16 @@
-// src/stores/authStore.js
 import { defineStore } from "pinia";
 
 // Utility function to load persisted state
 function loadState(key) {
-  const storedState = localStorage.getItem(key);
-  return storedState ? JSON.parse(storedState) : null;
+  const cookieValue = document.cookie.match(`(^|;)\\s*${key}\\s*=\\s*([^;]+)`);
+  return cookieValue ? JSON.parse(cookieValue.pop()) : null;
 }
 
-// Utility function to save state to localStorage
+// Utility function to save state to cookie
 function saveState(key, state) {
-  localStorage.setItem(key, JSON.stringify(state));
+  const expiration = new Date(Date.now() + 2592000 * 1000); // Set expiration time to 30 days from now
+  const cookie = `${key}=${JSON.stringify(state)}; path=/; expires=${expiration.toUTCString()};`;
+  document.cookie = cookie;
 }
 
 export const useAuthStore = defineStore({
@@ -24,15 +25,18 @@ export const useAuthStore = defineStore({
     role(state){
       return state.role;
     },
+    route(state){
+      return state.route;
+    },
   },
   actions: {
     setUser(userData) {
       this.user = userData;
-      saveState("user", userData); // Save the user state to localStorage
+      saveState("user", userData); // Save the user state to cookie
     },
     logout() {
       this.user = null;
-      saveState("user", null); // Remove the user state from localStorage
+      saveState("user", null); // Remove the user state from cookie
     },
   },
 });

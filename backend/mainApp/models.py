@@ -10,6 +10,7 @@ class CustomUser(models.Model):
     role = models.CharField(max_length=50)
     lastAccessed = models.DateTimeField(auto_now=True)
     isActive= models.BooleanField(default=False)
+    route = models.CharField(max_length=50)
 
 class Booking(models.Model):
     id = models.AutoField(primary_key=True)

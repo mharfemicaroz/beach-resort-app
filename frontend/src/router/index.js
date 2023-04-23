@@ -71,12 +71,15 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
   const userRole = authStore.user?.role;
+  const userRoute = authStore.user?.route;
 
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.path === '/login' && authStore.isAuthenticated) {
+    next({ name: userRoute });
+  } else if (to.matched.some(record => record.meta.requiresAuth)) {
     if (!authStore.isAuthenticated) {
       next({ name: 'login' });
     } else if (!to.meta.roles.includes(userRole)) {
-      next({ name: '403', params: { from: from.path }, replace: true });
+      next({ name: userRoute, params: { from: from.path }, replace: true });
     } else {
       next();
     }

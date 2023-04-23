@@ -90,15 +90,22 @@
                                     </div>
                                     <div class="col-md-9">
 
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" v-model="showItems"
+                                                >
+                                            <label class="form-check-label" for="unavailableItemsCheckbox">
+                                                Show available items only?
+                                            </label>
+                                        </div>
 
 
                                         <div>
-                                            <table-component :mainHeaders=stocksOptions :mainItems="stocks"
+                                            <table-component :mainHeaders=stocksOptions :mainItems="switchStocks"
                                                 :subHeaders="stockssubOptions" @edit-action="editInventory" :editable="true"
                                                 :toggleable="true">
-                                                <template #default="{data}">
-                                                      <span v-if="data.isAvailable">Yes</span>
-                                                      <span v-else>No</span>
+                                                <template #default="{ data }">
+                                                    <span v-if="data.isAvailable">Yes</span>
+                                                    <span v-else>No</span>
                                                 </template>
                                             </table-component>
                                         </div>
@@ -153,12 +160,21 @@
                                     </div>
                                     <div class="col-md-9"
                                         style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
+                                        
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" v-model="showSuppliers"
+                                                >
+                                            <label class="form-check-label" for="unavailableItemsCheckbox">
+                                                Show available items only?
+                                            </label>
+                                        </div>
+
                                         <div>
-                                            <table-component :mainHeaders=suppliersOptions :mainItems="suppliers"
+                                            <table-component :mainHeaders=suppliersOptions :mainItems="switchSuppliers"
                                                 :editable="true" @edit-action="editSupplier" :toggleable="false">
-                                                <template #default="{data}">
-                                                      <span v-if="data.isAvailable">Yes</span>
-                                                      <span v-else>No</span>
+                                                <template #default="{ data }">
+                                                    <span v-if="data.isAvailable">Yes</span>
+                                                    <span v-else>No</span>
                                                 </template>
                                             </table-component>
                                         </div>
@@ -175,8 +191,8 @@
                                             <div class="mb-3">
                                                 <h4>Supplier </h4>
                                                 <hr />
-                                                <v-select :options="suppliers" label="name" v-model="purchase.supplier"
-                                                    required>
+                                                <v-select :options="filteredsupplier" label="name"
+                                                    v-model="purchase.supplier" required>
                                                 </v-select>
                                             </div>
 
@@ -189,7 +205,8 @@
                                                     <label class="col-form-label">Stock:</label>
                                                     <select class="form-control" v-model="item.stock">
                                                         <option value="">-- Select Stock --</option>
-                                                        <option v-for="stock in stocks" :value="stock">{{ stock.name }}
+                                                        <option v-for="stock in filteredstocks" :value="stock">{{ stock.name
+                                                        }}
                                                         </option>
                                                     </select>
                                                 </div>
@@ -492,6 +509,8 @@ export default {
                 'field': 'action',
                 'sortable': false
             }],
+            showItems: true,
+            showSuppliers: true,
             stocks: [],
             suppliers: [],
             purchases: [],
@@ -549,8 +568,25 @@ export default {
             const user = authStore.user;
             return user;
         },
+        switchStocks(){
+            if(this.showItems){
+                return this.stocks.filter(item => item.isAvailable);
+            } else {
+                return this.stocks;
+            }
+        },
+        switchSuppliers(){
+            if(this.showSuppliers){
+                return this.suppliers.filter(item => item.isAvailable);
+            } else {
+                return this.suppliers;
+            }
+        },
         filteredstocks() { //remove stocks with zero quantity
-            return this.stocks.filter(item => item.quantity > 0);
+            return this.stocks.filter(item => item.quantity > 0 && item.isAvailable);
+        },
+        filteredsupplier() { //remove suupplier not available
+            return this.suppliers.filter(item => item.isAvailable);
         },
     },
     methods: {
@@ -1021,5 +1057,4 @@ export default {
 </script>
 
 <style>
-@import "vue-select/dist/vue-select.css";
-</style>
+@import "vue-select/dist/vue-select.css";</style>

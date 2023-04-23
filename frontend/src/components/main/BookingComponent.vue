@@ -1190,50 +1190,65 @@ export default {
     return {
       bookingsOptions: [{
                 'label': 'Room Name',
-                'field': 'room_name'
+                'field': 'room_name',
+                'sortable': true
             },{
                 'label': 'Checkin Date',
-                'field': 'checkinDate'
+                'field': 'checkinDate',
+                'sortable': true
             },{
                 'label': 'Checkout Date',
-                'field': 'checkoutDate'
+                'field': 'checkoutDate',
+                'sortable': true
             },{
                 'label': 'Guest',
-                'field': 'name'
+                'field': 'name',
+                'sortable': true
             },{
                 'label': 'Contact Number',
-                'field': 'contactNumber'
+                'field': 'contactNumber',
+                'sortable': true
             },{
                 'label': 'Email',
-                'field': 'clientemail'
+                'field': 'clientemail',
+                'sortable': true
             },],
       bookingsAllOptions: [{
                 'label': 'Room Name',
-                'field': 'room_name'
+                'field': 'room_name',
+                'sortable': true
             },{
                 'label': 'Checkin Date',
-                'field': 'checkinDate'
+                'field': 'checkinDate',
+                'sortable': true
             },{
                 'label': 'Checkout Date',
-                'field': 'checkoutDate'
+                'field': 'checkoutDate',
+                'sortable': true
             },{
                 'label': 'Guest',
-                'field': 'name'
+                'field': 'name',
+                'sortable': true
             },{
                 'label': 'Contact Number',
-                'field': 'contactNumber'
+                'field': 'contactNumber',
+                'sortable': true
             },{
                 'label': 'Email',
-                'field': 'clientemail'
+                'field': 'clientemail',
+                'sortable': true
             },{
                 'label': 'Status',
-                'field': 'status'
+                'field': 'status',
+                'sortable': true
             },{
                 'label': 'Total Price (room+addons)',
-                'field': 'totalPrice'
+                'field': 'totalPrice',
+                'sortable': true
             },{
                 'label': 'Partial Payment',
-                'field': 'partialPayment'
+                'field': 'partialPayment',
+                'sortable': true
             },{
                 'label': 'Balance',
                 'field': 'balance',

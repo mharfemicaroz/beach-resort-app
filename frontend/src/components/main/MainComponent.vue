@@ -291,7 +291,8 @@ export default {
                 password: "",
                 FirstName: "",
                 LastName: "",
-                role: ""
+                role: "",
+                route: "",
             },
             room: {       // object representing the current room being edited or added
                 id: null,
@@ -376,6 +377,15 @@ export default {
                 });
         },
         saveUser() {
+            // Add the route property to the user object based on their role
+            if (this.user.role === "reservationist" || this.user.role === "frontdesk") {
+                this.user.route = "booking";
+            } else if (this.user.role === "inventorymanager") {
+                this.user.route = "inventory";
+            } else if (this.user.role === "cashier") {
+                this.user.route = "pos";
+            }
+
             if (this.isUpdatingUser) {
                 axios
                     .put(`${this.API_URL}users/${this.user.id}/`, this.user)
@@ -391,7 +401,8 @@ export default {
                             password: "",
                             firstName: "",
                             lastName: "",
-                            role: ""
+                            role: "",
+                            route: "" // Add the route property to the empty user object
                         };
                         this.isUpdatingUser = false;
                     })
@@ -421,7 +432,8 @@ export default {
                                         password: "",
                                         FirstName: "",
                                         LastName: "",
-                                        role: ""
+                                        role: "",
+                                        route: "" // Add the route property to the empty user object
                                     };
                                 })
                                 .catch(error => {
@@ -434,6 +446,7 @@ export default {
                     });
             }
         },
+
         saveRoom() {
             if (this.isUpdatingRoom) {
                 axios
@@ -558,6 +571,7 @@ export default {
                 FirstName: item.FirstName,
                 LastName: item.LastName,
                 role: item.role,
+                route: item.route,
             };
 
             // Show a confirmation dialog

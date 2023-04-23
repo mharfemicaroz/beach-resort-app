@@ -56,29 +56,32 @@ export default {
                   text: "User is already logged in.",
                   icon: "error",
                 });
+             
       } else {
         // Set user as active using API call
         const user = {
           username: response.data.username,
           FirstName: response.data.fName,
           LastName: response.data.lName,
-          role: response.data.role
+          role: response.data.role,
+          route: response.data.route
         }
         axios.put(`${this.API_URL}users/${response.data.id}/`, {...user, isActive: true })
           .then(() => {
             const role = response.data.role;
+            let route = null;
             switch (role) {
               case "superuser":
-                this.$router.push("/main");
+                route = "main";
                 break;
               case "reservationist":
-                this.$router.push("/booking");
+              route = "booking"
                 break;
               case "frontdesk":
-                this.$router.push("/booking");
+              route = "booking"
                 break;
               case "inventorymanager":
-                this.$router.push("/inventory");
+                route = "inventory"
                 break;
               default:
                 // This shouldn't happen, but just in case
@@ -88,6 +91,7 @@ export default {
                   icon: "error",
                 });
             }
+            this.$router.push(`/${route}`);
             Swal.fire({
               title: "Success!",
               text: "You have successfully logged in.",
