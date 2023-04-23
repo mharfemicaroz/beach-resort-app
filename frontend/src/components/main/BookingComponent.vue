@@ -757,28 +757,32 @@
           <form @submit.prevent="addWalkInGuest">
             <!-- Client Information -->
             <div class="form-group row">
-              <label for="name" class="col-sm-2 col-form-label">Name:</label>
+              <label for="name" class="col-sm-2 col-form-label">Name:*</label>
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="name" v-model="walkinreservation.clientName" required>
+                <input type="text" class="form-control" id="name" v-model="walkinreservation.clientName" required
+                  autocomplete="off">
               </div>
               <label for="email" class="col-sm-2 col-form-label">Email:</label>
               <div class="col-sm-4">
-                <input type="email" class="form-control" id="email" v-model="walkinreservation.clientEmail">
+                <input type="email" class="form-control" id="email" v-model="walkinreservation.clientEmail"
+                  autocomplete="off">
               </div>
             </div>
             <div class="form-group row">
               <label for="address" class="col-sm-2 col-form-label">Address:</label>
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="address" v-model="walkinreservation.clientAddress" required>
+                <input type="text" class="form-control" id="address" v-model="walkinreservation.clientAddress"
+                  autocomplete="off">
               </div>
               <label for="phone" class="col-sm-2 col-form-label">Phone:</label>
               <div class="col-sm-4">
-                <input type="tel" class="form-control" id="phone" v-model="walkinreservation.clientPhone" required>
+                <input type="tel" class="form-control" id="phone" v-model="walkinreservation.clientPhone"
+                  autocomplete="off">
               </div>
             </div>
 
             <div class="form-group row">
-              <label for="nationality" class="col-sm-2 col-form-label">Nationality:</label>
+              <label for="nationality" class="col-sm-2 col-form-label">Nationality:*</label>
               <div class="col-sm-4">
 
                 <select class="form-control" id="nationality" v-model="walkinreservation.clientNationality" required>
@@ -787,7 +791,7 @@
                   <option value="Foreign">Foreign</option>
                 </select>
               </div>
-              <label for="clientType" class="col-sm-2 col-form-label">Type:</label>
+              <label for="clientType" class="col-sm-2 col-form-label">Type:*</label>
               <div class="col-sm-4">
                 <select class="form-control" id="clientType" v-model="walkinreservation.clientType" required>
                   <option value="">-- Please select --</option>
@@ -984,7 +988,8 @@
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
-          <h4 id="BookDayModalLabel">Reservation Info</h4>
+          <h4 id="BookDayModalLabel" class="text-primary">Reservation Info</h4>
+
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
@@ -992,30 +997,33 @@
 
           <form @submit.prevent="clickTestAddItem">
             <!-- Client Information -->
-            <h4>Client Info</h4>
+            <h5>Booking Details<p class="text-muted" style="font-size: 12px;">*Field required</p>
+            </h5>
             <div class="form-group row">
-              <label for="name" class="col-sm-2 col-form-label">Name:</label>
+              <label for="name" class="col-sm-2 col-form-label">Name:*</label>
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="name" v-model="reservation.clientName" required>
+                <input type="text" class="form-control" id="name" v-model="reservation.clientName" required
+                  autocomplete="off">
               </div>
               <label for="email" class="col-sm-2 col-form-label">Email:</label>
               <div class="col-sm-4">
-                <input type="email" class="form-control" id="email" v-model="reservation.clientEmail">
+                <input type="email" class="form-control" id="email" v-model="reservation.clientEmail" autocomplete="off">
               </div>
             </div>
             <div class="form-group row">
               <label for="address" class="col-sm-2 col-form-label">Address:</label>
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="address" v-model="reservation.clientAddress" required>
+                <input type="text" class="form-control" id="address" v-model="reservation.clientAddress"
+                  autocomplete="off">
               </div>
               <label for="phone" class="col-sm-2 col-form-label">Phone:</label>
               <div class="col-sm-4">
-                <input type="tel" class="form-control" id="phone" v-model="reservation.clientPhone" required>
+                <input type="tel" class="form-control" id="phone" v-model="reservation.clientPhone" autocomplete="off">
               </div>
             </div>
 
             <div class="form-group row">
-              <label for="nationality" class="col-sm-2 col-form-label">Nationality:</label>
+              <label for="nationality" class="col-sm-2 col-form-label">Nationality:*</label>
               <div class="col-sm-4">
 
                 <select class="form-control" id="nationality" v-model="reservation.clientNationality" required>
@@ -1024,7 +1032,7 @@
                   <option value="Foreign">Foreign</option>
                 </select>
               </div>
-              <label for="clientType" class="col-sm-2 col-form-label">Type:</label>
+              <label for="clientType" class="col-sm-2 col-form-label">Type:*</label>
               <div class="col-sm-4">
                 <select class="form-control" id="clientType" v-model="reservation.clientType" required>
                   <option value="">-- Please select --</option>
@@ -1043,20 +1051,19 @@
                 </select>
               </div>
             </div>
-            <h4>Booking Details</h4>
             <div class="form-group row">
-              <label for="checkin" class="col-sm-2 col-form-label">Check-in Date:</label>
+              <label for="checkin" class="col-sm-2 col-form-label">Check-in Date:*</label>
               <div class="col-sm-4">
                 <input type="text" class="form-control" id="checkin" v-model="reservation.checkinDate" required readonly>
               </div>
-              <label for="checkout" class="col-sm-2 col-form-label">Check-out Date:</label>
+              <label for="checkout" class="col-sm-2 col-form-label">Check-out Date:*</label>
               <div class="col-sm-4">
                 <input type="text" class="form-control" id="checkout" v-model="reservation.checkoutDate" required
                   readonly>
               </div>
             </div>
             <div class="form-group row">
-              <label for="room" class="col-sm-2 col-form-label">Room:</label>
+              <label for="room" class="col-sm-2 col-form-label">Room:*</label>
               <div v-if="this.reservation.status == 'vacant'" class="col-sm-4">
 
                 <v-select multiple :options="updatedRooms" label="name" v-model="reservation.roomName" required>
@@ -1070,9 +1077,9 @@
               <div v-else class="col-sm-4">
                 <input type="text" class="form-control" v-model="reservation.roomName" readonly>
               </div>
-              <label for="guests" class="col-sm-2 col-form-label">No. of Guests:</label>
+              <label for="guests" class="col-sm-2 col-form-label">Remarks:</label>
               <div class="col-sm-4">
-                <input type="number" class="form-control" id="guests" v-model="reservation.numGuests" required>
+                <input type="text" class="form-control" v-model="reservation.remarks" autocomplete="off">
               </div>
             </div>
             <div class="form-group row">
@@ -1426,8 +1433,8 @@ export default {
         clientEmail: '',
         clientPhone: '',
         clientAddress: '',
-        clientNationality: '',
-        clientType: ''
+        clientNationality: 'Filipino',
+        clientType: 'walkin'
       },
       reservation: {
         clientName: '',
@@ -1441,7 +1448,7 @@ export default {
         roomName: '',
         roomPrice: '',
         roomType: '',
-        numGuests: '',
+        remarks: '',
         status: 'vacant',
         isPaid: 'no'
       },
@@ -1542,8 +1549,8 @@ export default {
         clientEmail: "",
         clientPhone: "",
         clientAddress: "",
-        clientNationality: "",
-        clientType: "",
+        clientNationality: "Filipino",
+        clientType: "walkin",
         bookingID: ""
       },
       reservations: [],
@@ -1893,7 +1900,11 @@ export default {
         });
 
         if (result.isConfirmed) {
-          let bId = this.bookings[this.itemIndex].itemID;
+          try{
+            let bId = this.bookings[this.itemIndex].itemID
+          } catch{
+            let bId = "walkin"
+          }
           try {
             const updatedItems = [];
 
@@ -1958,8 +1969,8 @@ export default {
         clientEmail: "",
         clientPhone: "",
         clientAddress: "",
-        clientNationality: "",
-        clientType: "",
+        clientNationality: "Filipino",
+        clientType: "walkin",
         bookingID: ""
       };
       this.walkinreservation = {
@@ -1967,8 +1978,8 @@ export default {
         clientEmail: "",
         clientPhone: "",
         clientAddress: "",
-        clientNationality: "",
-        clientType: ""
+        clientNationality: "Filipino",
+        clientType: "walkin"
       }
       this.subtotal = 0;
       this.partialPayment = 0;
@@ -2290,10 +2301,10 @@ export default {
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
         this.reservation.clientAddress = "";
-        this.reservation.clientNationality = "";
-        this.reservation.clientType = "";
+        this.reservation.clientNationality = "Filipino";
+        this.reservation.clientType = "walkin";
         this.reservation.roomName = "";
-        this.reservation.numGuests = "";
+        this.reservation.remarks = "";
         this.reservation.clientPhone = "";
         this.reservation.checkinDate = this.dayreserve.toLocaleDateString('en-GB');
         this.reservation.checkoutDate = this.dayreserve.toLocaleDateString('en-GB');
@@ -2324,7 +2335,7 @@ export default {
       this.reservation.checkinDate = this.bookings[this.itemIndex].checkinDate;
       this.reservation.checkoutDate = this.bookings[this.itemIndex].checkoutDate;
       this.reservation.roomName = this.bookings[this.itemIndex].room_name;
-      this.reservation.numGuests = this.bookings[this.itemIndex].numGuests;
+      this.reservation.remarks = this.bookings[this.itemIndex].remarks;
       this.reservation.clientPhone = this.bookings[this.itemIndex].contactNumber;
       this.reservation.status = this.bookings[this.itemIndex].status;
       this.reservation.isPaid = this.bookings[this.itemIndex].isPaid;
@@ -2358,7 +2369,7 @@ export default {
       this.reservation.roomPrice = "";
       this.reservation.roomType = "";
       this.reservation.roomPrice = "";
-      this.reservation.numGuests = "";
+      this.reservation.remarks = "";
       this.reservation.clientPhone = "";
       this.toggleItemModal();
       this.reservation.checkinDate = this.selectionStart.toLocaleDateString('en-GB');
@@ -2440,7 +2451,7 @@ export default {
           room_name: this.bookings[this.itemIndex].room_name,
           room_price: this.bookings[this.itemIndex].room_price,
           room_type: this.bookings[this.itemIndex].room_type,
-          numGuests: this.bookings[this.itemIndex].numGuests,
+          remarks: this.bookings[this.itemIndex].remarks,
           contactNumber: this.bookings[this.itemIndex].contactNumber,
           actualCheckoutDate: this.bookings[this.itemIndex].actualCheckoutDate,
           cancellationDate: this.bookings[this.itemIndex].cancellationDate,
@@ -2467,26 +2478,26 @@ export default {
         let classes = '';
 
         if (booking.status === 'reserved') {
-  if (booking.isPaid === 'partial' || booking.isPaid === 'yes') {
-    classes = ['hotel-reserved'];
-  } else {
-    classes = ['hotel-reserved-unpaid'];
-  }
+          if (booking.isPaid === 'partial' || booking.isPaid === 'yes') {
+            classes = ['hotel-reserved'];
+          } else {
+            classes = ['hotel-reserved-unpaid'];
+          }
 
-} else if (booking.status === 'checkedin') {
-  if (booking.isPaid === 'no' || booking.isPaid === '') {
-    classes = ['hotel-checkedin-unpaid'];
-  } else if (booking.isPaid === 'partial') {
-    classes = ['hotel-checkedin-partial'];
-  } else {
-    classes = ['hotel-checkedin-paid'];
-  }
+        } else if (booking.status === 'checkedin') {
+          if (booking.isPaid === 'no' || booking.isPaid === '') {
+            classes = ['hotel-checkedin-unpaid'];
+          } else if (booking.isPaid === 'partial') {
+            classes = ['hotel-checkedin-partial'];
+          } else {
+            classes = ['hotel-checkedin-paid'];
+          }
 
-} else if (booking.status === 'cancelled') {
-  classes = ['hotel-cancelled'];
-} else if (booking.status === 'checkedout') {
-  classes = ['hotel-checkedout'];
-}
+        } else if (booking.status === 'cancelled') {
+          classes = ['hotel-cancelled'];
+        } else if (booking.status === 'checkedout') {
+          classes = ['hotel-checkedout'];
+        }
 
         return { startDate, endDate, title, id, classes, tooltip };
       });
@@ -2534,7 +2545,7 @@ export default {
             room_name: res.name,
             room_price: roomPrice,
             room_type: roomType,
-            numGuests: this.reservation.numGuests,
+            remarks: this.reservation.remarks,
             contactNumber: this.reservation.clientPhone,
             isPaid: 'no',
             created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
@@ -2556,7 +2567,7 @@ export default {
             room_name: res.name,
             room_price: roomPrice,
             room_type: roomType,
-            numGuests: this.reservation.numGuests,
+            remarks: this.reservation.remarks,
             contactNumber: this.reservation.clientPhone,
             processedBy: this.userdata.fName + " " + this.userdata.lName
           })
@@ -2578,7 +2589,7 @@ export default {
         this.reservation.roomPrice = "";
         this.reservation.roomType = "";
         this.reservation.roomPrice = "";
-        this.reservation.numGuests = "";
+        this.reservation.remarks = "";
         this.reservation.clientPhone = "";
         this.walkinStatus = false;
 
@@ -3127,7 +3138,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
             room_name: this.reservation.room_name,
             room_type: this.reservation.room_type,
             room_price: this.reservation.room_price,
-            numGuests: this.reservation.numGuests,
+            remarks: this.reservation.remarks,
             contactNumber: this.reservation.contactNumber,
             totalPrice: this.reservation.totalPrice
           });
@@ -3178,7 +3189,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       Room: ${reservation.room_name}
       Check-in: ${reservation.checkinDate}
       Check-out: ${reservation.checkoutDate}
-      Guests: ${reservation.numGuests}
+      Remarks: ${reservation.remarks}
       Contact: ${reservation.contactNumber}`;
       doc.text(content, 10, 10);
       doc.save(`Booking Slip - ${reservation.name}.pdf`);
@@ -3369,31 +3380,36 @@ img {
 }
 
 .cv-item.hotel-reserved {
-  background-color: #5c6bc0; /* adjust the color as needed */
+  background-color: #5c6bc0;
+  /* adjust the color as needed */
 }
 
 .cv-item.hotel-reserved-unpaid {
-  background-color: #ef5350; /* adjust the color as needed */
+  background-color: #ef5350;
+  /* adjust the color as needed */
 }
 
 .cv-item.hotel-checkedin-unpaid {
-  background-color: #66bb6a; /* adjust the color as needed */
+  background-color: #66bb6a;
+  /* adjust the color as needed */
 }
 
 .cv-item.hotel-checkedin-partial {
-  background-color: #42a5f5; /* adjust the color as needed */
+  background-color: #42a5f5;
+  /* adjust the color as needed */
 }
 
 .cv-item.hotel-checkedin-paid {
-  background-color: #ffee58; /* adjust the color as needed */
+  background-color: #ffee58;
+  /* adjust the color as needed */
 }
 
 .cv-item.hotel-cancelled {
-  background-color: #bdbdbd; /* adjust the color as needed */
+  background-color: #bdbdbd;
+  /* adjust the color as needed */
 }
 
 .cv-item.hotel-checkedout {
-  background-color: #ff7043; /* adjust the color as needed */
-}
-
-</style>
+  background-color: #ff7043;
+  /* adjust the color as needed */
+}</style>
