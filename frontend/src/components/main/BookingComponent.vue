@@ -279,7 +279,7 @@
                     <div class="row">
                       <div class="col-md-3">
                         <div>
-                          <div class="form-group">
+                          <!-- <div class="form-group">
                             <label for="search">Search Reservation:</label>
                             <div class="input-group">
                               <div class="input-group-append">
@@ -291,7 +291,7 @@
                                 v-model="searchTerm2">
 
                             </div>
-                          </div>
+                          </div> -->
                           <div class="form-group">
                             <label for="date-filter">Date Filter:</label>
                             <select class="form-control" id="date-filter" v-model="resdateFilter">
@@ -326,46 +326,18 @@
                               <option value="checkedout">Checked Out</option>
                             </select>
                           </div>
-                          <div class="form-group mt-2">
+                          <!-- <div class="form-group mt-2">
                             <button type="button" class="btn btn-primary"
                               @click="printReservationHistory">Print</button>&nbsp;
-                          </div>
+                          </div> -->
                         </div>
                       </div>
                       <div class="col-md-9">
                         <div id="reservationHistory">
                           <h2>Reservation History</h2>
-
-                          <table class="table">
-                            <thead>
-                              <tr>
-                                <th>No.</th>
-                                <th>Name</th>
-                                <th>Contact</th>
-                                <th>Address</th>
-                                <th>Checkin Date</th>
-                                <th>Checkout Date</th>
-                                <th>Room</th>
-                                <th>Cost</th>
-                                <th>Status</th>
-                                <th>Payment</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr v-for="reservation in filteredReservationsHistory" :key="reservation.transactionID">
-                                <td>{{ reservation.id }}</td>
-                                <td>{{ reservation.name }}</td>
-                                <td>{{ reservation.contactNumber }}</td>
-                                <td>{{ reservation.clientaddress }}</td>
-                                <td>{{ reservation.checkinDate }}</td>
-                                <td>{{ reservation.checkoutDate }}</td>
-                                <td>{{ reservation.room_name }}</td>
-                                <td>{{ reservation.totalPrice }}</td>
-                                <td>{{ reservation.status }}</td>
-                                <td>{{ reservation.isPaid }}</td>
-                              </tr>
-                            </tbody>
-                          </table>
+                          <table-component :mainHeaders=reservationsOptions :mainItems="filteredReservationsHistory"
+                                                :editable="false"
+                                                :toggleable="false" />
                         </div>
 
 
@@ -377,7 +349,7 @@
                     <div class="row">
                       <div class="col-md-3">
                         <div>
-                          <div class="form-group">
+                          <!-- <div class="form-group">
                             <label for="search">Search Transaction:</label>
                             <div class="input-group">
                               <div class="input-group-append">
@@ -389,7 +361,7 @@
                                 v-model="searchTerm" id="search">
 
                             </div>
-                          </div>
+                          </div> -->
                           <div class="form-group">
                             <label for="date-filter">Date Filter:</label>
                             <select class="form-control" id="date-filter" v-model="dateFilter">
@@ -421,124 +393,18 @@
                               <option value="partial">Partial</option>
                             </select>
                           </div>
-                          <div class="form-group mt-2">
+                          <!-- <div class="form-group mt-2">
                             <button type="button" class="btn btn-primary"
                               @click="printTransactionHistory">Print</button>&nbsp;
-                          </div>
+                          </div> -->
                         </div>
                       </div>
                       <div class="col-md-9">
                         <div id="transactionHistory">
                           <h2>Transaction History</h2>
-
-                          <table class="table">
-                            <thead>
-                              <tr>
-                                <th>No.</th>
-                                <th>Name</th>
-                                <th>Contact</th>
-                                <th>Address</th>
-                                <th>Total Amount</th>
-                                <th>Total Cash</th>
-                                <th>New Balance</th>
-                                <th>Latest Status</th>
-                                <th>Latest Transaction Date</th>
-                                <th class="no-print">
-                                  <button class="btn btn-sm btn-primary" @click="toggleAllTD()">
-                                    <span v-if="toggleAll === true">+</span>
-                                    <span v-else>-</span>
-                                  </button>
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <template v-for="(transaction, index) in filteredTransactions"
-                                :key="transaction.transactionID">
-                                <tr>
-                                  <td>{{ transaction.id }}</td>
-                                  <td>{{ transaction.clientname }}</td>
-                                  <td>{{ transaction.clientcontact }}</td>
-                                  <td>{{ transaction.clientaddress }}</td>
-                                  <td>{{ transaction.totalAmountToPay }}</td>
-                                  <td>{{ transaction.cashAmountPay }}</td>
-                                  <td>{{ transaction.balance }}</td>
-                                  <td>{{ transaction.payStatus }}</td>
-                                  <td>{{ transaction.transaction_date }}</td>
-                                  <td class="no-print">
-                                    <button class="btn btn-sm btn-primary togglebuttons"
-                                      @click="toggleTable(transaction.id, transaction.bookingID)">
-                                      <span v-if="!showTable[transaction.id]">+</span>
-                                      <span v-else>-</span>
-                                    </button>
-                                  </td>
-                                </tr>
-                                <tr v-if="showTable[transaction.id]">
-                                  <td colspan="11">
-                                    <div>
-                                      <h5 class="bg-primary text-white">History</h5>
-                                      <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                                        <thead>
-                                          <tr>
-                                            <th>Method</th>
-                                            <th>Ref.No.</th>
-                                            <th>Total</th>
-                                            <th>Amount Paid</th>
-                                            <th>Balance</th>
-                                            <th>Discount</th>
-                                            <th>Processed by</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          <template v-for="(item, index) in transaction.items" :key="index">
-                                            <tr>
-                                              <td>{{ item.paymentMethod }}</td>
-                                              <td>{{ item.nonCashReference }}</td>
-                                              <td>{{ item.totalAmountToPay }}</td>
-                                              <td>{{ item.cashAmountPay }}</td>
-                                              <td>{{ item.balance }}</td>
-                                              <td>{{ item.discountValue }}/{{ item.discountMode }}</td>
-                                              <td>{{ item.processedBy }}</td>
-                                              <td>{{ item.payStatus }}</td>
-                                              <td>{{ item.transaction_date }}</td>
-                                            </tr>
-                                          </template>
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                    <div v-if="showTable[transaction.id]">
-                                      <h5 class="bg-success text-white">Purchased Items</h5>
-                                      <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                                        <thead>
-                                          <tr>
-                                            <th>Name</th>
-                                            <th>Category</th>
-                                            <th>Type</th>
-                                            <th>Rate</th>
-                                            <th>Qty</th>
-                                            <th>Total</th>
-                                            <th>Date</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          <tr v-for="(item, index) in transaction.props" :key="index">
-                                            <td>{{ item.itemName }}</td>
-                                            <td>{{ item.itemOption }}</td>
-                                            <td>{{ item.itemType }}</td>
-                                            <td>{{ item.itemPriceRate }}</td>
-                                            <td>{{ item.purchaseQty }}</td>
-                                            <td>{{ item.totalCost }}</td>
-                                            <td>{{ item.dateCreated }}</td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </template>
-                            </tbody>
-                          </table>
+                          <table-component :mainHeaders=transactionsOptions :mainItems="filteredTransactions"
+                                                :subHeaders2="transactionhistory" :subHeaders="transactionitem" :editable="false"
+                                                :toggleable="true" />
                         </div>
 
                       </div>
@@ -711,7 +577,10 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cancelled' }" id="cancelled"
               role="tabpanel" aria-labelledby="cancelled-tab">
               <div class="container-fluid">
-                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
+                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings"
+                                                :editable="false"
+                                                :toggleable="false" />
+                <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th>Room Name</th>
@@ -732,13 +601,16 @@
                       <td>{{ reservation.clientemail }}</td>
                     </tr>
                   </tbody>
-                </table>
+                </table> -->
               </div>
             </div>
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'reserved' }" id="reserved" role="tabpanel"
               aria-labelledby="reserved-tab">
               <div class="container-fluid">
-                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
+                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings"
+                                                :editable="false"
+                                                :toggleable="false" />
+                <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th>Room Name</th>
@@ -759,13 +631,16 @@
                       <td>{{ reservation.clientemail }}</td>
                     </tr>
                   </tbody>
-                </table>
+                </table> -->
               </div>
             </div>
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'occupied' }" id="occupied" role="tabpanel"
               aria-labelledby="occupied-tab">
               <div class="container-fluid">
-                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
+                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings"
+                                                :editable="false"
+                                                :toggleable="false" />
+                <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th>Room Name</th>
@@ -786,13 +661,16 @@
                       <td>{{ reservation.clientemail }}</td>
                     </tr>
                   </tbody>
-                </table>
+                </table> -->
               </div>
             </div>
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'checkedout' }" id="checkedout"
               role="tabpanel" aria-labelledby="checkedout-tab">
               <div class="container-fluid">
-                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
+                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings"
+                                                :editable="false"
+                                                :toggleable="false" />
+                <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th>Room Name</th>
@@ -813,14 +691,21 @@
                       <td>{{ reservation.clientemail }}</td>
                     </tr>
                   </tbody>
-                </table>
+                </table> -->
               </div>
             </div>
 
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'all' }" id="all" role="tabpanel"
               aria-labelledby="all-tab">
               <div class="container-fluid">
-                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
+                <table-component :mainHeaders=bookingsAllOptions :mainItems="filteredRoomBookings"
+                                                :editable="false"
+                                                :toggleable="false">
+                                                   <template #default="{data}">
+                                                      {{ data.totalPrice - data.partialPayment }}
+                                                   </template>
+                             </table-component>
+                <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
                       <th>Room Name</th>
@@ -849,14 +734,13 @@
                       <td>{{ parseFloat(reservation.totalPrice) - parseFloat(reservation.partialPayment) }}</td>
                     </tr>
                   </tbody>
-                </table>
+                </table> -->
               </div>
             </div>
           </div>
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" @click="printViewReservation">Print</button> &NonBreakingSpace;
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
@@ -1287,6 +1171,13 @@ function parseDate(dateString) {
   return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
 }
 
+function parseDate2(dateString) {
+  const index = dateString.indexOf('T');
+  const result = dateString.substring(0, index);
+  const [year, month, day] = result.split('-');
+  return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
+}
+
 export default {
   components: {
     Line,
@@ -1297,6 +1188,102 @@ export default {
   },
   data() {
     return {
+      bookingsOptions: [{
+                'label': 'Room Name',
+                'field': 'room_name'
+            },{
+                'label': 'Checkin Date',
+                'field': 'checkinDate'
+            },{
+                'label': 'Checkout Date',
+                'field': 'checkoutDate'
+            },{
+                'label': 'Guest',
+                'field': 'name'
+            },{
+                'label': 'Contact Number',
+                'field': 'contactNumber'
+            },{
+                'label': 'Email',
+                'field': 'clientemail'
+            },],
+      bookingsAllOptions: [{
+                'label': 'Room Name',
+                'field': 'room_name'
+            },{
+                'label': 'Checkin Date',
+                'field': 'checkinDate'
+            },{
+                'label': 'Checkout Date',
+                'field': 'checkoutDate'
+            },{
+                'label': 'Guest',
+                'field': 'name'
+            },{
+                'label': 'Contact Number',
+                'field': 'contactNumber'
+            },{
+                'label': 'Email',
+                'field': 'clientemail'
+            },{
+                'label': 'Status',
+                'field': 'status'
+            },{
+                'label': 'Total Price (room+addons)',
+                'field': 'totalPrice'
+            },{
+                'label': 'Partial Payment',
+                'field': 'partialPayment'
+            },{
+                'label': 'Balance',
+                'field': 'balance',
+                'slot' : true
+            },],      
+      reservationsOptions: [{
+                'label': '',
+                'field': 'toggle',
+                'sortable': false,
+            }, {
+                'label': 'No.',
+                'field': 'id',
+                'sortable': true
+            },{
+                'label': 'Name',
+                'field': 'name',
+                'sortable': true
+            },{
+                'label': 'Contact',
+                'field': 'contactNumber',
+                'sortable': true
+            },{
+                'label': 'Address',
+                'field': 'clientaddress',
+                'sortable': true
+            },{
+                'label': 'Checkin Date',
+                'field': 'checkinDate',
+                'sortable': true
+            }, {
+                'label': 'Checkout Date',
+                'field': 'checkoutDate',
+                'sortable': true
+            },{
+                'label': 'Room',
+                'field': 'room_name',
+                'sortable': true
+            },{
+                'label': 'Cost (Room+addon)',
+                'field': 'totalPrice',
+                'sortable': true
+            },{
+                'label': 'Status',
+                'field': 'status',
+                'sortable': true
+            },{
+                'label': 'Payment',
+                'field': 'isPaid',
+                'sortable': true
+            }, ],
       transactionsOptions: [{
                 'label': '',
                 'field': 'toggle',
@@ -1338,22 +1325,59 @@ export default {
                 'field': 'transaction_date',
                 'sortable': true
             }],
-            transactionssubOptions: [{
+            transactionhistory: [{
+                'label': 'Method',
+                'field': 'paymentMethod'
+            },{
+                'label': 'Ref. No.',
+                'field': 'nonCashReference'
+            },{
+                'label': 'Total',
+                'field': 'totalAmountToPay'
+            },{
+                'label': 'Amount Paid',
+                'field': 'cashAmountPay'
+            },{
+                'label': 'Balance',
+                'field': 'balance'
+            },{
+                'label': 'Discount Mode',
+                'field': 'discountMode'
+            },{
+                'label': 'Discount Value',
+                'field': 'discountValue'
+            },{
+                'label': 'Processed by',
+                'field': 'processedBy'
+            },{
                 'label': 'Status',
-                'field': 'stock_type'
-            }, {
-                'label': 'Price',
-                'field': 'priceRate'
-            }, {
+                'field': 'payStatus'
+            },{
+                'label': 'Date',
+                'field': 'transaction_date'
+            },],
+            transactionitem: [{
+                'label': 'Name',
+                'field': 'itemName'
+            },{
+                'label': 'Category',
+                'field': 'itemOption'
+            },{
+                'label': 'Type',
+                'field': 'itemType'
+            },{
+                'label': 'Rate',
+                'field': 'itemPriceRate'
+            },{
                 'label': 'Qty',
                 'field': 'purchaseQty'
-            }, {
+            },{
                 'label': 'Total',
                 'field': 'totalCost'
-            }, {
+            },{
                 'label': 'Date',
-                'field': 'date_created'
-            }],
+                'field': 'dateCreated'
+            },],
       dayreserve: new Date(),
       showTable: {},
       toggleAll: true,
@@ -1580,7 +1604,7 @@ export default {
       // Filter by date
       if (this.dateFilter === 'range' && this.fromDate && this.toDate) {
         filtered = filtered.filter(transaction => {
-          return parseDate(transaction.transaction_date) >= parseDate(this.fromDate) && parseDate(transaction.transaction_date) <= parseDate(this.toDate);
+          return parseDate2(transaction.transaction_date) >= parseDate(this.fromDate) && parseDate2(transaction.transaction_date) <= parseDate(this.toDate);
         });
       }
 
@@ -2344,7 +2368,7 @@ export default {
         let landingDateCheckin = CalendarMath.addDays(item.startDate, eLength);
         let landingDateCheckout = CalendarMath.addDays(item.endDate, eLength);
 
-        let filteredBookings = this.bookings.filter(booking => booking.itemID !== this.bookings[this.itemIndex].itemID && booking.room_name === this.bookings[this.itemIndex].room_name && new Date(booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0]).setHours(0, 0, 0, 0) <= landingDateCheckout.setHours(0, 0, 0, 0)
+        let filteredBookings = this.bookings.filter(booking => booking.status === 'reserved' &&  booking.itemID !== this.bookings[this.itemIndex].itemID && booking.room_name === this.bookings[this.itemIndex].room_name && new Date(booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0]).setHours(0, 0, 0, 0) <= landingDateCheckout.setHours(0, 0, 0, 0)
           && new Date(booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0));
 
         if (filteredBookings.length === 0) {
@@ -2571,11 +2595,14 @@ export default {
         this.transactions = response.data;
         this.transactions.forEach(async (item, index) => {
                         try {
-                            const res = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+                            const a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
                                 { "columnName": 'bookingID', "columnKey": item.bookingID },
                             ]);
-                            const o = res.data;
-                            this.transactions[index].items = o;
+                            const b = await axios.post(`${this.API_URL}transaction/record/filter/`, [
+                              { "columnName": "transaction", "columnKey": item.id },
+                            ])
+                            this.transactions[index].items = a.data;
+                            this.transactions[index].items2 = b.data;
                         } catch (error) {
 
                         }
@@ -2738,6 +2765,7 @@ export default {
               }
 
               if (bookid.charAt(0) !== "f") {
+                this.bookings[this.itemIndex].totalPrice = transactionData.totalAmountToPay;
                 this.bookings[this.itemIndex].partialPayment = transactionData.cashAmountPay;
               }
 
@@ -2787,7 +2815,7 @@ export default {
               }
 
               await axios.post(`${this.API_URL}transaction/record/`, transactionRecordData);
-
+              this.bookings[this.itemIndex].totalPrice = transactionRecordData.totalAmountToPay;
               this.bookings[this.itemIndex].partialPayment = newcashAmountPay;
             }
 

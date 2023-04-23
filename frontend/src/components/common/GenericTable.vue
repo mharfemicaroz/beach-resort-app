@@ -51,11 +51,7 @@
                     <template v-for="(mainItem, mainIndex) in filteredItems" :key="mainItem.id">
                         <tr :class="{ 'table-active': showTable[mainItem.id] }">
                             <td v-for="(header, index) in mainHeaders" :key="index">
-                                <template v-if="header.field === 'isAvailable'">
-                                    <span v-if="mainItem[header.field]">Yes</span>
-                                    <span v-else>No</span>
-                                </template>
-                                <template v-else-if="header.field === 'toggle' && toggleable">
+                                <template v-if="header.field === 'toggle' && toggleable">
                                     <button type="button" @click="toggleTable(mainItem.id)"
                                         class="btn btn-primary btn-sm toggle no-print">
                                         <span v-if="!showTable[mainItem.id]">+</span>
@@ -72,7 +68,12 @@
                                     {{ formatDate(new Date(mainItem[header.field])) }}
                                 </template>
                                 <template v-else>
-                                    {{ mainItem[header.field] }}
+                                    <template v-if="header.slot">
+                                        <slot  :data="mainItem"></slot>
+                                    </template>
+                                    <template v-else>
+                                        {{ mainItem[header.field] }}
+                                    </template>
                                 </template>
                             </td>
                         </tr>
@@ -80,7 +81,6 @@
                             <td :colspan="mainHeaders.length + 1">
                                 <div style="padding-left: 60px;">
                                     <div v-if="mainItem.items.length > 0">
-                                        <h5 class="bg-primary text-white">Records</h5>
                                         <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                                             <thead>
                                                 <tr>
@@ -91,10 +91,39 @@
                                             </thead>
                                             <tbody>
                                                 <template v-for="(subItem, subIndex) in mainItem.items" :key="subIndex">
+
                                                     <tr>
                                                         <template v-for="(subHeader, index) in subHeaders" :key="index">
                                                             <template v-if="subHeader.field.includes('date')">
-                                                                {{ formatDate(new Date(subItem[subHeader.field])) }}
+                                                                <td>{{ formatDate(new Date(subItem[subHeader.field])) }}
+                                                                </td>
+                                                            </template>
+                                                            <template v-else>
+                                                                <td>{{ subItem[subHeader.field] }}</td>
+                                                            </template>
+
+                                                        </template>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div v-if="mainItem.items2 && mainItem.items2.length > 0">
+                                        <table class="table" style="table-layout: fixed;word-wrap: break-word;">
+                                            <thead>
+                                                <tr>
+                                                    <template v-for="(subHeader, index) in subHeaders2" :key="index">
+                                                        <th>{{ subHeader.label }}</th>
+                                                    </template>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template v-for="(subItem, subIndex) in mainItem.items2" :key="subIndex">
+                                                    <tr>
+                                                        <template v-for="(subHeader, index) in subHeaders2" :key="index">
+                                                            <template v-if="subHeader.field.includes('date')">
+                                                                <td>{{ formatDate(new Date(subItem[subHeader.field])) }}
+                                                                </td>
                                                             </template>
                                                             <template v-else>
                                                                 <td>{{ subItem[subHeader.field] }}</td>
@@ -184,6 +213,10 @@ export default {
             type: Array,
             required: true,
         },
+        subHeaders2: {
+            type: Array,
+            required: true,
+        },
         editable: {
             type: Boolean,
             required: true,
@@ -216,10 +249,10 @@ export default {
             const sortedItems = [...this.paginatedMainItems];
 
             sortedItems.sort((a, b) => {
-                const aValue = a[this.sortColumn];
-                const bValue = b[this.sortColumn];
+                const aValue = (a[this.sortColumn] || '').toString();
+                const bValue = (b[this.sortColumn] || '').toString();
                 let bool = this.sortDirection === 1 ? true : false;
-                if (!isNaN(aValue) && !isNaN(bValue)) {
+                if (!isNaN(parseFloat(aValue)) && !isNaN(parseFloat(bValue))) {
                     // Sort numbers numerically
                     return bool ? parseFloat(aValue) - parseFloat(bValue) : parseFloat(bValue) - parseFloat(aValue);
                 } else {
@@ -304,47 +337,82 @@ export default {
             };
             return new Intl.DateTimeFormat('en-US', options).format(date);
         },
+
         printSection() {
-            // Add Bootstrap stylesheet to the head
-            const bootstrapLink = document.createElement('link');
-            bootstrapLink.rel = 'stylesheet';
-            bootstrapLink.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css';
-            document.head.appendChild(bootstrapLink);
 
-            // Set the media query for landscape printing
-            const mediaQuery = '@media print{@page {size: legal landscape; margin:auto} .no-print{display: none;}}';
-            const style = document.createElement('style');
-            style.appendChild(document.createTextNode(mediaQuery));
-            document.head.appendChild(style);
+    // Add Bootstrap stylesheet to the head
+    const bootstrapLink = document.createElement('link');
+    bootstrapLink.rel = 'stylesheet';
+    bootstrapLink.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css';
+    document.head.appendChild(bootstrapLink);
 
-            // Get the dataTable section and create a new element to hold it
+    // Create a progress bar element
+    const progressBar = document.createElement('div');
+    progressBar.className = 'progress fixed-top';
+    progressBar.innerHTML = '<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>';
+    
+    // Add the progress bar to the body
+    document.body.appendChild(progressBar);
+    progressBar.style.zIndex = 1057;            
+        // Create the overlay element
+        const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    overlay.style.zIndex = 1056;
+    overlay.classList.add('overlay');
+    document.body.appendChild(overlay);
+
+    // Track the loading progress of the stylesheet
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 10;
+        if (progress >= 100) {
+            clearInterval(interval);
+            // Remove the progress bar
+            document.body.removeChild(progressBar);
+            // Get the dataTable section and create the print window
             const dataTable = document.getElementById(this.uniqueID);
             const printElement = document.createElement('div');
             printElement.appendChild(dataTable.cloneNode(true));
 
-            // Hide everything else on the page except the printElement
-            const bodyChildren = document.body.children;
-            for (let i = 0; i < bodyChildren.length; i++) {
-                if (bodyChildren[i] !== printElement) {
-                    bodyChildren[i].classList.add('no-print');
-                }
-            }
+            // Open a new window and write the printElement to it
+            const printWindow = window.open('', 'Print Window');
+            printWindow.document.write('<html><head>');
+            printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">');
+            printWindow.document.write('<style>html,body{display:none;}.no-print{display: none;} @media print{@page {size: legal landscape; margin:auto} html,body{display: block;} tr{page-break-inside: auto;} .no-print{display: none;}}</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(printElement.innerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
 
-            // Add the printElement to the body and call the print function
-            document.body.appendChild(printElement);
-            window.print();
+            // Print the window and close it after printing
+            printWindow.onload = function() {
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close();
 
-            // Restore the original page state
-            for (let i = 0; i < bodyChildren.length; i++) {
-                bodyChildren[i].classList.remove('no-print');
-            }
-            document.head.removeChild(style);
-            document.head.removeChild(bootstrapLink);
-            document.body.removeChild(printElement);
+                // Remove the Bootstrap stylesheet from the head
+                document.head.removeChild(bootstrapLink);
+                document.body.removeChild(overlay);
+            };
+        } else {
+            // Update the progress bar
+            const progressBarChild = progressBar.querySelector('.progress-bar');
+            progressBarChild.style.width = `${progress}%`;
+            progressBarChild.setAttribute('aria-valuenow', progress);
         }
+    }, 200);
+}
+
+
+
+
+
 
     },
 };
 </script>
-
-  

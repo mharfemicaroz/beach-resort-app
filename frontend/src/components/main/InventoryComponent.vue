@@ -95,7 +95,12 @@
                                         <div>
                                             <table-component :mainHeaders=stocksOptions :mainItems="stocks"
                                                 :subHeaders="stockssubOptions" @edit-action="editInventory" :editable="true"
-                                                :toggleable="true" />
+                                                :toggleable="true">
+                                                <template #default="{data}">
+                                                      <span v-if="data.isAvailable">Yes</span>
+                                                      <span v-else>No</span>
+                                                </template>
+                                            </table-component>
                                         </div>
                                     </div>
                                 </div>
@@ -150,7 +155,12 @@
                                         style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
                                         <div>
                                             <table-component :mainHeaders=suppliersOptions :mainItems="suppliers"
-                                                :editable="true" @edit-action="editSupplier" :toggleable="false" />
+                                                :editable="true" @edit-action="editSupplier" :toggleable="false">
+                                                <template #default="{data}">
+                                                      <span v-if="data.isAvailable">Yes</span>
+                                                      <span v-else>No</span>
+                                                </template>
+                                            </table-component>
                                         </div>
 
                                     </div>
@@ -351,7 +361,8 @@ export default {
             }, {
                 'label': 'Is Available?',
                 'field': 'isAvailable',
-                'sortable': true
+                'sortable': true,
+                'slot': true,
             }, {
                 'label': '',
                 'field': 'action',
@@ -474,7 +485,8 @@ export default {
             }, {
                 'label': 'Is Available?',
                 'field': 'isAvailable',
-                'sortable': true
+                'sortable': true,
+                'slot': true,
             }, {
                 'label': '',
                 'field': 'action',
