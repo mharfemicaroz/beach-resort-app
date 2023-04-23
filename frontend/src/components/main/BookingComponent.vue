@@ -1875,7 +1875,7 @@ export default {
         }
       }
     },
-    addWalkInGuest() {
+    async addWalkInGuest() {
       this.billing.clientName = this.walkinreservation.clientName;
       this.billing.clientEmail = this.walkinreservation.clientEmail;
       this.billing.clientPhone = this.walkinreservation.clientPhone;
@@ -1883,6 +1883,13 @@ export default {
       this.billing.clientNationality = this.walkinreservation.clientNationality;
       this.billing.clientType = this.walkinreservation.clientType;
       this.walkinStatus = true;
+      try{
+        const response = await axios.get(this.API_URL + 'transaction/');
+        this.billing.bookingID = response.data.length + 1;
+      } catch{
+
+      }
+      
       this.toggleAddAccountModal();
     },
     async moveInclusionCartToMain() {
@@ -1954,6 +1961,7 @@ export default {
               this.updateBookings(resId);
               this.populateCalendarItems();
             }
+            
 
           } catch (error) {
             console.error(error);
