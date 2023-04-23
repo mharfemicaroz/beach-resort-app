@@ -143,7 +143,7 @@
                 </div>
               </div>
               <div class="card-deck wrapper-content" style="max-height: 500px!important;">
-                <div class="card" v-for="(item, index) in filteredCart" :key="item.id">
+                <div class="card" v-for="(item, index) in combinedcart" :key="item.id">
                   <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title">{{ item.name }}</h5>
                     <button v-if="item.category === 'inclusion'" type="button" class="btn btn-sm btn-close"
@@ -485,7 +485,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="item in cart" :key="item.id">
+                    <tr v-for="item in combinedcart" :key="item.id">
                       <td>{{ item.name }}</td>
                       <td>{{ item.type }}</td>
                       <td>{{ item.priceRate }}</td>
@@ -1652,6 +1652,33 @@ export default {
       const authStore = useAuthStore();
       const user = authStore.user;
       return user;
+    },
+    combinedcart() {
+      let result = [];
+      let combinedItems = {};
+      for (let item of this.cart.filter(item=>item.category==='main')) {
+        if (!combinedItems[item.name]) {
+          combinedItems[item.name] = {
+            purqty: item.purqty,
+            priceRate: item.priceRate,
+            type: item.type,
+            totalCartPrice: item.totalCartPrice,
+          };
+        } else {
+          combinedItems[item.name].purqty += item.purqty;
+          combinedItems[item.name].totalCartPrice = parseFloat(combinedItems[item.name].totalCartPrice) + parseFloat(item.totalCartPrice);
+        }
+      }
+      for (let name in combinedItems) {
+        result.push({
+          name: name,
+          purqty: combinedItems[name].purqty,
+          priceRate: combinedItems[name].priceRate,
+          type: combinedItems[name].type,
+          totalCartPrice: combinedItems[name].totalCartPrice,
+        });
+      }
+      return result;
     },
     filteredReservationsHistory() {
       let filtered = this.bookings.filter(reservation => {
