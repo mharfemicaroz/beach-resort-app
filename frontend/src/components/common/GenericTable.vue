@@ -48,9 +48,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <template v-for="(mainItem, mainIndex) in filteredItems" :key="mainItem.id">
+                    <template v-for="(mainItem, mainIndex) in paginatedMainItems" :key="mainItem.id">
                         <tr :class="{ 'table-active': showTable[mainItem.id] }">
                             <td v-for="(header, index) in mainHeaders" :key="index">
+                                
                                 <template v-if="header.field === 'toggle' && toggleable">
                                     <button type="button" @click="toggleTable(mainItem.id)"
                                         class="btn btn-primary btn-sm toggle no-print">
@@ -146,8 +147,8 @@
                 <nav aria-label="Table pagination">
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <p class="mb-0">
-                            Showing {{ Math.min((currentPage - 1) * rowsPerPage + 1, filteredItems.length) }} to {{
-                                Math.min(currentPage * rowsPerPage, filteredItems.length) }} of {{ filteredItems.length }}
+                            Showing {{ Math.min((currentPage - 1) * rowsPerPage + 1, paginatedMainItems.length) }} to {{
+                                Math.min(currentPage * rowsPerPage, paginatedMainItems.length) }} of {{ paginatedMainItems.length }}
                             entries{{ searchText ? ' (filtered from ' + mainItems.length + ' total entries)' : '' }}
                         </p>
 
@@ -230,23 +231,22 @@ export default {
         return {
             isLoading: true,
             currentPage: 1,
-            maxVisiblePages: 10,
             rowsPerPage: 10,
             showAll: false,
             showTable: {},
             searchText: '',
             sortColumn: null,
-            sortDirection: 'asc',
+            sortDirection: 1,
         };
     },
     computed: {
         paginatedMainItems() {
             const startIndex = (this.currentPage - 1) * this.rowsPerPage;
-            const endIndex = startIndex + this.rowsPerPage;
-            return this.mainItems.slice(startIndex, endIndex);
+            const endIndex = parseFloat(startIndex) + parseFloat(this.rowsPerPage);
+            return this.filteredItems.slice(startIndex, endIndex);
         },
         filteredItems() {
-            const sortedItems = [...this.paginatedMainItems];
+            const sortedItems = [...this.mainItems];
 
             sortedItems.sort((a, b) => {
                 const aValue = (a[this.sortColumn] || '').toString();
@@ -271,7 +271,7 @@ export default {
 
             return sortedItems.map(o => {
                 if (o) { // Add check for undefined
-                    const searchCode = Object.values(o).join("~") + (o.items ? o.items.map(item => Object.values(item).join(" ")).join(", ") : []);
+                    const searchCode = Object.keys(o).map(key => `${key}:${o[key]}`).join("~") + (o.items ? o.items.map(item => Object.values(item).join(" ")).join(", ") : []);
                     return {
                         ...o,
                         searchCode
@@ -285,13 +285,13 @@ export default {
         visiblePages() {
             let startPage = 1;
             let endPage = this.pageCount;
-            if (this.pageCount > this.maxVisiblePages) {
-                const halfVisiblePages = Math.floor(this.maxVisiblePages / 2);
+            if (this.pageCount > this.rowsPerPage) {
+                const halfVisiblePages = Math.floor(this.rowsPerPage / 2);
                 startPage = Math.max(this.currentPage - halfVisiblePages, 1);
-                endPage = startPage + this.maxVisiblePages - 1;
+                endPage = startPage + this.rowsPerPage - 1;
                 if (endPage > this.pageCount) {
                     endPage = this.pageCount;
-                    startPage = endPage - this.maxVisiblePages + 1;
+                    startPage = endPage - this.rowsPerPage + 1;
                 } else if (startPage > 1) {
                     startPage += 1;
                 }
