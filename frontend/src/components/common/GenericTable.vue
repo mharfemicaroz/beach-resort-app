@@ -37,11 +37,11 @@
                                 {{ header.label }}
                                 <span v-if="header.sortable" class="sort-icon no-print">
                                     <i :class="[
-                                        'fas',
-                                        sortColumn === header.field && sortDirection === 1
-                                            ? 'fa-sort-alpha-up'
-                                            : 'fa-sort-alpha-down',
-                                    ]"></i>
+                                            'fas',
+                                            sortColumn === header.field && sortDirection === 1
+                                                ? 'fa-sort-alpha-up'
+                                                : 'fa-sort-alpha-down',
+                                        ]"></i>
                                 </span>
                             </th>
                         </template>
@@ -51,7 +51,7 @@
                     <template v-for="(mainItem, mainIndex) in paginatedMainItems" :key="mainItem.id">
                         <tr :class="{ 'table-active': showTable[mainItem.id] }">
                             <td v-for="(header, index) in mainHeaders" :key="index">
-                                
+
                                 <template v-if="header.field === 'toggle' && toggleable">
                                     <button type="button" @click="toggleTable(mainItem.id)"
                                         class="btn btn-primary btn-sm toggle no-print">
@@ -70,7 +70,7 @@
                                 </template>
                                 <template v-else>
                                     <template v-if="header.slot">
-                                        <slot  :data="mainItem"></slot>
+                                        <slot :data="mainItem"></slot>
                                     </template>
                                     <template v-else>
                                         {{ mainItem[header.field] }}
@@ -148,7 +148,8 @@
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <p class="mb-0">
                             Showing {{ Math.min((currentPage - 1) * rowsPerPage + 1, paginatedMainItems.length) }} to {{
-                                Math.min(currentPage * rowsPerPage, paginatedMainItems.length) }} of {{ paginatedMainItems.length }}
+                                Math.min(currentPage * rowsPerPage, paginatedMainItems.length) }} of {{
+        paginatedMainItems.length }}
                             entries{{ searchText ? ' (filtered from ' + mainItems.length + ' total entries)' : '' }}
                         </p>
 
@@ -249,10 +250,16 @@ export default {
             const sortedItems = [...this.mainItems];
 
             sortedItems.sort((a, b) => {
-                const aValue = (a[this.sortColumn] || '').toString();
-                const bValue = (b[this.sortColumn] || '').toString();
+                const aValue = a[this.sortColumn];
+                const bValue = b[this.sortColumn];
                 let bool = this.sortDirection === 1 ? true : false;
-                if (!isNaN(parseFloat(aValue)) && !isNaN(parseFloat(bValue))) {
+                const aDate = Date.parse(aValue);
+                const bDate = Date.parse(bValue);
+
+                if (!isNaN(aDate) && !isNaN(bDate)) {
+                    // Sort dates
+                    return bool ? aDate - bDate : bDate - aDate;
+                } else if (!isNaN(parseFloat(aValue)) && !isNaN(parseFloat(bValue))) {
                     // Sort numbers numerically
                     return bool ? parseFloat(aValue) - parseFloat(bValue) : parseFloat(bValue) - parseFloat(aValue);
                 } else {
@@ -268,6 +275,7 @@ export default {
                     }
                 }
             });
+
 
             return sortedItems.map(o => {
                 if (o) { // Add check for undefined
@@ -340,73 +348,73 @@ export default {
 
         printSection() {
 
-    // Add Bootstrap stylesheet to the head
-    const bootstrapLink = document.createElement('link');
-    bootstrapLink.rel = 'stylesheet';
-    bootstrapLink.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css';
-    document.head.appendChild(bootstrapLink);
+            // Add Bootstrap stylesheet to the head
+            const bootstrapLink = document.createElement('link');
+            bootstrapLink.rel = 'stylesheet';
+            bootstrapLink.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css';
+            document.head.appendChild(bootstrapLink);
 
-    // Create a progress bar element
-    const progressBar = document.createElement('div');
-    progressBar.className = 'progress fixed-top';
-    progressBar.innerHTML = '<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>';
-    
-    // Add the progress bar to the body
-    document.body.appendChild(progressBar);
-    progressBar.style.zIndex = 1057;            
-        // Create the overlay element
-        const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = 0;
-    overlay.style.left = 0;
-    overlay.style.width = '100%';
-    overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    overlay.style.zIndex = 1056;
-    overlay.classList.add('overlay');
-    document.body.appendChild(overlay);
+            // Create a progress bar element
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress fixed-top';
+            progressBar.innerHTML = '<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>';
 
-    // Track the loading progress of the stylesheet
-    let progress = 0;
-    const interval = setInterval(() => {
-        progress += 10;
-        if (progress >= 100) {
-            clearInterval(interval);
-            // Remove the progress bar
-            document.body.removeChild(progressBar);
-            // Get the dataTable section and create the print window
-            const dataTable = document.getElementById(this.uniqueID);
-            const printElement = document.createElement('div');
-            printElement.appendChild(dataTable.cloneNode(true));
+            // Add the progress bar to the body
+            document.body.appendChild(progressBar);
+            progressBar.style.zIndex = 1057;
+            // Create the overlay element
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = 0;
+            overlay.style.left = 0;
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            overlay.style.zIndex = 1056;
+            overlay.classList.add('overlay');
+            document.body.appendChild(overlay);
 
-            // Open a new window and write the printElement to it
-            const printWindow = window.open('', 'Print Window');
-            printWindow.document.write('<html><head>');
-            printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">');
-            printWindow.document.write('<style>html,body{display:none;}.no-print{display: none;} @media print{@page {size: legal landscape; margin:auto} html,body{display: block;} tr{page-break-inside: auto;} .no-print{display: none;}}</style>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(printElement.innerHTML);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
+            // Track the loading progress of the stylesheet
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    // Remove the progress bar
+                    document.body.removeChild(progressBar);
+                    // Get the dataTable section and create the print window
+                    const dataTable = document.getElementById(this.uniqueID);
+                    const printElement = document.createElement('div');
+                    printElement.appendChild(dataTable.cloneNode(true));
 
-            // Print the window and close it after printing
-            printWindow.onload = function() {
-                printWindow.focus();
-                printWindow.print();
-                printWindow.close();
+                    // Open a new window and write the printElement to it
+                    const printWindow = window.open('', 'Print Window');
+                    printWindow.document.write('<html><head>');
+                    printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">');
+                    printWindow.document.write('<style>html,body{display:none;}.no-print{display: none;} @media print{@page {size: legal landscape; margin:auto} html,body{display: block;} tr{page-break-inside: auto;} .no-print{display: none;}}</style>');
+                    printWindow.document.write('</head><body>');
+                    printWindow.document.write(printElement.innerHTML);
+                    printWindow.document.write('</body></html>');
+                    printWindow.document.close();
 
-                // Remove the Bootstrap stylesheet from the head
-                document.head.removeChild(bootstrapLink);
-                document.body.removeChild(overlay);
-            };
-        } else {
-            // Update the progress bar
-            const progressBarChild = progressBar.querySelector('.progress-bar');
-            progressBarChild.style.width = `${progress}%`;
-            progressBarChild.setAttribute('aria-valuenow', progress);
+                    // Print the window and close it after printing
+                    printWindow.onload = function () {
+                        printWindow.focus();
+                        printWindow.print();
+                        printWindow.close();
+
+                        // Remove the Bootstrap stylesheet from the head
+                        document.head.removeChild(bootstrapLink);
+                        document.body.removeChild(overlay);
+                    };
+                } else {
+                    // Update the progress bar
+                    const progressBarChild = progressBar.querySelector('.progress-bar');
+                    progressBarChild.style.width = `${progress}%`;
+                    progressBarChild.setAttribute('aria-valuenow', progress);
+                }
+            }, 200);
         }
-    }, 200);
-}
 
 
 
