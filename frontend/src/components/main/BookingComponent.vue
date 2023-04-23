@@ -336,8 +336,7 @@
                         <div id="reservationHistory">
                           <h2>Reservation History</h2>
                           <table-component :mainHeaders=reservationsOptions :mainItems="filteredReservationsHistory"
-                                                :editable="false"
-                                                :toggleable="false" />
+                            :editable="false" :toggleable="false" />
                         </div>
 
 
@@ -403,8 +402,8 @@
                         <div id="transactionHistory">
                           <h2>Transaction History</h2>
                           <table-component :mainHeaders=transactionsOptions :mainItems="filteredTransactions"
-                                                :subHeaders2="transactionhistory" :subHeaders="transactionitem" :editable="false"
-                                                :toggleable="true" />
+                            :subHeaders2="transactionhistory" :subHeaders="transactionitem" :editable="false"
+                            :toggleable="true" />
                         </div>
 
                       </div>
@@ -577,9 +576,8 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cancelled' }" id="cancelled"
               role="tabpanel" aria-labelledby="cancelled-tab">
               <div class="container-fluid">
-                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings"
-                                                :editable="false"
-                                                :toggleable="false" />
+                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings" :editable="false"
+                  :toggleable="false" />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -607,9 +605,8 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'reserved' }" id="reserved" role="tabpanel"
               aria-labelledby="reserved-tab">
               <div class="container-fluid">
-                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings"
-                                                :editable="false"
-                                                :toggleable="false" />
+                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings" :editable="false"
+                  :toggleable="false" />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -637,9 +634,8 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'occupied' }" id="occupied" role="tabpanel"
               aria-labelledby="occupied-tab">
               <div class="container-fluid">
-                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings"
-                                                :editable="false"
-                                                :toggleable="false" />
+                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings" :editable="false"
+                  :toggleable="false" />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -667,9 +663,8 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'checkedout' }" id="checkedout"
               role="tabpanel" aria-labelledby="checkedout-tab">
               <div class="container-fluid">
-                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings"
-                                                :editable="false"
-                                                :toggleable="false" />
+                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings" :editable="false"
+                  :toggleable="false" />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -698,13 +693,12 @@
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'all' }" id="all" role="tabpanel"
               aria-labelledby="all-tab">
               <div class="container-fluid">
-                <table-component :mainHeaders=bookingsAllOptions :mainItems="filteredRoomBookings"
-                                                :editable="false"
-                                                :toggleable="false">
-                                                   <template #default="{data}">
-                                                      {{ data.totalPrice - data.partialPayment }}
-                                                   </template>
-                             </table-component>
+                <table-component :mainHeaders=bookingsAllOptions :mainItems="filteredRoomBookings" :editable="false"
+                  :toggleable="false">
+                  <template #default="{ data }">
+                    {{ data.totalPrice - data.partialPayment }}
+                  </template>
+                </table-component>
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -1099,7 +1093,7 @@
                 </div>
 
                 <div v-else-if="this.reservation.status == 'checkedin'">
-                  
+
                   <span v-if="userdata.role !== 'reservationist'">
                     <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
                       type="button" class="btn btn-success">Pay Now</button>
@@ -1111,10 +1105,10 @@
                     </div>
                   </span>
                 </div>
-                
+
                 <button v-else-if="this.reservation.status == 'vacant'" type="submit" class="btn btn-primary">Book
                   Now</button> &nbsp;
-                
+
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
@@ -1189,210 +1183,210 @@ export default {
   data() {
     return {
       bookingsOptions: [{
-                'label': 'Room Name',
-                'field': 'room_name',
-                'sortable': true
-            },{
-                'label': 'Checkin Date',
-                'field': 'checkinDate',
-                'sortable': true
-            },{
-                'label': 'Checkout Date',
-                'field': 'checkoutDate',
-                'sortable': true
-            },{
-                'label': 'Guest',
-                'field': 'name',
-                'sortable': true
-            },{
-                'label': 'Contact Number',
-                'field': 'contactNumber',
-                'sortable': true
-            },{
-                'label': 'Email',
-                'field': 'clientemail',
-                'sortable': true
-            },],
+        'label': 'Room Name',
+        'field': 'room_name',
+        'sortable': true
+      }, {
+        'label': 'Checkin Date',
+        'field': 'checkinDate',
+        'sortable': true
+      }, {
+        'label': 'Checkout Date',
+        'field': 'checkoutDate',
+        'sortable': true
+      }, {
+        'label': 'Guest',
+        'field': 'name',
+        'sortable': true
+      }, {
+        'label': 'Contact Number',
+        'field': 'contactNumber',
+        'sortable': true
+      }, {
+        'label': 'Email',
+        'field': 'clientemail',
+        'sortable': true
+      },],
       bookingsAllOptions: [{
-                'label': 'Room Name',
-                'field': 'room_name',
-                'sortable': true
-            },{
-                'label': 'Checkin Date',
-                'field': 'checkinDate',
-                'sortable': true
-            },{
-                'label': 'Checkout Date',
-                'field': 'checkoutDate',
-                'sortable': true
-            },{
-                'label': 'Guest',
-                'field': 'name',
-                'sortable': true
-            },{
-                'label': 'Contact Number',
-                'field': 'contactNumber',
-                'sortable': true
-            },{
-                'label': 'Email',
-                'field': 'clientemail',
-                'sortable': true
-            },{
-                'label': 'Status',
-                'field': 'status',
-                'sortable': true
-            },{
-                'label': 'Total Price (room+addons)',
-                'field': 'totalPrice',
-                'sortable': true
-            },{
-                'label': 'Partial Payment',
-                'field': 'partialPayment',
-                'sortable': true
-            },{
-                'label': 'Balance',
-                'field': 'balance',
-                'slot' : true
-            },],      
+        'label': 'Room Name',
+        'field': 'room_name',
+        'sortable': true
+      }, {
+        'label': 'Checkin Date',
+        'field': 'checkinDate',
+        'sortable': true
+      }, {
+        'label': 'Checkout Date',
+        'field': 'checkoutDate',
+        'sortable': true
+      }, {
+        'label': 'Guest',
+        'field': 'name',
+        'sortable': true
+      }, {
+        'label': 'Contact Number',
+        'field': 'contactNumber',
+        'sortable': true
+      }, {
+        'label': 'Email',
+        'field': 'clientemail',
+        'sortable': true
+      }, {
+        'label': 'Status',
+        'field': 'status',
+        'sortable': true
+      }, {
+        'label': 'Total Price (room+addons)',
+        'field': 'totalPrice',
+        'sortable': true
+      }, {
+        'label': 'Partial Payment',
+        'field': 'partialPayment',
+        'sortable': true
+      }, {
+        'label': 'Balance',
+        'field': 'balance',
+        'slot': true
+      },],
       reservationsOptions: [{
-                'label': '',
-                'field': 'toggle',
-                'sortable': false,
-            }, {
-                'label': 'No.',
-                'field': 'id',
-                'sortable': true
-            },{
-                'label': 'Name',
-                'field': 'name',
-                'sortable': true
-            },{
-                'label': 'Contact',
-                'field': 'contactNumber',
-                'sortable': true
-            },{
-                'label': 'Address',
-                'field': 'clientaddress',
-                'sortable': true
-            },{
-                'label': 'Checkin Date',
-                'field': 'checkinDate',
-                'sortable': true
-            }, {
-                'label': 'Checkout Date',
-                'field': 'checkoutDate',
-                'sortable': true
-            },{
-                'label': 'Room',
-                'field': 'room_name',
-                'sortable': true
-            },{
-                'label': 'Cost (Room+addon)',
-                'field': 'totalPrice',
-                'sortable': true
-            },{
-                'label': 'Status',
-                'field': 'status',
-                'sortable': true
-            },{
-                'label': 'Payment',
-                'field': 'isPaid',
-                'sortable': true
-            }, ],
+        'label': '',
+        'field': 'toggle',
+        'sortable': false,
+      }, {
+        'label': 'No.',
+        'field': 'id',
+        'sortable': true
+      }, {
+        'label': 'Name',
+        'field': 'name',
+        'sortable': true
+      }, {
+        'label': 'Contact',
+        'field': 'contactNumber',
+        'sortable': true
+      }, {
+        'label': 'Address',
+        'field': 'clientaddress',
+        'sortable': true
+      }, {
+        'label': 'Checkin Date',
+        'field': 'checkinDate',
+        'sortable': true
+      }, {
+        'label': 'Checkout Date',
+        'field': 'checkoutDate',
+        'sortable': true
+      }, {
+        'label': 'Room',
+        'field': 'room_name',
+        'sortable': true
+      }, {
+        'label': 'Cost (Room+addon)',
+        'field': 'totalPrice',
+        'sortable': true
+      }, {
+        'label': 'Status',
+        'field': 'status',
+        'sortable': true
+      }, {
+        'label': 'Payment',
+        'field': 'isPaid',
+        'sortable': true
+      },],
       transactionsOptions: [{
-                'label': '',
-                'field': 'toggle',
-                'sortable': false,
-            }, {
-                'label': '#',
-                'field': 'id',
-                'sortable': true
-            }, {
-                'label': 'Name',
-                'field': 'clientname',
-                'sortable': true
-            }, {
-                'label': 'Contact',
-                'field': 'clientcontact',
-                'sortable': true
-            }, {
-                'label': 'Address',
-                'field': 'clientaddress',
-                'sortable': true
-            }, {
-                'label': 'Total Amount',
-                'field': 'totalAmountToPay',
-                'sortable': true
-            }, {
-                'label': 'Total Cash',
-                'field': 'cashAmountPay',
-                'sortable': true
-            }, {
-                'label': 'New Balance',
-                'field': 'balance',
-                'sortable': true
-            }, {
-                'label': 'Latest Status',
-                'field': 'payStatus',
-                'sortable': true
-            }, {
-                'label': 'Latest Transaction Date',
-                'field': 'transaction_date',
-                'sortable': true
-            }],
-            transactionhistory: [{
-                'label': 'Method',
-                'field': 'paymentMethod'
-            },{
-                'label': 'Ref. No.',
-                'field': 'nonCashReference'
-            },{
-                'label': 'Total',
-                'field': 'totalAmountToPay'
-            },{
-                'label': 'Amount Paid',
-                'field': 'cashAmountPay'
-            },{
-                'label': 'Balance',
-                'field': 'balance'
-            },{
-                'label': 'Discount Mode',
-                'field': 'discountMode'
-            },{
-                'label': 'Discount Value',
-                'field': 'discountValue'
-            },{
-                'label': 'Processed by',
-                'field': 'processedBy'
-            },{
-                'label': 'Status',
-                'field': 'payStatus'
-            },{
-                'label': 'Date',
-                'field': 'transaction_date'
-            },],
-            transactionitem: [{
-                'label': 'Name',
-                'field': 'itemName'
-            },{
-                'label': 'Category',
-                'field': 'itemOption'
-            },{
-                'label': 'Type',
-                'field': 'itemType'
-            },{
-                'label': 'Rate',
-                'field': 'itemPriceRate'
-            },{
-                'label': 'Qty',
-                'field': 'purchaseQty'
-            },{
-                'label': 'Total',
-                'field': 'totalCost'
-            },{
-                'label': 'Date',
-                'field': 'dateCreated'
-            },],
+        'label': '',
+        'field': 'toggle',
+        'sortable': false,
+      }, {
+        'label': '#',
+        'field': 'id',
+        'sortable': true
+      }, {
+        'label': 'Name',
+        'field': 'clientname',
+        'sortable': true
+      }, {
+        'label': 'Contact',
+        'field': 'clientcontact',
+        'sortable': true
+      }, {
+        'label': 'Address',
+        'field': 'clientaddress',
+        'sortable': true
+      }, {
+        'label': 'Total Amount',
+        'field': 'totalAmountToPay',
+        'sortable': true
+      }, {
+        'label': 'Total Cash',
+        'field': 'cashAmountPay',
+        'sortable': true
+      }, {
+        'label': 'New Balance',
+        'field': 'balance',
+        'sortable': true
+      }, {
+        'label': 'Latest Status',
+        'field': 'payStatus',
+        'sortable': true
+      }, {
+        'label': 'Latest Transaction Date',
+        'field': 'transaction_date',
+        'sortable': true
+      }],
+      transactionhistory: [{
+        'label': 'Method',
+        'field': 'paymentMethod'
+      }, {
+        'label': 'Ref. No.',
+        'field': 'nonCashReference'
+      }, {
+        'label': 'Total',
+        'field': 'totalAmountToPay'
+      }, {
+        'label': 'Amount Paid',
+        'field': 'cashAmountPay'
+      }, {
+        'label': 'Balance',
+        'field': 'balance'
+      }, {
+        'label': 'Discount Mode',
+        'field': 'discountMode'
+      }, {
+        'label': 'Discount Value',
+        'field': 'discountValue'
+      }, {
+        'label': 'Processed by',
+        'field': 'processedBy'
+      }, {
+        'label': 'Status',
+        'field': 'payStatus'
+      }, {
+        'label': 'Date',
+        'field': 'transaction_date'
+      },],
+      transactionitem: [{
+        'label': 'Name',
+        'field': 'itemName'
+      }, {
+        'label': 'Category',
+        'field': 'itemOption'
+      }, {
+        'label': 'Type',
+        'field': 'itemType'
+      }, {
+        'label': 'Rate',
+        'field': 'itemPriceRate'
+      }, {
+        'label': 'Qty',
+        'field': 'purchaseQty'
+      }, {
+        'label': 'Total',
+        'field': 'totalCost'
+      }, {
+        'label': 'Date',
+        'field': 'dateCreated'
+      },],
       dayreserve: new Date(),
       showTable: {},
       toggleAll: true,
@@ -1899,6 +1893,7 @@ export default {
         });
 
         if (result.isConfirmed) {
+          let bId = this.bookings[this.itemIndex].itemID;
           try {
             const updatedItems = [];
 
@@ -1917,12 +1912,13 @@ export default {
               };
 
               try {
-                data.bookingID = this.bookings[this.itemIndex].itemID;
+                data.bookingID = bId;
                 // Send PUT request to update the item
                 const response = await axios.put(api, data);
                 updatedItems.push(response.data);
               } catch (error) {
                 data.bookingID = "walkin"
+                bId = data.bookingID;
                 updatedItems.push(data);
               }
             });
@@ -1940,6 +1936,14 @@ export default {
                 Object.assign(item, updatedItem);
               }
             }));
+
+            if (bId !== "walkin") {
+              const resId = this.bookings[this.itemIndex].id;
+              this.bookings[this.itemIndex].isPaid = "partial";
+              this.updateBookings(resId);
+              this.populateCalendarItems();
+            }
+
           } catch (error) {
             console.error(error);
           }
@@ -2383,7 +2387,7 @@ export default {
         let landingDateCheckin = CalendarMath.addDays(item.startDate, eLength);
         let landingDateCheckout = CalendarMath.addDays(item.endDate, eLength);
 
-        let filteredBookings = this.bookings.filter(booking => booking.status === 'reserved' &&  booking.itemID !== this.bookings[this.itemIndex].itemID && booking.room_name === this.bookings[this.itemIndex].room_name && new Date(booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0]).setHours(0, 0, 0, 0) <= landingDateCheckout.setHours(0, 0, 0, 0)
+        let filteredBookings = this.bookings.filter(booking => booking.status === 'reserved' && booking.itemID !== this.bookings[this.itemIndex].itemID && booking.room_name === this.bookings[this.itemIndex].room_name && new Date(booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0]).setHours(0, 0, 0, 0) <= landingDateCheckout.setHours(0, 0, 0, 0)
           && new Date(booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0));
 
         if (filteredBookings.length === 0) {
@@ -2609,19 +2613,19 @@ export default {
         const response = await axios.get(this.API_URL + 'transaction/');
         this.transactions = response.data;
         this.transactions.forEach(async (item, index) => {
-                        try {
-                            const a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-                                { "columnName": 'bookingID', "columnKey": item.bookingID },
-                            ]);
-                            const b = await axios.post(`${this.API_URL}transaction/record/filter/`, [
-                              { "columnName": "transaction", "columnKey": item.id },
-                            ])
-                            this.transactions[index].items = a.data;
-                            this.transactions[index].items2 = b.data;
-                        } catch (error) {
+          try {
+            const a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+              { "columnName": 'bookingID', "columnKey": item.bookingID },
+            ]);
+            const b = await axios.post(`${this.API_URL}transaction/record/filter/`, [
+              { "columnName": "transaction", "columnKey": item.id },
+            ])
+            this.transactions[index].items = a.data;
+            this.transactions[index].items2 = b.data;
+          } catch (error) {
 
-                        }
-                    });
+          }
+        });
       } catch (error) {
         console.error(error); // log any errors
         this.transactions = []; // return an empty array in case of errors
@@ -2793,8 +2797,8 @@ export default {
               const existingbalance = transaction.balance;
               let origCash = parseFloat(this.cashAmount) > parseFloat(this.total) ? parseFloat(this.total) : parseFloat(this.cashAmount);
               const newbalance = (existingCashAmountPay + parseFloat(this.cashAmount) < parseFloat(this.subtotal)) ? parseFloat(transaction.totalAmountToPay) - parseFloat(newcashAmountPay) : 0;
-              const origbal = parseFloat(this.subtotal)-newcashAmountPay;
-              const payamountnow = (existingbalance - newbalance <= 0)?  origCash : existingbalance - newbalance;
+              const origbal = parseFloat(this.subtotal) - newcashAmountPay;
+              const payamountnow = (existingbalance - newbalance <= 0) ? origCash : existingbalance - newbalance;
               const transactionData = {
                 clientname: this.billing.clientName,
                 clientemail: this.billing.clientEmail,
@@ -2979,7 +2983,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
           });
           return false;
         }
-        
+
         if (this.howMany[index] > 0) {
           this.itemCart.name = item.item;
           this.itemCart.type = item.type;
@@ -3210,53 +3214,53 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
 
 html,
 body {
-    background-color: #f7fcff;
+  background-color: #f7fcff;
 }
 
 #app {
 
-    font-family: Calibri, sans-serif;
-    width: 95vw;
-    min-width: 30rem;
-    max-width: 100rem;
-    min-height: 40rem;
-    margin-left: auto;
-    margin-right: auto;
+  font-family: Calibri, sans-serif;
+  width: 95vw;
+  min-width: 30rem;
+  max-width: 100rem;
+  min-height: 40rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .calendar-parent {
 
-    overflow-x: hidden;
-    overflow-y: hidden;
-    height: 720px;
-    max-height: 720px;
-    background-color: white;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  height: 720px;
+  max-height: 720px;
+  background-color: white;
 }
 
 /* For long calendars, ensure each week gets sufficient height. The body of the calendar will scroll if needed */
 .cv-wrapper.period-month.periodCount-2 .cv-week,
 .cv-wrapper.period-month.periodCount-3 .cv-week,
 .cv-wrapper.period-year .cv-week {
-    min-height: 6rem;
+  min-height: 6rem;
 }
 
 /* These styles are optional, to illustrate the flexbility of styling the calendar purely with CSS. */
 
 /* Add some styling for items tagged with the "birthday" class */
 .theme-default .cv-item.birthday {
-    background-color: #e0f0e0;
-    border-color: #d7e7d7;
+  background-color: #e0f0e0;
+  border-color: #d7e7d7;
 }
 
 .theme-default .cv-item.birthday::before {
-    content: "\1F382";
-    /* Birthday cake */
-    margin-right: 0.5em;
+  content: "\1F382";
+  /* Birthday cake */
+  margin-right: 0.5em;
 }
 
 /* The following classes style the classes computed in myDateClasses and passed to the component's dateClasses prop. */
 .theme-default .cv-day.ides {
-    background-color: #ffe0e0;
+  background-color: #ffe0e0;
 }
 
 img {
