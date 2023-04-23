@@ -444,86 +444,164 @@
 
     <div id="billing-details" class="container-fluid billing">
       <div class="container">
-        <div class="row justify-content-between">
-          <div class="col-4">
-            <img src="http://localhost:5173/src/assets/pantukan-waterworld-logo.jpg" width="60" height="60"
-              alt="Company Logo" class="logo">
-          </div>
-          <div class="col-4 text-right">
-            <h4>Billing Statement</h4>
-            <p>Transaction No.: {{ this.billing.bookingID }}</p>
-          </div>
-        </div>
-        <hr>
         <div class="row">
-          <div class="col-6">
-            <h5>Client Details:</h5>
-            <p>Name: {{ this.billing.clientName }}</p>
-            <p>Email: {{ this.billing.clientEmail }}</p>
-            <p>Contact No.: {{ this.billing.clientPhone }}</p>
-            <p>Address.: {{ this.billing.clientAddress }}</p>
-          </div>
-        </div>
-        <hr>
-        <div class="row">
-          <div class="col-12">
-            <h5>Order Details:</h5>
-            <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-              <thead>
-                <tr>
-                  <th>Item Name</th>
-                  <th>Category</th>
-                  <th>Rate</th>
-                  <th>Qty</th>
-                  <th>Total Cost</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in cart" :key="item.id">
-                  <td>{{ item.name }}</td>
-                  <td>{{ item.type }}</td>
-                  <td>{{ item.priceRate }}</td>
-                  <td>{{ item.purqty }}</td>
-                  <td v-if="item.itemOption !== 'room'">{{ item.totalCartPrice }}</td>
-                  <td v-else v-html="subroom.original + ' ' + subroom.discounted"></td>
-                </tr>
-                <tr>
-                  <td colspan="4" class="text-right"><strong>Partial Payment:</strong></td>
-                  <td class="text-danger"><strong>-Php {{ partialPayment }}</strong></td>
-                </tr>
-                <tr>
-                  <td colspan="4" class="text-right"><strong>Total Due:</strong></td>
-                  <td><strong>Php {{ total }}</strong></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <hr>
-        <div class="row">
-          <div class="col-12">
-            <h5>Terms &amp; Conditions:</h5>
-            <p>1. Check-in time is at 2:00 PM. Check-out time is at 12:00 PM.</p>
-            <p>2. Late check-out is subject to availability and may be charged an additional fee.</p>
-            <p>3. Smoking is strictly prohibited inside the resort premises.</p>
-            <p>4. Pets are not allowed inside the resort.</p>
-            <p>5. Any damage or loss to the resort property will be charged to the guest.</p>
-            <p>6. The resort reserves the right to refuse service to anyone.</p>
-            <p>7. All rates are inclusive of taxes and service charge.</p>
-            <p>8. Payment must be settled upon check-out.</p>
-            <p>9. The resort is not responsible for any loss or damage to personal belongings.</p>
-          </div>
-        </div>
-        <hr>
-        <div class="row">
-          <div class="col-6">
-            <h5>Customer Signature:</h5>
+          <div :class="!isThereLeisures ? 'col-6' : 'col-12'">
+            <div class="row justify-content-between">
+              <div class="col-4">
+                <img src="http://localhost:5173/src/assets/pantukan-waterworld-logo.jpg" width="60" height="60"
+                  alt="Company Logo" class="logo">
+              </div>
+              <div class="col-4 text-right">
+                <span style="font-size: small;">Billing Statement</span>
+                <p>Transaction No.: {{ this.billing.bookingID }}</p>
+              </div>
+            </div>
             <hr>
           </div>
-          <div class="col-6 text-right">
-            <h5>Check-In Staff Signature:</h5>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <div class="row">
+              <div class="col-6">
+                <span style="font-size: small;">Client Details:</span>
+                <p>Name: {{ this.billing.clientName }}</p>
+                <p>Email: {{ this.billing.clientEmail }}</p>
+                <p>Contact No.: {{ this.billing.clientPhone }}</p>
+                <p>Address.: {{ this.billing.clientAddress }}</p>
+              </div>
+            </div>
             <hr>
-            <p>Date: {{ currentDate }}</p>
+            <div class="row">
+              <div class="col-12">
+                <span style="font-size: small;">Order Details:</span>
+                <table border="1">
+                  <thead>
+                    <tr>
+                      <th>Item Name</th>
+                      <th>Category</th>
+                      <th>Rate</th>
+                      <th>Qty</th>
+                      <th>Total Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in cart" :key="item.id">
+                      <td>{{ item.name }}</td>
+                      <td>{{ item.type }}</td>
+                      <td>{{ item.priceRate }}</td>
+                      <td>{{ item.purqty }}</td>
+                      <td v-if="item.itemOption !== 'room'">{{ item.totalCartPrice }}</td>
+                      <td v-else v-html="subroom.original + ' ' + subroom.discounted"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-right"><strong>Partial Payment:</strong></td>
+                      <td class="text-danger"><strong>-Php {{ partialPayment }}</strong></td>
+                    </tr>
+                    <tr>
+                      <td colspan="4" class="text-right"><strong>Total Due:</strong></td>
+                      <td><strong>Php {{ total }}</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-12">
+                <span style="font-size: small;">Terms &amp; Conditions:</span>
+                <p>1. Check-in time is at 2:00 PM. Check-out time is at 12:00 PM.</p>
+                <p>2. Late check-out is subject to availability and may be charged an additional fee.</p>
+                <p>3. Smoking is strictly prohibited inside the resort premises.</p>
+                <p>4. Pets are not allowed inside the resort.</p>
+                <p>5. Any damage or loss to the resort property will be charged to the guest.</p>
+                <p>6. The resort reserves the right to refuse service to anyone.</p>
+                <p>7. All rates are inclusive of taxes and service charge.</p>
+                <p>8. Payment must be settled upon check-out.</p>
+                <p>9. The resort is not responsible for any loss or damage to personal belongings.</p>
+              </div>
+            </div>
+          </div>
+          <div v-if="isThereLeisures" :class="isThereLeisures ? 'col-6' : 'col-0'">
+            <span style="font-size: small;">WAIVER AND AGREEMENT TO LEASE WATER SPORTS</span>
+            <p>The undersigned <span style="text-decoration: underline;">{{ this.billing.clientName }}</span> further
+              states and affirms that he/she has been fully advised and thoroughly informed of the dangers of using WATER
+              SPORTS. By fixing his/her signature hereunder, he/she attests and certifies that he/she is fully aware of
+              such basic risks.</p>
+            <p>The UNDERSIGND herein agrees and acknowledge that neither WATERWORLD PANTUKAN BEACH RESORT located at
+              Mendoza,King-king, Pantukan Davao De oro nor any of its officers, employees and staff or representative may
+              not be held responsible or liable in any way what so ever for any incident, mishap or other occurrence in
+              connection with the use of the WATER SPORTS which may result in injury, death illness or other physical or
+              mental damages to the undersigned or company.</p>
+            <p>The UNDERSIGNED finally declares that he/she is of legal age and legally competent to sign this waiver and
+              release: he/she has acquired the consent of his/her parents or guardians and that he/she fully completely
+              agrees without any qualification or reservation having signed and same voluntary and or his/her own
+              freewill.</p>
+            <p>In witness thereof; this Waiver and Release is voluntary signed at <span
+                style="text-decoration: underline;">WATER WORLD PANTUKAN BEACH RESORT</span> on this day of <span
+                style="text-decoration: underline;">{{ currentDate }}</span></p>
+            <hr>
+            <div class="row">
+              <div class="col-12">
+                <span style="font-size: small;">Terms &amp; Conditions:</span>
+                <p>1. Since water sport needs the skill and know-how of the operator, the lessee warrants that he/she can
+                  properly operate the water sport.</p>
+                <p>2. In no case shall Water Sport be used by any other person other than the lessee.</p>
+                <p>3. The Water Sports shall be operated only 300 meters radius from the resort.</p>
+                <p>4. In the event of any wrong use, abuse or negligence on the part of the lessee and the Water Sport
+                  suffers any damage, the lessee/s hold himself/herself/themselves personally liable for the cost of
+                  damage, repairs spare parts and loss on income.</p>
+                <p>5. The lessee/s shall abide by all laws, rules and guidelines in the operation of Water Sports.</p>
+                <p>6. Any untoward incident resulting to the Operation of Water Sports</p>
+                <p>7. Never start the engine if you are less than 3 feet deep. Otherwise, pebbles and sands could be
+                  sucked into the jet intake, causing impelled damage.</p>
+                <p>8. Your are advised to slow down if you are still on the shallow area.</p>
+                <p>9. Be careful with the swimmers, boat, people, sharp objects, ropes and floating debris.</p>
+                <p>10. Observed distance to any WATER SPORTS to prevent any collision.</p>
+                <p>11. The lessor has the right to stop the operation of the WATERN SPORT and the amount paid or deposit
+                  shall be forfeited if the rules and regulations are not followed accordingly.</p>
+                <p>12. No one is allowed to operate the WATER SPORTS if the person is under the influence of liquor/drugs.
+                </p>
+                <p>13. Upon signing hereof, the lessee/s hereby agree/s to all the above terms and conditions.</p>
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <span style="font-size: small;">List of Participants with Signature:</span>
+                <table border="0" cellpadding="0" cellspcing="0">
+                  <tr>
+                    <td>
+                      <p>1. <span style="text-decoration: underline;">{{ this.billing.clientName }}</span> </p>
+                      <p>2._____________________________ </p>
+                      <p>3._____________________________ </p>
+                      <p>4._____________________________ </p>
+                      <p>5._____________________________ </p>
+                    </td>
+                    <td>
+                      <p>6._____________________________ </p>
+                      <p>7._____________________________ </p>
+                      <p>8._____________________________ </p>
+                      <p>9._____________________________ </p>
+                      <p>10._____________________________ </p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div :class="!isThereLeisures ? 'col-6' : 'col-12'">
+            <hr>
+            <div class="row">
+              <div class="col-6">
+                <span style="font-size: small;">Check-In Staff Signature:</span>
+              </div>
+              <div class="col-6 text-right">
+                <span style="font-size: small;">Customer Signature:</span>
+                <p class="mt-2">Date: {{ currentDate }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1756,6 +1834,9 @@ export default {
     change() {
       return (this.cashAmount > this.total) ? this.cashAmount - this.total : 0;
     },
+    isThereLeisures() {
+      return this.cart.filter(item => item.type === 'LEISURES').length > 0;
+    },
     countInclusion() {
       return this.cart.filter(item => item.category === 'inclusion').length;
     },
@@ -1883,16 +1964,17 @@ export default {
       this.billing.clientNationality = this.walkinreservation.clientNationality;
       this.billing.clientType = this.walkinreservation.clientType;
       this.walkinStatus = true;
-      try{
+      try {
         const response = await axios.get(this.API_URL + 'transaction/');
         this.billing.bookingID = response.data.length + 1;
-      } catch{
+      } catch {
 
       }
-      
+
       this.toggleAddAccountModal();
     },
     async moveInclusionCartToMain() {
+      let bId = null;
       const n = this.filteredInclusionCart.length;
       if (n > 0) {
         const result = await this.$swal.fire({
@@ -1907,10 +1989,10 @@ export default {
         });
 
         if (result.isConfirmed) {
-          try{
-            let bId = this.bookings[this.itemIndex].itemID
-          } catch{
-            let bId = "walkin"
+          try {
+            bId = this.bookings[this.itemIndex].itemID
+          } catch {
+            bId = "walkin"
           }
           try {
             const updatedItems = [];
@@ -1961,7 +2043,7 @@ export default {
               this.updateBookings(resId);
               this.populateCalendarItems();
             }
-            
+
 
           } catch (error) {
             console.error(error);
@@ -2903,7 +2985,7 @@ export default {
       const printBtn = '<div class="row no-print"><div class="col-md-12 text-right"><button class="btn btn-danger" onclick="window.print()">Print Now</button></div></div>';
       const footerContent = `<p class="text-right">Total = ${this.filteredTransactionsTotal}</p><p class="text-right">Collectibles = ${this.filteredTransactionsBalance}</p>`;
       const footerSummary = (ft) ? footerContent : '';
-      const bootstrapCSS = `<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 0.5;padding: 0.5in;}table {margin-top: 0.5in;margin-bottom: 0.5in;}.container {width: ${pWidth}px;height: ${pLength}px;padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}}html, body {width: ${pWidth}px;height: ${pLength}px;margin: 0;padding: 0;}}</style>`;
+      const bootstrapCSS = `<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 1.25;padding: 0.5in;font-size:10px} hr {margin-top: 0.5px;;margin-bottom: 0.5px;} p {margin-top: 0.5px;;margin-bottom: 0.5px;} table {table-layout: auto;width:100%;margin:0 auto;border-collapse:collapse;margin-top: 1px;margin-bottom: 1px;} tr td:last-child{width:1%;white-space:nowrap;} .container {width: ${pWidth}px;height: ${pLength}px;padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}}html, body {width: ${pWidth}px;height: ${pLength}px;margin: 0;padding: 0;}}</style>`;
       const bootstrapJS = '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">';
       const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${printBtn}${sectionHTML}${footerSummary}${bootstrapJS}</body></html>`;
       // Create a new jsPDF instance
@@ -2919,15 +3001,15 @@ export default {
       // this.billing.bookingID = response.data.length.toString()
       this.printSection('billing-details', 1300, 850, false);
     },
-    printReservationHistory() {
-      this.printSection('reservationHistory', 850, 1300, true);
-    },
-    printTransactionHistory() {
-      this.printSection('transactionHistory', 850, 1500, true);
-    },
-    printViewReservation() {
-      this.printSection(this.activeTab, 850, 1400, false);
-    },
+    // printReservationHistory() {
+    //   this.printSection('reservationHistory', 850, 1300, true);
+    // },
+    // printTransactionHistory() {
+    //   this.printSection('transactionHistory', 850, 1500, true);
+    // },
+    // printViewReservation() {
+    //   this.printSection(this.activeTab, 850, 1400, false);
+    // },
     async reloadItemsData() {
       try {
         const response = await axios.get(this.API_URL + "leisures/");
@@ -3420,4 +3502,5 @@ img {
 .cv-item.hotel-checkedout {
   background-color: #ff7043;
   /* adjust the color as needed */
-}</style>
+}
+</style>
