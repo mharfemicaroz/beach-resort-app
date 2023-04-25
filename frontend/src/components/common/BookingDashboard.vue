@@ -91,6 +91,21 @@
             <div class="col-md-4">
                 <div class="card x">
                     <div class="card-header text-primary text-center">
+                        <strong>Type of Guest</strong>
+                    </div>
+                    <div class="card-body chart">
+                        <pie-chart v-if="loaded[3]" :chartData="pie2Data" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row row justify-content-center">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card x">
+                    <div class="card-header text-primary text-center">
                         <strong>Reservation Trend</strong>
                     </div>
                     <div class="card-body chart">
@@ -98,44 +113,29 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="card x">
+                    <div class="card-header text-primary text-center">
+                        <strong>Total Revenue</strong>
+                    </div>
+                    <div class="card-body chart">
+                        <bar-chart v-if="loaded[5]" :chartData="bar2Data" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card x">
+                    <div class="card-header text-primary text-center">
+                        <strong>Sales Trend</strong>
+                    </div>
+                    <div class="card-body chart">
+                        <line-chart v-if="loaded[4]" :chartData="line2Data" />
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
-    <!-- <div class="row row justify-content-center">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card x">
-                    <div class="card-header text-primary text-center">
-                        <strong>Occupancy Rate</strong>
-                    </div>
-                    <div class="card-body chart">
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card x">
-                    <div class="card-header text-primary text-center">
-                        <strong>Average Daily Rate (ADR)</strong>
-                    </div>
-                    <div class="card-body chart">
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card x">
-                    <div class="card-header text-primary text-center">
-                        <strong>Revenue Per Available Room (RevPAR)</strong>
-                    </div>
-                    <div class="card-body chart">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div> -->
 </template>
 <script>
 import arima from 'arima/async';
@@ -156,10 +156,18 @@ export default {
             numGuests: 0,
             availableRooms: 0,
             grossIncome: 0,
-            collectibles:0,
+            collectibles: 0,
             loaded: {},
             pie1Data: {
                 labels: ['cancelled', 'reserved', 'checkedin', 'checkedout'],
+                datasets: [
+                    {
+                        data: [],
+                    }
+                ]
+            },
+            pie2Data: {
+                labels: ['in-house', 'walkin'],
                 datasets: [
                     {
                         data: [],
@@ -174,7 +182,23 @@ export default {
                     }
                 ]
             },
+            bar2Data: {
+                labels: ['Beach Room', 'Pool Room', 'Beach Cottage', 'Pool Cottage', 'Gazebo Cottage'],
+                datasets: [
+                    {
+                        data: [],
+                    }
+                ]
+            },
             line1Data: {
+                labels: [],
+                datasets: [
+                    {
+                        data: [],
+                    }
+                ]
+            },
+            line2Data: {
                 labels: [],
                 datasets: [
                     {
@@ -198,19 +222,13 @@ export default {
             const [day, month, year] = dateString.split('/');
             return new Date(`${year}-${month}-${day}`);
         },
-        parseDate3(){
-            const date = new Date(dateString);
-            const options = {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-                timeZoneName: 'short',
-                timeZone: 'Asia/Shanghai'
-            };
-            return date.toLocaleString('en-US', options);            
+        parseDate3(dateString) {
+            const dateObj = new Date(dateString);
+            const month = dateObj.getMonth() + 1;
+            const day = dateObj.getDate();
+            const year = dateObj.getFullYear();
+            const newDateString = `${month}/${day}/${year}`;
+            return newDateString;
         },
         pie1Datasets(data) {
             const numCancelled = data.filter(item => item.status === 'cancelled').length;
@@ -218,6 +236,11 @@ export default {
             const numIn = data.filter(item => item.status === 'checkedin').length;
             const numOut = data.filter(item => item.status === 'checkedout').length;
             this.pie1Data.datasets[0].data = [numCancelled, numReserved, numIn, numOut]
+        },
+        pie2Datasets(data) {
+            const numInHouse = data.filter(item => item.bookingID.charAt(0) === 'e').length;
+            const numWalkGuest = data.filter(item => item.bookingID.charAt(0) === 'f').length;
+            this.pie2Data.datasets[0].data = [numInHouse, numWalkGuest]
         },
         bar1Datasets(data) {
             const br = data.filter(item => item.room_type === 'BEACH ROOM').length;
@@ -227,19 +250,70 @@ export default {
             const gc = data.filter(item => item.room_type === 'GAZEBO COTTAGE').length;
             this.bar1Data.datasets[0].data = [br, pl, bc, pc, gc]
         },
+        bar2Datasets(data) {
+            const all = data.reduce((accumulator, currentValue) => {
+                return accumulator + parseFloat(currentValue.totalCost);
+            }, 0);
+            const br = data.filter(item => item.itemType === 'BEACH ROOM').reduce((accumulator, currentValue) => {
+                return accumulator + parseFloat(currentValue.totalCost);
+            }, 0);
+            const pl = data.filter(item => item.itemType === 'POOL ROOM').reduce((accumulator, currentValue) => {
+                return accumulator + parseFloat(currentValue.totalCost);
+            }, 0);
+            const bc = data.filter(item => item.itemType === 'BEACH COTTAGE').reduce((accumulator, currentValue) => {
+                return accumulator + parseFloat(currentValue.totalCost);
+            }, 0);
+            const pc = data.filter(item => item.itemType === 'POOL COTTAGE').reduce((accumulator, currentValue) => {
+                return accumulator + parseFloat(currentValue.totalCost);
+            }, 0);
+            const gc = data.filter(item => item.itemType === 'GAZEBO COTTAGE').reduce((accumulator, currentValue) => {
+                return accumulator + parseFloat(currentValue.totalCost);
+            }, 0);
+            this.bar2Data.datasets[0].data = [br, pl, bc, pc, gc]
+        },
         line1Datasets(data) {
-            const bookingsByDate = data.reduce((acc, curr) => {
+            const arr = data.reduce((acc, curr) => {
                 const date = this.parseDate(curr.checkinDate);
                 acc[date] = (acc[date] || 0) + 1;
                 return acc;
             }, {});
 
-            const dates = Object.keys(bookingsByDate).sort();
-            const frequency = dates.map(date => bookingsByDate[date]);
+            const dates = Object.keys(arr).sort();
+            const frequency = dates.map(date => arr[date]);
             dates.unshift('');
             frequency.unshift(0);
             this.line1Data.labels = dates;
             this.line1Data.datasets[0].data = frequency;
+        },
+        line2Datasets(data) {
+            const summary = data.reduce((acc, curr) => {
+                const index = acc.dates.indexOf(this.parseDate3(curr.transaction_date));
+
+                if (index === -1) {
+                    acc.dates.push(this.parseDate3(curr.transaction_date));
+                    acc.totals.push(parseFloat(curr.cashAmountPay));
+                } else {
+                    acc.totals[index] += parseFloat(curr.cashAmountPay);
+                }
+
+                return acc;
+            }, { dates: [], totals: [] });
+
+            const result = {
+                dates: summary.dates,
+                totalCashAmountPay: summary.totals
+            };
+
+            const o = result.dates.map((date, index) => ({ date, totalCashAmountPay: result.totalCashAmountPay[index] }));
+            o.sort((a, b) => new Date(a.date) - new Date(b.date));
+            result.totalCashAmountPay = o.map(item => item.totalCashAmountPay);
+            result.dates.sort((a, b) => new Date(a) - new Date(b));
+            result.dates.unshift('');
+            result.totalCashAmountPay.unshift(0);
+
+            this.line2Data.labels = result.dates;
+            this.line2Data.datasets[0].data = result.totalCashAmountPay;
+
         },
         forecast(data) {
             return arima.then(ARIMA => {
@@ -250,10 +324,13 @@ export default {
         },
     },
     async mounted() {
-        console.log(new Date())
         this.loaded[0] = false;
         this.loaded[1] = false;
         this.loaded[2] = false;
+        this.loaded[3] = false;
+        this.loaded[4] = false;
+        this.loaded[5] = false;
+
         try {
             const bookingData = await axios.get(this.API_URL + "bookings/");
             const transactionData = await axios.get(this.API_URL + "transaction/");
@@ -261,7 +338,7 @@ export default {
             const transactionItemsData = await axios.get(this.API_URL + "transaction/item/");
             const roomsData = await axios.get(this.API_URL + "rooms/");
 
-            this.numReservations = bookingData.data.filter(item=>item.checkinDate === new Date().toLocaleDateString('en-GB')).length;
+            this.numReservations = bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')).length;
             this.numGuests = transactionItemsData.data.filter(item => item.itemType === 'ENTRANCE' && new Date(item.dateCreated).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).length
             this.availableRooms = roomsData.data.filter(room => {
                 // Check if there are any bookings for this room that overlap with the specified date range
@@ -273,21 +350,26 @@ export default {
                 // Return true if there are no overlapping bookings
                 return overlappingBookings.length === 0;
             }).length;
-            this.grossIncome = transactionData.data.filter(item=>new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
+            this.grossIncome = transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
                 return accumulator + parseFloat(currentValue.cashAmountPay);
             }, 0);
-            this.collectibles = transactionData.data.filter(item=>new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
+            this.collectibles = transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
                 return accumulator + parseFloat(currentValue.balance);
             }, 0);
 
-
-            this.pie1Datasets(bookingData.data.filter(item=>item.checkinDate === new Date().toLocaleDateString('en-GB')));
-            this.bar1Datasets(bookingData.data.filter(item=>item.checkinDate === new Date().toLocaleDateString('en-GB')));
+            this.pie1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
+            this.pie2Datasets(transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')));
+            this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
+            this.bar2Datasets(transactionItemsData.data);
             this.line1Datasets(bookingData.data);
+            this.line2Datasets(transactionData.data);
 
             this.loaded[0] = true;
             this.loaded[1] = true;
             this.loaded[2] = true;
+            this.loaded[3] = true;
+            this.loaded[4] = true;
+            this.loaded[5] = true;
         } catch (error) {
 
         }
