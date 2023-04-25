@@ -198,6 +198,20 @@ export default {
             const [day, month, year] = dateString.split('/');
             return new Date(`${year}-${month}-${day}`);
         },
+        parseDate3(){
+            const date = new Date(dateString);
+            const options = {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric',
+                timeZoneName: 'short',
+                timeZone: 'Asia/Shanghai'
+            };
+            return date.toLocaleString('en-US', options);            
+        },
         pie1Datasets(data) {
             const numCancelled = data.filter(item => item.status === 'cancelled').length;
             const numReserved = data.filter(item => item.status === 'reserved').length;
@@ -236,17 +250,19 @@ export default {
         },
     },
     async mounted() {
+        console.log(new Date())
         this.loaded[0] = false;
         this.loaded[1] = false;
         this.loaded[2] = false;
         try {
             const bookingData = await axios.get(this.API_URL + "bookings/");
             const transactionData = await axios.get(this.API_URL + "transaction/");
+
             const transactionItemsData = await axios.get(this.API_URL + "transaction/item/");
             const roomsData = await axios.get(this.API_URL + "rooms/");
 
-            this.numReservations = bookingData.data.length;
-            this.numGuests = transactionItemsData.data.filter(item => item.itemType === 'ENTRANCE').length
+            this.numReservations = bookingData.data.filter(item=>item.checkinDate === new Date().toLocaleDateString('en-GB')).length;
+            this.numGuests = transactionItemsData.data.filter(item => item.itemType === 'ENTRANCE' && new Date(item.dateCreated).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).length
             this.availableRooms = roomsData.data.filter(room => {
                 // Check if there are any bookings for this room that overlap with the specified date range
                 const overlappingBookings = bookingData.data.filter(booking => {
@@ -257,16 +273,16 @@ export default {
                 // Return true if there are no overlapping bookings
                 return overlappingBookings.length === 0;
             }).length;
-            this.grossIncome = transactionData.data.reduce((accumulator, currentValue) => {
+            this.grossIncome = transactionData.data.filter(item=>new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
                 return accumulator + parseFloat(currentValue.cashAmountPay);
             }, 0);
-            this.collectibles = transactionData.data.reduce((accumulator, currentValue) => {
+            this.collectibles = transactionData.data.filter(item=>new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
                 return accumulator + parseFloat(currentValue.balance);
             }, 0);
 
 
-            this.pie1Datasets(bookingData.data);
-            this.bar1Datasets(bookingData.data);
+            this.pie1Datasets(bookingData.data.filter(item=>item.checkinDate === new Date().toLocaleDateString('en-GB')));
+            this.bar1Datasets(bookingData.data.filter(item=>item.checkinDate === new Date().toLocaleDateString('en-GB')));
             this.line1Datasets(bookingData.data);
 
             this.loaded[0] = true;

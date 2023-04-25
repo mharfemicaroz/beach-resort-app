@@ -13,7 +13,7 @@ moment.tz.setDefault('Asia/Hongkong')
 const app = createApp(App);
 
 app.config.globalProperties = {
-    //API_URL : "http://192.168.183.4:8081/"
+    //API_URL : "http://192.168.254.104:8081/"
     API_URL : "http://192.168.1.222:8081/" 
 }
 

@@ -58,16 +58,16 @@ export default {
                         display: false
                     }
                 },
-                scales: {
-                    x: {
-                        ticks: {
-                            // Include a dollar sign in the ticks
-                            callback: function () {
-                                return '';
-                            }
-                        }
-                    }
-                }
+                // scales: {
+                //     x: {
+                //         ticks: {
+                //             // Include a dollar sign in the ticks
+                //             callback: function () {
+                //                 return '';
+                //             }
+                //         }
+                //     }
+                // }
             }
         }
     },
