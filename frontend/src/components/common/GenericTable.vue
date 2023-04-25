@@ -140,6 +140,11 @@
                             </td>
                         </tr>
                     </template>
+                    <tr>
+                        <td v-for="(header, index) in mainHeaders" :key="index">
+                            <span class="text-primary" v-if="header.reducible" style="font-weight: bold;">{{ sumColumn(header.field) }}</span>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="no-print">
@@ -344,6 +349,11 @@ export default {
                 second: 'numeric'
             };
             return new Intl.DateTimeFormat('en-US', options).format(date);
+        },
+
+        sumColumn(col){
+            const total = this.paginatedMainItems.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue[col]), 0);
+            return total;
         },
 
         printSection() {

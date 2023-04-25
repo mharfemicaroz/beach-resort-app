@@ -4,21 +4,35 @@
     <TopNavBarComponent />
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li v-if="userdata.role === 'superuser'" class="nav-item" role="presentation">
+        <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button"
+          role="tab" aria-controls="dashboard" aria-selected="true" @click="resetSummary(0)">Dashboard</button>
+      </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking" type="button"
-          role="tab" aria-controls="booking" aria-selected="true" @click="resetSummary(0)">Booking & Reservation</button>
+        <button :class="userdata.role === 'superuser'?'nav-link':'nav-link active'" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking" type="button"
+          role="tab" aria-controls="booking" aria-selected="true" @click="resetSummary(1)">Booking & Reservation</button>
       </li>
       <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
         <button class="nav-link" id="others-tab" data-bs-toggle="tab" data-bs-target="#others" type="button" role="tab"
-          aria-controls="others" aria-selected="false" @click="resetSummary(1)">Account</button>
+          aria-controls="others" aria-selected="false" @click="resetSummary(2)">Account</button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab"
-          aria-controls="reports" aria-selected="false" @click="resetSummary(2)">Reports</button>
+          aria-controls="reports" aria-selected="false" @click="resetSummary(3)">Reports</button>
       </li>
     </ul>
     <div class="tab-content mt-3" id="myTabContent">
-      <div class="tab-pane fade show active" id="booking" role="tabpanel" aria-labelledby="booking-tab">
+      <div v-if="userdata.role === 'superuser'" class="tab-pane fade show active" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <BookingDashboard :key="componentKey" />
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div :class="userdata.role === 'superuser'?'tab-pane fade':'tab-pane fade show active'" id="booking" role="tabpanel" aria-labelledby="booking-tab">
         <div class="container-fluid">
           <div class="row">
 
@@ -418,9 +432,9 @@
 
 
 
-          <div class="row">
+          <!-- <div class="row">
 
-            <!--<div class="col-md-6">
+            <div class="col-md-6">
               <h2>Reservations Chart</h2>
               <div style="height:350px">
                 <Line :data="linedata" :options="lineoptions" />
@@ -434,8 +448,8 @@
               <div style="height:350px">
                 <Line :data="linedata" :options="lineoptions" />
               </div>
-            </div>-->
-          </div>
+            </div>
+          </div> -->
 
 
         </div>
@@ -446,7 +460,7 @@
       <div class="container">
         <div class="row">
           <div :class="!isThereLeisures ? 'col-6' : 'col-12'">
-            <div class="row justify-content-between">
+            <div class="row justify-content-between" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
               <div class="col-4">
                 <img src="http://localhost:5173/src/assets/pantukan-waterworld-logo.jpg" width="60" height="60"
                   alt="Company Logo" class="logo">
@@ -460,7 +474,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-6">
+          <div class="col-6" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
             <div class="row">
               <div class="col-6">
                 <span style="font-size: small;">Client Details:</span>
@@ -591,7 +605,7 @@
           </div>
         </div>
         <div class="row mt-2">
-          <div :class="!isThereLeisures ? 'col-6' : 'col-12'">
+          <div :class="!isThereLeisures ? 'col-6' : 'col-12'" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
             <hr>
             <div class="row">
               <div class="col-6">
@@ -602,9 +616,9 @@
                 <p class="mt-2">Date: {{ currentDate }}</p>
               </div>
             </div>
+            <hr style="border-bottom: dotted;" />
           </div>
         </div>
-        <hr style="border-bottom: dotted;" />
       </div>
 
     </div>
@@ -1215,6 +1229,7 @@
 import { useAuthStore } from "@/stores/authStore";
 import TopNavBarComponent from "@/components/common/TopNavBar.vue";
 import TableComponent from "@/components/common/GenericTable.vue";
+import BookingDashboard from "@/components/common/BookingDashboard.vue";
 import "/node_modules/vue-simple-calendar/dist/style.css"
 import "/node_modules/vue-simple-calendar/dist/css/default.css"
 import "/node_modules/vue-simple-calendar/dist/css/holidays-us.css"
@@ -1264,10 +1279,12 @@ export default {
     CalendarView,
     CalendarViewHeader,
     TopNavBarComponent,
-    TableComponent
+    TableComponent,
+    BookingDashboard
   },
   data() {
     return {
+      componentKey:0,
       bookingsOptions: [{
         'label': 'Room Name',
         'field': 'room_name',
@@ -1332,7 +1349,8 @@ export default {
       }, {
         'label': 'Balance',
         'field': 'balance',
-        'slot': true
+        'slot': true,
+        'sortable': true,
       },],
       reservationsOptions: [{
         'label': '',
@@ -1402,15 +1420,18 @@ export default {
       }, {
         'label': 'Total Amount',
         'field': 'totalAmountToPay',
-        'sortable': true
+        'sortable': true,
+        'reducible':true
       }, {
         'label': 'Total Cash',
         'field': 'cashAmountPay',
-        'sortable': true
+        'sortable': true,
+        'reducible':true
       }, {
         'label': 'New Balance',
         'field': 'balance',
-        'sortable': true
+        'sortable': true,
+        'reducible':true
       }, {
         'label': 'Latest Status',
         'field': 'payStatus',
@@ -1641,9 +1662,9 @@ export default {
       searchTerm2: "",
       walkinStatus: false,
       alreadyDiscounted: false
-    };
+    }; 
   },
-  created() {
+  created() { 
     this.reloadData();
     this.reloadItemsData();
     this.loadTransactionData();
@@ -2118,7 +2139,10 @@ export default {
       this.alreadyDiscounted = false;
       this.itemIndex = -1;
       this.walkinStatus = false;
-      if (no === 1 && this.billing.clientName === "") {
+      if(no === 0){
+        this.componentKey += 1;
+      }
+      if (no === 2 && this.billing.clientName === "") {
         this.toggleAddAccountModal();
       }
     },
