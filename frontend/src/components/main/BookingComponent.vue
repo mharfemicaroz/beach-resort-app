@@ -2980,19 +2980,21 @@ export default {
         this.transactions = response.data;
         this.transactions.forEach(async (item, index) => {
           try {
-
-            const o = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-              { "columnName": 'groupkey', "columnKey": item.groupkey },
-            ]);
-
-            const a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-              { "columnName": 'bookingID', "columnKey": item.bookingID },
-            ]);
+            let a = null;
+            try{
+              a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+                { "columnName": 'groupkey', "columnKey": item.groupkey },
+              ]);
+            } catch(error){
+              a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+                { "columnName": 'bookingID', "columnKey": item.bookingID },
+              ]);
+            }
 
             const b = await axios.post(`${this.API_URL}transaction/record/filter/`, [
               { "columnName": "transaction", "columnKey": item.id },
             ])
-            this.transactions[index].items = (o.data.length > 0)? o. data: a.data;
+            this.transactions[index].items = a.data;
             this.transactions[index].items2 = b.data;
           } catch (error) {
 
@@ -3105,9 +3107,19 @@ export default {
             };
             if (bookid.charAt(0) !== "f") {
               existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-                columnName: 'bookingID',
-                columnKey: bookid
+                columnName: 'groupkey',
+                columnKey: gkey
               });
+              if(existingTransaction.data.length === 0){
+                existingTransaction = {
+                  data: []
+                };
+                existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+                  columnName: 'bookingID',
+                  columnKey: bookid
+                });
+              }
+
             }
             let payStatus = null;
             if (existingTransaction.data.length === 0) {
