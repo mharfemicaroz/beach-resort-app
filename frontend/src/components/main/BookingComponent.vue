@@ -2038,8 +2038,9 @@ export default {
                 itemOption: 'addons',
               };
 
+              const numBookedRooms = this.cart.filter(o=>(o.type.toLowerCase()==='beach room' || o.type.toLowerCase()==='pool room') && o.category==='main').length;
               const numGuestsCard = this.cart.filter(o=>o.name.toLowerCase()==='general entrance' && o.category==='main').length;
-              if(numGuestsCard === 0 && bId !== "walkin"){
+              if(numGuestsCard === 0 && bId !== "walkin" && numBookedRooms > 0){
                 const totalGuests = this.cart.filter(o=>o.name.toLowerCase()==='general entrance').reduce((acc, item) => acc + parseFloat(item.purqty), 0);
                 if(totalGuests === 1){
                   data.totalCost = parseFloat(data.totalCost) - 20;
