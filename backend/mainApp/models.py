@@ -72,6 +72,7 @@ class Transaction(models.Model):
     bookingID = models.CharField(max_length=255)
     processedBy = models.CharField(max_length=128)
     groupkey = models.CharField(max_length=128, null=True, blank=True)
+    cashRemarks = models.CharField(max_length=255,null=True, blank=True)
 
 class TransactionRecord(models.Model):
     transactionrecord_id = models.AutoField(primary_key=True)

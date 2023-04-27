@@ -226,6 +226,10 @@
                       <input type="number" class="form-control" id="discountValue" v-model="discountValue">
                     </div>
                   </div>
+                  <div class="form-group">
+                    <label for="remarks">Remarks:</label>
+                    <input type="text" class="form-control" v-model="cashRemarks">
+                  </div>
                   <div class="form-group mb-2">
                     <label class="font-weight-bold">Summary:</label>
                     <div class="form-control p-3">
@@ -1344,11 +1348,11 @@ export default {
       }, {
         'label': 'Total Price (room+addons)',
         'field': 'totalPrice',
-        'sortable': true
+        'sortable': true,
       }, {
         'label': 'Partial Payment',
         'field': 'partialPayment',
-        'sortable': true
+        'sortable': true,
       }, {
         'label': 'Balance',
         'field': 'balance',
@@ -1438,6 +1442,10 @@ export default {
       }, {
         'label': 'Latest Status',
         'field': 'payStatus',
+        'sortable': true
+      }, {
+        'label': 'Remarks',
+        'field': 'cashRemarks',
         'sortable': true
       }, {
         'label': 'Latest Transaction Date',
@@ -1620,6 +1628,7 @@ export default {
       discountMode: 'percentage',
       discountValue: 0,
       partialPayment: 0,
+      cashRemarks:'',
 
       activeTab: 'all',
       clientName: "",
@@ -2236,6 +2245,7 @@ export default {
           transaction = existingTransaction.data[0];
           this.discountMode = transaction.discountMode;
           this.discountValue = transaction.discountValue;
+          this.cashRemarks = transaction.cashRemarks;
           if (transaction.discountValue > 0) {
             this.alreadyDiscounted = true;
           }
@@ -2376,6 +2386,7 @@ export default {
           transaction = existingTransaction.data[0];
           this.discountMode = transaction.discountMode;
           this.discountValue = transaction.discountValue;
+          this.cashRemarks = transaction.cashRemarks;
           if (transaction.discountValue > 0) {
             this.alreadyDiscounted = true;
           }
@@ -2586,18 +2597,35 @@ export default {
         }
       });
     },
-    checkinGuest() {
-      this.bookings[this.itemIndex].status = "checkedin";
-      this.updateBookings(this.bookings[this.itemIndex].id);
-      this.populateCalendarItems();
-      //this.changeItemColor("checkedin");
-      this.toggleItemModal();
+    asynccheckinGuest() {
       this.$swal.fire({
-        icon: 'success',
-        title: 'Guest Checked In!',
-        text: 'Thank you for checking in the guest.',
-        confirmButtonText: 'OK'
-      });
+        icon: 'warning',
+        title: 'Are you sure?',
+        text: 'Are you sure you want to check in this guest?',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        showCancelButton: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+
+          if (!countdownResult.isConfirmed) {
+            return;
+          }
+
+          this.bookings[this.itemIndex].status = "checkedin";
+          this.updateBookings(this.bookings[this.itemIndex].id);
+          this.populateCalendarItems();
+          //this.changeItemColor("checkedin");
+          this.toggleItemModal();
+          this.$swal.fire({
+            icon: 'success',
+            title: 'Guest Checked In!',
+            text: 'Thank you for checking in the guest.',
+            confirmButtonText: 'OK'
+          });
+        }
+      })
+
     },
     checkOutGuest() {
       this.$swal.fire({
@@ -3148,6 +3176,7 @@ export default {
                 bookingID: bookid,
                 processedBy: this.userdata.fName + " " + this.userdata.lName,
                 groupkey: groupid,
+                cashRemarks: this.cashRemarks,
               };
 
               let doneTransaction = await axios.post(`${this.API_URL}transaction/`, transactionData);
@@ -3275,6 +3304,7 @@ export default {
                 bookingID: bookid,
                 processedBy: this.userdata.fName + " " + this.userdata.lName,
                 groupkey: groupid,
+                cashRemarks: this.cashRemarks,
               };
 
               let doneTransaction = await axios.put(`${this.API_URL}transaction/${existingTransaction.data[0].id}/`, transactionData);
