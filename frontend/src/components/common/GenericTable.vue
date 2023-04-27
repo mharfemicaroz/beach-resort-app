@@ -70,7 +70,7 @@
                                 </template>
                                 <template v-else>
                                     <template v-if="header.slot">
-                                        <slot :data="mainItem"></slot>
+                                        <slot name="content" :data="mainItem"></slot>
                                     </template>
                                     <template v-else>
                                         {{ mainItem[header.field] }}

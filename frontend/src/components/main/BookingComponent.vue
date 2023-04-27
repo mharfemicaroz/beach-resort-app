@@ -199,6 +199,7 @@
                       <div class="input-group-prepend">
                         <select class="form-control selectpicker" data-style="btn-primary" data-width="fit"
                           v-model="nonCashPayPlatform">
+                          <option value="">-- Please select --</option>
                           <option>GCash</option>
                           <option>PayMaya</option>
                           <option>Debit Card</option>
@@ -794,41 +795,7 @@
               aria-labelledby="all-tab">
               <div class="container-fluid">
                 <table-component :mainHeaders=bookingsAllOptions :mainItems="filteredRoomBookings" :editable="false"
-                  :toggleable="false">
-                  <template #default="{ data }">
-                    {{ data.totalPrice - data.partialPayment }}
-                  </template>
-                </table-component>
-                <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                  <thead>
-                    <tr>
-                      <th>Room Name</th>
-                      <th>Checkin Date</th>
-                      <th>Checkout Date</th>
-                      <th>Guest</th>
-                      <th>Contact Number</th>
-                      <th>Email</th>
-                      <th>Status</th>
-                      <th>Room Price (total)</th>
-                      <th>Partial Payment</th>
-                      <th>Balance</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
-                      <td>{{ reservation.room_name }}</td>
-                      <td>{{ reservation.checkinDate }}</td>
-                      <td>{{ reservation.checkoutDate }}</td>
-                      <td>{{ reservation.name }}</td>
-                      <td>{{ reservation.contactNumber }}</td>
-                      <td>{{ reservation.clientemail }}</td>
-                      <td>{{ reservation.status }}</td>
-                      <td>{{ reservation.totalPrice }}</td>
-                      <td>{{ reservation.partialPayment }}</td>
-                      <td>{{ parseFloat(reservation.totalPrice) - parseFloat(reservation.partialPayment) }}</td>
-                    </tr>
-                  </tbody>
-                </table> -->
+                  :toggleable="false" />
               </div>
             </div>
           </div>
@@ -896,17 +863,6 @@
                 <select class="form-control" id="clientType" v-model="walkinreservation.clientType" required>
                   <option value="">-- Please select --</option>
                   <option value="walkin">Walk-in</option>
-                  <option value="vip">VIP</option>
-                  <option value="regular">Regular</option>
-                  <option value="group">Group</option>
-                  <option value="corporate">Corporate</option>
-                  <option value="wedding">Wedding</option>
-                  <option value="honeymoon">Honeymoon</option>
-                  <option value="family">Family</option>
-                  <option value="backpacker">Backpacker</option>
-                  <option value="senior">Senior</option>
-                  <option value="disabled">Disabled</option>
-                  <option value="travel_agent">Travel agent</option>
                 </select>
               </div>
             </div>
@@ -1136,18 +1092,7 @@
               <div class="col-sm-4">
                 <select class="form-control" id="clientType" v-model="reservation.clientType" required>
                   <option value="">-- Please select --</option>
-                  <option value="walkin">Walk-in</option>
-                  <option value="vip">VIP</option>
-                  <option value="regular">Regular</option>
-                  <option value="group">Group</option>
-                  <option value="corporate">Corporate</option>
-                  <option value="wedding">Wedding</option>
-                  <option value="honeymoon">Honeymoon</option>
-                  <option value="family">Family</option>
-                  <option value="backpacker">Backpacker</option>
-                  <option value="senior">Senior</option>
-                  <option value="disabled">Disabled</option>
-                  <option value="travel_agent">Travel agent</option>
+                  <option value="in-house">In-house</option>
                 </select>
               </div>
             </div>
@@ -1349,15 +1294,17 @@ export default {
         'label': 'Total Price (room+addons)',
         'field': 'totalPrice',
         'sortable': true,
+        'reducible': true,
       }, {
         'label': 'Partial Payment',
         'field': 'partialPayment',
         'sortable': true,
+        'reducible': true,
       }, {
         'label': 'Balance',
         'field': 'balance',
-        'slot': true,
         'sortable': true,
+        'reducible': true,
       },],
       reservationsOptions: [{
         'label': '',
@@ -1394,7 +1341,8 @@ export default {
       }, {
         'label': 'Cost (Room+addon)',
         'field': 'totalPrice',
-        'sortable': true
+        'sortable': true,
+        'reducible': true,
       }, {
         'label': 'Status',
         'field': 'status',
@@ -1545,7 +1493,7 @@ export default {
         clientPhone: '',
         clientAddress: '',
         clientNationality: 'Filipino',
-        clientType: 'walkin'
+        clientType: 'in-house'
       },
       reservation: {
         clientName: '',
@@ -1804,6 +1752,12 @@ export default {
         const isCheckedoutMatch = !isCheckedout || booking.status === 'checkedout';
 
         return dateInRange && isCancelledMatch && isReservedMatch && isOccupiedMatch && isCheckedoutMatch;
+      }).map(o => {
+        const balance = parseFloat(o.totalPrice) - parseFloat(o.partialPayment);
+        return {
+          ...o,
+          balance
+        };
       });
     },
     updatedRooms() {
@@ -2597,7 +2551,7 @@ export default {
         }
       });
     },
-    asynccheckinGuest() {
+    checkinGuest() {
       this.$swal.fire({
         icon: 'warning',
         title: 'Are you sure?',
@@ -2607,10 +2561,6 @@ export default {
         showCancelButton: true
       }).then((result) => {
         if (result.isConfirmed) {
-
-          if (!countdownResult.isConfirmed) {
-            return;
-          }
 
           this.bookings[this.itemIndex].status = "checkedin";
           this.updateBookings(this.bookings[this.itemIndex].id);
@@ -2680,7 +2630,7 @@ export default {
         this.reservation.clientEmail = "";
         this.reservation.clientAddress = "";
         this.reservation.clientNationality = "Filipino";
-        this.reservation.clientType = "walkin";
+        this.reservation.clientType = "in-house";
         this.reservation.roomName = "";
         this.reservation.remarks = "";
         this.reservation.clientPhone = "";
@@ -3757,8 +3707,8 @@ body {
 
   overflow-x: hidden;
   overflow-y: hidden;
-  height: 720px;
-  max-height: 720px;
+  height: 900px;
+  max-height: 900px;
   background-color: white;
 }
 
