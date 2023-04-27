@@ -26,6 +26,7 @@ urlpatterns = [
     re_path(r'^users/filter/$', users_filter, name='users-filter'),
     re_path(r'^user/delete/(?P<pk>\d+)/$', user_delete, name='user-delete'), 
     re_path(r'^bookings/$',booking_list , name='booking-list'),
+    re_path(r'^bookings/filter/$', booking_filter, name='booking-filter'),
     re_path(r'^bookings/(?P<pk>\d+)/$', booking_list, name='booking-detail'), 
     re_path(r'^bookings/delete/(?P<pk>\d+)/$', booking_delete, name='booking-delete'),    
     re_path(r'^rooms/$', room_list, name='room-list'),

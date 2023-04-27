@@ -174,6 +174,10 @@ def room_delete(request, pk=None):
 def booking_list(request, pk=None):
     return generic_list(request, Booking, BookingSerializer, pk)
 
+@csrf_exempt    
+def booking_filter(request):
+    return filter_model(request, Booking)
+
 @csrf_exempt
 def booking_delete(request, pk=None):
     return generic_delete(request, Booking, pk)

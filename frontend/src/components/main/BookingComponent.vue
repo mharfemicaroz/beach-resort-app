@@ -1,4 +1,4 @@
-<template>
+<template :key="componentKey">
   <div class="container-fluid">
 
     <TopNavBarComponent />
@@ -9,8 +9,9 @@
           role="tab" aria-controls="dashboard" aria-selected="true" @click="resetSummary(0)">Dashboard</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button :class="userdata.role === 'superuser'?'nav-link':'nav-link active'" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking" type="button"
-          role="tab" aria-controls="booking" aria-selected="true" @click="resetSummary(1)">Booking & Reservation</button>
+        <button :class="userdata.role === 'superuser' ? 'nav-link' : 'nav-link active'" id="booking-tab"
+          data-bs-toggle="tab" data-bs-target="#booking" type="button" role="tab" aria-controls="booking"
+          aria-selected="true" @click="resetSummary(1)">Booking & Reservation</button>
       </li>
       <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
         <button class="nav-link" id="others-tab" data-bs-toggle="tab" data-bs-target="#others" type="button" role="tab"
@@ -22,7 +23,8 @@
       </li>
     </ul>
     <div class="tab-content mt-3" id="myTabContent">
-      <div v-if="userdata.role === 'superuser'" class="tab-pane fade show active" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+      <div v-if="userdata.role === 'superuser'" class="tab-pane fade show active" id="dashboard" role="tabpanel"
+        aria-labelledby="dashboard-tab">
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
@@ -31,8 +33,9 @@
           </div>
         </div>
       </div>
-      
-      <div :class="userdata.role === 'superuser'?'tab-pane fade':'tab-pane fade show active'" id="booking" role="tabpanel" aria-labelledby="booking-tab">
+
+      <div :class="userdata.role === 'superuser' ? 'tab-pane fade' : 'tab-pane fade show active'" id="booking"
+        role="tabpanel" aria-labelledby="booking-tab">
         <div class="container-fluid">
           <div class="row">
 
@@ -1284,7 +1287,7 @@ export default {
   },
   data() {
     return {
-      componentKey:0,
+      componentKey: 0,
       bookingsOptions: [{
         'label': 'Room Name',
         'field': 'room_name',
@@ -1421,17 +1424,17 @@ export default {
         'label': 'Total Amount',
         'field': 'totalAmountToPay',
         'sortable': true,
-        'reducible':true
+        'reducible': true
       }, {
         'label': 'Total Cash',
         'field': 'cashAmountPay',
         'sortable': true,
-        'reducible':true
+        'reducible': true
       }, {
         'label': 'New Balance',
         'field': 'balance',
         'sortable': true,
-        'reducible':true
+        'reducible': true
       }, {
         'label': 'Latest Status',
         'field': 'payStatus',
@@ -1642,7 +1645,8 @@ export default {
         purqty: "",
         totalCartPrice: "",
         category: "",
-        itemOption: ""
+        itemOption: "",
+        groupkey: "",
       },
       billing: {
         clientName: "",
@@ -1662,9 +1666,9 @@ export default {
       searchTerm2: "",
       walkinStatus: false,
       alreadyDiscounted: false
-    }; 
+    };
   },
-  created() { 
+  created() {
     this.reloadData();
     this.reloadItemsData();
     this.loadTransactionData();
@@ -1678,7 +1682,7 @@ export default {
     combinedcart() {
       let result = [];
       let combinedItems = {};
-      for (let item of this.cart.filter(item=>item.category==='main')) {
+      for (let item of this.cart.filter(item => item.category === 'main')) {
         if (!combinedItems[item.name]) {
           combinedItems[item.name] = {
             purqty: item.purqty,
@@ -2024,6 +2028,7 @@ export default {
     },
     async moveInclusionCartToMain() {
       let bId = null;
+      let gkey = null;
       const n = this.filteredInclusionCart.length;
       if (n > 0) {
         const result = await this.$swal.fire({
@@ -2043,6 +2048,13 @@ export default {
           } catch {
             bId = "walkin"
           }
+
+          try{
+            gkey = this.bookings[this.itemIndex].groupkey
+          } catch {
+
+          }
+
           try {
             const updatedItems = [];
 
@@ -2062,6 +2074,7 @@ export default {
 
               try {
                 data.bookingID = bId;
+                data.groupkey = gkey;
                 // Send PUT request to update the item
                 const response = await axios.put(api, data);
                 updatedItems.push(response.data);
@@ -2139,7 +2152,7 @@ export default {
       this.alreadyDiscounted = false;
       this.itemIndex = -1;
       this.walkinStatus = false;
-      if(no === 0){
+      if (no === 0) {
         this.componentKey += 1;
       }
       if (no === 2 && this.billing.clientName === "") {
@@ -2184,71 +2197,43 @@ export default {
     async viewSummary() {
       const item = this.bookings[this.itemIndex];
       const bookingID = item.itemID;
-      this.cart = [];
+      let existingTransaction = null;
+      let transaction = null;
+      let gkey = "";
 
-      let existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-        columnName: 'bookingID',
-        columnKey: bookingID
-      });
+      let groupbookings = [];
+
       try {
-        if (existingTransaction.length !== 0) {
-          let transaction = existingTransaction.data[0];
-          this.discountMode = transaction.discountMode;
-          this.discountValue = transaction.discountValue;
-          if (transaction.discountValue > 0) {
-            this.alreadyDiscounted = true;
-          }
+        gkey = (this.bookings[this.itemIndex].groupkey || "x");
+        try {
+          const o = await axios.post(`${this.API_URL}bookings/filter/`, [
+            { "columnName": "groupkey", "columnKey": gkey },
+          ])
+          groupbookings = o.data;
+        } catch (error) {
 
         }
+
       } catch (error) {
 
       }
 
-      const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-        { "columnName": "bookingID", "columnKey": bookingID },
-      ])
-      if (response.data.length > 0) {
-        try {
-          response.data.forEach(item => {
-            let newItem = {
-              id: item.id,
-              name: item.itemName,
-              type: item.itemType,
-              priceRate: item.itemPriceRate,
-              purqty: item.purchaseQty,
-              totalCartPrice: item.totalCost,
-              category: item.category,
-              itemOption: item.itemOption
-            };
-            this.cart.push(newItem);
-          });
-        } catch (error) {
-          console.log(error);
-        }
+      if (groupbookings.length > 0) {
+
+        existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+          columnName: 'groupkey',
+          columnKey: gkey
+        });
+      } else {
+        existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+          columnName: 'bookingID',
+          columnKey: bookingID
+        });
       }
-      this.billing.clientName = item.name;
-      this.billing.clientAddress = item.clientaddress;
-      this.billing.clientPhone = item.contactNumber;
-      this.billing.clientEmail = item.clientemail;
-      this.billing.clientNationality = item.clientnationality;
-      this.billing.clientType = item.clientType;
-      this.billing.bookingID = item.id;
-      this.partialPayment = item.partialPayment;
-      this.toggleItemModal();
 
-      $("#others-tab").tab('show');
-    },
-    async moveToCart() {
-      const item = this.bookings[this.itemIndex];
-      const bookingID = item.itemID;
-
-      let existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-        columnName: 'bookingID',
-        columnKey: bookingID
-      });
       try {
         if (existingTransaction.length !== 0) {
-          let transaction = existingTransaction.data[0];
+          transaction = existingTransaction.data[0];
           this.discountMode = transaction.discountMode;
           this.discountValue = transaction.discountValue;
           if (transaction.discountValue > 0) {
@@ -2263,68 +2248,55 @@ export default {
         { "columnName": "bookingID", "columnKey": bookingID },
         { "columnName": "itemName", "columnKey": item.room_name }
       ])
-      if (response.data.length === 0) {
 
-        const numDays = Math.ceil((new Date(item.checkoutDate.split('/')[2] + "-" + item.checkoutDate.split('/')[1] + "-" + item.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) - new Date(item.checkinDate.split('/')[2] + "-" + item.checkinDate.split('/')[1] + "-" + item.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
-
-        this.itemCart.id = this.cart.length + 1;
-        this.itemCart.name = item.room_name;
-        this.itemCart.type = item.room_type;
-        this.itemCart.priceRate = item.room_price + "/check-in";
-        this.itemCart.purqty = numDays + 1;
-        this.itemCart.totalCartPrice = parseFloat(item.room_price) * (numDays + 1);
-        this.itemCart.category = "main";
-        this.itemCart.itemOption = "room";
-
-        const data = {
-          bookingID: this.bookings[this.itemIndex].itemID,
-          itemName: this.itemCart.name,
-          itemType: this.itemCart.type,
-          itemPriceRate: this.itemCart.priceRate,
-          purchaseQty: this.itemCart.purqty,
-          totalCost: this.itemCart.totalCartPrice,
-          category: this.itemCart.category,
-          itemOption: this.itemCart.itemOption,
-          dateCreated: new Date(), // Set the dateCreated field to the current date and time
-        };
-
-        // Make a POST request to the API to save the data
-        await axios.post(this.API_URL + 'transaction/item/', data)
-          .then(response => {
-            // Log a success message to the console
-            console.log('Data saved:', response.data);
-          })
-          .catch(error => {
-            // Log an error message to the console
-            console.error('Error saving data:', error);
-          });
-        this.cart.push(this.itemCart);
-      } else {
+      if (response.data.length > 0) {
         //show instead
         //update this.cart
         this.cart = [];
-        const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-          { "columnName": "bookingID", "columnKey": bookingID },
-        ])
-        if (response.data.length > 0) {
-          try {
-            response.data.forEach(item => {
-              let newItem = {
-                id: item.id,
-                name: item.itemName,
-                type: item.itemType,
-                priceRate: item.itemPriceRate,
-                purqty: item.purchaseQty,
-                totalCartPrice: item.totalCost,
-                category: item.category,
-                itemOption: item.itemOption
-              };
-              this.cart.push(newItem);
-            });
-          } catch (error) {
-            console.log(error);
+
+        if (groupbookings.length > 0) {
+          const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+            { "columnName": "groupkey", "columnKey": gkey },
+          ])
+          response.data.forEach(item => {
+            let newItem = {
+              id: item.id,
+              name: item.itemName,
+              type: item.itemType,
+              priceRate: item.itemPriceRate,
+              purqty: item.purchaseQty,
+              totalCartPrice: item.totalCost,
+              category: item.category,
+              itemOption: item.itemOption
+            };
+            this.cart.push(newItem);
+          });
+
+        } else {
+          const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+            { "columnName": "bookingID", "columnKey": bookingID },
+          ])
+          if (response.data.length > 0) {
+            try {
+              response.data.forEach(item => {
+                let newItem = {
+                  id: item.id,
+                  name: item.itemName,
+                  type: item.itemType,
+                  priceRate: item.itemPriceRate,
+                  purqty: item.purchaseQty,
+                  totalCartPrice: item.totalCost,
+                  category: item.category,
+                  itemOption: item.itemOption
+                };
+                this.cart.push(newItem);
+              });
+            } catch (error) {
+              console.log(error);
+            }
           }
         }
+
       }
 
       this.billing.clientName = item.name;
@@ -2334,7 +2306,14 @@ export default {
       this.billing.clientNationality = item.clientnationality;
       this.billing.clientType = item.clientType;
       this.billing.bookingID = item.id;
-      this.partialPayment = item.partialPayment;
+
+      try{
+        this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
+      } catch(error){
+
+      }
+      
+
       this.toggleItemModal();
 
       $("#others-tab").tab('show');
@@ -2347,7 +2326,235 @@ export default {
         counter: "",
         purqty: "",
         totalCartPrice: "",
-        category: ""
+        category: "",
+        groupkey: "",
+      }
+
+
+    },
+
+
+    async moveToCart() {
+      const item = this.bookings[this.itemIndex];
+      const bookingID = item.itemID;
+      let existingTransaction = null;
+      let transaction = null;
+      let gkey = "";
+
+      let groupbookings = [];
+
+      try {
+        gkey = (this.bookings[this.itemIndex].groupkey || "x");
+        try {
+          const o = await axios.post(`${this.API_URL}bookings/filter/`, [
+            { "columnName": "groupkey", "columnKey": gkey },
+          ])
+          groupbookings = o.data;
+        } catch (error) {
+
+        }
+
+      } catch (error) {
+
+      }
+
+      if (groupbookings.length > 0) {
+
+        existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+          columnName: 'groupkey',
+          columnKey: gkey
+        });
+      } else {
+        existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+          columnName: 'bookingID',
+          columnKey: bookingID
+        });
+      }
+
+      try {
+        if (existingTransaction.length !== 0) {
+          transaction = existingTransaction.data[0];
+          this.discountMode = transaction.discountMode;
+          this.discountValue = transaction.discountValue;
+          if (transaction.discountValue > 0) {
+            this.alreadyDiscounted = true;
+          }
+        }
+      } catch (error) {
+
+      }
+
+      const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+        { "columnName": "bookingID", "columnKey": bookingID },
+        { "columnName": "itemName", "columnKey": item.room_name }
+      ])
+
+      if (response.data.length === 0) {
+
+        if (groupbookings.length > 0) {
+
+          groupbookings.forEach(async res => {
+            const numDays = Math.ceil((new Date(res.checkoutDate.split('/')[2] + "-" + res.checkoutDate.split('/')[1] + "-" + res.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) - new Date(res.checkinDate.split('/')[2] + "-" + res.checkinDate.split('/')[1] + "-" + res.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
+            this.itemCart.id = this.cart.length + 1;
+            this.itemCart.name = res.room_name;
+            this.itemCart.type = res.room_type;
+            this.itemCart.priceRate = res.room_price + "/check-in";
+            this.itemCart.purqty = numDays + 1;
+            this.itemCart.totalCartPrice = parseFloat(res.room_price) * (numDays + 1);
+            this.itemCart.category = "main";
+            this.itemCart.itemOption = "room";
+
+            const data = {
+              bookingID: res.itemID,
+              itemName: this.itemCart.name,
+              itemType: this.itemCart.type,
+              itemPriceRate: this.itemCart.priceRate,
+              purchaseQty: this.itemCart.purqty,
+              totalCost: this.itemCart.totalCartPrice,
+              category: this.itemCart.category,
+              itemOption: this.itemCart.itemOption,
+              dateCreated: new Date(), // Set the dateCreated field to the current date and time
+              groupkey: gkey,
+            };
+
+            // Make a POST request to the API to save the data
+            await axios.post(this.API_URL + 'transaction/item/', data)
+              .then(response => {
+                // Log a success message to the console
+                this.itemCart = {}
+                this.itemCart.id = response.data.id;
+                this.itemCart.name = response.data.itemName;
+                this.itemCart.type = response.data.itemType;
+                this.itemCart.priceRate = response.data.itemPriceRate;
+                this.itemCart.purqty = response.data.purchaseQty;
+                this.itemCart.totalCartPrice = response.data.totalCost;
+                this.itemCart.category = response.data.category;
+                this.itemCart.itemOption = response.data.itemOption;
+                this.itemCart.groupkey = response.data.groupkey;
+                this.cart.push(this.itemCart)
+              })
+              .catch(error => {
+                // Log an error message to the console
+                console.error('Error saving data:', error);
+              });
+          })
+        } else {
+          const numDays = Math.ceil((new Date(item.checkoutDate.split('/')[2] + "-" + item.checkoutDate.split('/')[1] + "-" + item.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) - new Date(item.checkinDate.split('/')[2] + "-" + item.checkinDate.split('/')[1] + "-" + item.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
+
+          this.itemCart.id = this.cart.length + 1;
+          this.itemCart.name = item.room_name;
+          this.itemCart.type = item.room_type;
+          this.itemCart.priceRate = item.room_price + "/check-in";
+          this.itemCart.purqty = numDays + 1;
+          this.itemCart.totalCartPrice = parseFloat(item.room_price) * (numDays + 1);
+          this.itemCart.category = "main";
+          this.itemCart.itemOption = "room";
+
+          const data = {
+            bookingID: this.bookings[this.itemIndex].itemID,
+            itemName: this.itemCart.name,
+            itemType: this.itemCart.type,
+            itemPriceRate: this.itemCart.priceRate,
+            purchaseQty: this.itemCart.purqty,
+            totalCost: this.itemCart.totalCartPrice,
+            category: this.itemCart.category,
+            itemOption: this.itemCart.itemOption,
+            dateCreated: new Date(), // Set the dateCreated field to the current date and time
+          };
+
+          // Make a POST request to the API to save the data
+          await axios.post(this.API_URL + 'transaction/item/', data)
+            .then(response => {
+              // Log a success message to the console
+              console.log('Data saved:', response.data);
+            })
+            .catch(error => {
+              // Log an error message to the console
+              console.error('Error saving data:', error);
+            });
+          this.cart.push(this.itemCart);
+        }
+
+
+      } else {
+        //show instead
+        //update this.cart
+        this.cart = [];
+
+        if (groupbookings.length > 0) {
+          const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+            { "columnName": "groupkey", "columnKey": gkey },
+          ])
+          response.data.forEach(item => {
+            let newItem = {
+              id: item.id,
+              name: item.itemName,
+              type: item.itemType,
+              priceRate: item.itemPriceRate,
+              purqty: item.purchaseQty,
+              totalCartPrice: item.totalCost,
+              category: item.category,
+              itemOption: item.itemOption
+            };
+            this.cart.push(newItem);
+          });
+
+        } else {
+          const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+            { "columnName": "bookingID", "columnKey": bookingID },
+          ])
+          if (response.data.length > 0) {
+            try {
+              response.data.forEach(item => {
+                let newItem = {
+                  id: item.id,
+                  name: item.itemName,
+                  type: item.itemType,
+                  priceRate: item.itemPriceRate,
+                  purqty: item.purchaseQty,
+                  totalCartPrice: item.totalCost,
+                  category: item.category,
+                  itemOption: item.itemOption
+                };
+                this.cart.push(newItem);
+              });
+            } catch (error) {
+              console.log(error);
+            }
+          }
+        }
+
+      }
+
+      this.billing.clientName = item.name;
+      this.billing.clientAddress = item.clientaddress;
+      this.billing.clientPhone = item.contactNumber;
+      this.billing.clientEmail = item.clientemail;
+      this.billing.clientNationality = item.clientnationality;
+      this.billing.clientType = item.clientType;
+      this.billing.bookingID = item.id;
+
+      try{
+        this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
+      } catch(error){
+
+      }
+      
+
+      this.toggleItemModal();
+
+      $("#others-tab").tab('show');
+
+      this.itemCart = {
+        id: 0,
+        name: "",
+        priceRate: "",
+        rate: "",
+        counter: "",
+        purqty: "",
+        totalCartPrice: "",
+        category: "",
+        groupkey: "",
       }
 
 
@@ -2383,7 +2590,7 @@ export default {
       this.bookings[this.itemIndex].status = "checkedin";
       this.updateBookings(this.bookings[this.itemIndex].id);
       this.populateCalendarItems();
-      this.changeItemColor("checkedin");
+      //this.changeItemColor("checkedin");
       this.toggleItemModal();
       this.$swal.fire({
         icon: 'success',
@@ -2408,7 +2615,8 @@ export default {
           this.bookings[this.itemIndex].actualCheckoutDate = new Date();
           this.reservation.status = "vacant";
           this.updateBookings(this.bookings[this.itemIndex].id);
-          this.changeItemColor("checkedout");
+          this.populateCalendarItems();
+          //this.changeItemColor("checkedout");
           this.toggleItemModal();
           // Display success message using SweetAlert
           this.$swal.fire({
@@ -2600,13 +2808,12 @@ export default {
           isPaid: this.bookings[this.itemIndex].isPaid,
           totalPrice: this.bookings[this.itemIndex].totalPrice,
           partialPayment: this.bookings[this.itemIndex].partialPayment,
-          processedBy: this.userdata.fName + " " + this.userdata.lName
+          processedBy: this.userdata.fName + " " + this.userdata.lName,
+          groupkey: this.bookings[this.itemIndex].groupkey,
         });
 
       } catch (error) {
         console.log(error);
-
-
 
       }
     },
@@ -2616,7 +2823,7 @@ export default {
         const endDate = booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0];
         const title = `${booking.room_name}-${booking.name}<span style="display:none">~${booking.itemID}~</span>`;
         const id = booking.itemID;
-        const tooltip = `${booking.room_name}-${booking.name}\n*${booking.status}-${booking.isPaid}`;
+        const tooltip = `${booking.room_name}-${booking.name}\n*${booking.status}-${(booking.isPaid === 'yes') ? 'fully paid' : (booking.isPaid === 'no') ? 'not paid' : 'partial'}`;
         let classes = '';
 
         if (booking.status === 'reserved') {
@@ -2656,8 +2863,12 @@ export default {
     async clickTestAddItem() {
 
       try {
-
+        let gkey = null;
         let roomBooked = this.reservation.roomName;
+
+        if (roomBooked.length > 1) {
+          gkey = "group-" + this.generateUniqueString();
+        }
 
         roomBooked.forEach(async res => {
           let id = "e" + this.bookings.length + this.generateUniqueString();
@@ -2693,7 +2904,8 @@ export default {
             created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
             totalPrice: (numDays + 1) * parseFloat(roomPrice),
             partialPayment: 0,
-            processedBy: this.userdata.fName + " " + this.userdata.lName
+            processedBy: this.userdata.fName + " " + this.userdata.lName,
+            groupkey: gkey,
           });
 
           this.bookings.push({
@@ -2711,7 +2923,8 @@ export default {
             room_type: roomType,
             remarks: this.reservation.remarks,
             contactNumber: this.reservation.clientPhone,
-            processedBy: this.userdata.fName + " " + this.userdata.lName
+            processedBy: this.userdata.fName + " " + this.userdata.lName,
+            groupkey: gkey,
           })
         });
 
@@ -2767,13 +2980,19 @@ export default {
         this.transactions = response.data;
         this.transactions.forEach(async (item, index) => {
           try {
+
+            const o = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+              { "columnName": 'groupkey', "columnKey": item.groupkey },
+            ]);
+
             const a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
               { "columnName": 'bookingID', "columnKey": item.bookingID },
             ]);
+
             const b = await axios.post(`${this.API_URL}transaction/record/filter/`, [
               { "columnName": "transaction", "columnKey": item.id },
             ])
-            this.transactions[index].items = a.data;
+            this.transactions[index].items = (o.data.length > 0)? o. data: a.data;
             this.transactions[index].items2 = b.data;
           } catch (error) {
 
@@ -2789,13 +3008,35 @@ export default {
       if (parseFloat(this.cashAmount) > 0) {
 
         let bookid = null;
+        let groupid = null;
         let reserveStatus = null;
         try {
           bookid = this.bookings[this.itemIndex].itemID;
+          groupid = this.bookings[this.itemIndex].groupkey;
           reserveStatus = this.bookings[this.itemIndex].status
         } catch (error) {
           bookid = "f";
         }
+
+        let gkey = "";
+
+        let groupbookings = [];
+
+        try {
+          gkey = (this.bookings[this.itemIndex].groupkey || "x");
+          try {
+            const o = await axios.post(`${this.API_URL}bookings/filter/`, [
+              { "columnName": "groupkey", "columnKey": gkey },
+            ])
+            groupbookings = o.data;
+          } catch (error) {
+
+          }
+
+        } catch (error) {
+
+        }
+
 
         if (this.walkinStatus && parseFloat(this.cashAmount) < parseFloat(this.total)) {
           await this.$swal.fire({
@@ -2893,7 +3134,8 @@ export default {
                 discountMode: this.discountMode,
                 discountValue: this.discountValue,
                 bookingID: bookid,
-                processedBy: this.userdata.fName + " " + this.userdata.lName
+                processedBy: this.userdata.fName + " " + this.userdata.lName,
+                groupkey: groupid,
               };
 
               let doneTransaction = await axios.post(`${this.API_URL}transaction/`, transactionData);
@@ -2937,8 +3179,59 @@ export default {
               }
 
               if (bookid.charAt(0) !== "f") {
-                this.bookings[this.itemIndex].totalPrice = transactionData.totalAmountToPay;
-                this.bookings[this.itemIndex].partialPayment = transactionData.cashAmountPay;
+
+                if (groupbookings.length > 0) {
+                  groupbookings.forEach(async item => {
+                    let itemIndex = this.bookings.findIndex(
+                      o => o.itemID === item.itemID
+                    );
+                    this.bookings[itemIndex].totalPrice = transactionData.totalAmountToPay;
+                    this.bookings[itemIndex].partialPayment = transactionData.cashAmountPay;
+                    if (payStatus === "partial") {
+                      this.bookings[itemIndex].isPaid = "partial";
+                    } else {
+                      this.bookings[itemIndex].isPaid = "yes";
+                    }
+                    try {
+                      const response = await axios.put(this.API_URL + `bookings/${this.bookings[itemIndex].id}/`, {
+                        itemID: this.bookings[itemIndex].itemID,
+                        status: this.bookings[itemIndex].status,
+                        name: this.bookings[itemIndex].name,
+                        clientemail: this.bookings[itemIndex].clientemail,
+                        clientaddress: this.bookings[itemIndex].clientaddress,
+                        clientnationality: this.bookings[itemIndex].clientnationality,
+                        clientType: this.bookings[itemIndex].clientType,
+                        checkinDate: this.bookings[itemIndex].checkinDate,
+                        checkoutDate: this.bookings[itemIndex].checkoutDate,
+                        room_name: this.bookings[itemIndex].room_name,
+                        room_price: this.bookings[itemIndex].room_price,
+                        room_type: this.bookings[itemIndex].room_type,
+                        remarks: this.bookings[itemIndex].remarks,
+                        contactNumber: this.bookings[itemIndex].contactNumber,
+                        actualCheckoutDate: this.bookings[itemIndex].actualCheckoutDate,
+                        cancellationDate: this.bookings[itemIndex].cancellationDate,
+                        isPaid: this.bookings[itemIndex].isPaid,
+                        totalPrice: this.bookings[itemIndex].totalPrice,
+                        partialPayment: this.bookings[itemIndex].partialPayment,
+                        processedBy: this.userdata.fName + " " + this.userdata.lName,
+                        groupkey: this.bookings[itemIndex].groupkey,
+                      });
+
+                    } catch (error) {
+                      console.log(error);
+                    }
+                  })
+                } else {
+                  this.bookings[this.itemIndex].totalPrice = transactionData.totalAmountToPay;
+                  this.bookings[this.itemIndex].partialPayment = transactionData.cashAmountPay;
+                  if (payStatus === "partial") {
+                    this.bookings[this.itemIndex].isPaid = "partial";
+                  } else {
+                    this.bookings[this.itemIndex].isPaid = "yes";
+                  }
+                  this.updateBookings(this.bookings[this.itemIndex].id);
+                }
+
               }
 
             } else {
@@ -2968,7 +3261,8 @@ export default {
                 discountMode: this.discountMode,
                 discountValue: this.discountValue,
                 bookingID: bookid,
-                processedBy: this.userdata.fName + " " + this.userdata.lName
+                processedBy: this.userdata.fName + " " + this.userdata.lName,
+                groupkey: groupid,
               };
 
               let doneTransaction = await axios.put(`${this.API_URL}transaction/${existingTransaction.data[0].id}/`, transactionData);
@@ -2987,24 +3281,60 @@ export default {
               }
 
               await axios.post(`${this.API_URL}transaction/record/`, transactionRecordData);
-              this.bookings[this.itemIndex].totalPrice = transactionRecordData.totalAmountToPay;
-              this.bookings[this.itemIndex].partialPayment = newcashAmountPay;
-            }
 
-            if (bookid.charAt(0) !== "f") {
-              if (payStatus === "partial") {
-                this.bookings[this.itemIndex].isPaid = "partial";
+              if (groupbookings.length > 0) {
+                groupbookings.forEach(async item => {
+                  let itemIndex = this.bookings.findIndex(
+                    o => o.itemID === item.itemID
+                  );
+                  this.bookings[itemIndex].totalPrice = transactionRecordData.totalAmountToPay;
+                  this.bookings[itemIndex].partialPayment = newcashAmountPay;
+                  if (payStatus === "partial") {
+                    this.bookings[itemIndex].isPaid = "partial";
+                  } else {
+                    this.bookings[itemIndex].isPaid = "yes";
+                  }
+                  try {
+                    const response = await axios.put(this.API_URL + `bookings/${this.bookings[itemIndex].id}/`, {
+                      itemID: this.bookings[itemIndex].itemID,
+                      status: this.bookings[itemIndex].status,
+                      name: this.bookings[itemIndex].name,
+                      clientemail: this.bookings[itemIndex].clientemail,
+                      clientaddress: this.bookings[itemIndex].clientaddress,
+                      clientnationality: this.bookings[itemIndex].clientnationality,
+                      clientType: this.bookings[itemIndex].clientType,
+                      checkinDate: this.bookings[itemIndex].checkinDate,
+                      checkoutDate: this.bookings[itemIndex].checkoutDate,
+                      room_name: this.bookings[itemIndex].room_name,
+                      room_price: this.bookings[itemIndex].room_price,
+                      room_type: this.bookings[itemIndex].room_type,
+                      remarks: this.bookings[itemIndex].remarks,
+                      contactNumber: this.bookings[itemIndex].contactNumber,
+                      actualCheckoutDate: this.bookings[itemIndex].actualCheckoutDate,
+                      cancellationDate: this.bookings[itemIndex].cancellationDate,
+                      isPaid: this.bookings[itemIndex].isPaid,
+                      totalPrice: this.bookings[itemIndex].totalPrice,
+                      partialPayment: this.bookings[itemIndex].partialPayment,
+                      processedBy: this.userdata.fName + " " + this.userdata.lName,
+                      groupkey: this.bookings[itemIndex].groupkey,
+                    });
 
+                  } catch (error) {
+                    console.log(error);
+                  }
+                })
               } else {
-                this.bookings[this.itemIndex].isPaid = "yes";
+                this.bookings[this.itemIndex].totalPrice = transactionRecordData.totalAmountToPay;
+                this.bookings[this.itemIndex].partialPayment = newcashAmountPay;
+                if (payStatus === "partial") {
+                  this.bookings[this.itemIndex].isPaid = "partial";
+                } else {
+                  this.bookings[this.itemIndex].isPaid = "yes";
+                }
+                this.updateBookings(this.bookings[this.itemIndex].id);
               }
-
-              this.updateBookings(this.bookings[this.itemIndex].id);
-              this.reloadData();
-              this.populateCalendarItems();
             }
 
-            // Show a success message using SweetAlert
             await this.$swal.fire({
               title: 'Success',
               text: 'Transaction saved successfully!',
@@ -3019,7 +3349,7 @@ export default {
               text: 'An error occurred while saving the transaction.',
               icon: 'error'
             });
-            console.error(error);
+            console.log(error);
           }
         }
       } else {

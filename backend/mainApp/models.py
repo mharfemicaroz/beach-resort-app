@@ -35,6 +35,7 @@ class Booking(models.Model):
     totalPrice = models.DecimalField(max_digits=8, decimal_places=2)
     partialPayment = models.DecimalField(max_digits=8, decimal_places=2)
     processedBy = models.CharField(max_length=128)
+    groupkey = models.CharField(max_length=128, null=True, blank=True)
 
 class Room(models.Model):
     id = models.AutoField(primary_key=True)
@@ -70,6 +71,7 @@ class Transaction(models.Model):
     discountValue = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     bookingID = models.CharField(max_length=255)
     processedBy = models.CharField(max_length=128)
+    groupkey = models.CharField(max_length=128, null=True, blank=True)
 
 class TransactionRecord(models.Model):
     transactionrecord_id = models.AutoField(primary_key=True)
@@ -97,6 +99,7 @@ class TransactionItem(models.Model):
     category = models.CharField(max_length=50)
     itemOption = models.CharField(max_length=50)
     transid = models.CharField(max_length=255,null=True, blank=True)
+    groupkey = models.CharField(max_length=128, null=True, blank=True)
 
 class StockItem(models.Model):
     id = models.AutoField(primary_key=True)
