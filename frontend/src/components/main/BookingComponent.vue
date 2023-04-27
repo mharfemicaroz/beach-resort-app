@@ -2821,7 +2821,7 @@ export default {
       this.calendarItems = this.bookings.map(booking => {
         const startDate = booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0];
         const endDate = booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0];
-        const title = `${booking.room_name}-${booking.name}<span style="display:none">~${booking.itemID}~</span>`;
+        const title = `${booking.room_name}-${(booking.groupkey===null)?'':'<span class="text-white">group</span>-'}${booking.name}<span style="display:none">~${booking.itemID}~</span>`;
         const id = booking.itemID;
         const tooltip = `${booking.room_name}-${booking.name}\n*${booking.status}-${(booking.isPaid === 'yes') ? 'fully paid' : (booking.isPaid === 'no') ? 'not paid' : 'partial'}`;
         let classes = '';
