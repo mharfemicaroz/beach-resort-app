@@ -91,7 +91,7 @@
             <div class="col-md-4">
                 <div class="card x">
                     <div class="card-header text-primary text-center">
-                        <strong>Type of Guest</strong>
+                        <strong>Transaction Status</strong>
                     </div>
                     <div class="card-body chart">
                         <pie-chart v-if="loaded[3]" :chartData="pie2Data" />
@@ -167,7 +167,7 @@ export default {
                 ]
             },
             pie2Data: {
-                labels: ['in-house', 'walkin'],
+                labels: ['partial', 'full'],
                 datasets: [
                     {
                         data: [],
@@ -238,9 +238,9 @@ export default {
             this.pie1Data.datasets[0].data = [numCancelled, numReserved, numIn, numOut]
         },
         pie2Datasets(data) {
-            const numInHouse = data.filter(item => item.bookingID.charAt(0) === 'e').length;
-            const numWalkGuest = data.filter(item => item.bookingID.charAt(0) === 'f').length;
-            this.pie2Data.datasets[0].data = [numInHouse, numWalkGuest]
+            const numpartial = data.filter(item => item.payStatus === 'partial').length;
+            const numfull = data.filter(item => item.payStatus === 'full').length;
+            this.pie2Data.datasets[0].data = [numpartial, numfull]
         },
         bar1Datasets(data) {
             const br = data.filter(item => item.room_type === 'BEACH ROOM').length;

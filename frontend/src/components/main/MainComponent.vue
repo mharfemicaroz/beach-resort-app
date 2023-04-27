@@ -507,8 +507,16 @@ export default {
         },
         saveLeisure() {
             if (this.isUpdatingLeisure) {
+
                 axios
-                    .put(`${this.API_URL}leisures/${this.leisure.id}/`, this.leisure)
+                    .put(`${this.API_URL}leisures/${this.leisure.id}/`, (this.leisure.item.toLowerCase() !== 'general entrance') ? {
+                        id: this.leisure.id,
+                        item: 'General Entrance',
+                        type: this.leisure.type,
+                        priceRate: this.leisure.priceRate,
+                        counter: this.leisure.counter,
+                        isAvailable: this.leisure.isAvailable
+                    } : this.leisure)
                     .then(response => {
                         this.$swal({
                             icon: "success",

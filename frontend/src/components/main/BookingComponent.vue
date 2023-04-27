@@ -2018,9 +2018,12 @@ export default {
 
           }
 
+          // const numGuestsCard = this.cart.filter(o=>o.name.toLowerCase()==='general entrance').length;
+          // const totalGuests = this.cart.filter(o=>o.name.toLowerCase()==='general entrance').reduce((acc, item) => acc + parseFloat(item.purqty), 0);
+          
           try {
             const updatedItems = [];
-
+            
             // Loop through inclusion items in the cart
             this.cart.filter(item => item.category === 'inclusion').forEach(async (item, index) => {
               // Define the API endpoint and data for the PUT request
@@ -2034,6 +2037,17 @@ export default {
                 category: 'main',
                 itemOption: 'addons',
               };
+
+              const numGuestsCard = this.cart.filter(o=>o.name.toLowerCase()==='general entrance' && o.category==='main').length;
+              if(numGuestsCard === 0 && bId !== "walkin"){
+                const totalGuests = this.cart.filter(o=>o.name.toLowerCase()==='general entrance').reduce((acc, item) => acc + parseFloat(item.purqty), 0);
+                if(totalGuests === 1){
+                  data.totalCost = parseFloat(data.totalCost) - 20;
+                } else if(totalGuests >= 2){
+                  data.totalCost = parseFloat(data.totalCost) - 40;
+                }
+                item.totalCartPrice = data.totalCost;
+              }
 
               try {
                 data.bookingID = bId;
@@ -3026,6 +3040,17 @@ export default {
           });
           return false;
         }
+        
+        const numGuests = this.cart.filter(o=>o.name.toLowerCase()==='general entrance').length;
+
+        if(numGuests === 0){
+          await this.$swal.fire({
+            title: 'Error',
+            text: 'Kindly specify the number of guests by providing the quantity within the general entrance fee.',
+            icon: 'error'
+          });
+          return false;
+        }
 
         // if (reserveStatus === "reserved" && parseFloat(this.cashAmount) > parseFloat(this.total) * 0.50) {
         //   await this.$swal.fire({
@@ -3450,7 +3475,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
           reserveStatus = "n/a";
         }
 
-        if (reserveStatus === "reserved") {
+        if (reserveStatus === "reserved" && item.item.toLowerCase() !=='general entrance') {
           await this.$swal.fire({
             title: 'Error',
             text: 'No purchase of add-ons until guest is checked in.',
