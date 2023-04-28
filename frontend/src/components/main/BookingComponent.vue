@@ -3059,12 +3059,12 @@ export default {
           return false;
         }
 
-        const numGuests = this.cart.filter(o => o.name.toLowerCase() === 'general entrance').length;
+        const numGuests = this.cart.filter(o => o.type.toLowerCase() === 'entrance').length;
 
         if (numGuests === 0) {
           await this.$swal.fire({
             title: 'Error',
-            text: 'Kindly specify the number of guests by providing the quantity within the general entrance fee.',
+            text: 'Kindly specify the number of guests by providing the quantity within the general/pool entrance fee.',
             icon: 'error'
           });
           return false;
@@ -3493,7 +3493,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
           reserveStatus = "n/a";
         }
 
-        if (reserveStatus === "reserved" && item.item.toLowerCase() !== 'general entrance') {
+        if (reserveStatus === "reserved" && item.type.toLowerCase() !== 'entrance') {
           await this.$swal.fire({
             title: 'Error',
             text: 'No purchase of add-ons until guest is checked in.',
