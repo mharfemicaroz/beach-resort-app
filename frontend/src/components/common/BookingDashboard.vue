@@ -74,7 +74,7 @@
                         <strong>Reservation Summary</strong>
                     </div>
                     <div class="card-body chart">
-                        <pie-chart v-if="loaded[0]" :chartData="pie1Data" />
+                        <pie-chart :key="componentKey" v-if="loaded[0]" :chartData="pie1Data" />
                     </div>
                 </div>
             </div>
@@ -84,7 +84,7 @@
                         <strong>Current Occupancy</strong>
                     </div>
                     <div class="card-body chart">
-                        <bar-chart v-if="loaded[1]" :chartData="bar1Data" />
+                        <bar-chart :key="componentKey" v-if="loaded[1]" :chartData="bar1Data" />
                     </div>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                         <strong>Transaction Status</strong>
                     </div>
                     <div class="card-body chart">
-                        <pie-chart v-if="loaded[3]" :chartData="pie2Data" />
+                        <pie-chart :key="componentKey" v-if="loaded[3]" :chartData="pie2Data" />
                     </div>
                 </div>
             </div>
@@ -109,7 +109,7 @@
                         <strong>Reservation Trend</strong>
                     </div>
                     <div class="card-body chart">
-                        <line-chart v-if="loaded[2]" :chartData="line1Data" />
+                        <line-chart :key="componentKey" v-if="loaded[2]" :chartData="line1Data" />
                     </div>
                 </div>
             </div>
@@ -119,7 +119,7 @@
                         <strong>Total Revenue</strong>
                     </div>
                     <div class="card-body chart">
-                        <bar-chart v-if="loaded[5]" :chartData="bar2Data" />
+                        <bar-chart :key="componentKey" v-if="loaded[5]" :chartData="bar2Data" />
                     </div>
                 </div>
             </div>
@@ -129,7 +129,7 @@
                         <strong>Sales Trend</strong>
                     </div>
                     <div class="card-body chart">
-                        <line-chart v-if="loaded[4]" :chartData="line2Data" />
+                        <line-chart :key="componentKey" v-if="loaded[4]" :chartData="line2Data" />
                     </div>
                 </div>
             </div>
@@ -149,8 +149,18 @@ export default {
         BarChart,
         LineChart
     },
+    props:{
+        active:{
+            type:Boolean,
+            required: true,
+        }
+    }, 
     data() {
         return {
+            componentKey:0,
+            prevBookings:[],
+            prevTransactions:[],
+            prevransItems:[],
             predictions: [],
             numReservations: 0,
             numGuests: 0,
@@ -322,57 +332,80 @@ export default {
                 return pred
             })
         },
+        async loadData() {
+            try {
+                const bookingData = await axios.get(this.API_URL + "bookings/");
+                const transactionData = await axios.get(this.API_URL + "transaction/");
+                const transactionItemsData = await axios.get(this.API_URL + "transaction/item/");
+                
+                if(JSON.stringify(bookingData.data) !== JSON.stringify(this.prevBookings)){
+                    this.componentKey+=1;
+                    this.prevBookings = bookingData.data;
+                    this.prevTransactions = transactionData.data;
+                    this.prevransItems = transactionItemsData.data;
+                    this.loaded = Array(6).fill(false);
+                }
+
+                const roomsData = await axios.get(this.API_URL + "rooms/");
+
+                this.numReservations = bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')).length;
+                this.numGuests = transactionItemsData.data.filter(item => item.itemType === 'ENTRANCE' && new Date(item.dateCreated).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).length
+                this.availableRooms = roomsData.data.filter(room => {
+                    // Check if there are any bookings for this room that overlap with the specified date range
+                    const overlappingBookings = bookingData.data.filter(booking => {
+                        return booking.room_name === room.name &&
+                            booking.status === 'checkedin' && booking.checkinDate === new Date().toLocaleDateString('en-GB');
+                    });
+
+                    // Return true if there are no overlapping bookings
+                    return overlappingBookings.length === 0;
+                }).length;
+                this.grossIncome = transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
+                    return accumulator + parseFloat(currentValue.cashAmountPay);
+                }, 0);
+                this.collectibles = transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
+                    return accumulator + parseFloat(currentValue.balance);
+                }, 0);
+
+                this.pie1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
+                this.pie2Datasets(transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')));
+                this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
+                this.bar2Datasets(transactionItemsData.data);
+                this.line1Datasets(bookingData.data);
+                this.line2Datasets(transactionData.data);
+
+                this.loaded = Array(6).fill(true);
+            } catch (error) {
+
+            }
+        }
     },
     async mounted() {
-        this.loaded[0] = false;
-        this.loaded[1] = false;
-        this.loaded[2] = false;
-        this.loaded[3] = false;
-        this.loaded[4] = false;
-        this.loaded[5] = false;
 
-        try {
-            const bookingData = await axios.get(this.API_URL + "bookings/");
-            const transactionData = await axios.get(this.API_URL + "transaction/");
+        // initialize loaded array
+        this.loaded = Array(6).fill(false);
 
-            const transactionItemsData = await axios.get(this.API_URL + "transaction/item/");
-            const roomsData = await axios.get(this.API_URL + "rooms/");
+        // load data
+        await this.loadData();  
 
-            this.numReservations = bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')).length;
-            this.numGuests = transactionItemsData.data.filter(item => item.itemType === 'ENTRANCE' && new Date(item.dateCreated).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).length
-            this.availableRooms = roomsData.data.filter(room => {
-                // Check if there are any bookings for this room that overlap with the specified date range
-                const overlappingBookings = bookingData.data.filter(booking => {
-                    return booking.room_name === room.name &&
-                        booking.status === 'checkedin' && booking.checkinDate === new Date().toLocaleDateString('en-GB');
-                });
+        // set interval to refresh data every 3 seconds if component is in focus
+        const intervalId = setInterval(async () => {
+            if (this.active && !document.hidden && document.hasFocus()) {
+                await this.loadData();
+            }
+        }, 3000);
 
-                // Return true if there are no overlapping bookings
-                return overlappingBookings.length === 0;
-            }).length;
-            this.grossIncome = transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
-                return accumulator + parseFloat(currentValue.cashAmountPay);
-            }, 0);
-            this.collectibles = transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
-                return accumulator + parseFloat(currentValue.balance);
-            }, 0);
+        // add event listener to clear interval when component is not in focus
+        document.addEventListener('visibilitychange', () => {
+            if (!this.active || document.hidden || !document.hasFocus()) {
+                clearInterval(intervalId);
+            } else {
+                intervalId = setInterval(async () => {
+                    await this.loadData();
+                }, 3000);
+            }
+        });
 
-            this.pie1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
-            this.pie2Datasets(transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')));
-            this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
-            this.bar2Datasets(transactionItemsData.data);
-            this.line1Datasets(bookingData.data);
-            this.line2Datasets(transactionData.data);
-
-            this.loaded[0] = true;
-            this.loaded[1] = true;
-            this.loaded[2] = true;
-            this.loaded[3] = true;
-            this.loaded[4] = true;
-            this.loaded[5] = true;
-        } catch (error) {
-
-        }
     }
 
 } 

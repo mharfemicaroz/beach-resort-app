@@ -28,7 +28,7 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
-              <BookingDashboard :key="componentKey" />
+              <BookingDashboard :active="dashboardStatus" :key="componentKey" />
             </div>
           </div>
         </div>
@@ -630,6 +630,7 @@
       </div>
 
     </div>
+
 
   </div>
 
@@ -1236,6 +1237,8 @@ export default {
   },
   data() {
     return {
+      dashboardStatus: true,
+      bookingComponentStatus: true,
       componentKey: 0,
       bookingsOptions: [{
         'label': 'Room Name',
@@ -1576,7 +1579,7 @@ export default {
       discountMode: 'percentage',
       discountValue: 0,
       partialPayment: 0,
-      cashRemarks:'',
+      cashRemarks: '',
 
       activeTab: 'all',
       clientName: "",
@@ -1626,9 +1629,7 @@ export default {
     };
   },
   created() {
-    this.reloadData();
-    this.reloadItemsData();
-    this.loadTransactionData();
+    this.loadAlldata();
   },
   computed: {
     userdata() {
@@ -1906,6 +1907,11 @@ export default {
     },
   },
   methods: {
+    async loadAlldata() {
+      this.reloadData();
+      this.reloadItemsData();
+      this.loadTransactionData();
+    },
     parseDate2(dateString) {
       const [day, month, year] = dateString.split('/');
       return new Date(`${month}/${day}/${year}`).setHours(0, 0, 0, 0);
@@ -2012,18 +2018,15 @@ export default {
             bId = "walkin"
           }
 
-          try{
+          try {
             gkey = this.bookings[this.itemIndex].groupkey
           } catch {
 
           }
 
-          // const numGuestsCard = this.cart.filter(o=>o.name.toLowerCase()==='general entrance').length;
-          // const totalGuests = this.cart.filter(o=>o.name.toLowerCase()==='general entrance').reduce((acc, item) => acc + parseFloat(item.purqty), 0);
-          
           try {
             const updatedItems = [];
-            
+
             // Loop through inclusion items in the cart
             this.cart.filter(item => item.category === 'inclusion').forEach(async (item, index) => {
               // Define the API endpoint and data for the PUT request
@@ -2038,14 +2041,16 @@ export default {
                 itemOption: 'addons',
               };
 
-              const numBookedRooms = this.cart.filter(o=>(o.type.toLowerCase()==='beach room' || o.type.toLowerCase()==='pool room') && o.category==='main').length;
-              const numGuestsCard = this.cart.filter(o=>o.name.toLowerCase()==='general entrance' && o.category==='main').length;
-              if(numGuestsCard === 0 && bId !== "walkin" && numBookedRooms > 0){
-                const totalGuests = this.cart.filter(o=>o.name.toLowerCase()==='general entrance').reduce((acc, item) => acc + parseFloat(item.purqty), 0);
-                if(totalGuests === 1){
-                  data.totalCost = parseFloat(data.totalCost) - 20;
-                } else if(totalGuests >= 2){
-                  data.totalCost = parseFloat(data.totalCost) - 40;
+              const numBookedRooms = this.cart.filter(o => (o.type.toLowerCase() === 'beach room' || o.type.toLowerCase() === 'pool room') && o.category === 'main').length;
+              const numGuestsCard = this.cart.filter(o => o.name.toLowerCase() === 'general entrance' && o.category === 'main').length;
+              const entranceFee = parseFloat(this.items.filter(o => o.item.toLowerCase() === 'general entrance')[0].priceRate);
+
+              if (numGuestsCard === 0 && bId !== "walkin" && numBookedRooms > 0) {
+                const totalGuests = this.cart.filter(o => o.name.toLowerCase() === 'general entrance').reduce((acc, item) => acc + parseFloat(item.purqty), 0);
+                if (totalGuests === 1) {
+                  data.totalCost = parseFloat(data.totalCost) - entranceFee;
+                } else if (totalGuests >= 2) {
+                  data.totalCost = parseFloat(data.totalCost) - 2 * entranceFee;
                 }
                 item.totalCartPrice = data.totalCost;
               }
@@ -2132,7 +2137,19 @@ export default {
       this.walkinStatus = false;
       if (no === 0) {
         this.componentKey += 1;
+        this.dashboardStatus = true;
+        this.bookingComponentStatus = false;
+      } else if (no === 1) {
+        this.dashboardStatus = false;
+        this.bookingComponentStatus = true;
+      } else if (no === 3) {
+        this.dashboardStatus = false;
+        this.bookingComponentStatus = true;
+      } else {
+        this.dashboardStatus = false;
+        this.bookingComponentStatus = false;
       }
+
       if (no === 2 && this.billing.clientName === "") {
         this.toggleAddAccountModal();
       }
@@ -2286,12 +2303,12 @@ export default {
       this.billing.clientType = item.clientType;
       this.billing.bookingID = item.id;
 
-      try{
+      try {
         this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
-      } catch(error){
+      } catch (error) {
 
       }
-      
+
 
       this.toggleItemModal();
 
@@ -2514,12 +2531,12 @@ export default {
       this.billing.clientType = item.clientType;
       this.billing.bookingID = item.id;
 
-      try{
+      try {
         this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
-      } catch(error){
+      } catch (error) {
 
       }
-      
+
 
       this.toggleItemModal();
 
@@ -2814,7 +2831,7 @@ export default {
       this.calendarItems = this.bookings.map(booking => {
         const startDate = booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0];
         const endDate = booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0];
-        const title = `${booking.room_name}-${(booking.groupkey===null)?'':'<span class="text-white">group</span>-'}${booking.name}<span style="display:none">~${booking.itemID}~</span>`;
+        const title = `${booking.room_name}-${(booking.groupkey === null) ? '' : '<span class="text-white">group</span>-'}${booking.name}<span style="display:none">~${booking.itemID}~</span>`;
         const id = booking.itemID;
         const tooltip = `${booking.room_name}-${booking.name}\n*${booking.status}-${(booking.isPaid === 'yes') ? 'fully paid' : (booking.isPaid === 'no') ? 'not paid' : 'partial'}`;
         let classes = '';
@@ -2974,11 +2991,11 @@ export default {
         this.transactions.forEach(async (item, index) => {
           try {
             let a = null;
-            try{
+            try {
               a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
                 { "columnName": 'groupkey', "columnKey": item.groupkey },
               ]);
-            } catch(error){
+            } catch (error) {
               a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
                 { "columnName": 'bookingID', "columnKey": item.bookingID },
               ]);
@@ -3041,10 +3058,10 @@ export default {
           });
           return false;
         }
-        
-        const numGuests = this.cart.filter(o=>o.name.toLowerCase()==='general entrance').length;
 
-        if(numGuests === 0){
+        const numGuests = this.cart.filter(o => o.name.toLowerCase() === 'general entrance').length;
+
+        if (numGuests === 0) {
           await this.$swal.fire({
             title: 'Error',
             text: 'Kindly specify the number of guests by providing the quantity within the general entrance fee.',
@@ -3114,7 +3131,7 @@ export default {
                 columnName: 'groupkey',
                 columnKey: gkey
               });
-              if(existingTransaction.data.length === 0){
+              if (existingTransaction.data.length === 0) {
                 existingTransaction = {
                   data: []
                 };
@@ -3476,7 +3493,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
           reserveStatus = "n/a";
         }
 
-        if (reserveStatus === "reserved" && item.item.toLowerCase() !=='general entrance') {
+        if (reserveStatus === "reserved" && item.item.toLowerCase() !== 'general entrance') {
           await this.$swal.fire({
             title: 'Error',
             text: 'No purchase of add-ons until guest is checked in.',
@@ -3701,12 +3718,57 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       }
     },
   },
-  mounted() {
+  async mounted() {
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
-    // this.$nextTick(() => {
-    //   document.body.addEventListener('contextmenu', this.handleContextMenu);
-    // });
+    this.$nextTick(() => {
+      document.body.addEventListener('contextmenu', this.handleContextMenu);
+    });
+
+    if (this.dashboardStatus) {
+      this.bookingComponentStatus = false;
+    } else {
+      this.bookingComponentStatus = true;
+    }
+
+    await this.loadAlldata();
+
+    const intervalId = setInterval(async () => {
+      if (this.bookingComponentStatus && !document.hidden && document.hasFocus()) {
+        await this.loadAlldata();
+      }
+    }, 3000);
+
+    document.addEventListener('visibilitychange', () => {
+      if (this.bookingComponentStatus || document.hidden || !document.hasFocus()) {
+        clearInterval(intervalId);
+      } else {
+        intervalId = setInterval(async () => {
+          await this.loadAlldata();
+        }, 3000);
+      }
+    });
+
+    let timeoutId = null;
+    const resetTimer = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        this.bookingComponentStatus = false;
+        this.dashboardStatus = false;
+      }, 300000); // 5 minutes
+    };
+    resetTimer();
+
+    window.addEventListener("mousemove", () => {
+      resetTimer();
+      this.bookingComponentStatus = true;
+    });
+    window.addEventListener("keydown", () => {
+      resetTimer();
+      this.bookingComponentStatus = true;
+    });
+
+
   }
 };
 </script>

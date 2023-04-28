@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <!-- Logo and Search Bar -->
             <a class="navbar-brand" href="#">
-                <img src="@/assets/pantukan-waterworld-logo.jpg" width="45" height="45" class="d-inline-block align-top"
+                <img src="@/assets/pantukan-waterworld-logo.png" width="45" height="45" class="d-inline-block align-top"
                     alt="Pantukan Waterworld Logo">
                 Pantukan Waterworld Beach Resort
             </a>
