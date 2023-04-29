@@ -2142,12 +2142,15 @@ export default {
       } else if (no === 1) {
         this.dashboardStatus = false;
         this.bookingComponentStatus = true;
-      } else if (no === 3) {
+      } else if (no === 2) {
+        this.dashboardStatus = false;
+        this.bookingComponentStatus = false;
+      } else if(no === 3){
         this.dashboardStatus = false;
         this.bookingComponentStatus = true;
       } else {
         this.dashboardStatus = false;
-        this.bookingComponentStatus = false;
+        this.bookingComponentStatus = false;         
       }
 
       if (no === 2 && this.billing.clientName === "") {
@@ -3725,48 +3728,42 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
-    if (this.dashboardStatus) {
-      this.bookingComponentStatus = false;
-    } else {
-      this.bookingComponentStatus = true;
-    }
-
     await this.loadAlldata();
-
-    const intervalId = setInterval(async () => {
+    // const intervalId = setInterval(async () => {
       if (this.bookingComponentStatus && !document.hidden && document.hasFocus()) {
         await this.loadAlldata();
       }
-    }, 3000);
+    // }, 3000);
 
     document.addEventListener('visibilitychange', () => {
       if (this.bookingComponentStatus || document.hidden || !document.hasFocus()) {
-        clearInterval(intervalId);
+        // clearInterval(intervalId);
       } else {
-        intervalId = setInterval(async () => {
-          await this.loadAlldata();
-        }, 3000);
+        // intervalId = setInterval(async () => {
+        //   await this.loadAlldata();
+          this.loadAlldata();
+        // }, 3000);
       }
     });
 
-    let timeoutId = null;
-    const resetTimer = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        this.bookingComponentStatus = false;
-        this.dashboardStatus = false;
-      }, 300000); // 5 minutes
-    };
-    resetTimer();
+    // let timeoutId = null;
+    // const resetTimer = () => {
+    //   clearTimeout(timeoutId);
+    //   timeoutId = setTimeout(() => {
+    //     this.bookingComponentStatus = false;
+    //     this.dashboardStatus = false;
+    //   }, 60000); // 1 minute
+    // };
+    // resetTimer();
 
-    window.addEventListener("mousemove", () => {
-      resetTimer();
-      this.bookingComponentStatus = true;
-    });
-    window.addEventListener("keydown", () => {
-      resetTimer();
-      this.bookingComponentStatus = true;
-    });
+    // window.addEventListener("mousemove", () => {
+    //   resetTimer();
+    //   this.bookingComponentStatus = true;
+    // });
+    // window.addEventListener("keydown", () => {
+    //   resetTimer();
+    //   this.bookingComponentStatus = true;
+    // });
 
 
   }

@@ -389,20 +389,21 @@ export default {
         await this.loadData();  
 
         // set interval to refresh data every 3 seconds if component is in focus
-        const intervalId = setInterval(async () => {
+        // const intervalId = setInterval(async () => {
             if (this.active && !document.hidden && document.hasFocus()) {
                 await this.loadData();
             }
-        }, 3000);
+        // }, 3000);
 
         // add event listener to clear interval when component is not in focus
         document.addEventListener('visibilitychange', () => {
             if (!this.active || document.hidden || !document.hasFocus()) {
-                clearInterval(intervalId);
+                // clearInterval(intervalId);
             } else {
-                intervalId = setInterval(async () => {
-                    await this.loadData();
-                }, 3000);
+                // intervalId = setInterval(async () => {
+                    // await this.loadData();
+                    this.loadData();
+                // }, 3000);
             }
         });
 
