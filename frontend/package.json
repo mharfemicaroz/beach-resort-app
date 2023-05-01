@@ -42,7 +42,8 @@
     "vue-simple-calendar": "^6.3.1",
     "vue-simple-context-menu": "^4.0.4",
     "vue-sweetalert2": "^5.0.5",
-    "vuex": "^4.0.2"
+    "vuex": "^4.0.2",
+    "ws": "^8.13.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",

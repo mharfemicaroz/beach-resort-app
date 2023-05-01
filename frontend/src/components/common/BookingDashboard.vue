@@ -91,7 +91,7 @@
             <div class="col-md-4">
                 <div class="card x">
                     <div class="card-header text-primary text-center">
-                        <strong>Transaction Status</strong>
+                        <strong>Transaction Type</strong>
                     </div>
                     <div class="card-body chart">
                         <pie-chart :key="componentKey" v-if="loaded[3]" :chartData="pie2Data" />
@@ -177,7 +177,7 @@ export default {
                 ]
             },
             pie2Data: {
-                labels: ['partial', 'full'],
+                labels: ['cash', 'non-cash'],
                 datasets: [
                     {
                         data: [],
@@ -248,9 +248,13 @@ export default {
             this.pie1Data.datasets[0].data = [numCancelled, numReserved, numIn, numOut]
         },
         pie2Datasets(data) {
-            const numpartial = data.filter(item => item.payStatus === 'partial').length;
-            const numfull = data.filter(item => item.payStatus === 'full').length;
-            this.pie2Data.datasets[0].data = [numpartial, numfull]
+            const totcash = data.filter(item => item.paymentMethod === 'cash').reduce((accumulator, currentValue) => {
+                return accumulator + parseFloat(currentValue.cashAmountPay);
+            }, 0);
+            const totnoncash = data.filter(item => item.paymentMethod === 'non-cash').reduce((accumulator, currentValue) => {
+                return accumulator + parseFloat(currentValue.cashAmountPay);
+            }, 0);
+            this.pie2Data.datasets[0].data = [totcash, totnoncash]
         },
         bar1Datasets(data) {
             const br = data.filter(item => item.room_type === 'BEACH ROOM').length;
@@ -337,6 +341,7 @@ export default {
                 const bookingData = await axios.get(this.API_URL + "bookings/");
                 const transactionData = await axios.get(this.API_URL + "transaction/");
                 const transactionItemsData = await axios.get(this.API_URL + "transaction/item/");
+                const transactionRecordsData = await axios.get(this.API_URL + "transaction/record/");
                 
                 if(JSON.stringify(bookingData.data) !== JSON.stringify(this.prevBookings)){
                     this.componentKey+=1;
@@ -368,7 +373,7 @@ export default {
                 }, 0);
 
                 this.pie1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
-                this.pie2Datasets(transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')));
+                this.pie2Datasets(transactionRecordsData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')));
                 this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
                 this.bar2Datasets(transactionItemsData.data);
                 this.line1Datasets(bookingData.data);

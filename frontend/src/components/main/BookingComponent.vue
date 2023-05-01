@@ -11,7 +11,11 @@
       <li class="nav-item" role="presentation">
         <button :class="userdata.role === 'superuser' ? 'nav-link' : 'nav-link active'" id="booking-tab"
           data-bs-toggle="tab" data-bs-target="#booking" type="button" role="tab" aria-controls="booking"
-          aria-selected="true" @click="resetSummary(1)">Booking & Reservation</button>
+          aria-selected="true" @click="resetSummary(1)">Reservation</button>
+      </li>
+      <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
+        <button class="nav-link" id="monitor-tab" data-bs-toggle="tab" data-bs-target="#monitor" type="button" role="tab"
+          aria-controls="monitor" aria-selected="false" @click="resetSummary(4)">Front Desk</button>
       </li>
       <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
         <button class="nav-link" id="others-tab" data-bs-toggle="tab" data-bs-target="#others" type="button" role="tab"
@@ -22,6 +26,8 @@
           aria-controls="reports" aria-selected="false" @click="resetSummary(3)">Reports</button>
       </li>
     </ul>
+
+
     <div class="tab-content mt-3" id="myTabContent">
       <div v-if="userdata.role === 'superuser'" class="tab-pane fade show active" id="dashboard" role="tabpanel"
         aria-labelledby="dashboard-tab">
@@ -64,6 +70,80 @@
             </div>
           </div>
 
+        </div>
+      </div>
+
+
+      <div class="tab-pane fade" id="monitor" role="tabpanel" aria-labelledby="monitor-tab">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-1">
+              <ul class="nav nav-tabs flex-column" id="propertyTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active rotated-text" data-bs-toggle="tab" @click="activeMainTab='BEACH ROOM'" href="#beachroom">Beach Rooms</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab='POOL ROOM'" href="#poolrooms">Pool Rooms</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab='BEACH COTTAGE'" href="#beachcottages">Beach Cottages</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab='POOL COTTAGE'" href="#poolcottages">Pool Cottages</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab='GAZEBO COTTAGE'" href="#gazebocottages">Gazebo Cottages</a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="col-sm-11">
+              <div class="tab-content mt-3" id="propertyTabContent">
+                <div class="tab-pane fade show active" id="beachroom" role="tabpanel" aria-labelledby="beachroom-tab">
+
+                  <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+
+                </div>
+                <div class="tab-pane fade" id="poolrooms" role="tabpanel" aria-labelledby="poolroom-tab">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="beachcottages" role="tabpanel" aria-labelledby="beachcottage-tab">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="poolcottages" role="tabpanel" aria-labelledby="poolcottage-tab">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="gazebocottages" role="tabpanel" aria-labelledby="gazebocottage-tab">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
         </div>
       </div>
 
@@ -182,6 +262,7 @@
               <h2>Payment Transaction</h2>
               <div class="container">
                 <form>
+                  
                   <div class="form-group">
                     <label for="paymentMethod">Payment method:</label>
                     <select class="form-control" id="paymentMethod" v-model="paymentMethod">
@@ -191,7 +272,13 @@
                   </div>
                   <div class="form-group">
                     <label for="cashAmount">Cash amount:</label>
-                    <input type="number" class="form-control" id="cashAmount" v-model="cashAmount">
+                    <div class="input-group">
+                      <span class="input-group-text">₱</span>
+                      <input type="number" class="form-control form-control-lg" id="cashAmount"
+                        v-model.number="cashAmount" step="0.01">
+                      <span class="input-group-text">{{ (cashAmount - Math.floor(cashAmount)).toFixed(2).substr(1)
+                      }}</span>
+                    </div>
                   </div>
                   <div v-if="paymentMethod === 'non-cash'" class="form-group">
                     <label for="nonCashReference">Reference No.:</label>
@@ -210,23 +297,21 @@
                       <input type="text" class="form-control" id="nonCashReference" v-model="nonCashReference">
                     </div>
                   </div>
-                  <div v-if="alreadyDiscounted === false" class="form-group">
-                    <label for="discountMode">Discount mode:</label>
-                    <select class="form-control" id="discountMode" v-model="discountMode">
-                      <option value="percentage">Percentage</option>
-                      <option value="fixed">Fixed amount</option>
-                    </select>
-                  </div>
-                  <div v-if="alreadyDiscounted === false" class="form-group">
-                    <label for="discountValue">Discount value:</label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" v-if="discountMode === 'percentage'">&#37;</span>
-                        <span class="input-group-text" v-else>Php</span>
+                  <div class="form-group row mt-2">
+                    <label for="name" class="col-sm-4 col-form-label">Dicount:</label>
+                    <div class="col-sm-4">
+                      <div v-if="alreadyDiscounted === false">
+                        <select style="width: 120px;" class="form-control" id="discountMode" v-model="discountMode">
+                          <option value="percentage">Percentage</option>
+                          <option value="fixed">Fixed amount</option>
+                        </select>
                       </div>
+                    </div>
+                    <div class="col-sm-4">
                       <input type="number" class="form-control" id="discountValue" v-model="discountValue">
                     </div>
                   </div>
+
                   <div class="form-group">
                     <label for="remarks">Remarks:</label>
                     <input type="text" class="form-control" v-model="cashRemarks">
@@ -637,7 +722,7 @@
   <!-- Modals -->
   <div class="modal fade show" id="showall-modal" tabindex="-1" role="dialog" aria-labelledby="showall-modalLabel"
     style="display: none; padding-right: 17px;" aria-modal="true">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-xl" style="max-width: 1200px!important;" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
 
@@ -796,7 +881,11 @@
               aria-labelledby="all-tab">
               <div class="container-fluid">
                 <table-component :mainHeaders=bookingsAllOptions :mainItems="filteredRoomBookings" :editable="false"
-                  :toggleable="false" />
+                  :toggleable="false">
+                  <template #content="data">
+                    <!-- {{ data.data.id  }} -->
+                  </template>
+                </table-component>
               </div>
             </div>
           </div>
@@ -1112,7 +1201,7 @@
               <label for="room" class="col-sm-2 col-form-label">Room:*</label>
               <div v-if="this.reservation.status == 'vacant'" class="col-sm-4">
 
-                <v-select multiple :options="updatedRooms" label="name" v-model="reservation.roomName" required>
+                <v-select :disabled="(roomSelect!=='ok')?true:false" multiple :options="updatedRooms" label="name" v-model="reservation.roomName" required>
                   <template #option="{ name, type, price }">
                     <h6 style="margin: 0">{{ name }}</h6>
                     <em><small>{{ type }}</small></em>
@@ -1183,6 +1272,7 @@ import { useAuthStore } from "@/stores/authStore";
 import TopNavBarComponent from "@/components/common/TopNavBar.vue";
 import TableComponent from "@/components/common/GenericTable.vue";
 import BookingDashboard from "@/components/common/BookingDashboard.vue";
+import CardBookingsVue from "../common/CardBookings.vue";
 import "/node_modules/vue-simple-calendar/dist/style.css"
 import "/node_modules/vue-simple-calendar/dist/css/default.css"
 import "/node_modules/vue-simple-calendar/dist/css/holidays-us.css"
@@ -1213,6 +1303,19 @@ ChartJS.register(
   Legend
 )
 
+// const socket = new WebSocket('ws://192.168.254.104:8081/ws/realtime/');
+
+// socket.onmessage = function (e) {
+//   const data = JSON.parse(e.data);
+//   console.log(data.message)
+// };
+
+// document.addEventListener('click', function () {
+//   console.log(socket)
+//   socket.send(JSON.stringify({
+//     'message': 'hi!'
+//   }));
+// });
 //helper functions
 function parseDate(dateString) {
   const [day, month, year] = dateString.split('/');
@@ -1233,13 +1336,18 @@ export default {
     CalendarViewHeader,
     TopNavBarComponent,
     TableComponent,
-    BookingDashboard
+    BookingDashboard,
+    CardBookingsVue,
   },
   data() {
     return {
+      socket: null,
+      test: '',
       dashboardStatus: true,
       bookingComponentStatus: true,
       componentKey: 0,
+      activeMainTab:'BEACH ROOM',
+      roomSelect:"ok",
       bookingsOptions: [{
         'label': 'Room Name',
         'field': 'room_name',
@@ -1308,7 +1416,11 @@ export default {
         'field': 'balance',
         'sortable': true,
         'reducible': true,
-      },],
+      }, {
+        'label': 'Action',
+        'field': '',
+        'slot': true,
+      }],
       reservationsOptions: [{
         'label': '',
         'field': 'toggle',
@@ -1629,6 +1741,10 @@ export default {
     };
   },
   created() {
+
+
+
+
     this.loadAlldata();
   },
   computed: {
@@ -1735,6 +1851,31 @@ export default {
         };
       }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchTerm.toLowerCase()));
 
+    },
+    roomsjoinbookings() {
+      return this.rooms.filter(item=>item.type===this.activeMainTab).filter(item=>item.type===this.activeMainTab.toString()).map(room => {
+        const booking = this.bookings.filter(item =>(item.status !=="checkedout")).filter(item =>(item.status !=="cancelled") && (parseDate(new Date().toLocaleDateString('en-GB')) >= parseDate(item.checkinDate) && parseDate(item.checkoutDate) >= parseDate(new Date().toLocaleDateString('en-GB')))  ).find(booking => booking.room_name === room.name);
+        if (booking) {
+          return {
+            ...room,
+            clientName: booking.name,
+            clientEmail: booking.clientemail,
+            clientAddress: booking.clientaddress,
+            checkinDate: booking.checkinDate,
+            checkoutDate: booking.checkoutDate,
+            status: booking.status,
+            itemID: booking.itemID,
+            groupkey: booking.groupkey,
+            totalPrice: booking.totalPrice,
+            partialPayment: booking.partialPayment,
+            status: booking.status,
+            isPaid: booking.isPaid,
+            selected: false,
+          };
+        } else {
+          return room;
+        }
+      });
     },
     filteredRoomBookings() {
       const isCancelled = this.activeTab === 'cancelled';
@@ -1907,6 +2048,34 @@ export default {
     },
   },
   methods: {
+    cardAction(id,room_name, room_type, room_price){
+      this.itemIndex = this.bookings.findIndex(
+        o => o.itemID === id
+      );
+      if(this.itemIndex !== -1){
+        this.showReservation();
+      } else {
+        this.reservation.status = 'vacant';
+        this.reservation.clientName = "";
+        this.reservation.clientEmail = "";
+        this.reservation.clientAddress = "";
+        this.reservation.clientNationality = "Filipino";
+        this.reservation.clientType = "in-house";
+        this.reservation.remarks = "";
+        this.reservation.clientPhone = "";
+        this.reservation.roomName = [{name:room_name,type:room_type,price:room_price}];
+        this.roomSelect = 'no';
+        this.reservation.checkinDate = new Date().toLocaleDateString('en-GB');
+        this.reservation.checkoutDate = new Date().toLocaleDateString('en-GB');
+        this.toggleItemModal();
+      }
+      
+    },
+    sendMessage() {
+      console.log("Hello")
+      console.log(this.socket);
+      this.socket.send('{"message":"hello"}');
+    },
     async loadAlldata() {
       this.reloadData();
       this.reloadItemsData();
@@ -2041,11 +2210,11 @@ export default {
                 itemOption: 'addons',
               };
 
-              const numBookedRooms = this.cart.filter(o => (o.type.toLowerCase() === 'beach room' || o.type.toLowerCase() === 'pool room') && o.category === 'main').length;
+              const numBookedRooms = this.cart.filter(o => (o.type.toLowerCase() === 'beach room' || o.type.toLowerCase() === 'pool room' || o.type.toLowerCase() === 'leisures') && o.category === 'main').length;
               const numGuestsCard = this.cart.filter(o => o.name.toLowerCase() === 'general entrance' && o.category === 'main').length;
               const entranceFee = parseFloat(this.items.filter(o => o.item.toLowerCase() === 'general entrance')[0].priceRate);
 
-              if (numGuestsCard === 0 && bId !== "walkin" && numBookedRooms > 0) {
+              if (numGuestsCard === 0 && numBookedRooms > 0) {
                 const totalGuests = this.cart.filter(o => o.name.toLowerCase() === 'general entrance').reduce((acc, item) => acc + parseFloat(item.purqty), 0);
                 if (totalGuests === 1) {
                   data.totalCost = parseFloat(data.totalCost) - entranceFee;
@@ -2135,23 +2304,6 @@ export default {
       this.alreadyDiscounted = false;
       this.itemIndex = -1;
       this.walkinStatus = false;
-      if (no === 0) {
-        this.componentKey += 1;
-        this.dashboardStatus = true;
-        this.bookingComponentStatus = false;
-      } else if (no === 1) {
-        this.dashboardStatus = false;
-        this.bookingComponentStatus = true;
-      } else if (no === 2) {
-        this.dashboardStatus = false;
-        this.bookingComponentStatus = false;
-      } else if(no === 3){
-        this.dashboardStatus = false;
-        this.bookingComponentStatus = true;
-      } else {
-        this.dashboardStatus = false;
-        this.bookingComponentStatus = false;         
-      }
 
       if (no === 2 && this.billing.clientName === "") {
         this.toggleAddAccountModal();
@@ -2682,14 +2834,17 @@ export default {
     },
     onClickDay(d) {
       this.dayreserve = d;
+      this.roomSelect = "ok";
       this.toggledayMenuModal();
-
     },
     onClickItem(e) {
 
       this.itemIndex = this.bookings.findIndex(
         o => o.itemID === e.id
       );
+      this.showReservation();
+    },
+    showReservation(){
       this.reservation.clientName = this.bookings[this.itemIndex].name;
       this.reservation.clientEmail = this.bookings[this.itemIndex].clientemail;
       this.reservation.clientAddress = this.bookings[this.itemIndex].clientaddress;
@@ -3720,30 +3875,20 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
 
       }
     },
+    // sendMessage(){
+    //   socket.send(JSON.stringify(
+    //     {
+    //       "message": "hi micaroz!",
+    //     }));
+    // },
+
   },
   async mounted() {
+
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {
-      document.body.addEventListener('contextmenu', this.handleContextMenu);
-    });
-
-    await this.loadAlldata();
-    // const intervalId = setInterval(async () => {
-      if (this.bookingComponentStatus && !document.hidden && document.hasFocus()) {
-        await this.loadAlldata();
-      }
-    // }, 3000);
-
-    document.addEventListener('visibilitychange', () => {
-      if (this.bookingComponentStatus || document.hidden || !document.hasFocus()) {
-        // clearInterval(intervalId);
-      } else {
-        // intervalId = setInterval(async () => {
-        //   await this.loadAlldata();
-          this.loadAlldata();
-        // }, 3000);
-      }
+      // document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
     // let timeoutId = null;
@@ -3928,6 +4073,13 @@ img {
   /* For older browsers */
 }
 
+.rotated-text2 {
+  writing-mode: vertical-lr;
+  /* For modern browsers */
+  transform: rotate(270deg);
+  /* For older browsers */
+}
+
 .cv-item.hotel-reserved {
   background-color: #5c6bc0;
   /* adjust the color as needed */
@@ -3961,5 +4113,19 @@ img {
 .cv-item.hotel-checkedout {
   background-color: #ff7043;
   /* adjust the color as needed */
+}
+
+.card {
+  margin: 5px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  cursor: pointer;
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 </style>
