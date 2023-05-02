@@ -1237,12 +1237,16 @@
                 <div v-else-if="this.reservation.status == 'checkedin'">
 
                   <span v-if="userdata.role !== 'reservationist'">
-                    <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
-                      type="button" class="btn btn-success">Pay Now</button>
-                    <button v-else-if="this.reservation.isPaid == 'partial'" @click="moveToCart()" type="button"
-                      class="btn btn-success">Pay Now</button>
+                    <div v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" >
+                      <button @click="moveToCart()" type="button" class="btn btn-success">Pay Now</button>
+                    </div>
+                    <div v-else-if="this.reservation.isPaid == 'partial'" >
+                      <button @click="moveToCart()" type="button" class="btn btn-success">Pay Now</button>&nbsp;
+                      <button type="button" class="btn btn-primary" @click="extendBooking()">Extend (1 day)</button>
+                    </div>
                     <div v-else>
                       <button type="button" class="btn btn-success" @click="viewSummary()">View Summary</button>&nbsp;
+                      <button type="button" class="btn btn-primary" @click="extendBooking()">Extend (1 day)</button>&nbsp;
                       <button type="button" class="btn btn-success" @click="checkOutGuest()">Check-out</button>
                     </div>
                   </span>
@@ -1741,10 +1745,6 @@ export default {
     };
   },
   created() {
-
-
-
-
     this.loadAlldata();
   },
   computed: {
@@ -2736,7 +2736,124 @@ export default {
             confirmButtonText: 'OK'
           });
         }
+      })
+    },
+    async extendBooking(){
+      const result = await this.$swal.fire({
+        icon: 'warning',
+        title: 'Are you sure?',
+        text: 'Are you sure you want to extend this guest?',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        showCancelButton: true
+      })
+
+      if (!result.isConfirmed) {
+        return;
+      }
+      
+      const item = this.bookings[this.itemIndex];
+      const bId = item.id;
+      const bookingID = item.itemID;
+      const groupkey = (item.groupkey || '');
+      const roomPrice = parseFloat(item.room_price);
+      let groupbookings = [];
+      let existingTransactionItems = [];
+
+      if (groupkey.length > 0) {
+        try {
+          const o = await axios.post(`${this.API_URL}bookings/filter/`, [
+            { "columnName": "groupkey", "columnKey": groupkey },
+          ])
+          groupbookings = o.data;
+        } catch (error) {
+
+        }
+      }
+      
+      if (groupbookings.length > 0) {
+        existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+          columnName: 'groupkey',
+          columnKey: groupkey
+        });
+      } else {
+        existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+          columnName: 'bookingID',
+          columnKey: bookingID
+        });
+      }
+
+      if (groupbookings.length > 0) {
+        groupbookings.forEach(async item => {
+          let itemIndex = this.bookings.findIndex(
+            o => o.itemID === item.itemID
+          );
+          const bookingData = null;
+          const itemCheckout = new Date(parseDate(item.checkoutDate));
+          const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
+          const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
+
+          const newTotalPrice = parseFloat(this.bookings[itemIndex].totalPrice) + parseFloat(this.bookings[itemIndex].room_price);
+          try {
+            bookingData = {
+              itemID: this.bookings[itemIndex].itemID,
+              status: this.bookings[itemIndex].status,
+              name: this.bookings[itemIndex].name,
+              clientemail: this.bookings[itemIndex].clientemail,
+              clientaddress: this.bookings[itemIndex].clientaddress,
+              clientnationality: this.bookings[itemIndex].clientnationality,
+              clientType: this.bookings[itemIndex].clientType,
+              checkinDate: this.bookings[itemIndex].checkinDate,
+              checkoutDate: newCheckoutString,
+              room_name: this.bookings[itemIndex].room_name,
+              room_price: this.bookings[itemIndex].room_price,
+              room_type: this.bookings[itemIndex].room_type,
+              remarks: this.bookings[itemIndex].remarks,
+              contactNumber: this.bookings[itemIndex].contactNumber,
+              actualCheckoutDate: this.bookings[itemIndex].actualCheckoutDate,
+              cancellationDate: this.bookings[itemIndex].cancellationDate,
+              isPaid: "partial",
+              totalPrice: newTotalPrice,
+              partialPayment: this.bookings[itemIndex].partialPayment,
+              processedBy: this.userdata.fName + " " + this.userdata.lName,
+              groupkey: this.bookings[itemIndex].groupkey,
+            };
+            await axios.put(this.API_URL + `bookings/${this.bookings[itemIndex].id}/`, bookingData);
+          } catch (error) {
+            console.log(error);
+          }
+        })
+      } else {
+        const itemCheckout = new Date(parseDate(this.bookings[this.itemIndex].checkoutDate));
+        const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
+        const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
+        const newTotalPrice = parseFloat(this.bookings[this.itemIndex].totalPrice) + parseFloat(this.bookings[this.itemIndex].room_price);
+        this.bookings[this.itemIndex].checkoutDate = newCheckoutString;
+        this.bookings[this.itemIndex].isPaid = "partial";
+        this.bookings[this.itemIndex].totalPrice = newTotalPrice;
+        this.updateBookings(bId);
+      }
+
+      existingTransactionItems.data.filter(o=>o.itemOption==='room').forEach(async item => {
+        try {
+          await axios.put(`${this.API_URL}transaction/item/${item.id}/`, {
+            bookingID: item.bookingID,
+            itemName: item.itemName,
+            itemType: item.itemType,
+            itemPriceRate: item.itemPriceRate,
+            purchaseQty: parseFloat(item.purchaseQty) + 1,
+            totalCost: parseFloat(item.totalCost) + roomPrice,
+            category: item.category,
+            itemOption: item.itemOption,
+          });
+
+        } catch (error) {
+ 
+        }
       });
+
+      // this.updateBookings(this.bookings[bId].id);
+      this.toggleItemModal();
     },
     checkinGuest() {
       this.$swal.fire({
@@ -2881,8 +2998,8 @@ export default {
       this.reservation.clientName = "";
       this.reservation.clientEmail = "";
       this.reservation.clientAddress = "";
-      this.reservation.clientNationality = "";
-      this.reservation.clientType = "";
+      this.reservation.clientNationality = "Filipino";
+      this.reservation.clientType = "in-house";
       this.reservation.roomName = "";
       this.reservation.roomPrice = "";
       this.reservation.roomType = "";
@@ -3149,9 +3266,10 @@ export default {
         this.transactions.forEach(async (item, index) => {
           try {
             let a = null;
+            const gkey = (item.groupkey || "x")
             try {
               a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-                { "columnName": 'groupkey', "columnKey": item.groupkey },
+                { "columnName": 'groupkey', "columnKey": gkey },
               ]);
             } catch (error) {
               a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
