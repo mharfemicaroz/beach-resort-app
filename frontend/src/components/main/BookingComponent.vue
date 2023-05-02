@@ -1131,7 +1131,7 @@
 
   <div class="modal fade show" id="BookDayModal" tabindex="-1" role="dialog" aria-labelledby="BookDayModalLabel"
     style="display: none; padding-right: 17px;" aria-modal="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 id="BookDayModalLabel" class="text-primary">Reservation Info</h4>
@@ -1189,12 +1189,14 @@
             <div class="form-group row">
               <label for="checkin" class="col-sm-2 col-form-label">Check-in Date:*</label>
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="checkin" v-model="reservation.checkinDate" required readonly>
+                <input type="text" aria-describedby="inputhelp" class="form-control mb-0" id="checkin" v-model="reservation.checkinDate" required readonly>
+                <small v-if="this.reservation.status == 'vacant'" id="inputhelp" class="form-text text-muted mt-0">Please enter the date in the format: DD/MM/YYYY.</small>
               </div>
               <label for="checkout" class="col-sm-2 col-form-label">Check-out Date:*</label>
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="checkout" v-model="reservation.checkoutDate" required
-                  readonly>
+                <input v-if="this.reservation.status == 'vacant'" aria-describedby="inputhelp2" type="date" class="form-control" id="checkout" v-model="reservation.checkoutDate" required>
+                <input v-else type="text" class="form-control" id="checkout" v-model="reservation.checkoutDate" readonly>
+                <small v-if="this.reservation.status == 'vacant'" id="inputhelp2" class="form-text text-muted mt-0">Please enter the date in the format: DD/MM/YYYY.</small>
               </div>
             </div>
             <div class="form-group row">
@@ -1331,6 +1333,28 @@ function parseDate2(dateString) {
   const result = dateString.substring(0, index);
   const [year, month, day] = result.split('-');
   return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
+}
+
+function padTo2Digits(num) {
+  return num.toString().padStart(2, '0');
+}
+
+function formatDate(date = new Date()) {
+  return [
+    date.getFullYear(),
+    padTo2Digits(date.getMonth() + 1),
+    padTo2Digits(date.getDate()),
+  ].join('-');
+}
+
+function formatDate2(date = new Date()){
+  let inputDate = date;
+  let dateObj = new Date(inputDate);
+  let day = dateObj.getDate().toString().padStart(2, "0");
+  let month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+  let year = dateObj.getFullYear().toString();
+  let outputDate = `${day}/${month}/${year}`;
+  return outputDate;
 }
 
 export default {
@@ -2066,7 +2090,7 @@ export default {
         this.reservation.roomName = [{name:room_name,type:room_type,price:room_price}];
         this.roomSelect = 'no';
         this.reservation.checkinDate = new Date().toLocaleDateString('en-GB');
-        this.reservation.checkoutDate = new Date().toLocaleDateString('en-GB');
+        this.reservation.checkoutDate = formatDate(new Date());
         this.toggleItemModal();
       }
       
@@ -2930,6 +2954,7 @@ export default {
         this.selectionEnd = null
         this.toggledayMenuModal();
         this.toggleItemModal();
+        this.roomSelect = "ok";
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
         this.reservation.clientAddress = "";
@@ -2939,7 +2964,7 @@ export default {
         this.reservation.remarks = "";
         this.reservation.clientPhone = "";
         this.reservation.checkinDate = this.dayreserve.toLocaleDateString('en-GB');
-        this.reservation.checkoutDate = this.dayreserve.toLocaleDateString('en-GB');
+        this.reservation.checkoutDate = formatDate(this.dayreserve);
 
         this.reservation.status = "vacant";
       }
@@ -3008,7 +3033,8 @@ export default {
       this.reservation.clientPhone = "";
       this.toggleItemModal();
       this.reservation.checkinDate = this.selectionStart.toLocaleDateString('en-GB');
-      this.reservation.checkoutDate = this.selectionEnd.toLocaleDateString('en-GB');
+      this.reservation.checkoutDate = formatDate(new Date(parseDate(this.selectionEnd.toLocaleDateString('en-GB'))));
+      
 
     },
     onDrop(item, date) {
@@ -3147,6 +3173,16 @@ export default {
     },
     async clickTestAddItem() {
 
+      const checkin = parseDate(this.reservation.checkinDate);
+      const checkout = parseDate(formatDate2(this.reservation.checkoutDate));
+      if(checkout < checkin){
+        this.$swal.fire({
+          title: "error",
+          text: "Check-out date ≥ Check-in date.",
+          icon: "error",
+        });
+        return false;
+      }
       try {
         let gkey = null;
         let roomBooked = this.reservation.roomName;
@@ -3179,7 +3215,7 @@ export default {
             clientnationality: this.reservation.clientNationality,
             clientType: this.reservation.clientType,
             checkinDate: this.reservation.checkinDate,
-            checkoutDate: this.reservation.checkoutDate,
+            checkoutDate: formatDate2(this.reservation.checkoutDate),
             room_name: res.name,
             room_price: roomPrice,
             room_type: roomType,
