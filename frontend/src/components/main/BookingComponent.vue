@@ -4323,7 +4323,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
-    this.socket = new WebSocket('ws://192.168.254.103:8081/ws/realtime/');
+    this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
     const vm = this;
     this.socket.onmessage = function (e) {
       const data = JSON.parse(e.data);
