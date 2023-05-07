@@ -3649,13 +3649,24 @@ export default {
 
         const numGuests = this.cart.filter(o => o.type.toLowerCase() === 'entrance').length;
 
-        if (numGuests === 0 && this.bookings[this.itemIndex].status === 'checkedin') {
-          await this.$swal.fire({
-            title: 'Error',
-            text: 'Kindly specify the number of guests by providing the quantity within the general/pool entrance fee.',
-            icon: 'error'
-          });
-          return false;
+        if(bookid === "f"){
+          if (numGuests === 0) {
+            await this.$swal.fire({
+              title: 'Error',
+              text: 'Kindly specify the number of guests by providing the quantity within the general/pool entrance fee.',
+              icon: 'error'
+            });
+            return false;
+          }
+        } else {
+          if (numGuests === 0 && this.bookings[this.itemIndex].status === 'checkedin') {
+            await this.$swal.fire({
+              title: 'Error',
+              text: 'Kindly specify the number of guests by providing the quantity within the general/pool entrance fee.',
+              icon: 'error'
+            });
+            return false;
+          }
         }
 
         // if (reserveStatus === "reserved" && parseFloat(this.cashAmount) > parseFloat(this.total) * 0.50) {
@@ -4323,6 +4334,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
+    //this.socket = new WebSocket('ws://192.168.254.103:8081/ws/realtime/');
     this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
     const vm = this;
     this.socket.onmessage = function (e) {
