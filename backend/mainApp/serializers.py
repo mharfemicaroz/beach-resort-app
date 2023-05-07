@@ -64,3 +64,8 @@ class InventoryItemRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = InventoryItemRecord
         fields = '__all__'  
+
+class TasksRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TasksRecord
+        fields = '__all__'  

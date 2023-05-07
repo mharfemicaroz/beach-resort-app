@@ -18,8 +18,7 @@
                                     <li v-else><strong><i class="fas fa-user"></i> Client Name:</strong>{{ item.clientName }}</li>
                                     <li><strong><i class="fas fa-map-marker-alt"></i> Client Address:</strong> {{
                                         item.clientAddress }}</li>
-                                    <li><strong><i class="fas fa-phone"></i> Contact Number:</strong> {{ item.contactNumber
-                                    }}</li>
+                                    <li><strong><i class="fas fa-phone"></i> Contact Number:</strong> {{ item.contactNumber }}</li>
                                 </ul>
                                 <h6>Booking Information:</h6>
                                 <ul class="list-unstyled">
@@ -37,7 +36,7 @@
                             <div class="card-body" v-else>
                                 <div class="alert alert-warning text-center" role="alert">
                                     <h4 class="alert-heading">This room is available for booking</h4>
-                                    <p>Please reload to update this page.</p>
+                                    <p>Please click to continue.</p>
                                 </div>
                             </div>
                         </div>

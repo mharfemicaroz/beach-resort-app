@@ -13,10 +13,10 @@ moment.tz.setDefault('Asia/Hongkong')
 const app = createApp(App);
 
 app.config.globalProperties = {
-    //API_URL : `http://192.168.189.4:8081/`
+    //API_URL : `http://192.168.254.103:8081/`
     API_URL : "http://192.168.1.222:8081/" 
 }
-
+//6bv7mi88
 app.use(router);
 app.use(createPinia());
 app.use(VueSweetalert2);

@@ -154,3 +154,9 @@ class InventoryItemRecord(models.Model):
     totalCost = models.DecimalField(max_digits=10, decimal_places=2)
     stock_type = models.CharField(max_length=50)
     date_created = models.DateTimeField(auto_now_add=True)
+
+class TasksRecord(models.Model):
+    id = models.AutoField(primary_key=True)
+    actor = models.CharField(max_length=255)
+    task = models.CharField(max_length=255)
+    date_created = models.DateTimeField(auto_now_add=True)

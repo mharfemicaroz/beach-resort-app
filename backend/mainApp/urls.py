@@ -3,6 +3,7 @@ from .views import *
 
 urlpatterns = [ 
     re_path(r'^login/$', login, name='login'),
+    re_path(r'^task/record/$',tasksrecord_list , name='taskrecord-list'),
     re_path(r'^transaction/record/$', transactionrecord_list, name='transactionRecord-list'),
     re_path(r'^transaction/record/(?P<pk>\d+)/$', transactionrecord_list, name='transactionRecord-detail'),
     re_path(r'^transaction/record/filter/$', transactionrecord_filter, name='transaction-record-filter'),

@@ -583,7 +583,7 @@ export default {
             }
         },
         filteredstocks() { //remove stocks with zero quantity
-            return this.stocks.filter(item => item.quantity > 0 && item.isAvailable);
+            return this.stocks.filter(item => item.isAvailable);
         },
         filteredsupplier() { //remove suupplier not available
             return this.suppliers.filter(item => item.isAvailable);

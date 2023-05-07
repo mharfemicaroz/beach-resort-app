@@ -97,6 +97,10 @@ def generic_delete(request, o, pk=None):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+@csrf_exempt    
+def tasksrecord_list(request, pk=None):
+    return generic_list(request, TasksRecord, TasksRecordSerializer, pk)
 
 @csrf_exempt    
 def sales_list(request, pk=None):

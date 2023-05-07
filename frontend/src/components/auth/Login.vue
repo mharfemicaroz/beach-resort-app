@@ -1,16 +1,15 @@
 <template>
   <div class="container-fluid login-background">
     <div class="row justify-content-center align-items-center vh-100">
-      <div class="col-md-4">
+      <div class="col-md-3">
         <form @submit.prevent="login" class="animated-form">
-          <div class="card-body p-4 bg-light rounded shadow-sm">
+          <div class="card-body p-4 rounded shadow-sm" style="background-color: rgba(255, 255, 255, 0.4);">
             <div class="text-center">
               <img src="@/assets/pantukan-waterworld-logo.png" alt="Pantukan Waterworld Logo"
                 class="img-fluid mx-auto d-block" style="max-width: 200px;">
             </div>
 
             <div class="form-group">
-              <label for="username" class="form-label">Username</label>
               <div class="input-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
@@ -19,8 +18,7 @@
                   placeholder="Enter username">
               </div>
             </div>
-            <div class="form-group">
-              <label for="password" class="form-label">Password</label>
+            <div class="form-group mt-2">
               <div class="input-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>

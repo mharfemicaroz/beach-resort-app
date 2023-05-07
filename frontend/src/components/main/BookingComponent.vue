@@ -15,7 +15,7 @@
       </li>
       <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
         <button class="nav-link" id="monitor-tab" data-bs-toggle="tab" data-bs-target="#monitor" type="button" role="tab"
-          aria-controls="monitor" aria-selected="false" @click="resetSummary(4)">Front Desk</button>
+          aria-controls="monitor" aria-selected="false" @click="resetSummary(4)">Reception</button>
       </li>
       <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
         <button class="nav-link" id="others-tab" data-bs-toggle="tab" data-bs-target="#others" type="button" role="tab"
@@ -80,19 +80,24 @@
             <div class="col-sm-1">
               <ul class="nav nav-tabs flex-column" id="propertyTab" role="tablist">
                 <li class="nav-item">
-                  <a class="nav-link active rotated-text" data-bs-toggle="tab" @click="activeMainTab='BEACH ROOM'" href="#beachroom">Beach Rooms</a>
+                  <a class="nav-link active rotated-text" data-bs-toggle="tab" @click="activeMainTab = 'BEACH ROOM'"
+                    href="#beachroom">Beach Rooms</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab='POOL ROOM'" href="#poolrooms">Pool Rooms</a>
+                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab = 'POOL ROOM'"
+                    href="#poolrooms">Pool Rooms</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab='BEACH COTTAGE'" href="#beachcottages">Beach Cottages</a>
+                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab = 'BEACH COTTAGE'"
+                    href="#beachcottages">Beach Cottages</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab='POOL COTTAGE'" href="#poolcottages">Pool Cottages</a>
+                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab = 'POOL COTTAGE'"
+                    href="#poolcottages">Pool Cottages</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab='GAZEBO COTTAGE'" href="#gazebocottages">Gazebo Cottages</a>
+                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab = 'GAZEBO COTTAGE'"
+                    href="#gazebocottages">Gazebo Cottages</a>
                 </li>
               </ul>
             </div>
@@ -243,13 +248,14 @@
                 <div class="card" v-for="(item, index) in combinedcart" :key="item.id">
                   <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title">{{ item.name }}</h5>
-                    <button v-if="item.category === 'inclusion'" type="button" class="btn btn-sm btn-close"
-                      aria-label="Close" @click="cancelItem(item)"></button>
+                    <button v-if="item.itemOption === 'addons' && userdata.role === 'superuser'" type="button"
+                      class="btn btn-sm btn-close" aria-label="Close" @click="cancelItem(item)"></button>
                   </div>
                   <div class="card-body">
                     <p class="card-text">Type: {{ item.type }}</p>
                     <p class="card-text">Price Rate: {{ item.priceRate }}</p>
-                    <p class="card-text">Purchase Qty.:{{ item.purqty }}</p>
+                    <p class="card-text">{{ (item.itemOption === 'room') ? `No. of Days: ${item.purqty}` : `Purchase Qty.:
+                      ${item.purqty}` }}</p>
                     <p class="card-text">Total Price: {{ item.totalCartPrice }}</p>
 
 
@@ -262,7 +268,7 @@
               <h2>Payment Transaction</h2>
               <div class="container">
                 <form>
-                  
+
                   <div class="form-group">
                     <label for="paymentMethod">Payment method:</label>
                     <select class="form-control" id="paymentMethod" v-model="paymentMethod">
@@ -301,7 +307,7 @@
                     <label for="name" class="col-sm-4 col-form-label">Dicount:</label>
                     <div class="col-sm-4">
                       <div v-if="alreadyDiscounted === false">
-                        <select style="width: 120px;" class="form-control" id="discountMode" v-model="discountMode">
+                        <select style="width: 100px;" class="form-control" id="discountMode" v-model="discountMode">
                           <option value="percentage">Percentage</option>
                           <option value="fixed">Fixed amount</option>
                         </select>
@@ -549,7 +555,7 @@
       </div>
     </div>
 
-    <div id="billing-details" class="container-fluid billing">
+    <div id="billing-details" class="container-fluid billing" style="font-size: 100%;">
       <div class="container">
         <div class="row">
           <div :class="!isThereLeisures ? 'col-6' : 'col-12'">
@@ -1131,7 +1137,7 @@
 
   <div class="modal fade show" id="BookDayModal" tabindex="-1" role="dialog" aria-labelledby="BookDayModalLabel"
     style="display: none; padding-right: 17px;" aria-modal="true">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 id="BookDayModalLabel" class="text-primary">Reservation Info</h4>
@@ -1189,62 +1195,83 @@
             <div class="form-group row">
               <label for="checkin" class="col-sm-2 col-form-label">Check-in Date:*</label>
               <div class="col-sm-4">
-                <input type="text" aria-describedby="inputhelp" class="form-control mb-0" id="checkin" v-model="reservation.checkinDate" required readonly>
-                <small v-if="this.reservation.status == 'vacant'" id="inputhelp" class="form-text text-muted mt-0">Please enter the date in the format: DD/MM/YYYY.</small>
+                <input type="text" aria-describedby="inputhelp" class="form-control mb-0" id="checkin"
+                  v-model="reservation.checkinDate" required readonly>
               </div>
               <label for="checkout" class="col-sm-2 col-form-label">Check-out Date:*</label>
               <div class="col-sm-4">
-                <input v-if="this.reservation.status == 'vacant'" aria-describedby="inputhelp2" type="date" class="form-control" id="checkout" v-model="reservation.checkoutDate" required>
+                <input v-if="this.reservation.status == 'vacant'" aria-describedby="inputhelp2" type="date"
+                  class="form-control" id="checkout" v-model="reservation.checkoutDate" required>
                 <input v-else type="text" class="form-control" id="checkout" v-model="reservation.checkoutDate" readonly>
-                <small v-if="this.reservation.status == 'vacant'" id="inputhelp2" class="form-text text-muted mt-0">Please enter the date in the format: DD/MM/YYYY.</small>
+                <small v-if="this.reservation.status == 'vacant'" id="inputhelp2" class="form-text text-muted mt-0"
+                  style="font-size: 11px;">Please enter the date in the format: DD/MM/YYYY.</small>
               </div>
             </div>
             <div class="form-group row">
               <label for="room" class="col-sm-2 col-form-label">Room:*</label>
-              <div v-if="this.reservation.status == 'vacant'" class="col-sm-4">
-
-                <v-select :disabled="(roomSelect!=='ok')?true:false" multiple :options="updatedRooms" label="name" v-model="reservation.roomName" required>
+              <div v-if="this.reservation.status === 'vacant' || this.toggleselect" class="col-sm-4">
+                <v-select :disabled="(roomSelect !== 'ok') ? true : false" aria-describedby="inputhelp3"
+                  :multiple="!toggleselect" :options="updatedRooms" label="name" v-model="reservation.roomName"
+                  @change="handleChange" required>
                   <template #option="{ name, type, price }">
                     <h6 style="margin: 0">{{ name }}</h6>
                     <em><small>{{ type }}</small></em>
                     <em><small> ({{ price }} units)</small></em>
                   </template>
                 </v-select>
+                <small v-if="this.toggleselect" id="inputhelp3" class="form-text text-muted mt-0">Please select new
+                  room.</small>
               </div>
               <div v-else class="col-sm-4">
                 <input type="text" class="form-control" v-model="reservation.roomName" readonly>
               </div>
-              <label for="guests" class="col-sm-2 col-form-label">Remarks:</label>
+              <!-- <label for="guests" class="col-sm-2 col-form-label">No. of Guests:</label>
+              <div class="col-sm-4">
+
+                <input type="number" class="form-control" v-model="reservation.numguests" autocomplete="off" min="0"
+                  required />
+
+              </div> -->
+              <label for="name" class="col-sm-2 col-form-label">Remarks:</label>
               <div class="col-sm-4">
                 <input type="text" class="form-control" v-model="reservation.remarks" autocomplete="off">
               </div>
             </div>
+            <!-- <div class="form-group row">
+
+            </div> -->
             <div class="form-group row">
               <div class="mt-3 mb-3 d-flex justify-content-end">
                 <div v-if="this.reservation.status == 'reserved'">
-                  <button type="button" class="btn btn-primary" @click="cancelReservation()">Cancel
+                  <button type="button" class="btn btn-primary" @click="cancelReservation()"
+                    :style="{ display: toggleselect ? 'none' : '' }">Cancel
                     Reservation</button>&nbsp;
                   <span v-if="userdata.role !== 'reservationist'">
                     <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
-                      type="button" class="btn btn-success">Down Payment</button>
+                      type="button" class="btn btn-success" :style="{ display: toggleselect ? 'none' : '' }">Down
+                      Payment</button>
                     &nbsp;
                     <button v-else-if="this.reservation.isPaid == 'partial'" @click="moveToCart()" type="button"
-                      class="btn btn-success">Partial Payment</button>
+                      class="btn btn-success" :style="{ display: toggleselect ? 'none' : '' }">Partial Payment</button>
                     &nbsp;
                     <button v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(this.reservation.checkinDate)"
-                      type="button" class="btn btn-success" @click="checkinGuest()">Check-in</button>
+                      type="button" class="btn btn-success" @click="checkinGuest()"
+                      :style="{ display: toggleselect ? 'none' : '' }">Check-in</button>
+                    <!-- <button @click="transferRoom()" type="button"
+                      class="btn btn-success">{{ toggleselect ? 'Save' : 'Transfer' }}</button>
+                     -->
                   </span>
                 </div>
 
-                <div v-else-if="this.reservation.status == 'checkedin'">
+                <div v-else-if="this.reservation.status == 'checkedin'" :style="{ display: toggleselect ? 'none' : '' }">
 
                   <span v-if="userdata.role !== 'reservationist'">
-                    <div v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" >
+                    <div v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'">
                       <button @click="moveToCart()" type="button" class="btn btn-success">Pay Now</button>
                     </div>
-                    <div v-else-if="this.reservation.isPaid == 'partial'" >
+                    <div v-else-if="this.reservation.isPaid == 'partial'">
                       <button @click="moveToCart()" type="button" class="btn btn-success">Pay Now</button>&nbsp;
-                      <button type="button" class="btn btn-primary" @click="extendBooking()">Extend (1 day)</button>
+                      <button  type="button" class="btn btn-primary" @click="extendBooking()">Extend (1 day)</button>
                     </div>
                     <div v-else>
                       <button type="button" class="btn btn-success" @click="viewSummary()">View Summary</button>&nbsp;
@@ -1309,19 +1336,8 @@ ChartJS.register(
   Legend
 )
 
-// const socket = new WebSocket('ws://192.168.254.104:8081/ws/realtime/');
 
-// socket.onmessage = function (e) {
-//   const data = JSON.parse(e.data);
-//   console.log(data.message)
-// };
 
-// document.addEventListener('click', function () {
-//   console.log(socket)
-//   socket.send(JSON.stringify({
-//     'message': 'hi!'
-//   }));
-// });
 //helper functions
 function parseDate(dateString) {
   const [day, month, year] = dateString.split('/');
@@ -1347,7 +1363,7 @@ function formatDate(date = new Date()) {
   ].join('-');
 }
 
-function formatDate2(date = new Date()){
+function formatDate2(date = new Date()) {
   let inputDate = date;
   let dateObj = new Date(inputDate);
   let day = dateObj.getDate().toString().padStart(2, "0");
@@ -1374,8 +1390,9 @@ export default {
       dashboardStatus: true,
       bookingComponentStatus: true,
       componentKey: 0,
-      activeMainTab:'BEACH ROOM',
-      roomSelect:"ok",
+      activeMainTab: 'BEACH ROOM',
+      roomSelect: "ok",
+      toggleselect: false,
       bookingsOptions: [{
         'label': 'Room Name',
         'field': 'room_name',
@@ -1636,7 +1653,7 @@ export default {
         clientPhone: '',
         clientAddress: '',
         clientNationality: 'Filipino',
-        clientType: 'in-house'
+        clientType: ''
       },
       reservation: {
         clientName: '',
@@ -1652,7 +1669,8 @@ export default {
         roomType: '',
         remarks: '',
         status: 'vacant',
-        isPaid: 'no'
+        isPaid: 'no',
+        numguests: ''
       },
       showDate: this.thisMonth(1),
       message: "",
@@ -1778,31 +1796,37 @@ export default {
       return user;
     },
     combinedcart() {
-      let result = [];
-      let combinedItems = {};
-      for (let item of this.cart.filter(item => item.category === 'main')) {
-        if (!combinedItems[item.name]) {
-          combinedItems[item.name] = {
-            purqty: item.purqty,
-            priceRate: item.priceRate,
-            type: item.type,
-            totalCartPrice: item.totalCartPrice,
-          };
-        } else {
-          combinedItems[item.name].purqty += item.purqty;
-          combinedItems[item.name].totalCartPrice = parseFloat(combinedItems[item.name].totalCartPrice) + parseFloat(item.totalCartPrice);
-        }
-      }
-      for (let name in combinedItems) {
-        result.push({
-          name: name,
-          purqty: combinedItems[name].purqty,
-          priceRate: combinedItems[name].priceRate,
-          type: combinedItems[name].type,
-          totalCartPrice: combinedItems[name].totalCartPrice,
-        });
-      }
-      return result;
+      // let result = [];
+      // let combinedItems = {};
+      // for (let item of this.cart.filter(item => item.category === 'main')) {
+      //   if (!combinedItems[item.name]) {
+      //     combinedItems[item.name] = {
+      //       purqty: item.purqty,
+      //       priceRate: item.priceRate,
+      //       type: item.type,
+      //       totalCartPrice: item.totalCartPrice,
+      //       category: item.category,
+      //       itemOption: item.itemOption,
+      //       id: item.id,
+      //     };
+      //   } else {
+      //     combinedItems[item.name].purqty += item.purqty;
+      //     combinedItems[item.name].totalCartPrice = parseFloat(combinedItems[item.name].totalCartPrice) + parseFloat(item.totalCartPrice);
+      //   }
+      // }
+      // for (let name in combinedItems) {
+      //   result.push({
+      //     name: name,
+      //     purqty: combinedItems[name].purqty,
+      //     priceRate: combinedItems[name].priceRate,
+      //     type: combinedItems[name].type,
+      //     totalCartPrice: combinedItems[name].totalCartPrice,
+      //     category: combinedItems[name].category,
+      //     itemOption: combinedItems[name].itemOption,
+      //     id: combinedItems[name].id,
+      //   });
+      // }
+      return this.cart.filter(item => item.category === 'main');
     },
     filteredReservationsHistory() {
       let filtered = this.bookings.filter(reservation => {
@@ -1877,14 +1901,15 @@ export default {
 
     },
     roomsjoinbookings() {
-      return this.rooms.filter(item=>item.type===this.activeMainTab).filter(item=>item.type===this.activeMainTab.toString()).map(room => {
-        const booking = this.bookings.filter(item =>(item.status !=="checkedout")).filter(item =>(item.status !=="cancelled") && (parseDate(new Date().toLocaleDateString('en-GB')) >= parseDate(item.checkinDate) && parseDate(item.checkoutDate) >= parseDate(new Date().toLocaleDateString('en-GB')))  ).find(booking => booking.room_name === room.name);
+      return this.rooms.filter(item => item.type === this.activeMainTab).filter(item => item.type === this.activeMainTab.toString()).map(room => {
+        const booking = this.bookings.filter(item => (item.status !== "checkedout")).filter(item => (item.status !== "cancelled") && (parseDate(new Date().toLocaleDateString('en-GB')) >= parseDate(item.checkinDate) && parseDate(item.checkoutDate) >= parseDate(new Date().toLocaleDateString('en-GB')))).find(booking => booking.room_name === room.name);
         if (booking) {
           return {
             ...room,
             clientName: booking.name,
             clientEmail: booking.clientemail,
             clientAddress: booking.clientaddress,
+            contactNumber: booking.contactNumber,
             checkinDate: booking.checkinDate,
             checkoutDate: booking.checkoutDate,
             status: booking.status,
@@ -2072,11 +2097,27 @@ export default {
     },
   },
   methods: {
-    cardAction(id,room_name, room_type, room_price){
+    async taskRecord(msg){
+      this.socket.send(JSON.stringify({
+        'message': msg
+      }));
+      try {
+        await axios.post(`${this.API_URL}task/record/`, {
+          actor: this.userdata.fName + " " + this.userdata.lName,
+          task: msg,
+        })
+      } catch (error) {
+
+      }
+    },
+    handleChange() {
+      alert()
+    },
+    cardAction(id, room_name, room_type, room_price) {
       this.itemIndex = this.bookings.findIndex(
         o => o.itemID === id
       );
-      if(this.itemIndex !== -1){
+      if (this.itemIndex !== -1) {
         this.showReservation();
       } else {
         this.reservation.status = 'vacant';
@@ -2086,14 +2127,15 @@ export default {
         this.reservation.clientNationality = "Filipino";
         this.reservation.clientType = "in-house";
         this.reservation.remarks = "";
+        // this.reservation.numguests = "";
         this.reservation.clientPhone = "";
-        this.reservation.roomName = [{name:room_name,type:room_type,price:room_price}];
+        this.reservation.roomName = [{ name: room_name, type: room_type, price: room_price }];
         this.roomSelect = 'no';
         this.reservation.checkinDate = new Date().toLocaleDateString('en-GB');
         this.reservation.checkoutDate = formatDate(new Date());
         this.toggleItemModal();
       }
-      
+
     },
     sendMessage() {
       console.log("Hello")
@@ -2219,7 +2261,7 @@ export default {
 
           try {
             const updatedItems = [];
-
+            let isFind = false;
             // Loop through inclusion items in the cart
             this.cart.filter(item => item.category === 'inclusion').forEach(async (item, index) => {
               // Define the API endpoint and data for the PUT request
@@ -2238,7 +2280,7 @@ export default {
               const numGuestsCard = this.cart.filter(o => o.name.toLowerCase() === 'general entrance' && o.category === 'main').length;
               const entranceFee = parseFloat(this.items.filter(o => o.item.toLowerCase() === 'general entrance')[0].priceRate);
 
-              if (numGuestsCard === 0 && numBookedRooms > 0) {
+              if (numGuestsCard === 0 && numBookedRooms > 0 && item.name.toLowerCase() === 'general entrance' && isFind === false) {
                 const totalGuests = this.cart.filter(o => o.name.toLowerCase() === 'general entrance').reduce((acc, item) => acc + parseFloat(item.purqty), 0);
                 if (totalGuests === 1) {
                   data.totalCost = parseFloat(data.totalCost) - entranceFee;
@@ -2246,6 +2288,7 @@ export default {
                   data.totalCost = parseFloat(data.totalCost) - 2 * entranceFee;
                 }
                 item.totalCartPrice = data.totalCost;
+                isFind = true;
               }
 
               try {
@@ -2376,6 +2419,9 @@ export default {
       let gkey = "";
 
       let groupbookings = [];
+
+      item.remarks = this.reservation.remarks;
+      this.updateBookings(item.id)
 
       try {
         gkey = (this.bookings[this.itemIndex].groupkey || "x");
@@ -2518,6 +2564,9 @@ export default {
 
       let groupbookings = [];
 
+      item.remarks = this.reservation.remarks;
+      this.updateBookings(item.id)
+
       try {
         gkey = (this.bookings[this.itemIndex].groupkey || "x");
         try {
@@ -2614,6 +2663,7 @@ export default {
                 console.error('Error saving data:', error);
               });
           })
+
         } else {
           const numDays = Math.ceil((new Date(item.checkoutDate.split('/')[2] + "-" + item.checkoutDate.split('/')[1] + "-" + item.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) - new Date(item.checkinDate.split('/')[2] + "-" + item.checkinDate.split('/')[1] + "-" + item.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
 
@@ -2751,6 +2801,7 @@ export default {
           this.bookings[this.itemIndex].cancellationDate = new Date();
           this.updateBookings(this.bookings[this.itemIndex].id);
           this.changeItemColor("cancelled");
+          this.taskRecord(`action:/cancel reservation/client:/${this.bookings[this.itemIndex].name}`)
           this.toggleItemModal();
           // Display success message using SweetAlert
           this.$swal.fire({
@@ -2758,11 +2809,124 @@ export default {
             title: 'Reservation Canceled!',
             text: 'The reservation has been canceled.',
             confirmButtonText: 'OK'
-          });
+          }).then(response => {
+            document.location.reload();
+          })
+
         }
       })
     },
-    async extendBooking(){
+    async transferRoom() {
+      // if (this.toggleselect === false) {
+      //   this.reservation.roomName = "";
+      //   this.toggleselect = true;
+      //   this.roomSelect = "ok";
+      // } else {
+      //   const room = this.reservation.roomName;
+
+      //   const oldroom = {
+      //     name: this.bookings[this.itemIndex].room_name,
+      //     type: this.bookings[this.itemIndex].room_type,
+      //     price: this.bookings[this.itemIndex].room_price
+      //   }
+
+      //   const newroom = {
+      //     name: room.name,
+      //     type: room.type,
+      //     price: room.price
+      //   }
+
+      //   const result = await this.$swal.fire({
+      //     icon: 'warning',
+      //     title: 'Are you sure?',
+      //     text: 'Are you sure you want to transfer from ' + oldroom.name + ' to ' + newroom.name + '?',
+      //     confirmButtonText: 'Yes',
+      //     cancelButtonText: 'No',
+      //     showCancelButton: true
+      //   })
+      //   if (!result.isConfirmed) {
+      //     return;
+      //   }
+
+      //   const item = this.bookings[this.itemIndex];
+      //   const bookingID = item.itemID;
+      //   const groupkey = (item.groupkey || '');
+      //   let groupbookings = [];
+      //   let existingTransactionItems = [];
+
+      //   if (groupkey.length > 0) {
+      //     try {
+      //       const o = await axios.post(`${this.API_URL}bookings/filter/`, [
+      //         { "columnName": "groupkey", "columnKey": groupkey },
+      //       ])
+      //       groupbookings = o.data;
+      //     } catch (error) {
+
+      //     }
+      //   }
+
+      //   if (groupbookings.length > 0) {
+      //     existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+      //       columnName: 'groupkey',
+      //       columnKey: groupkey
+      //     });
+      //   } else {
+      //     existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+      //       columnName: 'bookingID',
+      //       columnKey: bookingID
+      //     });
+      //   }
+
+      //   if (groupbookings.length > 0) {
+      //     groupbookings.forEach(async item => {
+      //       let itemIndex = this.bookings.findIndex(
+      //         o => o.itemID === item.itemID
+      //       );
+
+      //       const numDays = Math.ceil((
+      //         new Date(this.bookings[itemIndex].checkoutDate.split('/')[2] + "-" + this.bookings[itemIndex].checkoutDate.split('/')[1] + "-" + this.bookings[itemIndex].checkoutDate.split('/')[0]).setHours(0, 0, 0, 0)
+      //         -
+      //         new Date(this.bookings[itemIndex].checkinDate.split('/')[2] + "-" + this.bookings[itemIndex].checkinDate.split('/')[1] + "-" + this.bookings[itemIndex].checkinDate.split('/')[0]).setHours(0, 0, 0, 0)
+      //       ) / (1000 * 60 * 60 * 24));
+      //       const newTotalPrice = parseFloat(this.bookings[itemIndex].totalPrice) - parseFloat(oldroom.price) * numDays + parseFloat(newroom.price);
+
+      //       try {
+      //         const bookingData = {
+      //           itemID: this.bookings[itemIndex].itemID,
+      //           status: this.bookings[itemIndex].status,
+      //           name: this.bookings[itemIndex].name,
+      //           clientemail: this.bookings[itemIndex].clientemail,
+      //           clientaddress: this.bookings[itemIndex].clientaddress,
+      //           clientnationality: this.bookings[itemIndex].clientnationality,
+      //           clientType: this.bookings[itemIndex].clientType,
+      //           checkinDate: this.bookings[itemIndex].checkinDate,
+      //           checkoutDate: this.bookings[itemIndex].checkoutDate,
+      //           room_name: this.bookings[itemIndex].room_name,
+      //           room_price: this.bookings[itemIndex].room_price,
+      //           room_type: this.bookings[itemIndex].room_type,
+      //           remarks: this.bookings[itemIndex].remarks,
+      //           contactNumber: this.bookings[itemIndex].contactNumber,
+      //           actualCheckoutDate: this.bookings[itemIndex].actualCheckoutDate,
+      //           cancellationDate: this.bookings[itemIndex].cancellationDate,
+      //           isPaid: "partial",
+      //           totalPrice: newTotalPrice,
+      //           partialPayment: this.bookings[itemIndex].partialPayment,
+      //           processedBy: this.userdata.fName + " " + this.userdata.lName,
+      //           groupkey: this.bookings[itemIndex].groupkey,
+      //         };
+      //         await axios.put(this.API_URL + `bookings/${this.bookings[itemIndex].id}/`, bookingData);
+      //       } catch (error) {
+      //         console.log(error);
+      //       }
+      //     })
+      //   } else {
+
+      //   }
+
+
+      // }
+    },
+    async extendBooking() {
       const result = await this.$swal.fire({
         icon: 'warning',
         title: 'Are you sure?',
@@ -2775,7 +2939,7 @@ export default {
       if (!result.isConfirmed) {
         return;
       }
-      
+
       const item = this.bookings[this.itemIndex];
       const bId = item.id;
       const bookingID = item.itemID;
@@ -2784,70 +2948,85 @@ export default {
       let groupbookings = [];
       let existingTransactionItems = [];
 
-      if (groupkey.length > 0) {
-        try {
-          const o = await axios.post(`${this.API_URL}bookings/filter/`, [
-            { "columnName": "groupkey", "columnKey": groupkey },
-          ])
-          groupbookings = o.data;
-        } catch (error) {
+      // if (groupkey.length > 0) {
+      //   try {
+      //     const o = await axios.post(`${this.API_URL}bookings/filter/`, [
+      //       { "columnName": "groupkey", "columnKey": groupkey },
+      //     ])
+      //     groupbookings = o.data;
+      //   } catch (error) {
 
-        }
-      }
-      
-      if (groupbookings.length > 0) {
-        existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-          columnName: 'groupkey',
-          columnKey: groupkey
-        });
-      } else {
-        existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+      //   }
+      // }
+
+      // if (groupbookings.length > 0) {
+      //   existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+      //     columnName: 'groupkey',
+      //     columnKey: groupkey
+      //   });
+      // } else {
+      //   existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+      //     columnName: 'bookingID',
+      //     columnKey: bookingID
+      //   });
+      // }
+
+      existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
           columnName: 'bookingID',
           columnKey: bookingID
         });
-      }
 
-      if (groupbookings.length > 0) {
-        groupbookings.forEach(async item => {
-          let itemIndex = this.bookings.findIndex(
-            o => o.itemID === item.itemID
-          );
-          const bookingData = null;
-          const itemCheckout = new Date(parseDate(item.checkoutDate));
-          const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
-          const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
+      // if (groupbookings.length > 0) {
+      //   groupbookings.forEach(async item => {
+      //     let itemIndex = this.bookings.findIndex(
+      //       o => o.itemID === item.itemID
+      //     );
+      //     const bookingData = null;
+      //     const itemCheckout = new Date(parseDate(item.checkoutDate));
+      //     const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
+      //     const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
 
-          const newTotalPrice = parseFloat(this.bookings[itemIndex].totalPrice) + parseFloat(this.bookings[itemIndex].room_price);
-          try {
-            bookingData = {
-              itemID: this.bookings[itemIndex].itemID,
-              status: this.bookings[itemIndex].status,
-              name: this.bookings[itemIndex].name,
-              clientemail: this.bookings[itemIndex].clientemail,
-              clientaddress: this.bookings[itemIndex].clientaddress,
-              clientnationality: this.bookings[itemIndex].clientnationality,
-              clientType: this.bookings[itemIndex].clientType,
-              checkinDate: this.bookings[itemIndex].checkinDate,
-              checkoutDate: newCheckoutString,
-              room_name: this.bookings[itemIndex].room_name,
-              room_price: this.bookings[itemIndex].room_price,
-              room_type: this.bookings[itemIndex].room_type,
-              remarks: this.bookings[itemIndex].remarks,
-              contactNumber: this.bookings[itemIndex].contactNumber,
-              actualCheckoutDate: this.bookings[itemIndex].actualCheckoutDate,
-              cancellationDate: this.bookings[itemIndex].cancellationDate,
-              isPaid: "partial",
-              totalPrice: newTotalPrice,
-              partialPayment: this.bookings[itemIndex].partialPayment,
-              processedBy: this.userdata.fName + " " + this.userdata.lName,
-              groupkey: this.bookings[itemIndex].groupkey,
-            };
-            await axios.put(this.API_URL + `bookings/${this.bookings[itemIndex].id}/`, bookingData);
-          } catch (error) {
-            console.log(error);
-          }
-        })
-      } else {
+      //     const newTotalPrice = parseFloat(this.bookings[itemIndex].totalPrice) + parseFloat(this.bookings[itemIndex].room_price);
+      //     try {
+      //       bookingData = {
+      //         itemID: this.bookings[itemIndex].itemID,
+      //         status: this.bookings[itemIndex].status,
+      //         name: this.bookings[itemIndex].name,
+      //         clientemail: this.bookings[itemIndex].clientemail,
+      //         clientaddress: this.bookings[itemIndex].clientaddress,
+      //         clientnationality: this.bookings[itemIndex].clientnationality,
+      //         clientType: this.bookings[itemIndex].clientType,
+      //         checkinDate: this.bookings[itemIndex].checkinDate,
+      //         checkoutDate: newCheckoutString,
+      //         room_name: this.bookings[itemIndex].room_name,
+      //         room_price: this.bookings[itemIndex].room_price,
+      //         room_type: this.bookings[itemIndex].room_type,
+      //         remarks: this.bookings[itemIndex].remarks,
+      //         contactNumber: this.bookings[itemIndex].contactNumber,
+      //         actualCheckoutDate: this.bookings[itemIndex].actualCheckoutDate,
+      //         cancellationDate: this.bookings[itemIndex].cancellationDate,
+      //         isPaid: "partial",
+      //         totalPrice: newTotalPrice,
+      //         partialPayment: this.bookings[itemIndex].partialPayment,
+      //         processedBy: this.userdata.fName + " " + this.userdata.lName,
+      //         groupkey: this.bookings[itemIndex].groupkey,
+      //       };
+      //       await axios.put(this.API_URL + `bookings/${this.bookings[itemIndex].id}/`, bookingData);
+      //     } catch (error) {
+      //       console.log(error);
+      //     }
+      //   })
+      // } else {
+      //   const itemCheckout = new Date(parseDate(this.bookings[this.itemIndex].checkoutDate));
+      //   const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
+      //   const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
+      //   const newTotalPrice = parseFloat(this.bookings[this.itemIndex].totalPrice) + parseFloat(this.bookings[this.itemIndex].room_price);
+      //   this.bookings[this.itemIndex].checkoutDate = newCheckoutString;
+      //   this.bookings[this.itemIndex].isPaid = "partial";
+      //   this.bookings[this.itemIndex].totalPrice = newTotalPrice;
+      //   this.updateBookings(bId);
+      // }
+
         const itemCheckout = new Date(parseDate(this.bookings[this.itemIndex].checkoutDate));
         const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
         const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
@@ -2856,9 +3035,8 @@ export default {
         this.bookings[this.itemIndex].isPaid = "partial";
         this.bookings[this.itemIndex].totalPrice = newTotalPrice;
         this.updateBookings(bId);
-      }
 
-      existingTransactionItems.data.filter(o=>o.itemOption==='room').forEach(async item => {
+      existingTransactionItems.data.filter(o => o.itemOption === 'room').forEach(async item => {
         try {
           await axios.put(`${this.API_URL}transaction/item/${item.id}/`, {
             bookingID: item.bookingID,
@@ -2872,12 +3050,20 @@ export default {
           });
 
         } catch (error) {
- 
+
         }
       });
-
+      this.taskRecord(`action:/extend guest/client:/${this.bookings[this.itemIndex].name}`)
       // this.updateBookings(this.bookings[bId].id);
       this.toggleItemModal();
+      this.$swal.fire({
+        icon: 'success',
+        title: 'Guest Extended!',
+        text: 'Thank you for extending the guest.',
+        confirmButtonText: 'OK'
+      }).then(response => {
+        document.location.reload();
+      })
     },
     checkinGuest() {
       this.$swal.fire({
@@ -2890,17 +3076,70 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
 
-          this.bookings[this.itemIndex].status = "checkedin";
-          this.updateBookings(this.bookings[this.itemIndex].id);
+          const item = this.bookings[this.itemIndex];
+          item.remarks = this.reservation.remarks;
+          // const numguest = this.reservation.numguests;
+          // item.numguests = numguest;
+          // // const room_name = item.room_name;
+          // // const room_type = item.room_type;
+          // // const room_price = item.room_price;
+          // // const status = item.status;
+
+          // if(numguest < 1) {
+          //   this.$swal({
+          //     title: "Error!",
+          //     text: "Number of guests must be at least 1.",
+          //     icon: "error",
+          //   });
+          //   return false;
+          // }
+
+          // const data = {
+          //     bookingID: item.itemID,
+          //     itemName: this.itemCart.name,
+          //     itemType: this.itemCart.type,
+          //     itemPriceRate: this.itemCart.priceRate,
+          //     purchaseQty: this.itemCart.purqty,
+          //     totalCost: this.itemCart.totalCartPrice,
+          //     category: this.itemCart.category,
+          //     itemOption: this.itemCart.itemOption,
+          //     dateCreated: new Date(), // Set the dateCreated field to the current date and time
+          //     groupkey: gkey,
+          //   };
+
+          // await axios.post(this.API_URL + 'transaction/item/', data)
+          //     .then(response => {
+          //       // Log a success message to the console
+          //       this.itemCart = {}
+          //       this.itemCart.name = response.data.itemName;
+          //       this.itemCart.type = response.data.itemType;
+          //       this.itemCart.priceRate = response.data.itemPriceRate;
+          //       this.itemCart.purqty = response.data.purchaseQty;
+          //       this.itemCart.totalCartPrice = response.data.totalCost;
+          //       this.itemCart.category = response.data.category;
+          //       this.itemCart.itemOption = response.data.itemOption;
+          //       this.itemCart.groupkey = response.data.groupkey;
+          //       this.cart.push(this.itemCart)
+          //     })
+          //     .catch(error => {
+          //       // Log an error message to the console
+          //       console.error('Error saving data:', error);
+          //     });
+
+          item.status = "checkedin";
+          this.updateBookings(item.id);
           this.populateCalendarItems();
           //this.changeItemColor("checkedin");
           this.toggleItemModal();
+          this.taskRecord(`action:/checked-in guest/client:/${item.name}`)
           this.$swal.fire({
             icon: 'success',
             title: 'Guest Checked In!',
             text: 'Thank you for checking in the guest.',
             confirmButtonText: 'OK'
-          });
+          }).then(response => {
+            document.location.reload();
+          })
         }
       })
 
@@ -2924,13 +3163,16 @@ export default {
           this.populateCalendarItems();
           //this.changeItemColor("checkedout");
           this.toggleItemModal();
+          this.taskRecord(`action:/checked-out guest/client:/${this.bookings[this.itemIndex].name}`)
           // Display success message using SweetAlert
           this.$swal.fire({
             icon: 'success',
             title: 'Guest Checked Out!',
             text: 'The guest has been checked out.',
             confirmButtonText: 'OK'
-          });
+          }).then(response => {
+            document.location.reload();
+          })
         }
       });
 
@@ -2954,6 +3196,7 @@ export default {
         this.selectionEnd = null
         this.toggledayMenuModal();
         this.toggleItemModal();
+        this.toggleselect = false;
         this.roomSelect = "ok";
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
@@ -2962,6 +3205,7 @@ export default {
         this.reservation.clientType = "in-house";
         this.reservation.roomName = "";
         this.reservation.remarks = "";
+        // this.reservation.numguests = "";
         this.reservation.clientPhone = "";
         this.reservation.checkinDate = this.dayreserve.toLocaleDateString('en-GB');
         this.reservation.checkoutDate = formatDate(this.dayreserve);
@@ -2986,7 +3230,9 @@ export default {
       );
       this.showReservation();
     },
-    showReservation(){
+    showReservation() {
+      this.toggleselect = false;
+      this.roomSelect = "ok";
       this.reservation.clientName = this.bookings[this.itemIndex].name;
       this.reservation.clientEmail = this.bookings[this.itemIndex].clientemail;
       this.reservation.clientAddress = this.bookings[this.itemIndex].clientaddress;
@@ -2999,7 +3245,7 @@ export default {
       this.reservation.clientPhone = this.bookings[this.itemIndex].contactNumber;
       this.reservation.status = this.bookings[this.itemIndex].status;
       this.reservation.isPaid = this.bookings[this.itemIndex].isPaid;
-
+      // this.reservation.numguests = this.bookings[this.itemIndex].numguests;
       this.toggleItemModal();
     },
     setShowDate(d) {
@@ -3018,7 +3264,8 @@ export default {
       }
       this.setSelection(dateRange)
       this.message = `You selected: ${this.selectionStart.toLocaleDateString()} -${this.selectionEnd.toLocaleDateString()}`
-
+      this.toggleselect = false;
+      this.roomSelect = "ok";
       this.reservation.status = "vacant";
       this.reservation.clientName = "";
       this.reservation.clientEmail = "";
@@ -3029,12 +3276,13 @@ export default {
       this.reservation.roomPrice = "";
       this.reservation.roomType = "";
       this.reservation.roomPrice = "";
+      // this.reservation.numguests = "";
       this.reservation.remarks = "";
       this.reservation.clientPhone = "";
       this.toggleItemModal();
       this.reservation.checkinDate = this.selectionStart.toLocaleDateString('en-GB');
       this.reservation.checkoutDate = formatDate(new Date(parseDate(this.selectionEnd.toLocaleDateString('en-GB'))));
-      
+
 
     },
     onDrop(item, date) {
@@ -3087,6 +3335,9 @@ export default {
           this.updateBookings(this.bookings[this.itemIndex].id);
           //this.reloadData();
           this.populateCalendarItems();
+
+          this.taskRecord(`action:/adjust date reservation/client:/${this.bookings[this.itemIndex].name}`)
+
         } else {
           this.$swal.fire({
             icon: 'error',
@@ -3175,7 +3426,7 @@ export default {
 
       const checkin = parseDate(this.reservation.checkinDate);
       const checkout = parseDate(formatDate2(this.reservation.checkoutDate));
-      if(checkout < checkin){
+      if (checkout < checkin) {
         this.$swal.fire({
           title: "error",
           text: "Check-out date ≥ Check-in date.",
@@ -3183,6 +3434,22 @@ export default {
         });
         return false;
       }
+
+      for (const res of this.reservation.roomName) {
+        const hasExistingBooking = this.bookings.filter(item => item.status !== 'checkedout').filter(item => item.status !== 'cancelled').filter(booking =>
+          booking.room_name === res.name && booking.checkinDate === this.reservation.checkinDate
+        );
+        if (hasExistingBooking.length > 0) {
+          await this.$swal.fire({
+            icon: 'error',
+            title: 'Booking Error',
+            text: `There is already a booking for ${res.name} on ${this.reservation.checkinDate}. Please choose another date or room.`,
+          });
+          this.reservation.roomName = "";
+          return;
+        }
+      }
+
       try {
         let gkey = null;
         let roomBooked = this.reservation.roomName;
@@ -3220,6 +3487,7 @@ export default {
             room_price: roomPrice,
             room_type: roomType,
             remarks: this.reservation.remarks,
+            // numguests: this.reservation.numguests,
             contactNumber: this.reservation.clientPhone,
             isPaid: 'no',
             created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
@@ -3243,6 +3511,7 @@ export default {
             room_price: roomPrice,
             room_type: roomType,
             remarks: this.reservation.remarks,
+            // numguests: this.reservation.numguests,
             contactNumber: this.reservation.clientPhone,
             processedBy: this.userdata.fName + " " + this.userdata.lName,
             groupkey: gkey,
@@ -3252,7 +3521,7 @@ export default {
         this.reloadData();
 
         this.populateCalendarItems();
-
+        this.taskRecord(`action:/added reservation/client:/${this.reservation.clientName}`)
         this.toggleItemModal();
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
@@ -3266,14 +3535,18 @@ export default {
         this.reservation.roomType = "";
         this.reservation.roomPrice = "";
         this.reservation.remarks = "";
+        // this.reservation.numguests = "";
         this.reservation.clientPhone = "";
         this.walkinStatus = false;
-
         this.$swal.fire({
           title: "Success!",
           text: "Booking successful!",
           icon: "success",
-        });
+        }).then(response => {
+          document.location.reload();
+        })
+
+
 
 
       } catch (error) {
@@ -3304,13 +3577,16 @@ export default {
             let a = null;
             const gkey = (item.groupkey || "x")
             try {
-              a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-                { "columnName": 'groupkey', "columnKey": gkey },
-              ]);
+              if (gkey === "x") {
+                a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+                  { "columnName": 'bookingID', "columnKey": item.bookingID },
+                ]);
+              } else {
+                a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+                  { "columnName": 'groupkey', "columnKey": gkey },
+                ]);
+              }
             } catch (error) {
-              a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-                { "columnName": 'bookingID', "columnKey": item.bookingID },
-              ]);
             }
 
             const b = await axios.post(`${this.API_URL}transaction/record/filter/`, [
@@ -3373,7 +3649,7 @@ export default {
 
         const numGuests = this.cart.filter(o => o.type.toLowerCase() === 'entrance').length;
 
-        if (numGuests === 0) {
+        if (numGuests === 0 && this.bookings[this.itemIndex].status === 'checkedin') {
           await this.$swal.fire({
             title: 'Error',
             text: 'Kindly specify the number of guests by providing the quantity within the general/pool entrance fee.',
@@ -3495,7 +3771,7 @@ export default {
                 balance: doneTransaction.data.balance,
                 discountMode: doneTransaction.data.discountMode,
                 discountValue: doneTransaction.data.discountValue,
-                processedBy: doneTransaction.data.processedBy,
+                processedBy: this.userdata.fName + " " + this.userdata.lName,
                 payStatus: doneTransaction.data.payStatus
               }
 
@@ -3623,7 +3899,7 @@ export default {
                 balance: parseFloat(doneTransaction.data.balance),
                 discountMode: doneTransaction.data.discountMode,
                 discountValue: doneTransaction.data.discountValue,
-                processedBy: doneTransaction.data.processedBy,
+                processedBy: this.userdata.fName + " " + this.userdata.lName,
                 payStatus: doneTransaction.data.payStatus
               }
 
@@ -3681,14 +3957,15 @@ export default {
                 this.updateBookings(this.bookings[this.itemIndex].id);
               }
             }
-
+            this.taskRecord(`action:/transaction added/client:/${this.billing.clientName}`)
+            this.walkinStatus = false;
             await this.$swal.fire({
               title: 'Success',
               text: 'Transaction saved successfully!',
               icon: 'success'
-            });
-            this.walkinStatus = false;
-            document.location.reload();
+            }).then(response => {
+              document.location.reload();
+            })
           } catch (error) {
             // Show an error message using SweetAlert
             await this.$swal.fire({
@@ -3805,7 +4082,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
           reserveStatus = "n/a";
         }
 
-        if (reserveStatus === "reserved" && item.type.toLowerCase() !== 'entrance') {
+        if (reserveStatus === "reserved") {
           await this.$swal.fire({
             title: 'Error',
             text: 'No purchase of add-ons until guest is checked in.',
@@ -3899,7 +4176,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       }
     },
     cancelItem(item) {
-
       this.$swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -3931,6 +4207,8 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
                   'error'
                 )
               })
+          } {
+
           }
         }
       })
@@ -4042,28 +4320,18 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {
-      // document.body.addEventListener('contextmenu', this.handleContextMenu);
+      document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
-    // let timeoutId = null;
-    // const resetTimer = () => {
-    //   clearTimeout(timeoutId);
-    //   timeoutId = setTimeout(() => {
-    //     this.bookingComponentStatus = false;
-    //     this.dashboardStatus = false;
-    //   }, 60000); // 1 minute
-    // };
-    // resetTimer();
-
-    // window.addEventListener("mousemove", () => {
-    //   resetTimer();
-    //   this.bookingComponentStatus = true;
-    // });
-    // window.addEventListener("keydown", () => {
-    //   resetTimer();
-    //   this.bookingComponentStatus = true;
-    // });
-
+    this.socket = new WebSocket('ws://192.168.254.103:8081/ws/realtime/');
+    const vm = this;
+    this.socket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+      console.log(data.message)
+      // $("#BookDayModal").modal("hide");
+      vm.loadAlldata();
+      vm.componentKey += 1;
+    };
 
   }
 };
@@ -4281,5 +4549,4 @@ img {
   cursor: pointer;
   transform: translateY(-5px);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-}
-</style>
+}</style>
