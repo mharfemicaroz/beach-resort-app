@@ -7,7 +7,7 @@
                         <div class="card" style="transition: transform 0.2s ease-in-out;"
                             @click="$emit('click-action', item.itemID, item.name, item.type, item.price)">
                             <div class="card-header d-flex justify-content-between align-items-center"
-                                :style="{ 'background-color': item.status === 'reserved' && item.isPaid === 'no' ? '#ef5350' : (item.status === 'reserved' && item.isPaid === 'partial' ? '#5c6bc0' : (item.status === 'checkedin' && item.isPaid === 'no' ? '#66bb6a' : (item.status === 'checkedin' && item.isPaid === 'partial' ? '#42a5f5' : (item.status === 'checkedin' && item.isPaid === 'yes' ? '#ffee58' : '')))) }">
+                                :style="{ 'background-color': item.status === 'reserved' && item.isPaid === 'no' ? '#ef5350' : (item.status === 'reserved' && item.isPaid === 'partial' ? '#5c6bc0' : (item.status === 'checkedin' && item.isPaid === 'no' ? '#66bb6a' : (item.status === 'checkedin' && item.isPaid === 'partial' ? '#42a5f5' : (item.status === 'checkedin' && item.isPaid === 'yes' ? '#ffee58' : (item.status === 'reserved' && item.isPaid === 'yes' ? '#5c6bc0' : ''))))) }">
                                 <h5 class="card-title"><i class="fas fa-home"></i> {{ item.name }}</h5>
                             </div>
 

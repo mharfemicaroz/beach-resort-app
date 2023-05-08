@@ -77,32 +77,33 @@
       <div class="tab-pane fade" id="monitor" role="tabpanel" aria-labelledby="monitor-tab">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-sm-1">
+            <div class="col-sm-2">
               <ul class="nav nav-tabs flex-column" id="propertyTab" role="tablist">
                 <li class="nav-item">
-                  <a class="nav-link active rotated-text" data-bs-toggle="tab" @click="activeMainTab = 'BEACH ROOM'"
+                  <a class="nav-link active " data-bs-toggle="tab" @click="activeMainTab = 'BEACH ROOM'"
                     href="#beachroom">Beach Rooms</a>
+
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab = 'POOL ROOM'"
+                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'POOL ROOM'"
                     href="#poolrooms">Pool Rooms</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab = 'BEACH COTTAGE'"
+                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'BEACH COTTAGE'"
                     href="#beachcottages">Beach Cottages</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab = 'POOL COTTAGE'"
+                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'POOL COTTAGE'"
                     href="#poolcottages">Pool Cottages</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link rotated-text" data-bs-toggle="tab" @click="activeMainTab = 'GAZEBO COTTAGE'"
+                  <a class="nav-link" data-bs-toggle="tab" @click="activeMainTab = 'GAZEBO COTTAGE'"
                     href="#gazebocottages">Gazebo Cottages</a>
                 </li>
               </ul>
             </div>
 
-            <div class="col-sm-11">
+            <div class="col-sm-10">
               <div class="tab-content mt-3" id="propertyTabContent">
                 <div class="tab-pane fade show active" id="beachroom" role="tabpanel" aria-labelledby="beachroom-tab">
 
@@ -1162,7 +1163,7 @@
                 <input type="email" class="form-control" id="email" v-model="reservation.clientEmail" autocomplete="off">
               </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row mt-2">
               <label for="address" class="col-sm-2 col-form-label">Address:</label>
               <div class="col-sm-4">
                 <input type="text" class="form-control" id="address" v-model="reservation.clientAddress"
@@ -1174,7 +1175,7 @@
               </div>
             </div>
 
-            <div class="form-group row">
+            <div class="form-group row mt-2">
               <label for="nationality" class="col-sm-2 col-form-label">Nationality:*</label>
               <div class="col-sm-4">
 
@@ -1192,7 +1193,7 @@
                 </select>
               </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row mt-2">
               <label for="checkin" class="col-sm-2 col-form-label">Check-in Date:*</label>
               <div class="col-sm-4">
                 <input type="text" aria-describedby="inputhelp" class="form-control mb-0" id="checkin"
@@ -1207,12 +1208,12 @@
                   style="font-size: 11px;">Please enter the date in the format: DD/MM/YYYY.</small>
               </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row mt-2">
               <label for="room" class="col-sm-2 col-form-label">Room:*</label>
               <div v-if="this.reservation.status === 'vacant' || this.toggleselect" class="col-sm-4">
                 <v-select :disabled="(roomSelect !== 'ok') ? true : false" aria-describedby="inputhelp3"
                   :multiple="!toggleselect" :options="updatedRooms" label="name" v-model="reservation.roomName"
-                  @change="handleChange" required>
+                  required>
                   <template #option="{ name, type, price }">
                     <h6 style="margin: 0">{{ name }}</h6>
                     <em><small>{{ type }}</small></em>
@@ -1240,7 +1241,7 @@
             <!-- <div class="form-group row">
 
             </div> -->
-            <div class="form-group row">
+            <div class="form-group row mt-2">
               <div class="mt-3 mb-3 d-flex justify-content-end">
                 <div v-if="this.reservation.status == 'reserved'">
                   <button type="button" class="btn btn-primary" @click="cancelReservation()"
@@ -4334,8 +4335,8 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
-    //this.socket = new WebSocket('ws://192.168.254.103:8081/ws/realtime/');
-    this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
+    this.socket = new WebSocket('ws://192.168.254.103:8081/ws/realtime/');
+    //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
     const vm = this;
     this.socket.onmessage = function (e) {
       const data = JSON.parse(e.data);

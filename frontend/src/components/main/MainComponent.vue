@@ -28,6 +28,13 @@
                                 Leisures
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#logs">
+                                <i class="fas fa-list fa-2x"></i>
+                                <br>
+                                Logs
+                            </a>
+                        </li>
 
                     </ul>
                     <div class="tab-content">
@@ -261,6 +268,16 @@
 
                             </div>
                         </div>
+                        <div id="logs" class="tab-pane">
+                            <div id="logs" class="tab-pane">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table-component :mainHeaders=logsOptions :mainItems="logs" :editable="false"
+                                            :toggleable="false" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -275,17 +292,33 @@
 <script>
 import { useAuthStore } from "@/stores/authStore";
 import TopNavBarComponent from "@/components/common/TopNavBar.vue";
+import TableComponent from "@/components/common/GenericTable.vue";
 import axios from 'axios';
 
 export default {
     components: {
         TopNavBarComponent,
+        TableComponent,
     },
     data() {
         return {
+            logsOptions: [{
+                'label': 'Actor',
+                'field': 'actor',
+                'sortable': true
+            }, {
+                'label': 'Task',
+                'field': 'task',
+                'sortable': true
+            }, {
+                'label': 'Date Created',
+                'field': 'date_created',
+                'sortable': true
+            },],
             users: [],
             rooms: [],
             leisures: [],
+            logs: [],
             user: {
                 username: "",
                 password: "",
@@ -318,6 +351,7 @@ export default {
         this.getUsers();
         this.getRooms();
         this.getLeisures();
+        this.getLogs();
     },
     computed: {
         userdata() {
@@ -345,6 +379,16 @@ export default {
                     title: "Logout error. Please contact your admin for assistance!"
                 });
             }
+        },
+        getLogs() {
+            axios
+                .get(`${this.API_URL}task/record/`)
+                .then(response => {
+                    this.logs = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         },
         getUsers() {
             axios

@@ -3,36 +3,37 @@
     <div class="row justify-content-center align-items-center vh-100">
       <div class="col-md-3">
         <form @submit.prevent="login" class="animated-form">
-          <div class="card-body p-4 rounded shadow-sm" style="background-color: rgba(255, 255, 255, 0.4);">
-            <div class="text-center">
-              <img src="@/assets/pantukan-waterworld-logo.png" alt="Pantukan Waterworld Logo"
-                class="img-fluid mx-auto d-block" style="max-width: 200px;">
-            </div>
+  <div class="card-body p-4 rounded shadow-sm" style="background-color: rgba(255, 255, 255, 0.4);">
+    <div class="text-center">
+      <img src="@/assets/pantukan-waterworld-logo.png" alt="Pantukan Waterworld Logo"
+        class="img-fluid mx-auto d-block" style="max-width: 200px;">
+    </div>
 
-            <div class="form-group">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                </div>
-                <input type="text" v-model="username" class="form-control" id="username"
-                  placeholder="Enter username">
-              </div>
-            </div>
-            <div class="form-group mt-2">
-              <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-                </div>
-                <input type="password" v-model="password" class="form-control" id="password" placeholder="Password">
-              </div>
-            </div>
-            <div class="form-check mb-3">
-              <input type="checkbox" class="form-check-input" id="rememberMe">
-              <label class="form-check-label" for="rememberMe">Remember me</label>
-            </div>
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-          </div>
-        </form>
+    <div class="form-group">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fas fa-user" style="font-size: 24px;"></i></span>
+        </div>
+        <input type="text" v-model="username" class="form-control" id="username"
+          placeholder="Enter username">
+      </div>
+    </div>
+    <div class="form-group mt-2">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text"><i class="fas fa-lock" style="font-size: 24px;"></i></span>
+        </div>
+        <input type="password" v-model="password" class="form-control" id="password" placeholder="Password">
+      </div>
+    </div>
+    <div class="form-check mb-3">
+      <input type="checkbox" class="form-check-input" id="rememberMe">
+      <label class="form-check-label" for="rememberMe">Remember me</label>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+  </div>
+</form>
+
 
       </div>
     </div>
