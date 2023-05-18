@@ -111,6 +111,51 @@ class StockItem(models.Model):
     quantity = models.PositiveIntegerField()
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    isAvailable = models.BooleanField(default=True)
+
+class RestoItem(models.Model):
+    id = models.AutoField(primary_key=True)
+    sku = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField(null=True, blank=True)
+    imageUrl = models.TextField(null=True, blank=True)
+    category = models.CharField(max_length=255)
+    stocks = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    inventory = models.TextField(null=True, blank=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    isAvailable = models.BooleanField(default=True)
+
+class RestoTransaction(models.Model):
+    id = models.AutoField(primary_key=True)
+    taxValue = models.DecimalField(max_digits=10, decimal_places=2)
+    discountValue = models.DecimalField(max_digits=10, decimal_places=2)
+    subTotal = models.DecimalField(max_digits=10, decimal_places=2)
+    totalCharge = models.DecimalField(max_digits=10, decimal_places=2)
+    totalPay = models.DecimalField(max_digits=10, decimal_places=2)
+    items = models.TextField(null=True, blank=True)
+    processedBy = models.CharField(max_length=255)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+class RestoOrders(models.Model):
+    id = models.AutoField(primary_key=True)
+    order_type = models.CharField(max_length=255)
+    table_id = models.IntegerField()
+    customer_name = models.CharField(max_length=255,null=True, blank=True)
+    remarks = models.CharField(max_length=255,null=True, blank=True)
+    items = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=255)
+    processedBy = models.CharField(max_length=255)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+class RestoTables(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    capacity = models.IntegerField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
     isAvailable = models.BooleanField(default=True) 
 
 class Supplier(models.Model):

@@ -69,3 +69,23 @@ class TasksRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = TasksRecord
         fields = '__all__'  
+
+class RestoItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestoItem
+        fields = '__all__'  
+
+class RestoTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestoTransaction
+        fields = '__all__' 
+
+class RestoTablesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestoTables
+        fields = '__all__' 
+
+class RestoOrdersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestoOrders
+        fields = '__all__' 

@@ -51,7 +51,7 @@
 export default {
     props: {
         roomData: {
-            type: Boolean,
+            type: Object,
             required: true,
         }
     },

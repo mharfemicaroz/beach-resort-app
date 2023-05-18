@@ -23,7 +23,7 @@
                 <p class="mb-0 no-print">Search: <input type="text" class="form-input mt-2" v-model="searchText"></p>
             </div>
 
-            <table class="table" v-bind:id="uniqueID">
+            <table class="table" v-bind:id="uniqueID" style="table-layout: fixed; width: 100%">
                 <thead>
                     <tr>
                         <template v-for="(header, index) in mainHeaders" :key="index">
@@ -50,8 +50,8 @@
                 <tbody>
                     <template v-for="(mainItem, mainIndex) in paginatedMainItems" :key="mainItem.id">
                         <tr :class="{ 'table-active': showTable[mainItem.id] }">
-                            <td v-for="(header, index) in mainHeaders" :key="index">
-
+                            <td v-for="(header, index) in mainHeaders" :key="index" style="word-wrap: break-word;white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;">
+                                
                                 <template v-if="header.field === 'toggle' && toggleable">
                                     <button type="button" @click="toggleTable(mainItem.id)"
                                         class="btn btn-primary btn-sm toggle no-print">
@@ -70,7 +70,7 @@
                                 </template>
                                 <template v-else>
                                     <template v-if="header.slot">
-                                        <slot name="content" :data="mainItem"></slot>
+                                        <slot name="content" :data="{'h':header.field,'dt':mainItem}"></slot>
                                     </template>
                                     <template v-else>
                                         {{ mainItem[header.field] }}
@@ -79,8 +79,11 @@
                             </td>
                         </tr>
                         <tr v-if="showTable[mainItem.id] && toggleable">
-                            <td :colspan="mainHeaders.length + 1">
-                                <div style="padding-left: 60px;">
+                            <td :colspan="mainHeaders.length">
+                                <div v-if="slotsub" style="padding-left: 60px;">
+                                    <slot name="subcontent" :data="mainItem.items"></slot>
+                                </div>
+                                <div v-else style="padding-left: 60px;">
                                     <div v-if="mainItem.items.length > 0">
                                         <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                                             <thead>
@@ -92,7 +95,7 @@
                                             </thead>
                                             <tbody>
                                                 <template v-for="(subItem, subIndex) in mainItem.items" :key="subIndex">
-
+                                                    
                                                     <tr>
                                                         <template v-for="(subHeader, index) in subHeaders" :key="index">
                                                             <template v-if="subHeader.field.includes('date')">
@@ -229,6 +232,10 @@ export default {
             required: true,
         },
         toggleable: {
+            type: Boolean,
+            required: true,
+        },
+        slotsub: {
             type: Boolean,
             required: true,
         }

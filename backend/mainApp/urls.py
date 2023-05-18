@@ -3,6 +3,16 @@ from .views import *
 
 urlpatterns = [ 
     re_path(r'^login/$', login, name='login'),
+    re_path(r'^restoorders/$',restoorders_list , name='restoorders-list'),
+    re_path(r'^restoorders/(?P<pk>\d+)/$',restoorders_list, name='restoorders-detail'), 
+    re_path(r'^restoorders/filter/$', restoorders_filter, name='restoorders-filter'),
+    re_path(r'^restotables/$',restotables_list , name='restotables-list'),
+    re_path(r'^restotables/(?P<pk>\d+)/$',restotables_list, name='restotables-detail'), 
+    re_path(r'^restotables/filter/$', restotables_filter, name='restotables-filter'),
+    re_path(r'^restotransaction/$',restotransaction_list , name='restotransaction-list'),
+    re_path(r'^restoitem/$',restoitem_list , name='restoitem-list'),
+    re_path(r'^restoitem/(?P<pk>\d+)/$',restoitem_list, name='restoitem-detail'), 
+    re_path(r'^restoitem/filter/$', restoitem_filter, name='restoitem-filter'),
     re_path(r'^task/record/$',tasksrecord_list , name='taskrecord-list'),
     re_path(r'^transaction/record/$', transactionrecord_list, name='transactionRecord-list'),
     re_path(r'^transaction/record/(?P<pk>\d+)/$', transactionrecord_list, name='transactionRecord-detail'),

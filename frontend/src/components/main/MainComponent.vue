@@ -29,6 +29,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-center  " data-bs-toggle="tab" href="#restotables">
+                                <i class="fa fa-table fa-2x"></i>
+                                <br>
+                                Resto Tables
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" data-bs-toggle="tab" href="#logs">
                                 <i class="fas fa-list fa-2x"></i>
                                 <br>
@@ -268,6 +275,67 @@
 
                             </div>
                         </div>
+                        <div id="restotables" class="tab-pane">
+                            <div id="restotables" class="tab-pane">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <form @submit.prevent="saveRestotables">
+                                            <div class="mb-3">
+                                                <label for="table-name" class="form-label">Table Name</label>
+                                                <input type="text" class="form-control" id="table-name"
+                                                    v-model="restaurantTable.name" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="seating-capacity" class="form-label">Seating Capacity</label>
+                                                <input type="number" class="form-control" id="seating-capacity"
+                                                    v-model="restaurantTable.capacity" min="0" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="is-available" class="form-label">Availability</label>
+                                                <select class="form-select" id="is-available"
+                                                    v-model="restaurantTable.isAvailable" required>
+                                                    <option value="">-- Select --</option>
+                                                    <option value="true">Yes</option>
+                                                    <option value="false">No</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">{{ isUpdatingTable ? 'Update' :
+                                                'Save' }}</button>
+                                        </form>
+
+                                    </div>
+                                    <div class="col-md-9"
+                                        style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Table Name</th>
+                                                    <th>Seating Capacity</th>
+                                                    <th>Availability</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="table in restaurantTables" :key="table.id">
+                                                    <td>{{ table.name }}</td>
+                                                    <td>{{ table.capacity }}</td>
+                                                    <td v-if="table.isAvailable">Yes</td>
+                                                    <td v-else>No</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-primary btn-sm"
+                                                            @click="editTable(table.id)">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                         <div id="logs" class="tab-pane">
                             <div id="logs" class="tab-pane">
                                 <div class="row">
@@ -318,6 +386,7 @@ export default {
             users: [],
             rooms: [],
             leisures: [],
+            restaurantTables: [],
             logs: [],
             user: {
                 username: "",
@@ -342,15 +411,23 @@ export default {
                 counter: '',
                 isAvailable: ''
             },
+            restaurantTable: {
+                id: null,
+                name: '',
+                capacity: '',
+                isAvailable: '',
+            },
             isUpdatingUser: false,
             isUpdatingRoom: false,
-            isUpdatingLeisure: false
+            isUpdatingLeisure: false,
+            isUpdatingTable: false,
         };
     },
     created() {
         this.getUsers();
         this.getRooms();
         this.getLeisures();
+        this.getRestaurantTables();
         this.getLogs();
     },
     computed: {
@@ -415,6 +492,16 @@ export default {
                 .get(`${this.API_URL}leisures/`)
                 .then(response => {
                     this.leisures = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        getRestaurantTables() {
+            axios
+                .get(`${this.API_URL}restotables/`)
+                .then(response => {
+                    this.restaurantTables = response.data;
                 })
                 .catch(error => {
                     console.log(error);
@@ -490,7 +577,62 @@ export default {
                     });
             }
         },
-
+        saveRestotables() {
+            if (this.isUpdatingTable) {
+                axios
+                    .put(`${this.API_URL}restotables/${this.restaurantTable.id}/`, this.restaurantTable)
+                    .then(response => {
+                        this.$swal({
+                            icon: "success",
+                            title: "Restaurant table updated successfully"
+                        });
+                        this.getRestaurantTables();
+                        this.restaurantTable = {
+                            id: null,
+                            name: '',
+                            capacity: '',
+                            isAvailable: ''
+                        };
+                        this.isUpdatingTable = false;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            } else {
+                axios
+                    .post(`${this.API_URL}restotables/filter/`, { columnName: 'name', columnKey: this.restaurantTable.name })
+                    .then(response => {
+                        if (response.data.length > 0) {
+                            this.$swal({
+                                icon: "error",
+                                title: "Restaurant table name already exists"
+                            });
+                        } else {
+                            axios
+                                .post(`${this.API_URL}restotables/`, this.restaurantTable)
+                                .then(response => {
+                                    this.$swal({
+                                        icon: "success",
+                                        title: "Restaurant table saved successfully"
+                                    });
+                                    this.getRestaurantTables();
+                                    this.restaurantTable = {
+                                        id: null,
+                                        name: '',
+                                        capacity: '',
+                                        isAvailable: ''
+                                    };
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
+        },
         saveRoom() {
             if (this.isUpdatingRoom) {
                 axios
@@ -666,6 +808,17 @@ export default {
                 .then(response => {
                     this.room = response.data;
                     this.isUpdatingRoom = true;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        editTable(id) {
+            axios
+                .get(`${this.API_URL}restotables/${id}/`)
+                .then(response => {
+                    this.restaurantTable = response.data;
+                    this.isUpdatingTable = true;
                 })
                 .catch(error => {
                     console.log(error);

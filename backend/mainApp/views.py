@@ -99,6 +99,34 @@ def generic_delete(request, o, pk=None):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
 @csrf_exempt    
+def restoorders_list(request, pk=None):
+    return generic_list(request, RestoOrders, RestoOrdersSerializer, pk)
+
+@csrf_exempt    
+def restoorders_filter(request):
+    return filter_model(request, RestoOrders)
+  
+@csrf_exempt    
+def restotables_filter(request):
+    return filter_model(request, RestoTables)
+
+@csrf_exempt    
+def restotables_list(request, pk=None):
+    return generic_list(request, RestoTables, RestoTablesSerializer, pk)
+
+@csrf_exempt    
+def restotransaction_list(request, pk=None):
+    return generic_list(request, RestoTransaction, RestoTransactionSerializer, pk)
+
+@csrf_exempt    
+def restoitem_list(request, pk=None):
+    return generic_list(request, RestoItem, RestoItemSerializer, pk)
+
+@csrf_exempt    
+def restoitem_filter(request):
+    return filter_model(request, RestoItem)
+        
+@csrf_exempt    
 def tasksrecord_list(request, pk=None):
     return generic_list(request, TasksRecord, TasksRecordSerializer, pk)
 
