@@ -2099,9 +2099,9 @@ export default {
   },
   methods: {
     async taskRecord(msg){
-      this.socket.send(JSON.stringify({
-        'message': msg
-      }));
+      // this.socket.send(JSON.stringify({
+      //   'message': msg
+      // }));
       try {
         await axios.post(`${this.API_URL}task/record/`, {
           actor: this.userdata.fName + " " + this.userdata.lName,
@@ -2709,6 +2709,7 @@ export default {
           };
 
           // Make a POST request to the API to save the data
+
           await axios.post(this.API_URL + 'transaction/item/', data)
             .then(response => {
               // Log a success message to the console
@@ -4354,16 +4355,16 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
-    this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
-    //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
-    const vm = this;
-    this.socket.onmessage = function (e) {
-      const data = JSON.parse(e.data);
-      console.log(data.message)
-      // $("#BookDayModal").modal("hide");
-      vm.loadAlldata();
-      vm.componentKey += 1;
-    };
+    // this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
+    // //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
+    // const vm = this;
+    // this.socket.onmessage = function (e) {
+    //   const data = JSON.parse(e.data);
+    //   console.log(data.message)
+    //   // $("#BookDayModal").modal("hide");
+    //   vm.loadAlldata();
+    //   vm.componentKey += 1;
+    // };
 
   }
 };
