@@ -2617,7 +2617,7 @@ export default {
 
       if (response.data.length === 0) {
 
-        if (groupbookings.length > 0) {
+        if (groupbookings.length > 0 && gkey !== "x") {
 
           groupbookings.forEach(async res => {
             const numDays = Math.ceil((new Date(res.checkoutDate.split('/')[2] + "-" + res.checkoutDate.split('/')[1] + "-" + res.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) - new Date(res.checkinDate.split('/')[2] + "-" + res.checkinDate.split('/')[1] + "-" + res.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
