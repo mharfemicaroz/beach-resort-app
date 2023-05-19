@@ -1137,7 +1137,7 @@
 
 
   <div class="modal fade show" id="BookDayModal" tabindex="-1" role="dialog" aria-labelledby="BookDayModalLabel"
-    style="display: none; padding-right: 17px;" aria-modal="true">
+    style="display: none; padding-right: 17px;" aria-modal="true" ref="modal">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
@@ -1148,7 +1148,14 @@
         </div>
         <div class="modal-body">
 
-          <form @submit.prevent="clickTestAddItem">
+          <div v-if="!movetocartFlag" class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden"></span>
+            </div>
+            <p class="loading-text h5">Loading...(Do not click anywhere!)</p>
+          </div>
+    
+          <form v-else @submit.prevent="clickTestAddItem">
             <!-- Client Information -->
             <h5>Booking Details<p class="text-muted" style="font-size: 12px;">*Field required</p>
             </h5>
@@ -1386,6 +1393,7 @@ export default {
   },
   data() {
     return {
+      movetocartFlag : true,
       socket: null,
       test: '',
       dashboardStatus: true,
@@ -2099,9 +2107,9 @@ export default {
   },
   methods: {
     async taskRecord(msg){
-      // this.socket.send(JSON.stringify({
-      //   'message': msg
-      // }));
+      this.socket.send(JSON.stringify({
+        'message': msg
+      }));
       try {
         await axios.post(`${this.API_URL}task/record/`, {
           actor: this.userdata.fName + " " + this.userdata.lName,
@@ -2574,6 +2582,8 @@ export default {
   },
 
     async moveToCart() {
+      this.movetocartFlag = false;
+
       const item = this.bookings[this.itemIndex];
       const bookingID = item.itemID;
       let existingTransaction = null;
@@ -2634,9 +2644,7 @@ export default {
 
       if (response.data.length === 0) {
 
-        groupbookings = this.removeDuplicates(groupbookings);
-
-        if (groupbookings.length > 0 && gkey !== "x") {
+        if (groupbookings.length > 0) {
 
           groupbookings.forEach(async res => {
             const numDays = Math.ceil((new Date(res.checkoutDate.split('/')[2] + "-" + res.checkoutDate.split('/')[1] + "-" + res.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) - new Date(res.checkinDate.split('/')[2] + "-" + res.checkinDate.split('/')[1] + "-" + res.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
@@ -2791,6 +2799,8 @@ export default {
       this.toggleItemModal();
 
       $("#others-tab").tab('show');
+
+      this.movetocartFlag = true;
 
       this.itemCart = {
         id: 0,
@@ -4339,6 +4349,11 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
 
       }
     },
+    handleModalClosed() {
+      if(!this.movetocartFlag){
+        document.location.reload();
+      }
+    },
     // sendMessage(){
     //   socket.send(JSON.stringify(
     //     {
@@ -4355,16 +4370,21 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
-    // this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
-    // //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
-    // const vm = this;
-    // this.socket.onmessage = function (e) {
-    //   const data = JSON.parse(e.data);
-    //   console.log(data.message)
-    //   // $("#BookDayModal").modal("hide");
-    //   vm.loadAlldata();
-    //   vm.componentKey += 1;
-    // };
+    const modal = this.$refs.modal;
+
+    // Attach event listener for modal hidden event
+    modal.addEventListener("hidden.bs.modal", this.handleModalClosed);
+
+    this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
+    //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
+    const vm = this;
+    this.socket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+      console.log(data.message)
+      // $("#BookDayModal").modal("hide");
+      vm.loadAlldata();
+      vm.componentKey += 1;
+    };
 
   }
 };
@@ -4582,4 +4602,18 @@ img {
   cursor: pointer;
   transform: translateY(-5px);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-}</style>
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px; /* Adjust the height as needed */
+}
+
+.loading-text {
+  margin-top: 10px; /* Adjust the margin as needed */
+}
+
+</style>
+
