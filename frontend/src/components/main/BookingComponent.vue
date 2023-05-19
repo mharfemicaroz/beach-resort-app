@@ -2555,6 +2555,23 @@ export default {
 
     },
 
+    removeDuplicates(groupBookings) {
+    if (!groupBookings) {
+      return [];
+    }
+
+    const uniqueBookings = [];
+    const roomNames = new Set();
+
+    groupBookings.forEach((booking) => {
+      if (!roomNames.has(booking.room_name)) {
+        roomNames.add(booking.room_name);
+        uniqueBookings.push(booking);
+      }
+    });
+
+    return uniqueBookings;
+  },
 
     async moveToCart() {
       const item = this.bookings[this.itemIndex];
@@ -2616,6 +2633,8 @@ export default {
       ])
 
       if (response.data.length === 0) {
+
+        groupbookings = this.removeDuplicates(groupbookings);
 
         if (groupbookings.length > 0 && gkey !== "x") {
 
