@@ -559,7 +559,7 @@
     <div id="billing-details" class="container-fluid billing" style="font-size: 100%;">
       <div class="container">
         <div class="row">
-          <div :class="!isThereLeisures ? 'col-6' : 'col-12'">
+          <div class="col-12">
             <div class="row justify-content-between" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
               <div class="col-4">
                 <img src="http://localhost:5173/src/assets/pantukan-waterworld-logo.jpg" width="60" height="60"
@@ -574,7 +574,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-6" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
+          <div class="col-12" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
             <div class="row">
               <div class="col-6">
                 <span style="font-size: small;">Client Details:</span>
@@ -635,7 +635,9 @@
               </div>
             </div>
           </div>
-          <div v-if="isThereLeisures" :class="isThereLeisures ? 'col-6' : 'col-0'">
+        </div>
+        <div class="row">
+          <div v-if="isThereLeisures" :class="isThereLeisures ? 'col-12' : 'col-0'">
             <span style="font-size: small;">WAIVER AND AGREEMENT TO LEASE WATER SPORTS</span>
             <p>The undersigned <span style="text-decoration: underline;">{{ this.billing.clientName }}</span> further
               states and affirms that he/she has been fully advised and thoroughly informed of the dangers of using WATER
@@ -705,7 +707,7 @@
           </div>
         </div>
         <div class="row mt-2">
-          <div :class="!isThereLeisures ? 'col-6' : 'col-12'" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
+          <div class="col-12" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
             <hr>
             <div class="row">
               <div class="col-6">
@@ -1148,7 +1150,7 @@
         </div>
         <div class="modal-body">
 
-          <div v-if="!movetocartFlag" class="loading-spinner">
+          <div v-if="!movetocartFlag || !bookNowFlag" class="loading-spinner">
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden"></span>
             </div>
@@ -1394,6 +1396,7 @@ export default {
   data() {
     return {
       movetocartFlag : true,
+      bookNowFlag: true,
       socket: null,
       test: '',
       dashboardStatus: true,
@@ -3454,7 +3457,7 @@ export default {
       return randomString;
     },
     async clickTestAddItem() {
-
+      this.bookNowFlag = false;
       const checkin = parseDate(this.reservation.checkinDate);
       const checkout = parseDate(formatDate2(this.reservation.checkoutDate));
       if (checkout < checkin) {
@@ -3589,7 +3592,7 @@ export default {
         });
 
       }
-
+      this.bookNowFlag = true;
     },
     removeItem() {
       this.calendarItems = this.calendarItems.filter(
@@ -4350,7 +4353,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       }
     },
     handleModalClosed() {
-      if(!this.movetocartFlag){
+      if(!this.movetocartFlag || !this.bookNowFlag){
         document.location.reload();
       }
     },
@@ -4362,6 +4365,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     // },
 
   },
+  
   async mounted() {
 
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
