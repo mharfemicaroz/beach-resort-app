@@ -328,19 +328,19 @@
                 <div class="col-md-4">
                   <button :disabled="(cartItems.length < 1)" class="btn btn-light btn-default btn-sm btn-block"
                     @click="printBill" style="width: 125px;">
-                    <i class="fa fa-print"></i> Print Bill
+                    <i class="fa fa-print"></i> Print Bill [F1]
                   </button>
                 </div>
                 <div class="col-md-4">
                   <button :disabled="(cartItems.length < 1)" class="btn btn-danger btn-default btn-sm btn-block"
                     style="width: 125px;" @click="placeOrder">
-                    <i class="fa fa-bookmark"></i> Place Order
+                    <i class="fa fa-bookmark"></i> Place Order [F2]
                   </button>
                 </div>
                 <div class="col-md-4 d-flex flex-row-reverse">
                   <button :disabled="(cartItems.length < 1)" class="btn btn-primary btn-sm btn-block" @click="payOrder"
                     style="width: 125px;">
-                    <i class="fa fa-shopping-bag"></i> Charge
+                    <i class="fa fa-shopping-bag"></i> Charge [F3]
                   </button>
                 </div>
               </div>
@@ -427,8 +427,71 @@
         </div>
       </div>
       <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
-        <table-component :mainHeaders=transactionsOptions :mainItems="filteredTransactions" :subHeaders="transactionitem"
-          :toggleable="true" />
+        <div class="row">
+          <div class="col-sm-1">
+            <ul class="nav nav-tabs flex-column">
+              <li class="nav-item">
+                <a class="nav-link rotated-text active" data-bs-toggle="tab" href="#bytransaction">By Transactions</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link rotated-text" data-bs-toggle="tab" href="#byitems">By Items</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-sm-11">
+            <div class="tab-content">
+              <div id="bytransaction" class="tab-pane active">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <div class="form-group">
+                      <label for="date-filter">Date Filter:</label>
+                      <select class="form-control" id="date-filter" v-model="resdateFilter">
+                        <option value="any">Any</option>
+                        <option value="range">Date Range</option>
+                      </select>
+                      <div v-if="resdateFilter === 'range'">
+                        <div class="form-group">
+                          <input type="date" class="form-control" v-model="resfromDate">
+                        </div>
+                        <div class="form-group">
+                          <input type="date" class="form-control" v-model="restoDate">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-10">
+                    <table-component :mainHeaders=transactionsOptions :mainItems="superfilteredTransactions"
+                      :subHeaders="transactionitem" :toggleable="true" />
+                  </div>
+                </div>
+              </div>
+              <div id="byitems" class="tab-pane">
+                <div class="row">
+                  <div class="col-sm-2">
+                    <div class="form-group">
+                      <label for="date-filter">Date Filter:</label>
+                      <select class="form-control" id="date-filter" v-model="resitemdateFilter">
+                        <option value="any">Any</option>
+                        <option value="range">Date Range</option>
+                      </select>
+                      <div v-if="resitemdateFilter === 'range'">
+                        <div class="form-group">
+                          <input type="date" class="form-control" v-model="resitemfromDate">
+                        </div>
+                        <div class="form-group">
+                          <input type="date" class="form-control" v-model="resitemtoDate">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-10">
+                    <table-component :mainHeaders=transactionitem :mainItems="itemfilteredTransactions" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -492,6 +555,18 @@ import CardItems from "../common/CardItems.vue";
 import axios from 'axios';
 
 //helper functions
+function parseDate(dateString) {
+  const [day, month, year] = dateString.split('/');
+  return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
+}
+
+function parseDate2(dateString) {
+  const index = dateString.indexOf('T');
+  const result = dateString.substring(0, index);
+  const [year, month, day] = result.split('-');
+  return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
+}
+
 function formatDate(date) {
   const options = {
     month: '2-digit',
@@ -512,6 +587,10 @@ export default {
   },
   data() {
     return {
+      restypeFilter: "0",
+      resdateFilter: "any",
+      resfromDate: null,
+      restoDate: null,
       customer: {
         reference_id: null,
         type: '',
@@ -744,6 +823,35 @@ export default {
           searchCode
         };
       }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchText.toLowerCase()));
+    },
+    superfilteredTransactions() {
+
+      let filtered = this.filteredTransactions;
+      if (this.resdateFilter === 'range' && this.resfromDate && this.restoDate) {
+        filtered = filtered.filter(transaction => {
+          return parseDate2(transaction.date_created) >= parseDate(this.resfromDate) && parseDate2(transaction.date_created) <= parseDate(this.restoDate);
+        });
+      }
+
+      return filtered;
+    },
+    itemfilteredTransactions(){
+      let itemsArray = [];
+      let filtered = this.transactions.map(item => {
+        const items = JSON.parse(item.items);
+        return {
+          ...item,
+          items
+        };
+      })
+      for (let obj of filtered) {
+        for (let key in obj) {
+          if (key === "items") {
+            itemsArray.push(...obj[key]);
+          }
+        }
+      }
+      return itemsArray
     },
     filteredTransactions() {
       return this.transactions.map(item => {
@@ -1332,10 +1440,25 @@ export default {
           progressBarChild.setAttribute('aria-valuenow', progress);
         }
       }, 200);
-    }
+    },
+    handleKeyPress(event) {
+      switch (event.key) {
+        case 'F1':
+          this.printBill();
+          break;
+        case 'F2':
+          this.placeOrder();
+          break;
+        case 'F3':
+          this.payOrder();
+          break;
+        default:
+          break;
+      }
+    },
   },
   mounted() {
-
+    document.addEventListener('keydown', this.handleKeyPress);
   },
 }
 </script>
@@ -1390,7 +1513,7 @@ dd {
   }
 }
 
-.badge-danger {
+.badge-danger { 
   background-color: #dc3545;
   color: #fff;
 }

@@ -145,7 +145,7 @@
                     </template>
                     <tr>
                         <td v-for="(header, index) in mainHeaders" :key="index">
-                            <span class="text-primary" v-if="header.reducible" style="font-weight: bold;">{{ sumColumn(header.field) }}</span>
+                            <span class="text-primary" v-if="header.reducible" style="font-weight: bold;">{{ sumColumn(header.field).toFixed(2) }}</span>
                         </td>
                     </tr>
                 </tbody>
