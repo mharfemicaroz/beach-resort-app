@@ -111,7 +111,25 @@ def generic_deleter(request, o, pk=None):
             return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
+@api_view(['GET'])
+@csrf_exempt
+def get_transactions_with_items(request):
+    transactions = Transaction.objects.all()
+    transaction_data = TransactionSerializer(transactions, many=True).data
+
+    for transaction in transaction_data:
+        booking_id = transaction['bookingID']
+        trans_id = transaction['id']
+        items = TransactionItem.objects.filter(bookingID=booking_id)
+        items2 = TransactionRecord.objects.filter(transaction=trans_id)
+        items_data = TransactionItemSerializer(items, many=True).data
+        items2_data = TransactionRecordSerializer(items2, many=True).data
+        transaction['items'] = items_data
+        transaction['items2'] = items2_data
+
+    return JsonResponse(transaction_data, safe=False)
+
 @csrf_exempt    
 def transactionrecord_delete(request, pk=None):
     return generic_deleter(request, TransactionRecord, pk)

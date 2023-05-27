@@ -3790,34 +3790,34 @@ export default {
     },
     async loadTransactionData() {
       try {
-        const response = await axios.get(this.API_URL + 'transaction/');
+        const response = await axios.get(this.API_URL + 'transactions_itemizer/');
         this.transactions = response.data;
-        this.transactions.forEach(async (item, index) => {
-          try {
-            let a = null;
-            const gkey = (item.groupkey || "x")
-            try {
-              if (gkey === "x") {
-                a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-                  { "columnName": 'bookingID', "columnKey": item.bookingID },
-                ]);
-              } else {
-                a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-                  { "columnName": 'groupkey', "columnKey": gkey },
-                ]);
-              }
-            } catch (error) {
-            }
+        // this.transactions.forEach(async (item, index) => {
+        //   try {
+        //     let a = null;
+        //     const gkey = (item.groupkey || "x")
+        //     try {
+        //       if (gkey === "x") {
+        //         a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+        //           { "columnName": 'bookingID', "columnKey": item.bookingID },
+        //         ]);
+        //       } else {
+        //         a = await axios.post(`${this.API_URL}transaction/item/filter/`, [
+        //           { "columnName": 'groupkey', "columnKey": gkey },
+        //         ]);
+        //       }
+        //     } catch (error) {
+        //     }
 
-            const b = await axios.post(`${this.API_URL}transaction/record/filter/`, [
-              { "columnName": "transaction", "columnKey": item.id },
-            ])
-            this.transactions[index].items = a.data;
-            this.transactions[index].items2 = b.data;
-          } catch (error) {
+        //     const b = await axios.post(`${this.API_URL}transaction/record/filter/`, [
+        //       { "columnName": "transaction", "columnKey": item.id },
+        //     ])
+        //     this.transactions[index].items = a.data;
+        //     this.transactions[index].items2 = b.data;
+        //   } catch (error) {
 
-          }
-        });
+        //   }
+        // });
       } catch (error) {
         console.error(error); // log any errors
         this.transactions = []; // return an empty array in case of errors

@@ -2,6 +2,7 @@ from django.urls import re_path
 from .views import *
 
 urlpatterns = [ 
+    re_path(r'^transactions_itemizer/$', get_transactions_with_items, name='transactions'),
     re_path(r'^login/$', login, name='login'),
     re_path(r'^restoorders/$',restoorders_list , name='restoorders-list'),
     re_path(r'^restoorders/(?P<pk>\d+)/$',restoorders_list, name='restoorders-detail'), 
