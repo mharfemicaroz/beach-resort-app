@@ -2281,8 +2281,14 @@ export default {
           }
 
         }
-
-        document.location.reload();
+        this.taskRecord(`action:/void/client:/${item.name}`);
+        await this.$swal.fire({
+          title: 'Success',
+          text: 'Item was voided successfully!',
+          icon: 'success'
+        }).then(response => {
+          document.location.reload();
+        })
 
       }
     },
