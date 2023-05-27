@@ -1295,7 +1295,7 @@
 
                 <button v-else-if="this.reservation.status == 'vacant'" type="submit" class="btn btn-primary">Book
                   Now</button> &nbsp;
-                <button v-if="this.reservation.status !== 'vacant'" type="button" @click="voidBook()"
+                <button v-if="userdata.role === 'superuser' && this.reservation.status !== 'vacant'" type="button" @click="voidBook()"
                   class="btn btn-danger">Void</button> &nbsp;
                 &nbsp;<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
