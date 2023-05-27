@@ -98,6 +98,28 @@ def generic_delete(request, o, pk=None):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@csrf_exempt
+def generic_deleter(request, o, pk=None):
+    if request.method == 'GET':
+        if pk is not None:
+            try:
+                dt = o.objects.get(transactionrecord_id=pk)
+            except o.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            dt.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+@csrf_exempt    
+def transactionrecord_delete(request, pk=None):
+    return generic_deleter(request, TransactionRecord, pk)
+
+@csrf_exempt    
+def transaction_delete(request, pk=None):
+    return generic_delete(request, Transaction, pk)
+
 @csrf_exempt    
 def restoorders_list(request, pk=None):
     return generic_list(request, RestoOrders, RestoOrdersSerializer, pk)

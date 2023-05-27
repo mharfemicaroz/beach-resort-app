@@ -85,8 +85,8 @@
 
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'POOL ROOM'"
-                    href="#poolrooms">Pool Rooms</a>
+                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'POOL ROOM'" href="#poolrooms">Pool
+                    Rooms</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'BEACH COTTAGE'"
@@ -1156,7 +1156,7 @@
             </div>
             <p class="loading-text h5">Loading...(Do not click anywhere!)</p>
           </div>
-    
+
           <form v-else @submit.prevent="clickTestAddItem">
             <!-- Client Information -->
             <h5>Booking Details<p class="text-muted" style="font-size: 12px;">*Field required</p>
@@ -1221,8 +1221,7 @@
               <label for="room" class="col-sm-2 col-form-label">Room:*</label>
               <div v-if="this.reservation.status === 'vacant' || this.toggleselect" class="col-sm-4">
                 <v-select :disabled="(roomSelect !== 'ok') ? true : false" aria-describedby="inputhelp3"
-                  :multiple="!toggleselect" :options="updatedRooms" label="name" v-model="reservation.roomName"
-                  required>
+                  :multiple="!toggleselect" :options="updatedRooms" label="name" v-model="reservation.roomName" required>
                   <template #option="{ name, type, price }">
                     <h6 style="margin: 0">{{ name }}</h6>
                     <em><small>{{ type }}</small></em>
@@ -1281,7 +1280,7 @@
                     </div>
                     <div v-else-if="this.reservation.isPaid == 'partial'">
                       <button @click="moveToCart()" type="button" class="btn btn-success">Pay Now</button>&nbsp;
-                      <button  type="button" class="btn btn-primary" @click="extendBooking()">Extend (1 day)</button>
+                      <button type="button" class="btn btn-primary" @click="extendBooking()">Extend (1 day)</button>
                     </div>
                     <div v-else>
                       <button type="button" class="btn btn-success" @click="viewSummary()">View Summary</button>&nbsp;
@@ -1293,7 +1292,8 @@
 
                 <button v-else-if="this.reservation.status == 'vacant'" type="submit" class="btn btn-primary">Book
                   Now</button> &nbsp;
-
+                <button v-if="this.reservation.status !== 'vacant'" type="button" @click="voidBook()"
+                  class="btn btn-danger">Void</button> &nbsp;
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
@@ -1395,7 +1395,7 @@ export default {
   },
   data() {
     return {
-      movetocartFlag : true,
+      movetocartFlag: true,
       bookNowFlag: true,
       socket: null,
       test: '',
@@ -2109,7 +2109,181 @@ export default {
     },
   },
   methods: {
-    async taskRecord(msg){
+    async voidBook() {
+      const item = this.bookings[this.itemIndex];
+      const bookID = item.id;
+      const bookKey = item.itemID;
+      const groupkey = item.groupkey;
+      let transdata_ID = null;
+      let transdata_gkey = null;
+
+      const confirmMessage = ' If you proceed with voiding, all associated items and transaction records will be permanently deleted, and this action cannot be reversed.';
+      const result = await this.$swal.fire({
+        title: 'Are you sure you want to void this?',
+        text: confirmMessage,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, void it!',
+        cancelButtonText: 'Cancel'
+      });
+      if (result.isConfirmed) {
+        const countdownMessage = 'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
+        let countdownResult;
+        countdownResult = await this.$swal.fire({
+          title: 'Please wait',
+          html: countdownMessage,
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Confirm now',
+          cancelButtonText: 'Cancel',
+          didOpen: () => {
+            const countdownEl = document.querySelector('#countdown');
+            let count = 5;
+            const timerId = setInterval(() => {
+              countdownEl.textContent = count;
+              count--;
+              if (count < 0) {
+                clearInterval(timerId);
+                this.$swal.close();
+              }
+            }, 1000);
+          }
+        });
+
+        if (!countdownResult.isConfirmed) {
+          return;
+        }
+
+        if (groupkey) {
+
+          try {
+            const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+              columnName: 'groupkey',
+              columnKey: groupkey
+            });
+            transdata_ID = existingTransaction.data[0].id;
+          } catch (error) {
+
+          }
+
+          try {
+            const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+              columnName: 'groupkey',
+              columnKey: groupkey
+            });
+
+            for (const item of existingTransaction_ITEM.data) {
+              axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
+            }
+          } catch (error) {
+
+          }
+
+          try {
+            if (transdata_ID) {
+              const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
+                columnName: 'transaction',
+                columnKey: transdata_ID
+              });
+
+              for (const item of existingTransaction_RECORD.data) {
+                axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
+              }
+            }
+
+          } catch (error) {
+
+          }
+
+          try {
+            if (transdata_ID) {
+              axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
+            }
+
+          } catch (error) {
+
+          }
+
+          try {
+            const existingBooking = await axios.post(`${this.API_URL}bookings/filter/`, {
+              columnName: 'groupkey',
+              columnKey: groupkey
+            });
+            for (const item of existingBooking.data) {
+              axios.get(this.API_URL + `bookings/delete/${item.id}/`);
+            }
+          } catch (error) {
+
+          }
+
+
+        } else {
+
+          try {
+            const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+              columnName: 'bookingID',
+              columnKey: bookKey
+            });
+            transdata_ID = existingTransaction.data[0].id;
+          } catch (error) {
+
+          }
+
+          try {
+            const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+              columnName: 'bookingID',
+              columnKey: bookKey
+            });
+
+            for (const item of existingTransaction_ITEM.data) {
+              axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
+            }
+          } catch (error) {
+
+          }
+
+          try {
+            if (transdata_ID) {
+              const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
+                columnName: 'transaction',
+                columnKey: transdata_ID
+              });
+
+              for (const item of existingTransaction_RECORD.data) {
+                axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
+              }
+            }
+
+          } catch (error) {
+
+          }
+
+          try {
+            if (transdata_ID) {
+              axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
+            }
+
+          } catch (error) {
+
+          }
+
+          try {
+            await axios.get(this.API_URL + `bookings/delete/${bookID}/`)
+          } catch (error) {
+
+          }
+
+        }
+
+        document.location.reload();
+
+      }
+    },
+    async taskRecord(msg) {
       this.socket.send(JSON.stringify({
         'message': msg
       }));
@@ -2567,22 +2741,22 @@ export default {
     },
 
     removeDuplicates(groupBookings) {
-    if (!groupBookings) {
-      return [];
-    }
-
-    const uniqueBookings = [];
-    const roomNames = new Set();
-
-    groupBookings.forEach((booking) => {
-      if (!roomNames.has(booking.room_name)) {
-        roomNames.add(booking.room_name);
-        uniqueBookings.push(booking);
+      if (!groupBookings) {
+        return [];
       }
-    });
 
-    return uniqueBookings;
-  },
+      const uniqueBookings = [];
+      const roomNames = new Set();
+
+      groupBookings.forEach((booking) => {
+        if (!roomNames.has(booking.room_name)) {
+          roomNames.add(booking.room_name);
+          uniqueBookings.push(booking);
+        }
+      });
+
+      return uniqueBookings;
+    },
 
     async moveToCart() {
       this.movetocartFlag = false;
@@ -3006,9 +3180,9 @@ export default {
       // }
 
       existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-          columnName: 'bookingID',
-          columnKey: bookingID
-        });
+        columnName: 'bookingID',
+        columnKey: bookingID
+      });
 
       // if (groupbookings.length > 0) {
       //   groupbookings.forEach(async item => {
@@ -3061,14 +3235,14 @@ export default {
       //   this.updateBookings(bId);
       // }
 
-        const itemCheckout = new Date(parseDate(this.bookings[this.itemIndex].checkoutDate));
-        const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
-        const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
-        const newTotalPrice = parseFloat(this.bookings[this.itemIndex].totalPrice) + parseFloat(this.bookings[this.itemIndex].room_price);
-        this.bookings[this.itemIndex].checkoutDate = newCheckoutString;
-        this.bookings[this.itemIndex].isPaid = "partial";
-        this.bookings[this.itemIndex].totalPrice = newTotalPrice;
-        this.updateBookings(bId);
+      const itemCheckout = new Date(parseDate(this.bookings[this.itemIndex].checkoutDate));
+      const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
+      const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
+      const newTotalPrice = parseFloat(this.bookings[this.itemIndex].totalPrice) + parseFloat(this.bookings[this.itemIndex].room_price);
+      this.bookings[this.itemIndex].checkoutDate = newCheckoutString;
+      this.bookings[this.itemIndex].isPaid = "partial";
+      this.bookings[this.itemIndex].totalPrice = newTotalPrice;
+      this.updateBookings(bId);
 
       existingTransactionItems.data.filter(o => o.itemOption === 'room').forEach(async item => {
         try {
@@ -3683,7 +3857,7 @@ export default {
 
         const numGuests = this.cart.filter(o => o.type.toLowerCase() === 'entrance').length;
 
-        if(bookid === "f"){
+        if (bookid === "f") {
           if (numGuests === 0) {
             await this.$swal.fire({
               title: 'Error',
@@ -4353,7 +4527,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       }
     },
     handleModalClosed() {
-      if(!this.movetocartFlag || !this.bookNowFlag){
+      if (!this.movetocartFlag || !this.bookNowFlag) {
         document.location.reload();
       }
     },
@@ -4365,7 +4539,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     // },
 
   },
-  
+
   async mounted() {
 
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
@@ -4612,12 +4786,13 @@ img {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100px; /* Adjust the height as needed */
+  height: 100px;
+  /* Adjust the height as needed */
 }
 
 .loading-text {
-  margin-top: 10px; /* Adjust the margin as needed */
+  margin-top: 10px;
+  /* Adjust the margin as needed */
 }
-
 </style>
 
