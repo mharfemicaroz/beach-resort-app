@@ -1263,6 +1263,9 @@
                     <button v-else-if="this.reservation.isPaid == 'partial'" @click="moveToCart()" type="button"
                       class="btn btn-success" :style="{ display: toggleselect ? 'none' : '' }">Partial Payment</button>
                     &nbsp;
+                    <button v-else-if="this.reservation.isPaid == 'yes'" @click="moveToCart()" type="button"
+                      class="btn btn-success" :style="{ display: toggleselect ? 'none' : '' }">View Summary</button>
+                    &nbsp;
                     <button v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(this.reservation.checkinDate)"
                       type="button" class="btn btn-success" @click="checkinGuest()"
                       :style="{ display: toggleselect ? 'none' : '' }">Check-in</button>
@@ -1294,7 +1297,7 @@
                   Now</button> &nbsp;
                 <button v-if="this.reservation.status !== 'vacant'" type="button" @click="voidBook()"
                   class="btn btn-danger">Void</button> &nbsp;
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                &nbsp;<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
           </form>
