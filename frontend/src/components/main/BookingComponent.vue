@@ -605,7 +605,9 @@
                       <td>{{ item.priceRate }}</td>
                       <td>{{ item.purqty }}</td>
                       <td v-if="item.itemOption !== 'room'">{{ item.totalCartPrice }}</td>
-                      <td v-else v-html="subroom.original + ' ' + subroom.discounted"></td>
+                      <td v-else>
+                        <span v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode==='percentage')?subroom.discountValue+'%':(subroom.discountValue/3).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${ (subroom.discountMode === 'percentage')? item.totalCartPrice * (1 - parseFloat(subroom.discountValue/100)) : item.totalCartPrice - (subroom.discountValue/3).toFixed(2)}</span>`"></span>
+                      </td>
                     </tr>
                     <tr>
                       <td colspan="4" class="text-right"><strong>Partial Payment:</strong></td>
@@ -2032,7 +2034,7 @@ export default {
       const discountAmount = this.discountMode === 'percentage' ? `${this.discountValue}%` : `₱${this.discountValue}`;
       const formattedOriginalPrice = `<del class="text-danger">${originalPrice}</del>`;
       const formattedDiscountedPrice = `<sup class="text-danger font-weight-bold">${discountAmount} off</sup> <span class="text-success font-weight-bold">${discountedPrice}</span>`;
-      return { original: formattedOriginalPrice, discounted: formattedDiscountedPrice };
+      return { original: formattedOriginalPrice, discounted: formattedDiscountedPrice, discountMode: this.discountMode, discountValue: this.discountValue  };
     },
     subaddons() {
       return this.cart.filter(item => item.category === 'main' && item.itemOption === 'addons').reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
