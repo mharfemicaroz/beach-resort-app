@@ -157,6 +157,7 @@ export default {
     }, 
     data() {
         return {
+            forecastedData: null,
             componentKey:0,
             prevBookings:[],
             prevTransactions:[],
@@ -299,7 +300,7 @@ export default {
             this.line1Data.labels = dates;
             this.line1Data.datasets[0].data = frequency;
         },
-        line2Datasets(data) {
+        async line2Datasets(data) {
             const summary = data.reduce((acc, curr) => {
                 const index = acc.dates.indexOf(this.parseDate3(curr.transaction_date));
 
@@ -328,12 +329,15 @@ export default {
             this.line2Data.labels = result.dates;
             this.line2Data.datasets[0].data = result.totalCashAmountPay;
 
+
+
         },
         forecast(data) {
-            return arima.then(ARIMA => {
+            let vm = this;
+            arima.then(ARIMA => {
                 const arima = new ARIMA({ p: 2, d: 1, q: 2, P: 0, D: 0, Q: 0, S: 0, verbose: false }).train(data)
                 const [pred, errors] = arima.predict(data.length)
-                return pred
+                vm.forecastedData = pred
             })
         },
         async loadData() {

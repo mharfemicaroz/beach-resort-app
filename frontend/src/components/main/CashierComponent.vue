@@ -108,27 +108,55 @@
               <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category1"
                   @click="setActiveTab('nav-tab-category1')">
-                  <i class="fa fa-tags "></i>Main Courses</a>
+                  <i class="fa fa-tags "></i>Appetizers</a>
               </li>
+
               <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category2"
                   @click="setActiveTab('nav-tab-category2')">
-                  <i class="fa fa-tags "></i>Appetizers</a>
+                  <i class="fa fa-tags "></i>Asian Classics</a>
               </li>
+
               <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category3"
                   @click="setActiveTab('nav-tab-category3')">
-                  <i class="fa fa-tags "></i>Desserts</a>
+                  <i class="fa fa-tags "></i>Sizzlers</a>
               </li>
+
               <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category4"
                   @click="setActiveTab('nav-tab-category4')">
-                  <i class="fa fa-tags "></i>Beverages</a>
+                  <i class="fa fa-tags "></i>Soup</a>
               </li>
+
               <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category5"
                   @click="setActiveTab('nav-tab-category5')">
-                  <i class="fa fa-tags "></i>Specials</a>
+                  <i class="fa fa-tags "></i>Drinks</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category6"
+                  @click="setActiveTab('nav-tab-category6')">
+                  <i class="fa fa-tags "></i>Desserts & Sweets</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category7"
+                  @click="setActiveTab('nav-tab-category7')">
+                  <i class="fa fa-tags "></i>Pizza, Pasta, Sandwich</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category8"
+                  @click="setActiveTab('nav-tab-category8')">
+                  <i class="fa fa-tags "></i>Breakfast</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category9"
+                  @click="setActiveTab('nav-tab-category9')">
+                  <i class="fa fa-tags "></i>Rice</a>
               </li>
             </ul>
 
@@ -146,7 +174,7 @@
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-md-12">
-                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Main Courses')"
+                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Appetizers')"
                         @click-action="addItemToCart" />
                     </div>
                   </div>
@@ -156,7 +184,7 @@
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-md-12">
-                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Appetizers')"
+                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Asian Classics')"
                         @click-action="addItemToCart" />
                     </div>
                   </div>
@@ -166,7 +194,7 @@
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-md-12">
-                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Desserts')"
+                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Sizzlers')"
                         @click-action="addItemToCart" />
                     </div>
                   </div>
@@ -176,7 +204,7 @@
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-md-12">
-                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Beverages')"
+                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Soup')"
                         @click-action="addItemToCart" />
                     </div>
                   </div>
@@ -186,7 +214,47 @@
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-md-12">
-                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Specials')"
+                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Drinks')"
+                        @click-action="addItemToCart" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="nav-tab-category6" role="tabpanel" aria-labelledby="nav-tab-category6">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Desserts & Sweets')"
+                        @click-action="addItemToCart" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="nav-tab-category7" role="tabpanel" aria-labelledby="nav-tab-category7">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Pizza, Pasta, Sandwich')"
+                        @click-action="addItemToCart" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="nav-tab-category8" role="tabpanel" aria-labelledby="nav-tab-category8">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Breakfast')"
+                        @click-action="addItemToCart" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="nav-tab-category9" role="tabpanel" aria-labelledby="nav-tab-category9">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Rice')"
                         @click-action="addItemToCart" />
                     </div>
                   </div>
@@ -372,11 +440,15 @@
                 <label for="is-available" class="form-label">Category</label>
                 <select class="form-select" id="is-available" v-model="stock.category" required>
                   <option value="">-- Select --</option>
-                  <option value="Main Courses">Main Courses</option>
                   <option value="Appetizers">Appetizers</option>
-                  <option value="Desserts">Desserts</option>
-                  <option value="Beverages">Beverages</option>
-                  <option value="Specials">Specials</option>
+                  <option value="Asian Classics">Asian Classics</option>
+                  <option value="Sizzlers">Sizzlers</option>
+                  <option value="Soup">Soup</option>
+                  <option value="Drinks">Drinks</option>
+                  <option value="Desserts & Sweets">Desserts & Sweets</option>
+                  <option value="Pizza, Pasta, Sandwich">Pizza, Pasta, Sandwich</option>
+                  <option value="Breakfast">Breakfast</option>
+                  <option value="Rice">Rice</option>
                 </select>
               </div>
 
@@ -501,16 +573,16 @@
   <div style="display:none;">
     <div class="container" id="billing-statement">
       <div class="row">
-        <div class="col-md-3 offset-md-3">
+        <div class="col-md-4">
           <div class="card">
             <div class="card-header text-center">
               <h4 class="m-0 p-0" style="font-weight: bold;">Waterworld Pantukan</h4>
               <h6 class="m-0 p-0">Magnaga, Pantukan, Davao de Oro</h6>
               <h6 class="m-0 p-0" style="font-weight: bold;">Billing Statement Receipt</h6>
-              <p class="m-0 p-0">{{ transactionDate }}</p>
+              <p class="m-0 p-0">{{ transactionDate || new Date().toLocaleDateString() }}</p>
             </div>
             <div class="card-body">
-              <h5 class="text-center">{{ customerName }}</h5>
+              <h5 class="text-center">{{ customerName || "Juan dela Cruz" }}</h5>
               <table class="table" style="border-style: none; border-width: 0px;">
                 <thead>
                   <tr>
@@ -536,7 +608,7 @@
               <p class="m-0 p-0 d-flex justify-content-end">Tax: {{ taxValue }}</p>
               <p class="m-0 p-0 d-flex justify-content-end">Total: {{ totalCost }}</p>
               <p class="text-center m-0 p-0">
-                ===================================
+                =======================
               </p>
               <p>Thank you for your purchase!</p>
             </div>
@@ -1403,7 +1475,7 @@ export default {
       // Track the loading progress of the stylesheet
       let progress = 0;
       const interval = setInterval(() => {
-        progress += 10;
+        progress += 50;
         if (progress >= 100) {
           clearInterval(interval);
           // Remove the progress bar
@@ -1417,7 +1489,7 @@ export default {
           const printWindow = window.open('', 'Print Window');
           printWindow.document.write('<html><head>');
           printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">');
-          printWindow.document.write('<style>html,body{display:none;}.no-print{display: none;} @media print{@page {size: letter; margin: 0; padding: 0;} html,body{display: block;margin: 0; padding: 0;} tr{page-break-inside: auto;} .no-print{display: none;}}</style>');
+          printWindow.document.write('<style>.no-print{display: none;} @media print{@page {size: auto; margin: 0; padding: 0;} html,body{display: block;margin: 0; padding: 0;width: 3.5in;height: 5.5in;} tr{page-break-inside: auto;} .no-print{display: none;}}</style>');
           printWindow.document.write('</head><body>');
           printWindow.document.write(printElement.innerHTML);
           printWindow.document.write('</body></html>');
