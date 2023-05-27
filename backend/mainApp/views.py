@@ -114,6 +114,21 @@ def generic_deleter(request, o, pk=None):
 
 @api_view(['GET'])
 @csrf_exempt
+def generic_getitems(request, ref_model, item_model, item_serializer, identifier):
+    if request.method == 'GET':
+        o = ref_model.objects.all()
+        o_data = item_serializer(o, many=True).data
+        for item in o_data:
+            id = item[identifier]
+            items = item_model.objects.filter(**{identifier: id})
+            items_data = item_serializer(items, many=True).data
+            item['items'] = items_data
+        return JsonResponse(o_data, safe=False)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@csrf_exempt
 def get_transactions_with_items(request):
     transactions = Transaction.objects.all()
     transaction_data = TransactionSerializer(transactions, many=True).data

@@ -97,6 +97,12 @@ export default {
                   case "inventorymanager":
                     route = "inventory"
                     break;
+                  case "cashier":
+                    route = "cashier"
+                    break;
+                  case "waiter":
+                    route = "cashier"
+                    break;
                   default:
                     // This shouldn't happen, but just in case
                     Swal.fire({

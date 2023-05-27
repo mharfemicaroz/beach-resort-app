@@ -77,6 +77,8 @@
                                                     <option value="reservationist">Reservationist</option>
                                                     <option value="frontdesk">Front Desk</option>
                                                     <option value="inventorymanager">Inventory Manager</option>
+                                                    <option value="cashier">Cashier</option>
+                                                    <option value="waiter">Server/Waiter</option>
                                                 </select>
                                             </div>
                                             <button type="submit" class="btn btn-primary">{{ isUpdatingUser ? 'Update' :
@@ -513,7 +515,7 @@ export default {
                 this.user.route = "booking";
             } else if (this.user.role === "inventorymanager") {
                 this.user.route = "inventory";
-            } else if (this.user.role === "cashier") {
+            } else if (this.user.role === "cashier" || this.user.role === "waiter") {
                 this.user.route = "pos";
             }
 

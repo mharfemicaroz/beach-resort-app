@@ -8,13 +8,13 @@
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="pos-tab" data-bs-toggle="tab" data-bs-target="#pos" type="button" role="tab"
-          aria-controls="pos" aria-selected="true">POS</button>
+          aria-controls="pos" aria-selected="true">{{ (userdata.role !== 'waiter')?'POS':'Order' }}</button>
       </li>
-      <li class="nav-item" role="presentation">
+      <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser'">
         <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button"
           role="tab" aria-controls="inventory" aria-selected="true" @click="resetCounter">Inventory</button>
       </li>
-      <li class="nav-item" role="presentation">
+      <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser'">
         <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab"
           aria-controls="reports" aria-selected="false" @click="resetCounter">Reports</button>
       </li>
@@ -79,7 +79,7 @@
           <div class="col-md-8">
             <div class="row">
               <div class="col-lg-6 col-sm-6">
-                <h4>Point of Sales
+                <h4>{{ (userdata.role !== 'waiter')?'Point of Sales':'Menu' }}
                   <span v-if="customer.reference_id !== null">
                     >>>&NonBreakingSpace; <span class="blink_me text-danger" style="font-style: italic;">Now serving: {{
                       customer.identifier }} for {{ customer.type }}</span>
@@ -264,7 +264,7 @@
           </div>
           <div class="col-md-4">
 
-            <div class="card" style="height: 215px; overflow-y: auto;">
+            <div class="card" :style="`height: ${(userdata.role !== 'waiter')?215:515}px; overflow-y: auto;`">
 
               <div class="row">
                 <div class="col-md-12">
@@ -322,7 +322,7 @@
                 </div>
               </div>
             </div>
-            <div class="box p-2">
+            <div class="box p-2" v-if="userdata.role !== 'waiter'">
               <div class="row p-0 m-0">
                 <div class="col-md-6">
                   <dt>Tax: </dt>
@@ -357,7 +357,7 @@
               </div>
             </div> <!-- box.// -->
             <div class="box mt-2">
-              <div class="row bg-primary text-white d-flex flex-row-reverse align-items-center">
+              <div class="row bg-primary text-white d-flex flex-row-reverse align-items-center" v-if="userdata.role !== 'waiter'">
                 <div class="col-md-6">
                   <div class="input-group">
                     <span class="input-group-text bg-primary text-white "
@@ -371,7 +371,7 @@
                   <dd class="text-right h3 b" style="margin-right: 10px;"> Cash</dd>
                 </div>
               </div>
-              <div class="row mt-2">
+              <div class="row mt-2" v-if="userdata.role !== 'waiter'"  >
                 <div class="col-md-12">
                   <div class="row row-cols-1 row-cols-md-4">
                     <div class="col mb-1" v-for="item in cashDenominations" :key="item.id">
@@ -384,7 +384,7 @@
                 </div>
               </div>
               <div
-                :class="(totalChange < 0 ? 'row mt-2 mb-2 bg-danger text-white' : 'row mt-2 mb-2 bg-success text-white')">
+                :class="(totalChange < 0 ? 'row mt-2 mb-2 bg-danger text-white' : 'row mt-2 mb-2 bg-success text-white')" v-if="userdata.role !== 'waiter'">
                 <div class="col-md-6">
                   <dt v-if="totalChange >= 0">Change: </dt>
                 </div>
@@ -405,7 +405,7 @@
                     <i class="fa fa-bookmark"></i> Place Order [F2]
                   </button>
                 </div>
-                <div class="col-md-4 d-flex flex-row-reverse">
+                <div class="col-md-4 d-flex flex-row-reverse" v-if="userdata.role !== 'waiter'">
                   <button :disabled="(cartItems.length < 1)" class="btn btn-primary btn-sm btn-block" @click="payOrder"
                     style="width: 125px;">
                     <i class="fa fa-shopping-bag"></i> Charge [F3]
@@ -840,10 +840,7 @@ export default {
     }
   },
   created() {
-    this.getInventory();
-    this.getTransaction();
-    this.getRestoTables();
-    this.getCurrentOrders();
+    this.loadAlldata();
   },
   computed: {
     userdata() {
@@ -936,6 +933,12 @@ export default {
     },
   },
   methods: {
+    loadAlldata(){
+      this.getInventory();
+      this.getTransaction();
+      this.getRestoTables();
+      this.getCurrentOrders();
+    },
     setActiveTab(tab) {
       this.activeTab = tab
     },
@@ -1045,7 +1048,7 @@ export default {
                   items: JSON.stringify(this.cartItems),
                   processedBy: this.userdata.fName + " " + this.userdata.lName,
                 })
-
+              this.taskRecord(`action:/placeorder/update/${customer_name}`);
               this.$swal({
                 title: 'Success',
                 icon: "success",
@@ -1087,7 +1090,7 @@ export default {
                   items: JSON.stringify(this.cartItems),
                   processedBy: this.userdata.fName + " " + this.userdata.lName,
                 })
-
+              this.taskRecord(`action:/placeorder/posted/${customer_name}`);
               this.$swal({
                 title: 'Success',
                 icon: "success",
@@ -1232,6 +1235,7 @@ export default {
             processedBy: this.userdata.fName + " " + this.userdata.lName,
           })
           .then(response => {
+            this.taskRecord(`action:/payorder/posted`);
             this.$swal({
               title: 'Success',
               icon: "success",
@@ -1528,9 +1532,32 @@ export default {
           break;
       }
     },
+    async taskRecord(msg) {
+      this.socket.send(JSON.stringify({
+        'message': msg
+      }));
+      try {
+        await axios.post(`${this.API_URL}task/record/`, {
+          actor: this.userdata.fName + " " + this.userdata.lName,
+          task: msg,
+        })
+      } catch (error) {
+
+      }
+    },
   },
   mounted() {
     document.addEventListener('keydown', this.handleKeyPress);
+    this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
+    //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
+    const vm = this;
+    this.socket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+      console.log(data.message)
+      // $("#BookDayModal").modal("hide");
+      vm.loadAlldata();
+      vm.componentKey += 1;
+    };
   },
 }
 </script>
