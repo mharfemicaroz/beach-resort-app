@@ -158,6 +158,12 @@
                   @click="setActiveTab('nav-tab-category9')">
                   <i class="fa fa-tags "></i>Rice</a>
               </li>
+
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category10"
+                  @click="setActiveTab('nav-tab-category10')">
+                  <i class="fa fa-tags "></i>Miscellaneous</a>
+              </li>
             </ul>
 
             <div class="tab-content" id="myTabContent" style="height: 550px; overflow-y: auto;">
@@ -255,6 +261,16 @@
                   <div class="row">
                     <div class="col-md-12">
                       <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Rice')"
+                        @click-action="addItemToCart" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="nav-tab-category10" role="tabpanel" aria-labelledby="nav-tab-category10">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Miscellaneous')"
                         @click-action="addItemToCart" />
                     </div>
                   </div>
@@ -449,6 +465,7 @@
                   <option value="Pizza, Pasta, Sandwich">Pizza, Pasta, Sandwich</option>
                   <option value="Breakfast">Breakfast</option>
                   <option value="Rice">Rice</option>
+                  <option value="Miscellaneous">Miscellaneous</option>
                 </select>
               </div>
 
@@ -571,9 +588,9 @@
   </div>
 
   <div style="display:none;">
-    <div class="container" id="billing-statement">
+    <div class="container text-center" id="billing-statement">
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-12">
           <div class="card">
             <div class="card-header text-center">
               <h4 class="m-0 p-0" style="font-weight: bold;">Waterworld Pantukan</h4>
@@ -1493,7 +1510,7 @@ export default {
           const printWindow = window.open('', 'Print Window');
           printWindow.document.write('<html><head>');
           printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">');
-          printWindow.document.write('<style>.no-print{display: none;} @media print{@page {size: auto; margin: 0; padding: 0;} html,body{display: block;margin: 0; padding: 0;width: 3.5in;height: 5.5in;} tr{page-break-inside: auto;} .no-print{display: none;}}</style>');
+          printWindow.document.write('<style>.no-print{display: none;} @media print{@page {size: auto; margin: 0; padding: 0;} html,body{display: block;margin: 0; padding: 0;} tr{page-break-inside: auto;} .no-print{display: none;}}</style>');
           printWindow.document.write('</head><body>');
           printWindow.document.write(printElement.innerHTML);
           printWindow.document.write('</body></html>');
