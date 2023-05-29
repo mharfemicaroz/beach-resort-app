@@ -8,7 +8,11 @@
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="pos-tab" data-bs-toggle="tab" data-bs-target="#pos" type="button" role="tab"
-          aria-controls="pos" aria-selected="true">{{ (userdata.role !== 'waiter')?'POS':'Order' }}</button>
+          aria-controls="pos" aria-selected="true">{{ (userdata.role !== 'waiter') ? 'POS' : 'Menu' }}</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab"
+          aria-controls="orders" aria-selected="true">Orders</button>
       </li>
       <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser'">
         <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button"
@@ -29,10 +33,10 @@
                 <a class="nav-link active show" data-bs-toggle="tab" role="tab" href="#dineintab">
                   <i class="fa fa-tags"></i>Dine-in</a>
               </li>
-              <!-- <li class="nav-item">
+              <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" role="tab" href="#takeouttab">
                   <i class="fa fa-tags"></i>Take Out</a>
-              </li> -->
+              </li>
             </ul>
           </div>
 
@@ -61,15 +65,46 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="tab-pane fade" id="takeouttab" role="tabpanel" aria-labelledby="takeout-tab">
+            <div class="tab-pane fade" id="takeouttab" role="tabpanel" aria-labelledby="takeout-tab">
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-md-12">
-                    
+                    <div class="row row-cols-1 row-cols-md-6">
+                      <div class="col mb-6">
+                        <div class="card"
+                          style="transition: transform 0.2s ease-in-out;border-color: #ffecb5;background-color: #fff3cd; color: #664d03;"
+                          @click="addnewTakeout">
+                          <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title"><i class="fas fa-plus"></i> Add</h5>
+                          </div>
+                          <div class="card-body">
+                            <h6>
+                              <i class="fas fa-info-circle"></i> Add new takeout
+                            </h6>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col mb-6" v-for="(item, index) in filteredresto_takeouts" :key="item.id">
+                        <div class="card" style="transition: transform 0.2s ease-in-out;">
+                          <div class="card-header d-flex justify-content-between align-items-center"
+                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                            <h5 class="card-title"><i class="fa fa-shopping-cart"></i> {{ item.name }}</h5>
+                            <button type="button" class="btn btn-sm btn-close" aria-label="Close"
+                              @click="cancelTakeOut(item.id)"></button>
+                          </div>
+                          <div class="card-body" @click="takeoutAction(item)">
+                            <h6 class="text-dark">
+                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'on progress' : 'on hold' }}
+                            </h6>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div> -->
+            </div>
           </div>
 
         </div>
@@ -79,7 +114,7 @@
           <div class="col-md-8">
             <div class="row">
               <div class="col-lg-6 col-sm-6">
-                <h4>{{ (userdata.role !== 'waiter')?'Point of Sales':'Menu' }}
+                <h4>{{ (userdata.role !== 'waiter') ? 'Point of Sales' : 'Menu' }}
                   <span v-if="customer.reference_id !== null">
                     >>>&NonBreakingSpace; <span class="blink_me text-danger" style="font-style: italic;">Now serving: {{
                       customer.identifier }} for {{ customer.type }}</span>
@@ -280,7 +315,7 @@
           </div>
           <div class="col-md-4">
 
-            <div class="card" :style="`height: ${(userdata.role !== 'waiter')?215:515}px; overflow-y: auto;`">
+            <div class="card" :style="`height: ${(userdata.role !== 'waiter') ? 315 : 515}px; overflow-y: auto;`">
 
               <div class="row">
                 <div class="col-md-12">
@@ -373,7 +408,8 @@
               </div>
             </div> <!-- box.// -->
             <div class="box mt-2">
-              <div class="row bg-primary text-white d-flex flex-row-reverse align-items-center" v-if="userdata.role !== 'waiter'">
+              <div class="row bg-primary text-white d-flex flex-row-reverse align-items-center"
+                v-if="userdata.role !== 'waiter'">
                 <div class="col-md-6">
                   <div class="input-group">
                     <span class="input-group-text bg-primary text-white "
@@ -387,7 +423,7 @@
                   <dd class="text-right h3 b" style="margin-right: 10px;"> Cash</dd>
                 </div>
               </div>
-              <div class="row mt-2" v-if="userdata.role !== 'waiter'"  >
+              <div class="row mt-2" v-if="userdata.role !== 'waiter'">
                 <div class="col-md-12">
                   <div class="row row-cols-1 row-cols-md-4">
                     <div class="col mb-1" v-for="item in cashDenominations" :key="item.id">
@@ -400,7 +436,8 @@
                 </div>
               </div>
               <div
-                :class="(totalChange < 0 ? 'row mt-2 mb-2 bg-danger text-white' : 'row mt-2 mb-2 bg-success text-white')" v-if="userdata.role !== 'waiter'">
+                :class="(totalChange < 0 ? 'row mt-2 mb-2 bg-danger text-white' : 'row mt-2 mb-2 bg-success text-white')"
+                v-if="userdata.role !== 'waiter'">
                 <div class="col-md-6">
                   <dt v-if="totalChange >= 0">Change: </dt>
                 </div>
@@ -428,6 +465,38 @@
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+        <div class="row mt-2">
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-12">
+                    <div class="row row-cols-1 row-cols-md-4">
+                      <div class="col mb-4" v-for="(item, index) in resto_allorders" :key="item.id">
+                        <div class="card" style="transition: transform 0.2s ease-in-out;">
+  <div :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : 'bg-success'}`">
+    <h5 class="card-title">{{ item.order_type.toString().toUpperCase() }}#{{ item.id }}</h5>
+    <p class="card-subtitle" style="font-size: 12px;">{{ item.datestarted }}</p>
+  </div>
+  <div class="card-body" style="height: 150px; overflow-y: auto;">
+    <ul style="list-style-type: none; padding-left: 20px;">
+      <li v-for="orderItem in item.order_items" :key="orderItem.id" style="font-weight:bold; font-size:16px; padding-left:30px;">
+        {{ orderItem.qty }} &times; {{ orderItem.name }}
+      </li>
+    </ul>
+  </div>
+  <!-- <div class="card-footer">
+    <button class="btn btn-sm btn-outline-primary">Done</button> &NonBreakingSpace;
+    <button class="btn btn-sm btn-outline-danger">Hold</button>
+  </div> -->
+</div>
+
+                      </div>
+                    </div>
+                  </div>
             </div>
           </div>
         </div>
@@ -817,7 +886,13 @@ export default {
       resto_order: [
 
       ],
+      resto_allorders: [
+
+      ],
       resto_tables: [
+
+      ],
+      resto_takeouts: [
 
       ],
       itemarray: [
@@ -874,6 +949,31 @@ export default {
     totalChange() {
       return (this.totalCash - this.totalCost).toFixed(2);
     },
+    filteredresto_takeouts() {
+      return this.resto_takeouts.map(item => {
+        const order = this.resto_order.filter(o => o.table_id === item.id);
+        if (order.length > 0) {
+          const order_data = order[0];
+          const order_id = order_data.id;
+          const order_type = order_data.order_type;
+          const order_cname = order_data.customer_name;
+          const order_status = order_data.status;
+          const order_items = JSON.parse(order_data.items);
+          return {
+            ...item,
+            order_id,
+            order_type,
+            order_cname,
+            order_status,
+            order_items,
+          };
+        } else {
+          return {
+            ...item,
+          };
+        }
+      }).filter(item => item.status !== 'done')
+    },
     filteredresto_tables() {
       return this.resto_tables.map(item => {
         const order = this.resto_order.filter(o => o.table_id === item.id);
@@ -921,7 +1021,7 @@ export default {
 
       return filtered;
     },
-    itemfilteredTransactions(){
+    itemfilteredTransactions() {
       let itemsArray = [];
       let filtered = this.transactions.map(item => {
         const items = JSON.parse(item.items);
@@ -950,14 +1050,77 @@ export default {
     },
   },
   methods: {
-    loadAlldata(){
+    loadAlldata() {
       this.getInventory();
       this.getTransaction();
       this.getRestoTables();
+      this.geRestoTakeout();
+      this.getAllOrders();
       this.getCurrentOrders();
     },
     setActiveTab(tab) {
       this.activeTab = tab
+    },
+    cancelTakeOut(id) {
+      this.$swal.fire({
+        title: 'Delete Takeout Order',
+        text: 'Are you sure you want to delete this takeout order?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Delete',
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Perform deletion logic here
+          axios.get(this.API_URL + `restotakeouts/delete/${id}/`).then(response => {
+            this.geRestoTakeout();
+            this.$swal.fire(
+              'Deleted!',
+              'The takeout order has been successfully deleted.',
+              'success'
+            );
+          })
+
+        }
+      });
+    },
+    addnewTakeout() {
+      this.$swal.fire({
+        title: 'Enter customer\'s name',
+        input: 'text',
+        inputPlaceholder: 'Enter customer\'s name',
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const inputValue = result.value;
+          axios.post(`${this.API_URL}restotakeouts/`, {
+            name: inputValue,
+            status: "on process",
+          }).then(response => {
+            this.geRestoTakeout();
+          })
+        }
+      });
+    },
+    takeoutAction(item) {
+      this.customer = {
+        reference_id: item.id,
+        type: "take-out",
+        identifier: item.name,
+      }
+      if ('order_id' in item) {
+        this.cartItems = item.order_items;
+        this.customer.order_id = item.order_id;
+        this.customer.order_type = item.order_type;
+      }
+      this.customer.items = (item.order_items || []);
+      $("#pos-tab").tab('show');
     },
     dineInAction(item) {
       this.customer = {
@@ -1028,7 +1191,7 @@ export default {
         const customer_name = customer.identifier;
         const customer_orderId = customer.order_id || -1;
         if (customer_id !== null) {
-          if (customer_type === "dine-in") {
+          if (customer_type === "dine-in" || customer_type === "take-out") {
 
             const res = await axios.post(`${this.API_URL}restoorders/filter/`, { columnName: 'id', columnKey: customer_orderId });
             const existingOrder = res.data;
@@ -1117,14 +1280,6 @@ export default {
               });
 
             }
-
-            // this.clearAll();
-            // this.getCurrentOrders();
-            // this.getRestoTables();
-            // this.getInventory();
-            // $("#tables-tab").tab('show');
-
-            //document.location.reload();
 
           } else {
             //take-out
@@ -1239,6 +1394,13 @@ export default {
               processedBy: this.userdata.fName + " " + this.userdata.lName,
               status: 'closed',
             })
+          if (this.customer.type === 'take-out') {
+            axios
+              .put(`${this.API_URL}restotakeouts/${this.customer.reference_id}/`, {
+                name: this.customer.identifier,
+                status: 'done',
+              })
+          }
         }
 
         axios
@@ -1260,11 +1422,7 @@ export default {
             }).then((result) => {
               document.location.reload();
             });
-            // this.clearAll();
-            // this.getRestoTables();
-            // this.getCurrentOrders();
-            // this.getInventory();
-            // $("#tables-tab").tab('show');
+
           })
           .catch(error => {
             console.log(error);
@@ -1294,6 +1452,16 @@ export default {
           console.log(error);
         });
     },
+    geRestoTakeout() {
+      axios
+        .get(`${this.API_URL}restotakeouts/`)
+        .then(response => {
+          this.resto_takeouts = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     getTransaction() {
       axios
         .get(`${this.API_URL}restotransaction/`)
@@ -1303,6 +1471,25 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    getAllOrders(){
+      axios
+        .get(`${this.API_URL}restoorders/`)
+        .then(response => {
+          this.resto_allorders = response.data.map(item => {
+            const order_items = JSON.parse(item.items);
+            const datestarted = formatDate(new Date(item.date_created));
+            return {
+              ...item,
+              datestarted,
+              order_items,
+            };
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
     },
     getCurrentOrders() {
       axios
@@ -1629,7 +1816,7 @@ dd {
   }
 }
 
-.badge-danger { 
+.badge-danger {
   background-color: #dc3545;
   color: #fff;
 }

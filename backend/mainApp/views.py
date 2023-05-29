@@ -166,6 +166,14 @@ def restotables_filter(request):
     return filter_model(request, RestoTables)
 
 @csrf_exempt    
+def restotakeouts_delete(request, pk=None):
+    return generic_delete(request, RestoTakeouts, pk)
+
+@csrf_exempt    
+def restotakeouts_list(request, pk=None):
+    return generic_list(request, RestoTakeouts, RestoTakeoutsSerializer, pk)
+
+@csrf_exempt    
 def restotables_list(request, pk=None):
     return generic_list(request, RestoTables, RestoTablesSerializer, pk)
 

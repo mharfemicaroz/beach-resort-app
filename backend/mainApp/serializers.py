@@ -85,6 +85,11 @@ class RestoTablesSerializer(serializers.ModelSerializer):
         model = RestoTables
         fields = '__all__' 
 
+class RestoTakeoutsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestoTakeouts
+        fields = '__all__' 
+
 class RestoOrdersSerializer(serializers.ModelSerializer):
     class Meta:
         model = RestoOrders

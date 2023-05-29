@@ -158,6 +158,13 @@ class RestoTables(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
     isAvailable = models.BooleanField(default=True) 
 
+class RestoTakeouts(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    status = models.CharField(max_length=255)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
 class Supplier(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
