@@ -474,29 +474,32 @@
           <div class="col-md-12">
             <div class="row">
               <div class="col-md-12">
-                    <div class="row row-cols-1 row-cols-md-4">
-                      <div class="col mb-4" v-for="(item, index) in resto_allorders" :key="item.id">
-                        <div class="card" style="transition: transform 0.2s ease-in-out;">
-  <div :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : 'bg-success'}`">
-    <h5 class="card-title">{{ item.order_type.toString().toUpperCase() }}#{{ item.id }}</h5>
-    <p class="card-subtitle" style="font-size: 12px;">{{ item.datestarted }}</p>
-  </div>
-  <div class="card-body" style="height: 150px; overflow-y: auto;">
-    <ul style="list-style-type: none; padding-left: 20px;">
-      <li v-for="orderItem in item.order_items" :key="orderItem.id" style="font-weight:bold; font-size:16px; padding-left:30px;">
-        {{ orderItem.qty }} &times; {{ orderItem.name }}
-      </li>
-    </ul>
-  </div>
-  <!-- <div class="card-footer">
+                <div class="row row-cols-1 row-cols-md-4">
+                  <div class="col mb-4" v-for="(item, index) in resto_allorders" :key="item.id">
+                    <div class="card" style="transition: transform 0.2s ease-in-out;">
+                      <div
+                        :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : 'bg-success'}`">
+                        <h5 class="card-title">#{{ Number(item.id).toString().padStart(5, "0") }}</h5>
+                        <p class="card-subtitle" style="font-size: 12px;">{{ item.datestarted }}</p>
+                      </div>
+                      <div class="card-body" style="height: 150px; overflow-y: auto;">
+                        <ul style="list-style-type: none; padding-left: 20px;">
+                          {{ item.order_type.toString().toUpperCase() }}/{{ item.customer_name }}
+                          <li v-for="orderItem in item.order_items" :key="orderItem.id"
+                            style="font-weight:bold; font-size:16px; padding-left:30px;">
+                            {{ orderItem.qty }} &times; {{ orderItem.name }}
+                          </li>
+                        </ul>
+                      </div>
+                      <!-- <div class="card-footer">
     <button class="btn btn-sm btn-outline-primary">Done</button> &NonBreakingSpace;
     <button class="btn btn-sm btn-outline-danger">Hold</button>
   </div> -->
-</div>
-
-                      </div>
                     </div>
+
                   </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1472,7 +1475,7 @@ export default {
           console.log(error);
         });
     },
-    getAllOrders(){
+    getAllOrders() {
       axios
         .get(`${this.API_URL}restoorders/`)
         .then(response => {
@@ -1484,6 +1487,20 @@ export default {
               datestarted,
               order_items,
             };
+          }).sort((a, b) => {
+            const dateA = new Date(a.date_created);
+            const dateB = new Date(b.date_created);
+            return dateB - dateA;
+          }).sort((a, b) => {
+            const aStatus = a.status;
+            const bStatus = b.status;
+            if(aStatus === 'closed' && bStatus === 'progress'){
+              return 1;
+            } else if(bStatus === 'closed' && aStatus === 'progress'){
+              return -1;
+            } else {
+              return 0;
+            }
           });
         })
         .catch(error => {
