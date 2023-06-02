@@ -90,6 +90,11 @@ class RestoTakeoutsSerializer(serializers.ModelSerializer):
         model = RestoTakeouts
         fields = '__all__' 
 
+class RestoOnholdsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestoOnholds
+        fields = '__all__' 
+
 class RestoOrdersSerializer(serializers.ModelSerializer):
     class Meta:
         model = RestoOrders

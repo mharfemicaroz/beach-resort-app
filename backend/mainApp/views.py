@@ -174,6 +174,10 @@ def restotakeouts_list(request, pk=None):
     return generic_list(request, RestoTakeouts, RestoTakeoutsSerializer, pk)
 
 @csrf_exempt    
+def restoonholds_list(request, pk=None):
+    return generic_list(request, RestoOnholds, RestoOnholdsSerializer, pk)
+
+@csrf_exempt    
 def restotables_list(request, pk=None):
     return generic_list(request, RestoTables, RestoTablesSerializer, pk)
 
