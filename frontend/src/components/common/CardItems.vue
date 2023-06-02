@@ -1,13 +1,13 @@
 <template>
-    <div class="row row-cols-1 row-cols-md-4">
-        <div class="col mb-4" v-for="item in itemData" :key="item.id">
-            <div class="card" style="transition: transform 0.2s ease-in-out;">
-                <img :src="item.imageUrl" class="card-img-top img-xl" alt="Item Image"
-                    style="width:200px ;height:150px ;" />
+    <div class="row row-cols-1 row-cols-md-5">
+        <div class="col md-5" v-for="item in itemData" :key="item.id">
+            <div class="card" style="height: 175px; width: 175px;transition: transform 0.2s ease-in-out;">
+                <img :src="item.imageUrl" class="card-img-top" alt="Item Image"
+                    style="height:100px ;" />
                     <div class="card-body m-0 p-1">
-                        <h5 class="card-title text-truncate" style="max-height: 1.5em; line-height: 1.5em; overflow: hidden;">
+                        <h6 class="card-title text-truncate" style="max-height: 1.5em; line-height: 1.5em; overflow: hidden;">
                             {{ item.name }}
-                        </h5>
+                        </h6>
                     </div>
                 <div class="card-footer m-0 p-1">
                     <div class="d-flex justify-content-between align-items-center">

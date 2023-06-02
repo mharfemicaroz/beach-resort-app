@@ -4,11 +4,11 @@
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="tables-tab" data-bs-toggle="tab" data-bs-target="#tables" type="button"
-          role="tab" aria-controls="tables" aria-selected="true" @click="resetCounter">Tables</button>
+          role="tab" aria-controls="tables" aria-selected="true" @click="resetCounter">Customers</button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="pos-tab" data-bs-toggle="tab" data-bs-target="#pos" type="button" role="tab"
-          aria-controls="pos" aria-selected="true">{{ (userdata.role !== 'waiter') ? 'POS' : 'Menu' }}</button>
+          aria-controls="pos" aria-selected="true" @click="activatePOS">{{ (userdata.role !== 'waiter') ? 'POS' : 'Menu' }}</button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab"
@@ -36,6 +36,10 @@
               <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" role="tab" href="#takeouttab">
                   <i class="fa fa-tags"></i>Take Out</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#onholdtab">
+                  <i class="fa fa-tags"></i>On hold</a>
               </li>
             </ul>
           </div>
@@ -105,12 +109,36 @@
                 </div>
               </div>
             </div>
+            <div class="tab-pane fade" id="onholdtab" role="tabpanel" aria-labelledby="onhold-tab">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="row row-cols-1 row-cols-md-6">
+                      <div class="col mb-6" v-for="(item, index) in filteredresto_onholds" :key="item.id">
+                        <div class="card" style="transition: transform 0.2s ease-in-out;">
+                          <div class="card-header d-flex justify-content-between align-items-center"
+                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                            <h5 class="card-title"><i class="fa fa-dollars"></i> {{ item.name }}</h5>
+                          </div>
+                          <div class="card-body" @click="onholdAction(item)">
+                            <h6 class="text-dark">
+                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'on progress' : 'on hold' }}
+                            </h6>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
         </div>
       </div>
       <div class="tab-pane fade" id="pos" role="tabpanel" aria-labelledby="pos-tab">
-        <div class="row mt-2">
+        <div class="row mt-2" id="posTab">
           <div class="col-md-8">
             <div class="row">
               <div class="col-lg-6 col-sm-6">
@@ -122,7 +150,7 @@
                 </h4>
               </div>
               <div class="col-lg-6 col-sm-6">
-                <form action="#" class="search-wrap">
+                <form class="search-wrap" @submit.prevent="">
                   <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search" v-model="searchText">
                     <div class="input-group-append">
@@ -201,7 +229,7 @@
               </li>
             </ul>
 
-            <div class="tab-content" id="myTabContent" style="height: 550px; overflow-y: auto;">
+            <div class="tab-content" id="myTabContent" style="height: 462px; overflow-y: auto;">
               <div class="tab-pane fade show active" id="alltab" role="tabpanel" aria-labelledby="all-tab">
                 <div class="container-fluid">
                   <div class="row">
@@ -312,6 +340,38 @@
                 </div>
               </div>
             </div>
+
+            <div class="row mt-3" style="width: fit-content;">
+            <div class="col-md-3">
+              <button :disabled="(cartItems.length < 1)" class="btn btn-primary btn-block btn-box btn-gap" @click="setQty">
+                <span class="text-medium">[F4]</span><br>
+                Qty
+              </button>
+            </div>
+          
+            <div class="col-md-3">
+              <button class="btn btn-success btn-block btn-box btn-gap" @click="setDiscount">
+                <span class="text-medium">[F5]</span><br>
+                Discount
+              </button>
+            </div>
+          
+            <div class="col-md-3">
+              <button class="btn btn-danger btn-block btn-box btn-gap" @click="setTax">
+                <span class="text-medium">[F6]</span><br>
+                Tax
+              </button>
+            </div>
+          
+            <div class="col-md-3">
+              <button :disabled="(cartItems.length < 1)" class="btn btn-warning btn-block btn-box btn-gap" @click="holdCustomer">
+                <span class="text-medium">[F7]</span><br>
+                Hold
+              </button>
+            </div>
+          </div>
+
+
           </div>
           <div class="col-md-4">
 
@@ -354,7 +414,7 @@
                             <button type="button" class="m-btn btn-light btn btn-default" disabled>
                               {{ item.qty }}
                             </button>
-                            <button type="button" class="m-btn btn-light btn btn-default" @click="increaseQty(item)">
+                            <button type="button" class="m-btn btn-light btn btn-default" @click="increaseQty(item,1)">
                               <i class="fa fa-plus"></i>
                             </button>
                           </div>
@@ -592,10 +652,10 @@
           <div class="col-sm-1">
             <ul class="nav nav-tabs flex-column">
               <li class="nav-item">
-                <a class="nav-link rotated-text active" data-bs-toggle="tab" href="#bytransaction">By Transactions</a>
+                <a class="nav-link rotated-text active" data-bs-toggle="tab" href="#bytransaction">Transactions</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link rotated-text" data-bs-toggle="tab" href="#byitems">By Items</a>
+                <a class="nav-link rotated-text" data-bs-toggle="tab" href="#byitems">Orders</a>
               </li>
             </ul>
           </div>
@@ -646,7 +706,8 @@
                     </div>
                   </div>
                   <div class="col-sm-10">
-                    <table-component :mainHeaders=transactionitem :mainItems="itemfilteredTransactions" />
+                    <table-component :mainHeaders=transactionordersoptions :mainItems="filteredtransactionorders" 
+                    :subHeaders="transactionitem" :toggleable="true"/>
                   </div>
                 </div>
               </div>
@@ -748,6 +809,7 @@ export default {
   },
   data() {
     return {
+      currentItem: null,
       restypeFilter: "0",
       resdateFilter: "any",
       resfromDate: null,
@@ -824,6 +886,39 @@ export default {
         'field': 'processedBy',
         'sortable': true,
       }],
+      transactionordersoptions: [{
+        'label': '',
+        'field': 'toggle',
+        'sortable': false,
+      }, {
+        'label': 'Order ID',
+        'field': 'id',
+        'sortable': true,
+      }, {
+        'label': 'Type',
+        'field': 'order_type',
+        'sortable': true,
+      }, {
+        'label': 'Reference #',
+        'field': 'table_id',
+        'sortable': true,
+      }, {
+        'label': 'Reference Name',
+        'field': 'customer_name',
+        'sortable': true,
+      }, {
+        'label': 'Date',
+        'field': 'date_created',
+        'sortable': true,
+      }, {
+        'label': 'Processed By',
+        'field': 'processedBy',
+        'sortable': true,
+      }, {
+        'label': 'Status',
+        'field': 'status',
+        'sortable': true,
+      }],
       stocksOptions: [{
         'label': '',
         'field': 'toggle',
@@ -889,6 +984,9 @@ export default {
       resto_order: [
 
       ],
+      resto_orders: [
+
+      ],
       resto_allorders: [
 
       ],
@@ -896,6 +994,9 @@ export default {
 
       ],
       resto_takeouts: [
+
+      ],
+      resto_onholds: [
 
       ],
       itemarray: [
@@ -1002,9 +1103,37 @@ export default {
         }
       })
     },
+    filteredtransactionorders(){
+      return this.resto_allorders;
+    },
+    filteredresto_onholds() {
+      return this.resto_onholds.map(item => {
+        const order = this.resto_order.filter(o => o.table_id === item.id);
+        if (order.length > 0) {
+          const order_data = order[0];
+          const order_id = order_data.id;
+          const order_type = order_data.order_type;
+          const order_cname = order_data.customer_name;
+          const order_status = order_data.status;
+          const order_items = JSON.parse(order_data.items);
+          return {
+            ...item,
+            order_id,
+            order_type,
+            order_cname,
+            order_status,
+            order_items,
+          };
+        } else {
+          return {
+            ...item,
+          };
+        }
+      }).filter(item => item.status !== 'done')
+    },
     filtereditemarray() {
       return this.itemarray.map(item => {
-        const searchCode = item.name + "~" + item.description;
+        const searchCode = item.name + "~" + item.description + "~" + item.sku;
         const items = JSON.parse(item.inventory);
         return {
           ...item,
@@ -1057,12 +1186,153 @@ export default {
       this.getInventory();
       this.getTransaction();
       this.getRestoTables();
-      this.geRestoTakeout();
+      this.getRestoTakeout();
+      this.getRestoOnholds();
       this.getAllOrders();
       this.getCurrentOrders();
     },
+    activatePOS(){
+      this.$nextTick(() => {
+        this.setFocus();
+      });
+    },
+    setFocus(){
+      $("#posTab").focus();
+    },
     setActiveTab(tab) {
       this.activeTab = tab
+    },
+    holdCustomer(){
+      this.$swal.fire({
+        title: 'Enter customer\'s name',
+        input: 'text',
+        inputPlaceholder: 'Enter customer\'s name',
+        inputAttributes: {
+          minlength: 3, // Minimum length of 3 characters
+          maxlength: 24, // Maximum length of 24 characters
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const inputValue = result.value;
+          axios.post(`${this.API_URL}restoonholds/`, {
+            name: inputValue,
+            status: "on hold",
+          }).then(response => {
+            const item = response.data;
+            this.getRestoOnholds();
+            this.customer = {
+              reference_id: item.id,
+              type: "on-hold",
+              identifier: item.name,
+            }
+            this.placeOrder();
+          })
+        }
+      });
+    },
+    onholdAction(item) {
+      this.customer = {
+        reference_id: item.id,
+        type: "on-hold",
+        identifier: item.name,
+      }
+      if ('order_id' in item) {
+        this.cartItems = item.order_items;
+        this.customer.order_id = item.order_id;
+        this.customer.order_type = item.order_type;
+      }
+      this.customer.items = (item.order_items || []);
+      $("#pos-tab").tab('show');
+    },
+    setDiscount(){
+      this.$swal.fire({
+        title: 'Set discount value',
+        input: 'number',
+        inputPlaceholder: 'Enter discount percentage',
+        inputAttributes: {
+          min: 0, // Minimum value
+          max: 100,
+          step: 'any',
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const inputValue = result.value;
+          this.discountValue = parseFloat(inputValue).toFixed(2);
+        }
+      });
+    },
+    setTax(){
+      this.$swal.fire({
+        title: 'Set tax value',
+        input: 'number',
+        inputPlaceholder: 'Enter added tax percentage',
+        inputAttributes: {
+          min: 0, // Minimum value
+          max: 100,
+          step: 'any',
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const inputValue = result.value;
+          this.taxValue = parseFloat(inputValue).toFixed(2);
+        }
+      });
+    },
+    setQty(){
+      this.$swal.fire({
+        title: 'Set quantity value',
+        input: 'number',
+        inputPlaceholder: 'Enter quantity',
+        inputAttributes: {
+          min: 0, // Minimum value
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const inputValue = result.value;
+          this.increaseQty(this.currentItem, inputValue)
+        }
+      });
+    },
+    increaseQty(item,plus) {
+      this.plusQty(item,plus);
+    },
+    plusQty(item,add){
+      if (parseFloat(item.qty) + parseFloat(add) <= item.stocks) {
+        item.qty = parseFloat(item.qty) + parseFloat(add);
+      } else {
+        this.$swal({
+          title: "Out of Stock",
+          text: `Item unavailable. Maximum quantity added.`,
+          icon: "warning",
+          buttons: {
+            confirm: "OK",
+          },
+        });  
+        item.qty = item.stocks;      
+      }
+      this.updatePrice(item)
+    },
+    decreaseQty(item) {
+      if (item.qty > 1) {
+        item.qty--
+        this.updatePrice(item)
+      }
     },
     cancelTakeOut(id) {
       this.$swal.fire({
@@ -1079,7 +1349,7 @@ export default {
         if (result.isConfirmed) {
           // Perform deletion logic here
           axios.get(this.API_URL + `restotakeouts/delete/${id}/`).then(response => {
-            this.geRestoTakeout();
+            this.getRestoTakeout();
             this.$swal.fire(
               'Deleted!',
               'The takeout order has been successfully deleted.',
@@ -1106,7 +1376,7 @@ export default {
             name: inputValue,
             status: "on process",
           }).then(response => {
-            this.geRestoTakeout();
+            this.getRestoTakeout();
           })
         }
       });
@@ -1155,7 +1425,8 @@ export default {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, place it!',
-        cancelButtonText: 'Cancel'
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false,
       });
 
       if (result.isConfirmed) {
@@ -1170,6 +1441,7 @@ export default {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Confirm now',
           cancelButtonText: 'Cancel',
+          allowOutsideClick: false,
           didOpen: () => {
             const countdownEl = document.querySelector('#countdown');
             let count = 5;
@@ -1194,7 +1466,7 @@ export default {
         const customer_name = customer.identifier;
         const customer_orderId = customer.order_id || -1;
         if (customer_id !== null) {
-          if (customer_type === "dine-in" || customer_type === "take-out") {
+          if (customer_type === "dine-in" || customer_type === "take-out" || customer_type === "on-hold") {
 
             const res = await axios.post(`${this.API_URL}restoorders/filter/`, { columnName: 'id', columnKey: customer_orderId });
             const existingOrder = res.data;
@@ -1332,7 +1604,8 @@ export default {
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
         confirmButtonText: 'Yes, save it!',
-        cancelButtonText: 'Cancel'
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false,
       });
       if (result.isConfirmed) {
         const countdownMessage = 'Transaction will be saved in <span id="countdown">5</span> seconds. Do you want to cancel?';
@@ -1346,6 +1619,7 @@ export default {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Confirm now',
           cancelButtonText: 'Cancel',
+          allowOutsideClick: false,
           didOpen: () => {
             const countdownEl = document.querySelector('#countdown');
             let count = 5;
@@ -1403,6 +1677,12 @@ export default {
                 name: this.customer.identifier,
                 status: 'done',
               })
+          } else if(this.customer.type === 'on-hold'){
+            axios
+              .put(`${this.API_URL}restoonholds/${this.customer.reference_id}/`, {
+                name: this.customer.identifier,
+                status: 'done',
+              })            
           }
         }
 
@@ -1455,11 +1735,21 @@ export default {
           console.log(error);
         });
     },
-    geRestoTakeout() {
+    getRestoTakeout() {
       axios
         .get(`${this.API_URL}restotakeouts/`)
         .then(response => {
           this.resto_takeouts = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getRestoOnholds() {
+      axios
+        .get(`${this.API_URL}restoonholds/`)
+        .then(response => {
+          this.resto_onholds = response.data;
         })
         .catch(error => {
           console.log(error);
@@ -1481,9 +1771,11 @@ export default {
         .then(response => {
           this.resto_allorders = response.data.map(item => {
             const order_items = JSON.parse(item.items);
+            const items = JSON.parse(item.items);
             const datestarted = formatDate(new Date(item.date_created));
             return {
               ...item,
+              items,
               datestarted,
               order_items,
             };
@@ -1494,9 +1786,9 @@ export default {
           }).sort((a, b) => {
             const aStatus = a.status;
             const bStatus = b.status;
-            if(aStatus === 'closed' && bStatus === 'progress'){
+            if (aStatus === 'closed' && bStatus === 'progress') {
               return 1;
-            } else if(bStatus === 'closed' && aStatus === 'progress'){
+            } else if (bStatus === 'closed' && aStatus === 'progress') {
               return -1;
             } else {
               return 0;
@@ -1631,9 +1923,10 @@ export default {
         stocks: parseFloat(item.stocks),
       }
 
-      if (item.stocks > 0) {
+      if (item.stocks > 0) {  
         if (!isItemExist) {
           this.cartItems.push(cart);
+          this.currentItem = cart;
         } else {
           const obj = this.cartItems.find(item => item.id === cart.id);
           obj.qty += (obj.qty < obj.stocks) ? 1 : 0;
@@ -1648,18 +1941,6 @@ export default {
             confirm: "OK",
           },
         });
-      }
-    },
-    increaseQty(item) {
-      if (item.qty < item.stocks) {
-        item.qty++
-        this.updatePrice(item)
-      }
-    },
-    decreaseQty(item) {
-      if (item.qty > 1) {
-        item.qty--
-        this.updatePrice(item)
       }
     },
     removeFromCart(item) {
@@ -1741,14 +2022,33 @@ export default {
     handleKeyPress(event) {
       switch (event.key) {
         case 'F1':
+          event.preventDefault()
           this.printBill();
           break;
         case 'F2':
+          event.preventDefault()
           this.placeOrder();
           break;
         case 'F3':
+          event.preventDefault()
           this.payOrder();
           break;
+        case 'F4':
+        event.preventDefault()
+          this.setQty();
+          break;
+        case 'F5':
+          event.preventDefault()
+          this.setDiscount();
+          break;
+        case 'F6':
+          event.preventDefault()
+          this.setTax();
+          break;
+        case 'F7':
+          event.preventDefault()
+          this.holdCustomer();
+          break;          
         default:
           break;
       }
@@ -1768,6 +2068,37 @@ export default {
     },
   },
   mounted() {
+    let barcode = "";
+    let reading = false;
+
+    document.addEventListener('keypress', e => {
+      //usually barcode scanners throw an 'Enter' key at the end of read
+      if (e.keyCode === 13) {
+        if (barcode.length > 10) {
+          this.searchText = barcode;
+          if(this.filtereditemarray.length === 1){
+            const item = this.filtereditemarray[0];
+            this.addItemToCart(item);
+            $("#pos-tab").tab('show');
+          }
+          /// code ready to use                
+          barcode = "";
+        }
+      } else {
+        barcode += e.key; //while this is not an 'enter' it stores the every key            
+      }
+
+      //run a timeout of 200ms at the first read and clear everything
+      if (!reading) {
+        reading = true;
+        setTimeout(() => {
+          barcode = "";
+          reading = false;
+          this.searchText = "";
+        }, 200);  //200 works fine for me but you can adjust it
+      }
+    });
+    
     document.addEventListener('keydown', this.handleKeyPress);
     this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
     //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
@@ -1840,5 +2171,15 @@ dd {
 
 .btn-error {
   color: #ef5f5f;
+}
+
+.btn-box {
+  border-radius: 5%;
+  width: 75px;
+  height: 75px;
+}
+
+.text-medium {
+  font-size: 16px;
 }
 </style>
