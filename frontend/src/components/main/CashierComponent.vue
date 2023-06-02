@@ -8,9 +8,10 @@
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="pos-tab" data-bs-toggle="tab" data-bs-target="#pos" type="button" role="tab"
-          aria-controls="pos" aria-selected="true" @click="activatePOS">{{ (userdata.role !== 'waiter') ? 'POS' : 'Menu' }}</button>
+          aria-controls="pos" aria-selected="true" @click="activatePOS">{{ (userdata.role !== 'waiter') ? 'POS' : 'Menu'
+          }}</button>
       </li>
-      <li class="nav-item" role="presentation">
+      <li class="nav-item" role="presentation" v-if="userdata.role !== 'cashier'">
         <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab"
           aria-controls="orders" aria-selected="true">Orders</button>
       </li>
@@ -152,7 +153,7 @@
               <div class="col-lg-6 col-sm-6">
                 <form class="search-wrap" @submit.prevent="">
                   <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" v-model="searchText">
+                    <input type="text" class="form-control" placeholder="Search" ref="myInput" v-model="searchText">
                     <div class="input-group-append">
                       <button class="btn btn-primary" type="submit">
                         <i class="fa fa-search"></i>
@@ -229,7 +230,7 @@
               </li>
             </ul>
 
-            <div class="tab-content" id="myTabContent" style="height: 462px; overflow-y: auto;">
+            <div class="tab-content" id="myTabContent" :style="`height: ${(userdata.role === 'waiter')?370:462}px; overflow-y: auto;`">
               <div class="tab-pane fade show active" id="alltab" role="tabpanel" aria-labelledby="all-tab">
                 <div class="container-fluid">
                   <div class="row">
@@ -341,41 +342,76 @@
               </div>
             </div>
 
-            <div class="row mt-3" style="width: fit-content;">
-            <div class="col-md-3">
-              <button :disabled="(cartItems.length < 1)" class="btn btn-primary btn-block btn-box btn-gap" @click="setQty">
+
+
+            <div class="row mt-3 d-flex flex-row-reverse" >
+              
+              <button :disabled="(cartItems.length < 1)"
+                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="printBill">
+                <span class="text-medium">[F1]</span><br>
+                Print
+              </button>
+              <span style="width: 10px;"></span>
+              <button :disabled="(cartItems.length < 1)"
+                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="placeOrder">
+                <span class="text-medium">[F2]</span><br>
+                Save
+              </button>
+              <span style="width: 10px;"></span>
+              <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
+                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="payOrder">
+                <span class="text-medium">[F3]</span><br>
+                Charge
+              </button>
+              <span style="width: 10px;"></span>
+              <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
+                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="setQty">
                 <span class="text-medium">[F4]</span><br>
                 Qty
               </button>
-            </div>
-          
-            <div class="col-md-3">
-              <button class="btn btn-success btn-block btn-box btn-gap" @click="setDiscount">
+              <span style="width: 10px;"></span>
+              <button class="btn btn-outline-dark btn-block btn-box btn-gap" v-if="userdata.role !== 'waiter'"
+                @click="setDiscount">
                 <span class="text-medium">[F5]</span><br>
                 Discount
               </button>
-            </div>
-          
-            <div class="col-md-3">
-              <button class="btn btn-danger btn-block btn-box btn-gap" @click="setTax">
+              <span style="width: 10px;"></span>
+              <button class="btn btn-outline-dark btn-block btn-box btn-gap" v-if="userdata.role !== 'waiter'"
+                @click="setTax">
                 <span class="text-medium">[F6]</span><br>
                 Tax
               </button>
-            </div>
-          
-            <div class="col-md-3">
-              <button :disabled="(cartItems.length < 1)" class="btn btn-warning btn-block btn-box btn-gap" @click="holdCustomer">
+              <span style="width: 10px;"></span>
+              <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
+                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="holdCustomer">
                 <span class="text-medium">[F7]</span><br>
                 Hold
               </button>
+              <span style="width: 10px;"></span>
+              <button disabled v-if="userdata.role !== 'waiter'"
+                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="">
+                <span class="text-medium">[F8]</span><br>
+                Toggle
+              </button>
+              <span style="width: 10px;"></span>
+              <button
+                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="findItem">
+                <span class="text-medium">[F9]</span><br>
+                Find
+              </button>
+              <span style="width: 10px;"></span>
+              <button
+                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="">
+                <span class="text-medium">[F10]</span><br>
+                Log Out
+              </button>
             </div>
-          </div>
 
 
           </div>
           <div class="col-md-4">
 
-            <div class="card" :style="`height: ${(userdata.role !== 'waiter') ? 315 : 515}px; overflow-y: auto;`">
+            <div class="card" :style="`height: ${(userdata.role !== 'waiter') ? 340 : 595}px; overflow-y: auto;`">
 
               <div class="row">
                 <div class="col-md-12">
@@ -414,7 +450,7 @@
                             <button type="button" class="m-btn btn-light btn btn-default" disabled>
                               {{ item.qty }}
                             </button>
-                            <button type="button" class="m-btn btn-light btn btn-default" @click="increaseQty(item,1)">
+                            <button type="button" class="m-btn btn-light btn btn-default" @click="increaseQty(item, 1)">
                               <i class="fa fa-plus"></i>
                             </button>
                           </div>
@@ -467,9 +503,9 @@
                 </div>
               </div>
             </div> <!-- box.// -->
-            <div class="box mt-2">
+            <div class="box mt-2" v-if="userdata.role !== 'waiter'">
               <div class="row bg-primary text-white d-flex flex-row-reverse align-items-center"
-                v-if="userdata.role !== 'waiter'">
+                >
                 <div class="col-md-6">
                   <div class="input-group">
                     <span class="input-group-text bg-primary text-white "
@@ -505,7 +541,7 @@
                   <dd class="text-right h4 b"> ₱{{ totalChange }} </dd>
                 </div>
               </div>
-              <div class="row">
+              <!-- <div class="row">
                 <div class="col-md-4">
                   <button :disabled="(cartItems.length < 1)" class="btn btn-light btn-default btn-sm btn-block"
                     @click="printBill" style="width: 125px;">
@@ -524,7 +560,7 @@
                     <i class="fa fa-shopping-bag"></i> Charge [F3]
                   </button>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -706,8 +742,8 @@
                     </div>
                   </div>
                   <div class="col-sm-10">
-                    <table-component :mainHeaders=transactionordersoptions :mainItems="filteredtransactionorders" 
-                    :subHeaders="transactionitem" :toggleable="true"/>
+                    <table-component :mainHeaders=transactionordersoptions :mainItems="filteredtransactionorders"
+                      :subHeaders="transactionitem" :toggleable="true" />
                   </div>
                 </div>
               </div>
@@ -1103,7 +1139,7 @@ export default {
         }
       })
     },
-    filteredtransactionorders(){
+    filteredtransactionorders() {
       return this.resto_allorders;
     },
     filteredresto_onholds() {
@@ -1191,18 +1227,18 @@ export default {
       this.getAllOrders();
       this.getCurrentOrders();
     },
-    activatePOS(){
+    activatePOS() {
       this.$nextTick(() => {
         this.setFocus();
       });
     },
-    setFocus(){
+    setFocus() {
       $("#posTab").focus();
     },
     setActiveTab(tab) {
       this.activeTab = tab
     },
-    holdCustomer(){
+    holdCustomer() {
       this.$swal.fire({
         title: 'Enter customer\'s name',
         input: 'text',
@@ -1248,7 +1284,7 @@ export default {
       this.customer.items = (item.order_items || []);
       $("#pos-tab").tab('show');
     },
-    setDiscount(){
+    setDiscount() {
       this.$swal.fire({
         title: 'Set discount value',
         input: 'number',
@@ -1269,7 +1305,7 @@ export default {
         }
       });
     },
-    setTax(){
+    setTax() {
       this.$swal.fire({
         title: 'Set tax value',
         input: 'number',
@@ -1290,7 +1326,7 @@ export default {
         }
       });
     },
-    setQty(){
+    setQty() {
       this.$swal.fire({
         title: 'Set quantity value',
         input: 'number',
@@ -1309,10 +1345,10 @@ export default {
         }
       });
     },
-    increaseQty(item,plus) {
-      this.plusQty(item,plus);
+    increaseQty(item, plus) {
+      this.plusQty(item, plus);
     },
-    plusQty(item,add){
+    plusQty(item, add) {
       if (parseFloat(item.qty) + parseFloat(add) <= item.stocks) {
         item.qty = parseFloat(item.qty) + parseFloat(add);
       } else {
@@ -1323,8 +1359,8 @@ export default {
           buttons: {
             confirm: "OK",
           },
-        });  
-        item.qty = item.stocks;      
+        });
+        item.qty = item.stocks;
       }
       this.updatePrice(item)
     },
@@ -1677,12 +1713,12 @@ export default {
                 name: this.customer.identifier,
                 status: 'done',
               })
-          } else if(this.customer.type === 'on-hold'){
+          } else if (this.customer.type === 'on-hold') {
             axios
               .put(`${this.API_URL}restoonholds/${this.customer.reference_id}/`, {
                 name: this.customer.identifier,
                 status: 'done',
-              })            
+              })
           }
         }
 
@@ -1923,7 +1959,7 @@ export default {
         stocks: parseFloat(item.stocks),
       }
 
-      if (item.stocks > 0) {  
+      if (item.stocks > 0) {
         if (!isItemExist) {
           this.cartItems.push(cart);
           this.currentItem = cart;
@@ -2023,32 +2059,52 @@ export default {
       switch (event.key) {
         case 'F1':
           event.preventDefault()
-          this.printBill();
+          if (this.cartItems.length >= 1)
+            this.printBill();
           break;
         case 'F2':
           event.preventDefault()
-          this.placeOrder();
+          if (this.cartItems.length >= 1)
+            this.placeOrder();
           break;
         case 'F3':
           event.preventDefault()
-          this.payOrder();
+          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
+            this.payOrder();
           break;
         case 'F4':
-        event.preventDefault()
-          this.setQty();
+          event.preventDefault()
+          if (this.userdata.role !== 'waiter')
+            this.setQty();
           break;
         case 'F5':
           event.preventDefault()
-          this.setDiscount();
+          if (this.userdata.role !== 'waiter')
+            this.setDiscount();
           break;
         case 'F6':
           event.preventDefault()
-          this.setTax();
+          if (this.userdata.role !== 'waiter')
+            this.setTax();
           break;
         case 'F7':
           event.preventDefault()
-          this.holdCustomer();
-          break;          
+          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
+            this.holdCustomer();
+          break;
+        case 'F8':
+          event.preventDefault()
+          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
+            //toggle drawer
+          break;   
+        case 'F9':
+          event.preventDefault()
+          this.findItem();
+          break;     
+        case 'F10':
+          event.preventDefault()
+            this.logout();
+          break;     
         default:
           break;
       }
@@ -2066,6 +2122,29 @@ export default {
 
       }
     },
+    findItem(){
+      this.$refs.myInput.focus()
+    },
+    async logout(){
+      const authStore = useAuthStore();
+            const user = {
+                username: authStore.user.username,
+                FirstName: authStore.user.fName,
+                LastName: authStore.user.lName,
+                role: authStore.user.role,
+                route: authStore.user.route,
+            }
+            const response = await axios.put(`${this.API_URL}users/${authStore.user.id}/`, { ...user, isActive: false })
+            if (response.data !== undefined) {
+                authStore.logout();
+                this.$router.push('/');
+            } else {
+                this.$swal({
+                    icon: "error",
+                    title: "Logout error. Please contact your admin for assistance!"
+                });
+            }
+    }
   },
   mounted() {
     let barcode = "";
@@ -2076,7 +2155,7 @@ export default {
       if (e.keyCode === 13) {
         if (barcode.length > 10) {
           this.searchText = barcode;
-          if(this.filtereditemarray.length === 1){
+          if (this.filtereditemarray.length === 1) {
             const item = this.filtereditemarray[0];
             this.addItemToCart(item);
             $("#pos-tab").tab('show');
@@ -2098,7 +2177,7 @@ export default {
         }, 200);  //200 works fine for me but you can adjust it
       }
     });
-    
+
     document.addEventListener('keydown', this.handleKeyPress);
     this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
     //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
@@ -2181,5 +2260,4 @@ dd {
 
 .text-medium {
   font-size: 16px;
-}
-</style>
+}</style>
