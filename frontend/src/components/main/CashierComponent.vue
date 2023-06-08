@@ -230,7 +230,8 @@
               </li>
             </ul>
 
-            <div class="tab-content" id="myTabContent" :style="`height: ${(userdata.role === 'waiter')?370:462}px; overflow-y: auto;`">
+            <div class="tab-content" id="myTabContent"
+              :style="`height: ${(userdata.role === 'waiter') ? 370 : 462}px; overflow-y: auto;`">
               <div class="tab-pane fade show active" id="alltab" role="tabpanel" aria-labelledby="all-tab">
                 <div class="container-fluid">
                   <div class="row">
@@ -344,65 +345,74 @@
 
 
 
-            <div class="row mt-3 d-flex flex-row-reverse" >
-              
-              <button :disabled="(cartItems.length < 1)"
-                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="printBill">
+            <div class="row mt-3">
+
+              <button :disabled="(cartItems.length < 1)" class="btn btn-outline-primary btn-block btn-box btn-gap"
+                @click="printBill">
                 <span class="text-medium">[F1]</span><br>
                 Print
               </button>
-              <span style="width: 10px;"></span>
-              <button :disabled="(cartItems.length < 1)"
-                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="placeOrder">
+
+              <button :disabled="(cartItems.length < 1)" class="btn btn-outline-primary btn-block btn-box btn-gap"
+                @click="placeOrder">
                 <span class="text-medium">[F2]</span><br>
                 Save
               </button>
-              <span style="width: 10px;"></span>
+
               <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
-                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="payOrder">
+                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="payOrder">
                 <span class="text-medium">[F3]</span><br>
                 Charge
               </button>
-              <span style="width: 10px;"></span>
+
               <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
-                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="setQty">
+                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="setQty">
                 <span class="text-medium">[F4]</span><br>
                 Qty
               </button>
-              <span style="width: 10px;"></span>
-              <button class="btn btn-outline-dark btn-block btn-box btn-gap" v-if="userdata.role !== 'waiter'"
+
+              <button class="btn btn-outline-primary btn-block btn-box btn-gap" v-if="userdata.role !== 'waiter'"
                 @click="setDiscount">
                 <span class="text-medium">[F5]</span><br>
                 Discount
               </button>
-              <span style="width: 10px;"></span>
-              <button class="btn btn-outline-dark btn-block btn-box btn-gap" v-if="userdata.role !== 'waiter'"
+
+              <button class="btn btn-outline-primary btn-block btn-box btn-gap" v-if="userdata.role !== 'waiter'"
                 @click="setTax">
                 <span class="text-medium">[F6]</span><br>
                 Tax
               </button>
-              <span style="width: 10px;"></span>
+
               <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
-                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="holdCustomer">
+                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="holdCustomer">
                 <span class="text-medium">[F7]</span><br>
                 Hold
               </button>
-              <span style="width: 10px;"></span>
-              <button disabled v-if="userdata.role !== 'waiter'"
-                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="">
+
+              <button disabled v-if="userdata.role !== 'waiter'" class="btn btn-outline-primary btn-block btn-box btn-gap"
+                @click="">
                 <span class="text-medium">[F8]</span><br>
                 Toggle
               </button>
-              <span style="width: 10px;"></span>
-              <button
-                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="findItem">
+
+              <button class="btn btn-outline-primary btn-block btn-box btn-gap" @click="findItem">
                 <span class="text-medium">[F9]</span><br>
-                Find
+                {{ (inquiretoggle) ? 'Clear' : 'Find' }}
               </button>
-              <span style="width: 10px;"></span>
-              <button
-                class="btn btn-outline-dark btn-block btn-box btn-gap" @click="">
+
+              <button class="btn btn-outline-primary btn-block btn-box btn-gap" @click="toggleInquire">
                 <span class="text-medium">[F10]</span><br>
+                {{ (inquiretoggle) ? 'Punch' : 'Inquire' }}
+              </button>
+
+              <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
+                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="voidAction">
+                <span class="text-medium">[F11]</span><br>
+                Void
+              </button>
+
+              <button class="btn btn-outline-primary btn-block btn-box btn-gap" @click="logout">
+                <span class="text-medium">[F12]</span><br>
                 Log Out
               </button>
             </div>
@@ -423,7 +433,7 @@
                         <th scope="col">Qty</th>
                         <th scope="col">Price</th>
                         <th scope="col">
-                          <button v-if="cartItems.length > 0" type="button" @click="clearAll"
+                          <button v-if="cartItems.length > 0 && this.customer.reference_id === null" type="button" @click="clearAll"
                             class="btn btn-sm  btn-danger">
                             <i class="fas fa-trash-alt"></i>
                           </button>
@@ -459,7 +469,7 @@
                           <strong>₱{{ item.totalPrice.toFixed(2) }}</strong>
                         </td>
                         <td>
-                          <button class="btn btn-outline-danger btn-sm" type="button" @click="removeFromCart(item)">
+                          <button v-if="this.customer.reference_id === null" class="btn btn-outline-danger btn-sm" type="button" @click="removeFromCart(item)">
                             <i class="fas fa-times"></i>
                           </button>
                         </td>
@@ -504,8 +514,7 @@
               </div>
             </div> <!-- box.// -->
             <div class="box mt-2" v-if="userdata.role !== 'waiter'">
-              <div class="row bg-primary text-white d-flex flex-row-reverse align-items-center"
-                >
+              <div class="row bg-primary text-white d-flex flex-row-reverse align-items-center">
                 <div class="col-md-6">
                   <div class="input-group">
                     <span class="input-group-text bg-primary text-white "
@@ -846,6 +855,7 @@ export default {
   data() {
     return {
       currentItem: null,
+      inquiretoggle: false,
       restypeFilter: "0",
       resdateFilter: "any",
       resfromDate: null,
@@ -858,6 +868,7 @@ export default {
         items: [],
       },
       orderStaus: false,
+      barcodeText: "",
       searchText: "",
       isUpdatingInventory: false,
       stock: {
@@ -1301,7 +1312,9 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           const inputValue = result.value;
-          this.discountValue = parseFloat(inputValue).toFixed(2);
+          if (inputValue !== "") {
+            this.discountValue = parseFloat(inputValue).toFixed(2);
+          }
         }
       });
     },
@@ -1322,7 +1335,9 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           const inputValue = result.value;
-          this.taxValue = parseFloat(inputValue).toFixed(2);
+          if (inputValue !== "") {
+            this.taxValue = parseFloat(inputValue).toFixed(2);
+          }
         }
       });
     },
@@ -1341,7 +1356,9 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           const inputValue = result.value;
-          this.increaseQty(this.currentItem, inputValue)
+          if (inputValue !== "") {
+            this.increaseQty(this.currentItem, inputValue)
+          }
         }
       });
     },
@@ -1414,6 +1431,65 @@ export default {
           }).then(response => {
             this.getRestoTakeout();
           })
+        }
+      });
+    },
+    voidAction() {
+      this.$swal.fire({
+        title: 'Void',
+        text: 'Are you sure you want to void this order?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Void',
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const customer = this.customer;
+          const customer_id = customer.reference_id;
+          const customer_type = customer.type;
+          const customer_name = customer.identifier;
+          const customer_orderId = customer.order_id || -1;
+          if (customer_id !== null) {
+            const res = await axios.post(`${this.API_URL}restoorders/filter/`, { columnName: 'id', columnKey: customer_orderId });
+            const existingOrder = res.data;
+            axios
+              .put(`${this.API_URL}restoorders/${existingOrder[0].id}/`, {
+                order_type: customer_type,
+                table_id: customer_id,
+                customer_name: customer_name,
+                status: 'void',
+                items: JSON.stringify(this.cartItems),
+                processedBy: this.userdata.fName + " " + this.userdata.lName,
+              })
+              for (const item of this.cartItems) {
+                const items = item.inventory;
+                items.push({ "type": "stockin", "qty": parseFloat(item.qty), "stocks": parseFloat(item.stocks), "date_created": formatDate(new Date()), "processedBy": (this.userdata.fName + " " + this.userdata.lName).toString() });
+                const inventory = JSON.stringify(items);
+                axios
+                  .put(`${this.API_URL}restoitem/${item.id}/`, {
+                    sku: item.sku,
+                    name: item.name,
+                    description: item.description,
+                    imageUrl: item.image,
+                    category: item.category,
+                    price: item.price,
+                    inventory: inventory,
+                    isAvailable: item.isAvailable,
+                    stocks: parseFloat(item.stocks),
+                  });
+              }
+              this.taskRecord(`action:/voidorder/${customer_orderId}`);
+              this.$swal({
+                title: 'Success',
+                icon: "success",
+                title: "Order voided successfully!"
+              }).then((result) => {
+                document.location.reload();
+              });
+          }
         }
       });
     },
@@ -2074,7 +2150,7 @@ export default {
           break;
         case 'F4':
           event.preventDefault()
-          if (this.userdata.role !== 'waiter')
+          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
             this.setQty();
           break;
         case 'F5':
@@ -2096,18 +2172,33 @@ export default {
           event.preventDefault()
           if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
             //toggle drawer
-          break;   
+            break;
         case 'F9':
           event.preventDefault()
           this.findItem();
-          break;     
+          break;
         case 'F10':
           event.preventDefault()
-            this.logout();
-          break;     
+          if (this.userdata.role !== 'waiter')
+            this.toggleInquire();
+          break;
+        case 'F11':
+          event.preventDefault()
+          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
+            this.voidAction();
+          break;
+        case 'F12':
+          event.preventDefault()
+          this.logout();
+          break;
         default:
           break;
       }
+    },
+    toggleInquire() {
+      this.barcodeText = "";
+      this.searchText = "";
+      this.inquiretoggle = !this.inquiretoggle;
     },
     async taskRecord(msg) {
       this.socket.send(JSON.stringify({
@@ -2122,31 +2213,34 @@ export default {
 
       }
     },
-    findItem(){
-      this.$refs.myInput.focus()
+    findItem() {
+      this.$refs.myInput.focus();
+      this.searchText = "";
+      this.inquiretoggle = false;
     },
-    async logout(){
+    async logout() {
       const authStore = useAuthStore();
-            const user = {
-                username: authStore.user.username,
-                FirstName: authStore.user.fName,
-                LastName: authStore.user.lName,
-                role: authStore.user.role,
-                route: authStore.user.route,
-            }
-            const response = await axios.put(`${this.API_URL}users/${authStore.user.id}/`, { ...user, isActive: false })
-            if (response.data !== undefined) {
-                authStore.logout();
-                this.$router.push('/');
-            } else {
-                this.$swal({
-                    icon: "error",
-                    title: "Logout error. Please contact your admin for assistance!"
-                });
-            }
+      const user = {
+        username: authStore.user.username,
+        FirstName: authStore.user.fName,
+        LastName: authStore.user.lName,
+        role: authStore.user.role,
+        route: authStore.user.route,
+      }
+      const response = await axios.put(`${this.API_URL}users/${authStore.user.id}/`, { ...user, isActive: false })
+      if (response.data !== undefined) {
+        authStore.logout();
+        this.$router.push('/');
+      } else {
+        this.$swal({
+          icon: "error",
+          title: "Logout error. Please contact your admin for assistance!"
+        });
+      }
     }
   },
   mounted() {
+
     let barcode = "";
     let reading = false;
 
@@ -2154,11 +2248,16 @@ export default {
       //usually barcode scanners throw an 'Enter' key at the end of read
       if (e.keyCode === 13) {
         if (barcode.length > 10) {
-          this.searchText = barcode;
-          if (this.filtereditemarray.length === 1) {
-            const item = this.filtereditemarray[0];
-            this.addItemToCart(item);
-            $("#pos-tab").tab('show');
+          if (!this.inquiretoggle) {
+            this.barcodeText = barcode;
+            const itemlist = this.filtereditemarray.filter(item => item.sku.toString().toLowerCase().includes(this.barcodeText));
+            if (itemlist.length === 1) {
+              const item = itemlist[0];
+              this.addItemToCart(item);
+              $("#pos-tab").tab('show');
+            }
+          } else {
+            this.searchText = barcode;
           }
           /// code ready to use                
           barcode = "";
@@ -2173,7 +2272,7 @@ export default {
         setTimeout(() => {
           barcode = "";
           reading = false;
-          this.searchText = "";
+          this.barcodeText = "";
         }, 200);  //200 works fine for me but you can adjust it
       }
     });
@@ -2256,8 +2355,15 @@ dd {
   border-radius: 5%;
   width: 75px;
   height: 75px;
+  font-size: small;
+}
+
+.btn-gap {
+  margin-right: 5px;
+  /* Adjust the value to increase or decrease the gap between buttons */
 }
 
 .text-medium {
   font-size: 16px;
-}</style>
+}
+</style>
