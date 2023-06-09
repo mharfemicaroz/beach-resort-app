@@ -433,8 +433,8 @@
                         <th scope="col">Qty</th>
                         <th scope="col">Price</th>
                         <th scope="col">
-                          <button v-if="cartItems.length > 0 && this.customer.reference_id === null" type="button" @click="clearAll"
-                            class="btn btn-sm  btn-danger">
+                          <button v-if="cartItems.length > 0 && this.customer.reference_id === null" type="button"
+                            @click="clearAll" class="btn btn-sm  btn-danger">
                             <i class="fas fa-trash-alt"></i>
                           </button>
                         </th>
@@ -469,7 +469,8 @@
                           <strong>₱{{ item.totalPrice.toFixed(2) }}</strong>
                         </td>
                         <td>
-                          <button v-if="this.customer.reference_id === null" class="btn btn-outline-danger btn-sm" type="button" @click="removeFromCart(item)">
+                          <button v-if="this.customer.reference_id === null" class="btn btn-outline-danger btn-sm"
+                            type="button" @click="removeFromCart(item)">
                             <i class="fas fa-times"></i>
                           </button>
                         </td>
@@ -583,13 +584,14 @@
                   <div class="col mb-4" v-for="(item, index) in resto_allorders" :key="item.id">
                     <div class="card" style="transition: transform 0.2s ease-in-out;">
                       <div
-                        :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : 'bg-success'}`">
+                        :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : (item.status === 'void' ? 'bg-warning' : 'bg-success')}`">
                         <h5 class="card-title">#{{ Number(item.id).toString().padStart(5, "0") }}</h5>
                         <p class="card-subtitle" style="font-size: 12px;">{{ item.datestarted }}</p>
                       </div>
                       <div class="card-body" style="height: 150px; overflow-y: auto;">
                         <ul style="list-style-type: none; padding-left: 20px;">
-                          {{ item.order_type.toString().toUpperCase() }}/{{ item.customer_name }}
+                          {{ item.order_type.toString().toUpperCase() }}/{{ item.customer_name }} <span
+                            style="font-style: italic;">({{ item.status }})</span>
                           <li v-for="orderItem in item.order_items" :key="orderItem.id"
                             style="font-weight:bold; font-size:16px; padding-left:30px;">
                             {{ orderItem.qty }} &times; {{ orderItem.name }}
@@ -1084,6 +1086,7 @@ export default {
   },
   created() {
     this.loadAlldata();
+    this.loadCookiedata();
   },
   computed: {
     userdata() {
@@ -1238,6 +1241,19 @@ export default {
       this.getAllOrders();
       this.getCurrentOrders();
     },
+    loadCookiedata() {
+      const cookies = document.cookie.split(';'); // Split cookies into an array
+
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim(); // Remove whitespace from the cookie string
+        if (cookie.startsWith('taxValue=')) {
+          const taxValue = cookie.substring('taxValue='.length); // Extract the value
+          this.taxValue = parseFloat(taxValue).toFixed(2);
+          break;
+        }
+      }
+    },
+
     activatePOS() {
       this.$nextTick(() => {
         this.setFocus();
@@ -1337,6 +1353,10 @@ export default {
           const inputValue = result.value;
           if (inputValue !== "") {
             this.taxValue = parseFloat(inputValue).toFixed(2);
+            
+            const expirationDate = new Date();
+            expirationDate.setFullYear(expirationDate.getFullYear() + 30);
+            document.cookie = `taxValue=${this.taxValue}; expires=${expirationDate.toUTCString()}; path=/`;
           }
         }
       });
@@ -1464,31 +1484,31 @@ export default {
                 items: JSON.stringify(this.cartItems),
                 processedBy: this.userdata.fName + " " + this.userdata.lName,
               })
-              for (const item of this.cartItems) {
-                const items = item.inventory;
-                items.push({ "type": "stockin", "qty": parseFloat(item.qty), "stocks": parseFloat(item.stocks), "date_created": formatDate(new Date()), "processedBy": (this.userdata.fName + " " + this.userdata.lName).toString() });
-                const inventory = JSON.stringify(items);
-                axios
-                  .put(`${this.API_URL}restoitem/${item.id}/`, {
-                    sku: item.sku,
-                    name: item.name,
-                    description: item.description,
-                    imageUrl: item.image,
-                    category: item.category,
-                    price: item.price,
-                    inventory: inventory,
-                    isAvailable: item.isAvailable,
-                    stocks: parseFloat(item.stocks),
-                  });
-              }
-              this.taskRecord(`action:/voidorder/${customer_orderId}`);
-              this.$swal({
-                title: 'Success',
-                icon: "success",
-                title: "Order voided successfully!"
-              }).then((result) => {
-                document.location.reload();
-              });
+            for (const item of this.cartItems) {
+              const items = item.inventory;
+              items.push({ "type": "stockin", "qty": parseFloat(item.qty), "stocks": parseFloat(item.stocks), "date_created": formatDate(new Date()), "processedBy": (this.userdata.fName + " " + this.userdata.lName).toString() });
+              const inventory = JSON.stringify(items);
+              axios
+                .put(`${this.API_URL}restoitem/${item.id}/`, {
+                  sku: item.sku,
+                  name: item.name,
+                  description: item.description,
+                  imageUrl: item.image,
+                  category: item.category,
+                  price: item.price,
+                  inventory: inventory,
+                  isAvailable: item.isAvailable,
+                  stocks: parseFloat(item.stocks),
+                });
+            }
+            this.taskRecord(`action:/voidorder/${customer_orderId}`);
+            this.$swal({
+              title: 'Success',
+              icon: "success",
+              title: "Order voided successfully!"
+            }).then((result) => {
+              document.location.reload();
+            });
           }
         }
       });
