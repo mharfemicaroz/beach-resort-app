@@ -383,7 +383,7 @@
                 Tax
               </button>
 
-              <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
+              <button :disabled="(cartItems.length < 1 || customer.reference_id !== null)" v-if="userdata.role !== 'waiter'"
                 class="btn btn-outline-primary btn-block btn-box btn-gap" @click="holdCustomer">
                 <span class="text-medium">[F7]</span><br>
                 Hold
@@ -1266,7 +1266,8 @@ export default {
       this.activeTab = tab
     },
     holdCustomer() {
-      this.$swal.fire({
+      if(this.cartItems.length >= 1 && this.customer.reference_id === null){
+        this.$swal.fire({
         title: 'Enter customer\'s name',
         input: 'text',
         inputPlaceholder: 'Enter customer\'s name',
@@ -1296,6 +1297,7 @@ export default {
           })
         }
       });
+      }
     },
     onholdAction(item) {
       this.customer = {
@@ -1362,6 +1364,9 @@ export default {
       });
     },
     setQty() {
+      if (this.cartItems.length < 1){
+        return;
+      }
       this.$swal.fire({
         title: 'Set quantity value',
         input: 'number',
@@ -1455,6 +1460,9 @@ export default {
       });
     },
     voidAction() {
+      if (this.cartItems.length < 1){
+        return;
+      }
       this.$swal.fire({
         title: 'Void',
         text: 'Are you sure you want to void this order?',
@@ -1542,6 +1550,10 @@ export default {
       $("#pos-tab").tab('show');
     },
     async placeOrder() {
+
+      if (this.cartItems.length < 1){
+        return;
+      }
 
       if (this.customer.reference_id === null) {
         $("#tables-tab").tab('show');
@@ -1718,6 +1730,11 @@ export default {
       }
     },
     async payOrder() {
+
+      if (this.cartItems.length < 1){
+        return;
+      }
+
       if (this.totalCash < this.totalCost) {
         this.$swal({
           title: 'Warning',
@@ -1845,7 +1862,9 @@ export default {
       }
     },
     printBill() {
-      this.printSection();
+      if (this.cartItems.length >= 1){
+        this.printSection();
+      }
     },
     getInventory() {
       axios
@@ -2185,7 +2204,7 @@ export default {
           break;
         case 'F7':
           event.preventDefault()
-          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
+          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.customer.reference_id === null)
             this.holdCustomer();
           break;
         case 'F8':
