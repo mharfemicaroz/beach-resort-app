@@ -348,67 +348,68 @@
             <div class="row mt-3">
 
               <button :disabled="(cartItems.length < 1)" class="btn btn-outline-primary btn-block btn-box btn-gap"
-                @click="printBill">
-                <span class="text-medium">[F1]</span><br>
-                Print
-              </button>
-
-              <button :disabled="(cartItems.length < 1)" class="btn btn-outline-primary btn-block btn-box btn-gap"
                 @click="placeOrder">
-                <span class="text-medium">[F2]</span><br>
+                <span class="text-medium">[F1]</span><br>
                 Save
               </button>
 
               <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
                 class="btn btn-outline-primary btn-block btn-box btn-gap" @click="payOrder">
-                <span class="text-medium">[F3]</span><br>
+                <span class="text-medium">[F2]</span><br>
                 Charge
               </button>
 
               <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
                 class="btn btn-outline-primary btn-block btn-box btn-gap" @click="setQty">
-                <span class="text-medium">[F4]</span><br>
+                <span class="text-medium">[F3]</span><br>
                 Qty
               </button>
 
               <button class="btn btn-outline-primary btn-block btn-box btn-gap" v-if="userdata.role !== 'waiter'"
                 @click="setDiscount">
-                <span class="text-medium">[F5]</span><br>
+                <span class="text-medium">[F4]</span><br>
                 Discount
               </button>
 
               <button class="btn btn-outline-primary btn-block btn-box btn-gap" v-if="userdata.role !== 'waiter'"
                 @click="setTax">
-                <span class="text-medium">[F6]</span><br>
+                <span class="text-medium">[F5]</span><br>
                 Tax
               </button>
 
-              <button :disabled="(cartItems.length < 1 || customer.reference_id !== null)" v-if="userdata.role !== 'waiter'"
-                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="holdCustomer">
-                <span class="text-medium">[F7]</span><br>
+              <button :disabled="(cartItems.length < 1 || customer.reference_id !== null)"
+                v-if="userdata.role !== 'waiter'" class="btn btn-outline-primary btn-block btn-box btn-gap"
+                @click="holdCustomer">
+                <span class="text-medium">[F6]</span><br>
                 Hold
               </button>
 
               <button disabled v-if="userdata.role !== 'waiter'" class="btn btn-outline-primary btn-block btn-box btn-gap"
                 @click="">
-                <span class="text-medium">[F8]</span><br>
+                <span class="text-medium">[F7]</span><br>
                 Toggle
               </button>
 
               <button class="btn btn-outline-primary btn-block btn-box btn-gap" @click="findItem">
-                <span class="text-medium">[F9]</span><br>
+                <span class="text-medium">[F8]</span><br>
                 {{ (inquiretoggle) ? 'Clear' : 'Find' }}
               </button>
 
               <button class="btn btn-outline-primary btn-block btn-box btn-gap" @click="toggleInquire">
-                <span class="text-medium">[F10]</span><br>
+                <span class="text-medium">[F9]</span><br>
                 {{ (inquiretoggle) ? 'Punch' : 'Inquire' }}
               </button>
 
               <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
                 class="btn btn-outline-primary btn-block btn-box btn-gap" @click="voidAction">
-                <span class="text-medium">[F11]</span><br>
+                <span class="text-medium">[F10]</span><br>
                 Void
+              </button>
+
+              <button :disabled="(cartItems.length < 1 || customer.order_id !== undefined)"
+                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="clearAll">
+                <span class="text-medium">[F11]</span><br>
+                Clear
               </button>
 
               <button class="btn btn-outline-primary btn-block btn-box btn-gap" @click="logout">
@@ -433,7 +434,7 @@
                         <th scope="col">Qty</th>
                         <th scope="col">Price</th>
                         <th scope="col">
-                          <button v-if="cartItems.length > 0 && this.customer.reference_id === null" type="button"
+                          <button v-if="cartItems.length > 0 && customer.order_id === undefined" type="button"
                             @click="clearAll" class="btn btn-sm  btn-danger">
                             <i class="fas fa-trash-alt"></i>
                           </button>
@@ -469,7 +470,7 @@
                           <strong>₱{{ item.totalPrice.toFixed(2) }}</strong>
                         </td>
                         <td>
-                          <button v-if="this.customer.reference_id === null" class="btn btn-outline-danger btn-sm"
+                          <button v-if="customer.order_id === undefined" class="btn btn-outline-danger btn-sm"
                             type="button" @click="removeFromCart(item)">
                             <i class="fas fa-times"></i>
                           </button>
@@ -520,7 +521,7 @@
                   <div class="input-group">
                     <span class="input-group-text bg-primary text-white "
                       style="vertical-align: middle;font-weight: bold;border: none; font-size: x-large;">₱</span>
-                    <input :disabled="(cartItems.length < 1)" type="text"
+                    <input :disabled="(cartItems.length < 1)" type="number" min="0" ref="tenderedCash"
                       class="form-control bg-primary text-white rounded-lg px-2 outline-none"
                       style="text-align:right; font-weight: bold; font-size: x-large; border: none;" v-model="totalCash">
                   </div>
@@ -584,11 +585,11 @@
                   <div class="col mb-4" v-for="(item, index) in resto_allorders" :key="item.id">
                     <div class="card" style="transition: transform 0.2s ease-in-out;">
                       <div
-                        :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : (item.status === 'void' ? 'bg-warning' : 'bg-success')}`">
+                        :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : (item.status === 'void' ? 'bg-warning' : (item.status === 'served' ? 'bg-info' : 'bg-success'))}`">
                         <h5 class="card-title">#{{ Number(item.id).toString().padStart(5, "0") }}</h5>
                         <p class="card-subtitle" style="font-size: 12px;">{{ item.datestarted }}</p>
                       </div>
-                      <div class="card-body" style="height: 150px; overflow-y: auto;">
+                      <div class="card-body" style="height: 250px; overflow-y: auto;">
                         <ul style="list-style-type: none; padding-left: 20px;">
                           {{ item.order_type.toString().toUpperCase() }}/{{ item.customer_name }} <span
                             style="font-style: italic;">({{ item.status }})</span>
@@ -598,10 +599,18 @@
                           </li>
                         </ul>
                       </div>
-                      <!-- <div class="card-footer">
-    <button class="btn btn-sm btn-outline-primary">Done</button> &NonBreakingSpace;
-    <button class="btn btn-sm btn-outline-danger">Hold</button>
-  </div> -->
+                      <div class="card-footer d-flex justify-content-between" v-if="item.status === 'progress'">
+                        <span>
+                          <button class="btn btn-sm btn-outline-primary" @click="doneServe(item)">Done</button>
+                          &NonBreakingSpace;
+                          <button class="btn btn-sm btn-outline-danger" @click="toggleTimer(item)">
+                            {{ item.isRunning ? 'Hold' : 'Resume' }}
+                          </button>
+                        </span>
+
+                        <span>{{ item.timePassed }}</span>
+
+                      </div>
                     </div>
 
                   </div>
@@ -768,51 +777,88 @@
   </div>
 
   <div style="display:none;">
-    <div class="container text-center" id="billing-statement">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header text-center">
-              <h4 class="m-0 p-0" style="font-weight: bold;">Waterworld Pantukan</h4>
-              <h6 class="m-0 p-0">Magnaga, Pantukan, Davao de Oro</h6>
-              <h6 class="m-0 p-0" style="font-weight: bold;">Billing Statement Receipt</h6>
-              <p class="m-0 p-0">{{ transactionDate || new Date().toLocaleDateString() }}</p>
-            </div>
-            <div class="card-body">
-              <h5 class="text-center">{{ customerName || "Juan dela Cruz" }}</h5>
-              <table class="table" style="border-style: none; border-width: 0px;">
-                <thead>
-                  <tr>
-                    <th>Item</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, index) in cartItems" :key="index">
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.qty }}</td>
-                    <td>{{ item.price }}</td>
-                    <td>{{ item.totalPrice }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div class="card-footer text-center">
-              <p class="m-0 p-0 d-flex justify-content-end">Subtotal: {{ subTotal }}</p>
-              <p class="m-0 p-0 d-flex justify-content-end">Discount: {{ discountValue }}</p>
-              <p class="m-0 p-0 d-flex justify-content-end">Tax: {{ taxValue }}</p>
-              <p class="m-0 p-0 d-flex justify-content-end">Total: {{ totalCost }}</p>
-              <p class="text-center m-0 p-0">
-                =======================
-              </p>
-              <p>Thank you for your purchase!</p>
-            </div>
-          </div>
-
+    <div class="receipt" id="billing-statement">
+      <div style="text-align: center;">
+        <span style="font-size: 18px; font-weight: bold;">PANTUKAN WATERWORLD RESORT</span><br>
+        <span>8809 MAGNAGA, PANTUKAN</span><br>
+        <span>+63917 102 5273</span>
+      </div>
+      <h2 style="text-align: center;font-size: 14px;">***COPY RECEIPT***</h2>
+      <hr style="border: none; border-top: 1px dashed #000; margin-top: 10px; margin-bottom: 10px;">
+      <div style="display: flex; justify-content: space-between; font-weight: bold;">
+        <div>{{ new Date().toLocaleDateString() }}</div>
+        <div>{{ getTime() }}</div>
+      </div>
+      <hr style="margin-top: 5px; margin-bottom: 5px;">
+      <div style="display: flex; justify-content: space-between;">
+        <div>TRANS#: {{ transactionno }}</div>
+        <div>CUST#: {{ customerno }}</div>
+      </div>
+      <table style="width: 100%; margin-top: 10px;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Item</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in cartItems" :key="index">
+            <td>{{ index + 1 }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ parseFloat(item.price).toFixed(2) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top: 10px;">
+        <table style="width: 100%; margin-top: 10px;">
+          <tr>
+            <td> </td>
+            <td>CASHIER:</td>
+            <td>{{ userdata.username }}</td>
+          </tr>
+          <tr>
+            <td> </td>
+            <td>ORDER ID:</td>
+            <td>{{ (this.customer.order_id === undefined)?'N/A': this.customer.order_type + '/' + this.customer.order_id }}</td>
+          </tr>
+          <tr>
+            <td colspan="3" style="height: 10px;"></td>
+          </tr>
+          <tr>
+            <td> </td>
+            <td>SUBTOTAL:</td>
+            <td>₱{{ subTotal }}</td>
+          </tr>
+          <tr>
+            <td> </td>
+            <td>TAX:</td>
+            <td>₱{{ (parseFloat(taxValue)/100 * parseFloat(subTotal)).toFixed(2) }}</td>
+          </tr>
+          <tr>
+            <td> </td>
+            <td>DISCOUNT:</td>
+            <td>₱{{  (parseFloat(discountValue)/100 * parseFloat(subTotal)).toFixed(2) }}</td>
+          </tr>
+          <tr>
+            <td> </td>
+            <td>TOTAL:</td>
+            <td>₱{{  parseFloat(totalCost).toFixed(2) }}</td>
+          </tr>
+          <tr>
+            <td> </td>
+            <td>Change:</td>
+            <td>₱{{  parseFloat(totalChange).toFixed(2) }}</td>
+          </tr>
+        </table>
+        <div style="text-align: center;">
+          X:_____________________________________
+          <br>
+          SIGNATURE
         </div>
       </div>
+      <h2 style="text-align: center;font-size: 14px;">***COPY RECEIPT***</h2>
+      <p style="text-align: center;">THANK YOU</p>
     </div>
   </div>
 </template>
@@ -1094,6 +1140,16 @@ export default {
       const user = authStore.user;
       return user;
     },
+    getTimePassed() {
+      return function (datestarted) {
+        const startedTime = new Date(datestarted).getTime();
+        const currentTime = new Date().getTime();
+        const timeDiff = currentTime - startedTime;
+        const minutes = Math.floor(timeDiff / (1000 * 60));
+        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      };
+    },
     subTotal() {
       return this.cartItems.reduce((acc, item) => acc + parseFloat(item.totalPrice), 0).toFixed(2);
     },
@@ -1154,7 +1210,15 @@ export default {
       })
     },
     filteredtransactionorders() {
-      return this.resto_allorders;
+      return this.resto_allorders.map(item => {
+        const timePassed = this.getTimePassed(item.datestarted);;
+        const isRunning = (item.status === 'progress') ? true : false;
+        return {
+          ...item,
+          timePassed,
+          isRunning,
+        }
+      });
     },
     filteredresto_onholds() {
       return this.resto_onholds.map(item => {
@@ -1221,6 +1285,16 @@ export default {
       }
       return itemsArray
     },
+    transactionno(){
+      return parseFloat(this.transactions[this.transactions.length - 1].id)+1;
+    },
+    customerno(){
+      const today = new Date().toLocaleDateString();
+      return this.transactions.filter(transaction => {
+        const transactionDate = new Date(transaction.date_created).toLocaleDateString();
+        return transactionDate === today;
+      }).length + 1;
+    },
     filteredTransactions() {
       return this.transactions.map(item => {
         const items = JSON.parse(item.items);
@@ -1253,7 +1327,34 @@ export default {
         }
       }
     },
-
+    getTime() {
+      const date = new Date();
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
+    },
+    toggleTimer(item) {
+      item.isRunning = !item.isRunning;
+    },
+    async doneServe(item) {
+      const customer_id = item.table_id;
+      const customer_type = item.order_type;
+      const customer_name = item.customer_name;
+      const customer_orderId = item.id || -1;
+      if (customer_id !== null) {
+        const res = await axios.post(`${this.API_URL}restoorders/filter/`, { columnName: 'id', columnKey: customer_orderId });
+        const existingOrder = res.data;
+        axios
+          .put(`${this.API_URL}restoorders/${existingOrder[0].id}/`, {
+            order_type: customer_type,
+            table_id: customer_id,
+            customer_name: customer_name,
+            status: 'served',
+            items: JSON.stringify(item.items),
+            processedBy: this.userdata.fName + " " + this.userdata.lName,
+          })
+      }
+    },
     activatePOS() {
       this.$nextTick(() => {
         this.setFocus();
@@ -1261,42 +1362,43 @@ export default {
     },
     setFocus() {
       $("#posTab").focus();
+      this.$refs.tenderedCash.focus();
     },
     setActiveTab(tab) {
       this.activeTab = tab
     },
     holdCustomer() {
-      if(this.cartItems.length >= 1 && this.customer.reference_id === null){
+      if (this.cartItems.length >= 1 && this.customer.reference_id === null) {
         this.$swal.fire({
-        title: 'Enter customer\'s name',
-        input: 'text',
-        inputPlaceholder: 'Enter customer\'s name',
-        inputAttributes: {
-          minlength: 3, // Minimum length of 3 characters
-          maxlength: 24, // Maximum length of 24 characters
-        },
-        showCancelButton: true,
-        confirmButtonText: 'Submit',
-        cancelButtonText: 'Cancel',
-        allowOutsideClick: false,
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const inputValue = result.value;
-          axios.post(`${this.API_URL}restoonholds/`, {
-            name: inputValue,
-            status: "on hold",
-          }).then(response => {
-            const item = response.data;
-            this.getRestoOnholds();
-            this.customer = {
-              reference_id: item.id,
-              type: "on-hold",
-              identifier: item.name,
-            }
-            this.placeOrder();
-          })
-        }
-      });
+          title: 'Enter customer\'s name',
+          input: 'text',
+          inputPlaceholder: 'Enter customer\'s name',
+          inputAttributes: {
+            minlength: 3, // Minimum length of 3 characters
+            maxlength: 24, // Maximum length of 24 characters
+          },
+          showCancelButton: true,
+          confirmButtonText: 'Submit',
+          cancelButtonText: 'Cancel',
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const inputValue = result.value;
+            axios.post(`${this.API_URL}restoonholds/`, {
+              name: inputValue,
+              status: "on hold",
+            }).then(response => {
+              const item = response.data;
+              this.getRestoOnholds();
+              this.customer = {
+                reference_id: item.id,
+                type: "on-hold",
+                identifier: item.name,
+              }
+              this.placeOrder();
+            })
+          }
+        });
       }
     },
     onholdAction(item) {
@@ -1332,6 +1434,7 @@ export default {
           const inputValue = result.value;
           if (inputValue !== "") {
             this.discountValue = parseFloat(inputValue).toFixed(2);
+            this.$refs.tenderedCash.focus();
           }
         }
       });
@@ -1355,16 +1458,17 @@ export default {
           const inputValue = result.value;
           if (inputValue !== "") {
             this.taxValue = parseFloat(inputValue).toFixed(2);
-            
+
             const expirationDate = new Date();
             expirationDate.setFullYear(expirationDate.getFullYear() + 30);
             document.cookie = `taxValue=${this.taxValue}; expires=${expirationDate.toUTCString()}; path=/`;
+            this.$refs.tenderedCash.focus();
           }
         }
       });
     },
     setQty() {
-      if (this.cartItems.length < 1){
+      if (this.cartItems.length < 1) {
         return;
       }
       this.$swal.fire({
@@ -1383,6 +1487,7 @@ export default {
           const inputValue = result.value;
           if (inputValue !== "") {
             this.increaseQty(this.currentItem, inputValue)
+            this.$refs.tenderedCash.focus();
           }
         }
       });
@@ -1460,7 +1565,7 @@ export default {
       });
     },
     voidAction() {
-      if (this.cartItems.length < 1){
+      if (this.cartItems.length < 1) {
         return;
       }
       this.$swal.fire({
@@ -1551,7 +1656,7 @@ export default {
     },
     async placeOrder() {
 
-      if (this.cartItems.length < 1){
+      if (this.cartItems.length < 1) {
         return;
       }
 
@@ -1712,7 +1817,8 @@ export default {
       this.totalCash = isNaN(parseFloat(this.totalCash)) ? 0 : parseFloat(this.totalCash) + d;
     },
     clearAll() {
-      this.customer = {
+      if(this.cartItems.length > 0 && this.customer.order_id === undefined){
+        this.customer = {
         reference_id: null,
         type: '',
         identifier: '',
@@ -1720,7 +1826,8 @@ export default {
         items: [],
       },
         this.cartItems = [];
-      this.totalCash = 0;
+        this.totalCash = 0;
+      }
     },
     resetCounter() {
       this.clearAll();
@@ -1731,7 +1838,7 @@ export default {
     },
     async payOrder() {
 
-      if (this.cartItems.length < 1){
+      if (this.cartItems.length < 1) {
         return;
       }
 
@@ -1847,6 +1954,7 @@ export default {
           })
           .then(response => {
             this.taskRecord(`action:/payorder/posted`);
+            this.printBill();
             this.$swal({
               title: 'Success',
               icon: "success",
@@ -1862,7 +1970,7 @@ export default {
       }
     },
     printBill() {
-      if (this.cartItems.length >= 1){
+      if (this.cartItems.length >= 1) {
         this.printSection();
       }
     },
@@ -1921,14 +2029,18 @@ export default {
         .get(`${this.API_URL}restoorders/`)
         .then(response => {
           this.resto_allorders = response.data.map(item => {
+            const timePassed = this.getTimePassed(item.datestarted);;
+            const isRunning = (item.status === 'progress') ? true : false;
             const order_items = JSON.parse(item.items);
             const items = JSON.parse(item.items);
-            const datestarted = formatDate(new Date(item.date_created));
+            const datestarted = formatDate(new Date(item.date_modified));
             return {
               ...item,
               items,
               datestarted,
               order_items,
+              timePassed,
+              isRunning,
             };
           }).sort((a, b) => {
             const dateA = new Date(a.date_created);
@@ -1956,6 +2068,15 @@ export default {
         .post(`${this.API_URL}restoorders/filter/`, { columnName: 'status', columnKey: 'progress' })
         .then(response => {
           this.resto_order = response.data;
+          axios
+            .post(`${this.API_URL}restoorders/filter/`, { columnName: 'status', columnKey: 'served' })
+            .then(response2 => {
+              // Combine response and response2
+              this.resto_order = [...this.resto_order, ...response2.data];
+            })
+            .catch(error2 => {
+              console.log(error2);
+            });
         })
         .catch(error => {
           console.log(error);
@@ -2102,21 +2223,12 @@ export default {
       item.totalPrice = item.qty * item.price
     },
     printSection() {
-
       // Add Bootstrap stylesheet to the head
       const bootstrapLink = document.createElement('link');
       bootstrapLink.rel = 'stylesheet';
       bootstrapLink.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css';
       document.head.appendChild(bootstrapLink);
 
-      // Create a progress bar element
-      const progressBar = document.createElement('div');
-      progressBar.className = 'progress fixed-top';
-      progressBar.innerHTML = '<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>';
-
-      // Add the progress bar to the body
-      document.body.appendChild(progressBar);
-      progressBar.style.zIndex = 1057;
       // Create the overlay element
       const overlay = document.createElement('div');
       overlay.style.position = 'fixed';
@@ -2129,102 +2241,93 @@ export default {
       overlay.classList.add('overlay');
       document.body.appendChild(overlay);
 
-      // Track the loading progress of the stylesheet
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 50;
-        if (progress >= 100) {
-          clearInterval(interval);
-          // Remove the progress bar
-          document.body.removeChild(progressBar);
-          // Get the dataTable section and create the print window
-          const dataTable = document.getElementById('billing-statement');
-          const printElement = document.createElement('div');
-          printElement.appendChild(dataTable.cloneNode(true));
+      // Get the dataTable section and create the print window
+      const dataTable = document.getElementById('billing-statement');
+      const printElement = document.createElement('div');
+      printElement.appendChild(dataTable.cloneNode(true));
 
-          // Open a new window and write the printElement to it
-          const printWindow = window.open('', 'Print Window');
-          printWindow.document.write('<html><head>');
-          printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">');
-          printWindow.document.write('<style>.no-print{display: none;} @media print{@page {size: auto; margin: 0; padding: 0;} html,body{display: block;margin: 0; padding: 0;} tr{page-break-inside: auto;} .no-print{display: none;}}</style>');
-          printWindow.document.write('</head><body>');
-          printWindow.document.write(printElement.innerHTML);
-          printWindow.document.write('</body></html>');
-          printWindow.document.close();
+      // Open a new window and write the printElement to it
+      const printWindow = window.open('', 'Print Window');
+      printWindow.document.write('<html><head>');
+      // printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">');
+      printWindow.document.write('<style>@media print { body { font-size: 10pt; padding:0; margin: 0cm; padding: 0; width: 58mm; transform: scale(0.97); transform-origin: 0 0; } tr { page-break-inside: auto; } .no-print { display: none; } }</style>');
+      printWindow.document.write('</head><body>');
+      printWindow.document.write(printElement.innerHTML);
+      printWindow.document.write('</body></html>');
+      printWindow.document.close();
 
-          // Print the window and close it after printing
-          printWindow.onload = function () {
-            printWindow.focus();
-            printWindow.print();
-            printWindow.close();
+      // Print the window and close it after printing
+      printWindow.onload = function () {
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
 
-            // Remove the Bootstrap stylesheet from the head
-            document.head.removeChild(bootstrapLink);
-            document.body.removeChild(overlay);
-          };
-        } else {
-          // Update the progress bar
-          const progressBarChild = progressBar.querySelector('.progress-bar');
-          progressBarChild.style.width = `${progress}%`;
-          progressBarChild.setAttribute('aria-valuenow', progress);
-        }
-      }, 200);
+        // Remove the Bootstrap stylesheet from the head
+        document.head.removeChild(bootstrapLink);
+        document.body.removeChild(overlay);
+      };
     },
+
+
     handleKeyPress(event) {
       switch (event.key) {
         case 'F1':
           event.preventDefault()
           if (this.cartItems.length >= 1)
-            this.printBill();
-          break;
-        case 'F2':
-          event.preventDefault()
-          if (this.cartItems.length >= 1)
             this.placeOrder();
           break;
-        case 'F3':
+        case 'F2':
           event.preventDefault()
           if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
             this.payOrder();
           break;
-        case 'F4':
+        case 'F3':
           event.preventDefault()
           if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
             this.setQty();
+            this.$refs.tenderedCash.focus();
+          break;
+        case 'F4':
+          event.preventDefault()
+          if (this.userdata.role !== 'waiter')
+            this.setDiscount();
+            this.$refs.tenderedCash.focus();
           break;
         case 'F5':
           event.preventDefault()
           if (this.userdata.role !== 'waiter')
-            this.setDiscount();
+            this.setTax();
+            this.$refs.tenderedCash.focus();
           break;
         case 'F6':
-          event.preventDefault()
-          if (this.userdata.role !== 'waiter')
-            this.setTax();
-          break;
-        case 'F7':
           event.preventDefault()
           if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.customer.reference_id === null)
             this.holdCustomer();
           break;
-        case 'F8':
+        case 'F7':
           event.preventDefault()
           if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
             //toggle drawer
             break;
-        case 'F9':
+        case 'F8':
           event.preventDefault()
           this.findItem();
           break;
-        case 'F10':
+        case 'F9':
           event.preventDefault()
           if (this.userdata.role !== 'waiter')
             this.toggleInquire();
           break;
-        case 'F11':
+        case 'F10':
           event.preventDefault()
           if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
             this.voidAction();
+          break;
+        case 'F11':
+          event.preventDefault()
+          if (this.cartItems.length > 0 && this.customer.order_id === undefined)
+            this.clearAll();
+            this.$refs.tenderedCash.focus();
           break;
         case 'F12':
           event.preventDefault()
@@ -2294,6 +2397,7 @@ export default {
               const item = itemlist[0];
               this.addItemToCart(item);
               $("#pos-tab").tab('show');
+              this.$refs.tenderedCash.focus();
             }
           } else {
             this.searchText = barcode;
@@ -2315,6 +2419,15 @@ export default {
         }, 200);  //200 works fine for me but you can adjust it
       }
     });
+
+    setInterval(() => {
+      this.resto_allorders.forEach(item => {
+
+        if (item.status === 'progress' && item.isRunning) {
+          item.timePassed = this.getTimePassed(item.datestarted);
+        }
+      });
+    }, 1000);
 
     document.addEventListener('keydown', this.handleKeyPress);
     this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
@@ -2404,5 +2517,11 @@ dd {
 
 .text-medium {
   font-size: 16px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>
