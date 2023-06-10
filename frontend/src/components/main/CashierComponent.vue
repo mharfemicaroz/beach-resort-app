@@ -2398,6 +2398,7 @@ export default {
               this.addItemToCart(item);
               $("#pos-tab").tab('show');
               this.$refs.tenderedCash.focus();
+              this.totalCash = 0;
             }
           } else {
             this.searchText = barcode;
