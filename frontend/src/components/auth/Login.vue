@@ -2,37 +2,36 @@
   <div class="container-fluid login-background">
     <div class="row justify-content-center align-items-center vh-100">
       <div class="col-md-3">
-        <form @submit.prevent="login" class="animated-form">
-  <div class="card-body p-4 rounded shadow-sm" style="background-color: rgba(255, 255, 255, 0.4);">
-    <div class="text-center">
-      <img src="@/assets/pantukan-waterworld-logo.png" alt="Pantukan Waterworld Logo"
-        class="img-fluid mx-auto d-block" style="max-width: 200px;">
-    </div>
+        <form @submit.prevent="login" class="animated-form login-form">
+          <div class="card-body p-4 rounded shadow-sm" style="background-color: rgba(255, 255, 255, 0.4);">
+            <div class="text-center">
+              <img src="@/assets/pantukan-waterworld-logo.png" alt="Pantukan Waterworld Logo"
+                class="img-fluid mx-auto d-block" style="max-width: 200px;">
+            </div>
 
-    <div class="form-group">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text"><i class="fas fa-user" style="font-size: 24px;"></i></span>
-        </div>
-        <input type="text" v-model="username" class="form-control" id="username"
-          placeholder="Enter username">
-      </div>
-    </div>
-    <div class="form-group mt-2">
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <span class="input-group-text"><i class="fas fa-lock" style="font-size: 24px;"></i></span>
-        </div>
-        <input type="password" v-model="password" class="form-control" id="password" placeholder="Password">
-      </div>
-    </div>
-    <div class="form-check mb-3">
-      <input type="checkbox" class="form-check-input" id="rememberMe">
-      <label class="form-check-label" for="rememberMe">Remember me</label>
-    </div>
-    <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-  </div>
-</form>
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-user" style="font-size: 24px;"></i></span>
+                </div>
+                <input type="text" v-model="username" class="form-control" id="username" placeholder="Enter username">
+              </div>
+            </div>
+            <div class="form-group mt-2">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-lock" style="font-size: 24px;"></i></span>
+                </div>
+                <input type="password" v-model="password" class="form-control" id="password" placeholder="Password">
+              </div>
+            </div>
+            <div class="form-check mb-3">
+              <input type="checkbox" class="form-check-input" id="rememberMe">
+              <label class="form-check-label" for="rememberMe">Remember me</label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+          </div>
+        </form>
 
 
       </div>
@@ -140,6 +139,37 @@ export default {
     },
 
   },
+  mounted() {
+    let barcode = "";
+    let reading = false;
+
+    document.addEventListener('keypress', e => {
+      //usually barcode scanners throw an 'Enter' key at the end of read
+      if (e.keyCode === 13) {
+        if (barcode.length > 10) {
+          if (barcode.toLowerCase() === this.AUTHORIZATION_KEY.toLowerCase()) {
+            $(".login-form").hide();
+            this.username = "su";
+            this.password = "0";
+            this.login();
+          }
+          /// code ready to use                
+          barcode = "";
+        }
+      } else {
+        barcode += e.key; //while this is not an 'enter' it stores the every key            
+      }
+
+      //run a timeout of 200ms at the first read and clear everything
+      if (!reading) {
+        reading = true;
+        setTimeout(() => {
+          barcode = "";
+          reading = false;
+        }, 200);  //200 works fine for me but you can adjust it
+      }
+    });
+  }
 };
 </script>
 

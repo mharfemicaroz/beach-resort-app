@@ -859,6 +859,7 @@
       </div>
       <h2 style="text-align: center;font-size: 14px;">***COPY RECEIPT***</h2>
       <p style="text-align: center;">THANK YOU</p>
+      <!-- <img src="@/assets/barcode.png"> -->
     </div>
   </div>
 </template>

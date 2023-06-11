@@ -20,7 +20,10 @@
                     </button>
 
                 </p>
-                <p class="mb-0 no-print">Search: <input type="text" class="form-input mt-2" v-model="searchText"></p>
+                <div class="form-outline col-md-3 mb-0 no-print">
+                  <input type="search" class="form-control" placeholder="Type query" v-model="searchText"
+                    aria-label="Search" autocomplete="off" aria-autocomplete="off" />
+                </div>
             </div>
 
             <table class="table" v-bind:id="uniqueID" style="table-layout: fixed; width: 100%">

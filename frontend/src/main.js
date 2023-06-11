@@ -13,8 +13,9 @@ moment.tz.setDefault('Asia/Hongkong')
 const app = createApp(App);
 
 app.config.globalProperties = {
-    //API_URL: `http://${window.location.hostname}:8081/`
-    API_URL : "http://192.168.1.222:8081/"
+    AUTHORIZATION_KEY: '7A8B2C1D9E4F3G6H5I0J7K8L',
+    API_URL: `http://${window.location.hostname}:8081/`
+    //API_URL : "http://192.168.1.222:8081/"
 }
 //6bv7mi88
 app.use(router);

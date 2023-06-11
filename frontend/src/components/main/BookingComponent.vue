@@ -46,8 +46,24 @@
           <div class="row">
 
             <div class="col-md-12">
-              <h2>Calendar <a href="#" class="btn btn-link text-decoration-none" @click="toggleSettingsModal()"><i
-                    class="fa fa-bars" style="font-size: 1.25em;"></i></a></h2>
+              <div class="d-flex justify-content-between">
+                <h2>Calendar <a href="#" class="btn btn-link text-decoration-none" @click="toggleSettingsModal()"><i
+                      class="fa fa-bars" style="font-size: 1.25em;"></i></a></h2>
+
+
+                <div class="form-outline col-md-3">
+                  <input type="search" id="form1" class="form-control" placeholder="Type query" v-model="booksearchtext"
+                    @input="populateCalendarItems" @click="showAutosuggestions = false" @blur="hideAutosuggestions"
+                    aria-label="Search" ref="searchQuery" autocomplete="off" aria-autocomplete="off" />
+                  <ul class="autosuggestions" v-if="!showAutosuggestions">
+                    <li v-for="suggestion in autosuggestions" @click="selectSuggestion(suggestion)">{{ suggestion }}</li>
+                  </ul>
+                </div>
+
+
+              </div>
+
+
 
 
               <div class="calendar-parent">
@@ -606,7 +622,8 @@
                       <td>{{ item.purqty }}</td>
                       <td v-if="item.itemOption !== 'room'">{{ item.totalCartPrice }}</td>
                       <td v-else>
-                        <span v-if="!isNaN(subroom.discountValue)" v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode==='percentage')?subroom.discountValue+'%':(subroom.discountValue/3).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${ (subroom.discountMode === 'percentage')? item.totalCartPrice * (1 - parseFloat(subroom.discountValue/100)) : item.totalCartPrice - (subroom.discountValue/3).toFixed(2)}</span>`"></span>
+                        <span v-if="!isNaN(subroom.discountValue)"
+                          v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode === 'percentage') ? subroom.discountValue + '%' : (subroom.discountValue / 3).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${(subroom.discountMode === 'percentage') ? item.totalCartPrice * (1 - parseFloat(subroom.discountValue / 100)) : item.totalCartPrice - (subroom.discountValue / 3).toFixed(2)}</span>`"></span>
                         <span v-else v-html="`${item.totalCartPrice}`"></span>
                       </td>
                     </tr>
@@ -1298,8 +1315,8 @@
 
                 <button v-else-if="this.reservation.status == 'vacant'" type="submit" class="btn btn-primary">Book
                   Now</button> &nbsp;
-                <button v-if="userdata.role === 'superuser' && this.reservation.status !== 'vacant'" type="button" @click="voidBook()"
-                  class="btn btn-danger">Void</button> &nbsp;
+                <button v-if="userdata.role !== 'reservationist' && this.reservation.status !== 'vacant'" type="button"
+                  @click="voidBook()" class="btn btn-danger">Void</button> &nbsp;
                 &nbsp;<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
@@ -1707,7 +1724,10 @@ export default {
       useDefaultTheme: true,
       useHolidayTheme: true,
       useTodayIcons: false,
-      bookings: [],
+      booksearchtext: "",
+      autosuggestions: [],
+      showAutosuggestions: false,
+      origbookings: [],
       calendarItems: [
         /*{
             id: id,
@@ -2035,7 +2055,7 @@ export default {
       const discountAmount = this.discountMode === 'percentage' ? `${this.discountValue}%` : `₱${this.discountValue}`;
       const formattedOriginalPrice = `<del class="text-danger">${originalPrice}</del>`;
       const formattedDiscountedPrice = `<sup class="text-danger font-weight-bold">${discountAmount} off</sup> <span class="text-success font-weight-bold">${discountedPrice}</span>`;
-      return { original: formattedOriginalPrice, discounted: formattedDiscountedPrice, discountMode: this.discountMode, discountValue: this.discountValue  };
+      return { original: formattedOriginalPrice, discounted: formattedDiscountedPrice, discountMode: this.discountMode, discountValue: this.discountValue };
     },
     subaddons() {
       return this.cart.filter(item => item.category === 'main' && item.itemOption === 'addons').reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
@@ -2084,6 +2104,19 @@ export default {
         };
       }).filter(item => item.category === 'inclusion');
     },
+    bookings() {
+      return this.origbookings
+        .map(book => {
+          const { name, room_name, status, isPaid } = book;
+          const paymentStatus = isPaid === 'yes' ? 'fully-paid' : isPaid === 'no' ? 'not paid' : 'partial';
+          const searchCode = `${name}~${room_name}~${status}~${paymentStatus}`;
+          return {
+            ...book,
+            searchCode,
+          };
+        })
+        .filter(book => book.searchCode.toLowerCase().includes(this.booksearchtext.toLowerCase()));
+    },
     roomStatus() {
       return this.rooms.map(room => {
         const isVacant = this.vacantRoom(room.name);
@@ -2116,6 +2149,7 @@ export default {
   },
   methods: {
     async voidBook() {
+      this.toggleItemModal();
       const item = this.bookings[this.itemIndex];
       const bookID = item.id;
       const bookKey = item.itemID;
@@ -2123,177 +2157,210 @@ export default {
       let transdata_ID = null;
       let transdata_gkey = null;
 
-      const confirmMessage = ' If you proceed with voiding, all associated items and transaction records will be permanently deleted, and this action cannot be reversed.';
-      const result = await this.$swal.fire({
-        title: 'Are you sure you want to void this?',
-        text: confirmMessage,
-        icon: 'warning',
+      this.$swal.fire({
+        title: 'Authorization Required',
+        input: 'text',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, void it!',
-        cancelButtonText: 'Cancel'
+        allowOutsideClick: false,
+        inputAttributes: {
+          minlength: 6, // Minimum length of 3 characters
+          maxlength: 24, // Maximum length of 24 characters
+          autocomplete: "off",
+          style: "text-security:disc; -webkit-text-security:disc;"
+        },
+        confirmButtonText: 'Submit',
+        cancelButtonText: 'Cancel',
+        inputPlaceholder: 'Enter authorization code',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const authorizationCode = result.value;
+          // Validate the authorization code and perform necessary actions
+          if (authorizationCode.toLowerCase() === this.AUTHORIZATION_KEY.toLowerCase()) {
+            // Code is correct, proceed with the desired action
+            const confirmMessage = ' If you proceed with voiding, all associated items and transaction records will be permanently deleted, and this action cannot be reversed.';
+            const result = await this.$swal.fire({
+              title: 'Are you sure you want to void this?',
+              text: confirmMessage,
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, void it!',
+              cancelButtonText: 'Cancel'
+            });
+            if (result.isConfirmed) {
+              const countdownMessage = 'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
+              let countdownResult;
+              countdownResult = await this.$swal.fire({
+                title: 'Please wait',
+                html: countdownMessage,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirm now',
+                cancelButtonText: 'Cancel',
+                didOpen: () => {
+                  const countdownEl = document.querySelector('#countdown');
+                  let count = 5;
+                  const timerId = setInterval(() => {
+                    countdownEl.textContent = count;
+                    count--;
+                    if (count < 0) {
+                      clearInterval(timerId);
+                      this.$swal.close();
+                    }
+                  }, 1000);
+                }
+              });
+
+              if (!countdownResult.isConfirmed) {
+                return;
+              }
+
+              if (groupkey) {
+
+                try {
+                  const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+                    columnName: 'groupkey',
+                    columnKey: groupkey
+                  });
+                  transdata_ID = existingTransaction.data[0].id;
+                } catch (error) {
+
+                }
+
+                try {
+                  const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+                    columnName: 'groupkey',
+                    columnKey: groupkey
+                  });
+
+                  for (const item of existingTransaction_ITEM.data) {
+                    axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
+                  }
+                } catch (error) {
+
+                }
+
+                try {
+                  if (transdata_ID) {
+                    const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
+                      columnName: 'transaction',
+                      columnKey: transdata_ID
+                    });
+
+                    for (const item of existingTransaction_RECORD.data) {
+                      axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
+                    }
+                  }
+
+                } catch (error) {
+
+                }
+
+                try {
+                  if (transdata_ID) {
+                    axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
+                  }
+
+                } catch (error) {
+
+                }
+
+                try {
+                  const existingBooking = await axios.post(`${this.API_URL}bookings/filter/`, {
+                    columnName: 'groupkey',
+                    columnKey: groupkey
+                  });
+                  for (const item of existingBooking.data) {
+                    axios.get(this.API_URL + `bookings/delete/${item.id}/`);
+                  }
+                } catch (error) {
+
+                }
+
+
+              } else {
+
+                try {
+                  const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+                    columnName: 'bookingID',
+                    columnKey: bookKey
+                  });
+                  transdata_ID = existingTransaction.data[0].id;
+                } catch (error) {
+
+                }
+
+                try {
+                  const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+                    columnName: 'bookingID',
+                    columnKey: bookKey
+                  });
+
+                  for (const item of existingTransaction_ITEM.data) {
+                    axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
+                  }
+                } catch (error) {
+
+                }
+
+                try {
+                  if (transdata_ID) {
+                    const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
+                      columnName: 'transaction',
+                      columnKey: transdata_ID
+                    });
+
+                    for (const item of existingTransaction_RECORD.data) {
+                      axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
+                    }
+                  }
+
+                } catch (error) {
+
+                }
+
+                try {
+                  if (transdata_ID) {
+                    axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
+                  }
+
+                } catch (error) {
+
+                }
+
+                try {
+                  await axios.get(this.API_URL + `bookings/delete/${bookID}/`)
+                } catch (error) {
+
+                }
+
+              }
+              this.taskRecord(`action:/void/client:/${item.name}`);
+              await this.$swal.fire({
+                title: 'Success',
+                text: 'Item was voided successfully!',
+                icon: 'success'
+              }).then(response => {
+                document.location.reload();
+              })
+
+            }
+
+          } else {
+            // Code is incorrect, show an error message or take appropriate action
+            this.$swal.fire({
+              icon: 'error',
+              title: 'Incorrect Passcode',
+              text: 'The entered passcode is incorrect. Please try again.',
+              allowOutsideClick: false,
+            });
+          }
+        }
       });
-      if (result.isConfirmed) {
-        const countdownMessage = 'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
-        let countdownResult;
-        countdownResult = await this.$swal.fire({
-          title: 'Please wait',
-          html: countdownMessage,
-          icon: 'info',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Confirm now',
-          cancelButtonText: 'Cancel',
-          didOpen: () => {
-            const countdownEl = document.querySelector('#countdown');
-            let count = 5;
-            const timerId = setInterval(() => {
-              countdownEl.textContent = count;
-              count--;
-              if (count < 0) {
-                clearInterval(timerId);
-                this.$swal.close();
-              }
-            }, 1000);
-          }
-        });
 
-        if (!countdownResult.isConfirmed) {
-          return;
-        }
-
-        if (groupkey) {
-
-          try {
-            const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-              columnName: 'groupkey',
-              columnKey: groupkey
-            });
-            transdata_ID = existingTransaction.data[0].id;
-          } catch (error) {
-
-          }
-
-          try {
-            const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-              columnName: 'groupkey',
-              columnKey: groupkey
-            });
-
-            for (const item of existingTransaction_ITEM.data) {
-              axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
-            }
-          } catch (error) {
-
-          }
-
-          try {
-            if (transdata_ID) {
-              const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
-                columnName: 'transaction',
-                columnKey: transdata_ID
-              });
-
-              for (const item of existingTransaction_RECORD.data) {
-                axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
-              }
-            }
-
-          } catch (error) {
-
-          }
-
-          try {
-            if (transdata_ID) {
-              axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
-            }
-
-          } catch (error) {
-
-          }
-
-          try {
-            const existingBooking = await axios.post(`${this.API_URL}bookings/filter/`, {
-              columnName: 'groupkey',
-              columnKey: groupkey
-            });
-            for (const item of existingBooking.data) {
-              axios.get(this.API_URL + `bookings/delete/${item.id}/`);
-            }
-          } catch (error) {
-
-          }
-
-
-        } else {
-
-          try {
-            const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-              columnName: 'bookingID',
-              columnKey: bookKey
-            });
-            transdata_ID = existingTransaction.data[0].id;
-          } catch (error) {
-
-          }
-
-          try {
-            const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-              columnName: 'bookingID',
-              columnKey: bookKey
-            });
-
-            for (const item of existingTransaction_ITEM.data) {
-              axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
-            }
-          } catch (error) {
-
-          }
-
-          try {
-            if (transdata_ID) {
-              const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
-                columnName: 'transaction',
-                columnKey: transdata_ID
-              });
-
-              for (const item of existingTransaction_RECORD.data) {
-                axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
-              }
-            }
-
-          } catch (error) {
-
-          }
-
-          try {
-            if (transdata_ID) {
-              axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
-            }
-
-          } catch (error) {
-
-          }
-
-          try {
-            await axios.get(this.API_URL + `bookings/delete/${bookID}/`)
-          } catch (error) {
-
-          }
-
-        }
-        this.taskRecord(`action:/void/client:/${item.name}`);
-        await this.$swal.fire({
-          title: 'Success',
-          text: 'Item was voided successfully!',
-          icon: 'success'
-        }).then(response => {
-          document.location.reload();
-        })
-
-      }
     },
     async taskRecord(msg) {
       this.socket.send(JSON.stringify({
@@ -2569,7 +2636,10 @@ export default {
       this.alreadyDiscounted = false;
       this.itemIndex = -1;
       this.walkinStatus = false;
-
+      if(no === 1){
+        this.$refs.searchQuery.focus();
+        this.$refs.searchQuery.blur();
+      }
       if (no === 2 && this.billing.clientName === "") {
         this.toggleAddAccountModal();
       }
@@ -3632,6 +3702,30 @@ export default {
 
         return { startDate, endDate, title, id, classes, tooltip };
       });
+
+      let suggestionsArray = this.rooms.map(room => room.name);
+      const roomStatus = ["cancelled","reserved","checkedin","checkedout"];
+      suggestionsArray = roomStatus.concat(suggestionsArray);
+
+      // Filter the suggestions based on the search text
+      this.autosuggestions = suggestionsArray.filter(suggestion =>
+        suggestion.toLowerCase().includes(this.booksearchtext.toLowerCase())
+      );
+
+      this.autosuggestions = this.autosuggestions.slice(0, 15);
+
+      // this.showAutosuggestions = true;
+    },
+    selectSuggestion(suggestion) {
+      this.booksearchtext = suggestion;
+      this.showAutosuggestions = false;
+      this.populateCalendarItems();
+    },
+    hideAutosuggestions() {
+      // Delay hiding the autosuggestions to allow the click on the suggestion to trigger before hiding
+      setTimeout(() => {
+        this.showAutosuggestions = true;
+      }, 200);
     },
     generateUniqueString() {
       let randomString = '';
@@ -4265,7 +4359,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
         */
 
         const reservationsResponse = await axios.get(this.API_URL + "bookings/");
-        this.bookings = reservationsResponse.data;
+        this.origbookings = reservationsResponse.data;
         this.populateCalendarItems()
       } catch (error) {
         console.log(error);
@@ -4553,6 +4647,8 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
   },
 
   async mounted() {
+    this.$refs.searchQuery.focus();
+    this.$refs.searchQuery.blur();
 
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
@@ -4805,6 +4901,25 @@ img {
 .loading-text {
   margin-top: 10px;
   /* Adjust the margin as needed */
+}
+
+.autosuggestions {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: white;
+  border: 1px solid #ccc;
+  position: absolute;
+  z-index: 9999;
+}
+
+.autosuggestions li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.autosuggestions li:hover {
+  background-color: #f2f2f2;
 }
 </style>
 
