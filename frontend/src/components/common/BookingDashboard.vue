@@ -377,7 +377,7 @@ export default {
                 }, 0);
 
                 this.pie1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
-                this.pie2Datasets(transactionRecordsData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')));
+                this.pie2Datasets(transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')));
                 this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
                 this.bar2Datasets(transactionItemsData.data);
                 this.line1Datasets(bookingData.data);
