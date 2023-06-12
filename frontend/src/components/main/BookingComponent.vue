@@ -2488,7 +2488,7 @@ export default {
       this.walkinStatus = true;
       try {
         const response = await axios.get(this.API_URL + 'transaction/');
-        this.billing.bookingID = response.data.length + 1;
+        this.billing.bookingID = response.data[response.data.length - 1].id + 1;
       } catch {
 
       }
@@ -2794,7 +2794,7 @@ export default {
       this.billing.clientEmail = item.clientemail;
       this.billing.clientNationality = item.clientnationality;
       this.billing.clientType = item.clientType;
-      this.billing.bookingID = item.id;
+      this.billing.bookingID = existingTransaction.data[0].id;
 
       try {
         this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
@@ -3046,7 +3046,7 @@ export default {
       this.billing.clientEmail = item.clientemail;
       this.billing.clientNationality = item.clientnationality;
       this.billing.clientType = item.clientType;
-      this.billing.bookingID = item.id;
+      this.billing.bookingID = existingTransaction.data[0].id;
 
       try {
         this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
