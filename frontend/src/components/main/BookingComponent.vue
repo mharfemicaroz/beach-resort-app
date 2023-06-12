@@ -4292,6 +4292,7 @@ export default {
             }
             this.taskRecord(`action:/transaction added/client:/${this.billing.clientName}`)
             this.walkinStatus = false;
+            this.generateBillingStatement();
             await this.$swal.fire({
               title: 'Success',
               text: 'Transaction saved successfully!',
@@ -4333,7 +4334,12 @@ export default {
       const options = "height=500,width=800,scrollbars=no,status=no,toolbar=no,location=no";
       const newWindow = window.open("", "_blank", options);
       newWindow.document.write(html);
-
+      newWindow.document.close();
+      newWindow.onload = function () {
+        newWindow.focus();
+        newWindow.print();
+        newWindow.close();
+      };
     },
     async generateBillingStatement() {
       // const response = await axios.get(this.API_URL + "transaction/");
