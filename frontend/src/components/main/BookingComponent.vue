@@ -3517,12 +3517,29 @@ export default {
       this.toggleShowAllModal();
     },
     onClickDay(d) {
+      if(this.booksearchtext !== ""){
+        this.$swal.fire({
+          icon: 'error',
+          title: 'Calendar Day Selection Restricted',
+          text: 'Unable to select a day on the calendar when the search query is not empty.',
+          confirmButtonText: 'OK'
+        });        
+        return;
+      }
       this.dayreserve = d;
       this.roomSelect = "ok";
       this.toggledayMenuModal();
     },
     onClickItem(e) {
-
+      if(this.booksearchtext !== ""){
+        this.$swal.fire({
+          icon: 'error',
+          title: 'Calendar Item Selection Restricted',
+          text: 'Unable to select an item on the calendar when the search query is not empty.',
+          confirmButtonText: 'OK'
+        }); 
+        return;
+      }
       this.itemIndex = this.bookings.findIndex(
         o => o.itemID === e.id
       );
