@@ -578,7 +578,7 @@
           <div class="col-12">
             <div class="row justify-content-between" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
               <div class="col-4">
-                <img src="http://localhost:5173/src/assets/pantukan-waterworld-logo.jpg" width="60" height="60"
+                <img src="@/assets/pantukan-waterworld-logo.jpg" width="60" height="60"
                   alt="Company Logo" class="logo">
               </div>
               <div class="col-4 text-right">
