@@ -136,7 +136,11 @@ def get_transactions_with_items(request):
     for transaction in transaction_data:
         booking_id = transaction['bookingID']
         trans_id = transaction['id']
-        items = TransactionItem.objects.filter(bookingID=booking_id)
+        trans_gkey = transaction['groupkey']
+        if trans_gkey is None:
+            items = TransactionItem.objects.filter(bookingID=booking_id)
+        else:
+            items = TransactionItem.objects.filter(groupkey=trans_gkey)
         items2 = TransactionRecord.objects.filter(transaction=trans_id)
         items_data = TransactionItemSerializer(items, many=True).data
         items2_data = TransactionRecordSerializer(items2, many=True).data

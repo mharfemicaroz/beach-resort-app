@@ -2794,7 +2794,11 @@ export default {
       this.billing.clientEmail = item.clientemail;
       this.billing.clientNationality = item.clientnationality;
       this.billing.clientType = item.clientType;
-      this.billing.bookingID = existingTransaction.data[0].id;
+      if (existingTransaction.data[0] !== undefined) {
+        this.billing.bookingID = existingTransaction.data[0].id;
+      } else {
+        this.billing.bookingID = "";
+      }
 
       try {
         this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
@@ -3046,7 +3050,11 @@ export default {
       this.billing.clientEmail = item.clientemail;
       this.billing.clientNationality = item.clientnationality;
       this.billing.clientType = item.clientType;
-      this.billing.bookingID = existingTransaction.data[0].id;
+      if (existingTransaction.data[0] !== undefined) {
+        this.billing.bookingID = existingTransaction.data[0].id;
+      } else {
+        this.billing.bookingID = "";
+      }
 
       try {
         this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
