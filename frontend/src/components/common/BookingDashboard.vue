@@ -378,12 +378,13 @@ export default {
                     // Return true if there are no overlapping bookings
                     return overlappingBookings.length === 0;
                 }).length;
+
                 this.grossIncome = transactionData.data
                     .filter((item) => {
                         const transactionDate = new Date(item.transaction_date);
                         return (
-                            transactionDate >= new Date(formatdate(new Date())) &&
-                            transactionDate < new Date(formatdate(new Date(new Date().getTime() + 86400000)))
+                            transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
+                            transactionDate < new Date(new Date(new Date(new Date().getTime() + 86400000)).setHours(0,0,0,0))
                         );
                     })
                     .reduce((accumulator, currentValue) => {
@@ -393,8 +394,8 @@ export default {
                     .filter((item) => {
                         const transactionDate = new Date(item.transaction_date);
                         return (
-                            transactionDate >= new Date(formatdate(new Date())) &&
-                            transactionDate < new Date(formatdate(new Date(new Date().getTime() + 86400000)))
+                            transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
+                            transactionDate < new Date(new Date(new Date(new Date().getTime() + 86400000)).setHours(0,0,0,0))
                         );
                     })
                     .reduce((accumulator, currentValue) => {
@@ -405,8 +406,8 @@ export default {
                 this.pie2Datasets(transactionData.data.filter((item) => {
                     const transactionDate = new Date(item.transaction_date);
                         return (
-                            transactionDate >= new Date(formatdate(new Date())) &&
-                            transactionDate < new Date(formatdate(new Date(new Date().getTime() + 86400000)))
+                            transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
+                            transactionDate < new Date(new Date(new Date(new Date().getTime() + 86400000)).setHours(0,0,0,0))
                         );
                 } ));
                 this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
