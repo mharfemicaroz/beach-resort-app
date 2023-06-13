@@ -150,6 +150,10 @@ def get_transactions_with_items(request):
     return JsonResponse(transaction_data, safe=False)
 
 @csrf_exempt    
+def guestcounter_list(request, pk=None):
+    return generic_list(request, GuestCounter, GuestCounterSerializer, pk)
+
+@csrf_exempt    
 def transactionrecord_delete(request, pk=None):
     return generic_deleter(request, TransactionRecord, pk)
 

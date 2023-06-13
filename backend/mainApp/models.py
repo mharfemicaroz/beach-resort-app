@@ -219,3 +219,9 @@ class TasksRecord(models.Model):
     actor = models.CharField(max_length=255)
     task = models.CharField(max_length=255)
     date_created = models.DateTimeField(auto_now_add=True)
+
+class GuestCounter(models.Model):
+    id = models.AutoField(primary_key=True)
+    counter = models.IntegerField()
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)

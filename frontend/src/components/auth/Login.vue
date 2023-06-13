@@ -102,6 +102,9 @@ export default {
                   case "waiter":
                     route = "cashier"
                     break;
+                  case "guard":
+                    route = "counter"
+                    break;
                   default:
                     // This shouldn't happen, but just in case
                     Swal.fire({

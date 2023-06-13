@@ -143,25 +143,34 @@ import PieChart from "./charts/PieChart.vue";
 import BarChart from "./charts/BarChart.vue";
 import LineChart from "./charts/LineChart.vue";
 import axios from "axios";
+
+function formatdate(currentDate) {
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+}
+
 export default {
     components: {
         PieChart,
         BarChart,
         LineChart
     },
-    props:{
-        active:{
-            type:Boolean,
+    props: {
+        active: {
+            type: Boolean,
             required: true,
         }
-    }, 
+    },
     data() {
         return {
             forecastedData: null,
-            componentKey:0,
-            prevBookings:[],
-            prevTransactions:[],
-            prevransItems:[],
+            componentKey: 0,
+            prevBookings: [],
+            prevTransactions: [],
+            prevransItems: [],
             predictions: [],
             numReservations: 0,
             numGuests: 0,
@@ -346,9 +355,9 @@ export default {
                 const transactionData = await axios.get(this.API_URL + "transaction/");
                 const transactionItemsData = await axios.get(this.API_URL + "transaction/item/");
                 const transactionRecordsData = await axios.get(this.API_URL + "transaction/record/");
-                
-                if(JSON.stringify(bookingData.data) !== JSON.stringify(this.prevBookings)){
-                    this.componentKey+=1;
+
+                if (JSON.stringify(bookingData.data) !== JSON.stringify(this.prevBookings)) {
+                    this.componentKey += 1;
                     this.prevBookings = bookingData.data;
                     this.prevTransactions = transactionData.data;
                     this.prevransItems = transactionItemsData.data;
@@ -369,15 +378,37 @@ export default {
                     // Return true if there are no overlapping bookings
                     return overlappingBookings.length === 0;
                 }).length;
-                this.grossIncome = transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
-                    return accumulator + parseFloat(currentValue.cashAmountPay);
-                }, 0);
-                this.collectibles = transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).reduce((accumulator, currentValue) => {
-                    return accumulator + parseFloat(currentValue.balance);
-                }, 0);
+                this.grossIncome = transactionData.data
+                    .filter((item) => {
+                        const transactionDate = new Date(item.transaction_date);
+                        return (
+                            transactionDate >= new Date(formatdate(new Date())) &&
+                            transactionDate < new Date(formatdate(new Date(new Date().getTime() + 86400000)))
+                        );
+                    })
+                    .reduce((accumulator, currentValue) => {
+                        return accumulator + parseFloat(currentValue.cashAmountPay);
+                    }, 0);
+                this.collectibles = transactionData.data
+                    .filter((item) => {
+                        const transactionDate = new Date(item.transaction_date);
+                        return (
+                            transactionDate >= new Date(formatdate(new Date())) &&
+                            transactionDate < new Date(formatdate(new Date(new Date().getTime() + 86400000)))
+                        );
+                    })
+                    .reduce((accumulator, currentValue) => {
+                        return accumulator + parseFloat(currentValue.balance);
+                    }, 0);
 
                 this.pie1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
-                this.pie2Datasets(transactionData.data.filter(item => new Date(item.transaction_date).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')));
+                this.pie2Datasets(transactionData.data.filter((item) => {
+                    const transactionDate = new Date(item.transaction_date);
+                        return (
+                            transactionDate >= new Date(formatdate(new Date())) &&
+                            transactionDate < new Date(formatdate(new Date(new Date().getTime() + 86400000)))
+                        );
+                } ));
                 this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
                 this.bar2Datasets(transactionItemsData.data);
                 this.line1Datasets(bookingData.data);
@@ -395,13 +426,13 @@ export default {
         this.loaded = Array(6).fill(false);
 
         // load data
-        await this.loadData();  
+        await this.loadData();
 
         // set interval to refresh data every 3 seconds if component is in focus
         // const intervalId = setInterval(async () => {
-            if (this.active && !document.hidden && document.hasFocus()) {
-                await this.loadData();
-            }
+        if (this.active && !document.hidden && document.hasFocus()) {
+            await this.loadData();
+        }
         // }, 3000);
 
         // add event listener to clear interval when component is not in focus
@@ -410,8 +441,8 @@ export default {
                 // clearInterval(intervalId);
             } else {
                 // intervalId = setInterval(async () => {
-                    // await this.loadData();
-                    this.loadData();
+                // await this.loadData();
+                this.loadData();
                 // }, 3000);
             }
         });

@@ -4,6 +4,8 @@ from .views import *
 urlpatterns = [ 
     re_path(r'^transactions_itemizer/$', get_transactions_with_items, name='transactions'),
     re_path(r'^login/$', login, name='login'),
+    re_path(r'^guestcounter/$',guestcounter_list , name='guestcounter-list'),
+    re_path(r'^guestcounter/(?P<pk>\d+)/$',guestcounter_list, name='guestcounter-detail'), 
     re_path(r'^restoorders/$',restoorders_list , name='restoorders-list'),
     re_path(r'^restoorders/(?P<pk>\d+)/$',restoorders_list, name='restoorders-detail'), 
     re_path(r'^restoorders/filter/$', restoorders_filter, name='restoorders-filter'),

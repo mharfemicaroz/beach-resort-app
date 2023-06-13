@@ -99,3 +99,8 @@ class RestoOrdersSerializer(serializers.ModelSerializer):
     class Meta:
         model = RestoOrders
         fields = '__all__' 
+
+class GuestCounterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GuestCounter
+        fields = '__all__' 

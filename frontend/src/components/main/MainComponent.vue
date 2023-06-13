@@ -79,6 +79,7 @@
                                                     <option value="inventorymanager">Inventory Manager</option>
                                                     <option value="cashier">Cashier</option>
                                                     <option value="waiter">Server/Waiter</option>
+                                                    <option value="guard">Guest Counter</option>
                                                 </select>
                                             </div>
                                             <button type="submit" class="btn btn-primary">{{ isUpdatingUser ? 'Update' :
@@ -517,6 +518,8 @@ export default {
                 this.user.route = "inventory";
             } else if (this.user.role === "cashier" || this.user.role === "waiter") {
                 this.user.route = "pos";
+            } else if (this.user.role === "guard") {
+                this.user.route = "counter";
             }
 
             if (this.isUpdatingUser) {

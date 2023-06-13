@@ -5,6 +5,7 @@ import Main from "../components/main/MainComponent.vue";
 import Booking from "../components/main/BookingComponent.vue";
 import Cashier from "../components/main/CashierComponent.vue";
 import Inventory from "../components/main/InventoryComponent.vue";
+import GuestCounter from "../components/main/GuestCounter.vue";
 import Error403 from "../components/main/ErrorPage.vue";
 import ExpiredPage from "../components/main/ExpiredPage.vue";
 
@@ -27,6 +28,15 @@ const router = createRouter({
       meta: { 
         requiresAuth: true,
         roles: ["superuser"]
+      },
+    },
+    {
+      path: "/counter",
+      name: "counter",
+      component: GuestCounter,
+      meta: { 
+        requiresAuth: true,
+        roles: ["superuser","guard"]
       },
     },
     {
