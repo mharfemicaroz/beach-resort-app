@@ -127,10 +127,35 @@ def generic_getitems(request, ref_model, item_model, item_serializer, identifier
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
+
+
+from decimal import Decimal
+from django.db.models import Sum
+from datetime import datetime, time, date
+from dateutil import parser
+
 @api_view(['GET'])
 @csrf_exempt
-def get_transactions_with_items(request):
-    transactions = Transaction.objects.all()
+def get_transactions_with_items(request, type=None):
+
+    if type == 'all':
+        transactions = Transaction.objects.all()
+    elif type == 'month':
+        today = date.today()
+        current_month = today.month
+        current_year = today.year
+
+        # Filter transactions by the current month
+        transactions = Transaction.objects.filter(transaction_date__year=current_year, transaction_date__month=current_month)
+    elif type == 'day':
+        today = date.today()
+        current_month = today.month
+        current_year = today.year
+        current_day = today.day
+
+        # Filter transactions by the current month
+        transactions = Transaction.objects.filter(transaction_date__year=current_year, transaction_date__month=current_month, transaction_date__day=current_day)
+
     transaction_data = TransactionSerializer(transactions, many=True).data
 
     for transaction in transaction_data:
@@ -147,7 +172,23 @@ def get_transactions_with_items(request):
         transaction['items'] = items_data
         transaction['items2'] = items2_data
 
+        # Calculate actualIncomeOfThisDay
+        transaction_date_str = transaction['transaction_date']
+        transaction_date = parser.parse(transaction_date_str).date()
+        transaction_date = datetime.combine(transaction_date, time.min)
+        transaction_records = TransactionRecord.objects.filter(
+            transaction=trans_id,
+            transaction_date__lt=transaction_date
+        )
+        previous_income = transaction_records.aggregate(total_income=Sum('cashAmountPay'))['total_income'] or Decimal('0')
+        cash_amount_pay = Decimal(transaction['cashAmountPay'])
+        actual_income = cash_amount_pay - previous_income
+        transaction['actualIncomeOfThisDay'] = actual_income
+
     return JsonResponse(transaction_data, safe=False)
+
+
+
 
 @csrf_exempt    
 def guestcounter_list(request, pk=None):

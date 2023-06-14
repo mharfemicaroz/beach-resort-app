@@ -292,10 +292,10 @@ export default {
         },
         pie2Datasets(data) {
             const totcash = data.filter(item => item.paymentMethod === 'cash').reduce((accumulator, currentValue) => {
-                return accumulator + parseFloat(currentValue.cashAmountPay);
+                return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
             }, 0);
             const totnoncash = data.filter(item => item.paymentMethod === 'non-cash').reduce((accumulator, currentValue) => {
-                return accumulator + parseFloat(currentValue.cashAmountPay);
+                return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
             }, 0);
             this.pie2Data.datasets[0].data = [totcash, totnoncash]
         },
@@ -334,7 +334,7 @@ export default {
             let collection = [];
             for(const name of uniqueProcessedByList){
                 const total = data.filter(item => item.processedBy === name).reduce((accumulator, currentValue) => {
-                    return accumulator + parseFloat(currentValue.cashAmountPay);
+                    return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
                 }, 0);
                 collection.push(total);
             }
@@ -402,6 +402,7 @@ export default {
                 const transactionData = await axios.get(this.API_URL + "transaction/");
                 const transactionItemsData = await axios.get(this.API_URL + "transaction/item/");
                 const transactionRecordsData = await axios.get(this.API_URL + "transaction/record/");
+                const trans_itemizer_data =  await axios.get(this.API_URL + 'transactions_itemizer/day/');
 
                 if (JSON.stringify(bookingData.data) !== JSON.stringify(this.prevBookings)) {
                     this.componentKey += 1;
@@ -426,7 +427,7 @@ export default {
                     return overlappingBookings.length === 0;
                 }).length;
 
-                this.grossIncome = transactionData.data
+                this.grossIncome = trans_itemizer_data.data
                     .filter((item) => {
                         const transactionDate = new Date(item.transaction_date);
                         return (
@@ -435,7 +436,7 @@ export default {
                         );
                     })
                     .reduce((accumulator, currentValue) => {
-                        return accumulator + parseFloat(currentValue.cashAmountPay);
+                        return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
                     }, 0);
                 this.collectibles = transactionData.data
                     .filter((item) => {
@@ -450,7 +451,7 @@ export default {
                     }, 0);
 
                 this.pie1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
-                this.pie2Datasets(transactionData.data.filter((item) => {
+                this.pie2Datasets(trans_itemizer_data.data.filter((item) => {
                     const transactionDate = new Date(item.transaction_date);
                         return (
                             transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
@@ -459,7 +460,7 @@ export default {
                 } ));
                 this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
                 this.bar2Datasets(transactionItemsData.data);
-                this.bar3Datasets(transactionData.data.filter((item) => {
+                this.bar3Datasets(trans_itemizer_data.data.filter((item) => {
                     const transactionDate = new Date(item.transaction_date);
                     return (
                         transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&

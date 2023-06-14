@@ -476,7 +476,7 @@
                   <div id="transactions" class="tab-pane">
 
                     <div class="row">
-                      <div class="col-md-3">
+                      <div class="col-md-2">
                         <div>
                           <!-- <div class="form-group">
                             <label for="search">Search Transaction:</label>
@@ -528,7 +528,7 @@
                           </div> -->
                         </div>
                       </div>
-                      <div class="col-md-9">
+                      <div class="col-md-10">
                         <div id="transactionHistory">
                           <h2>Transaction History</h2>
                           <table-component :mainHeaders=transactionsOptions :mainItems="filteredTransactions"
@@ -1564,14 +1564,15 @@ export default {
         'field': 'clientcontact',
         'sortable': true
       }, {
-        'label': 'Address',
-        'field': 'clientaddress',
-        'sortable': true
-      }, {
         'label': 'Total Amount',
         'field': 'totalAmountToPay',
         'sortable': true,
         'reducible': true
+      }, {
+        'label': 'Actual Income',
+        'field': 'actualIncomeOfThisDay',
+        'sortable': true,
+        'reducible': true,
       }, {
         'label': 'Total Cash',
         'field': 'cashAmountPay',
@@ -3909,7 +3910,7 @@ export default {
     },
     async loadTransactionData() {
       try {
-        const response = await axios.get(this.API_URL + 'transactions_itemizer/');
+        const response = await axios.get(this.API_URL + 'transactions_itemizer/all/');
         this.transactions = response.data;
         // this.transactions.forEach(async (item, index) => {
         //   try {
@@ -4216,7 +4217,8 @@ export default {
               let origCash = parseFloat(this.cashAmount) > parseFloat(this.total) ? parseFloat(this.total) : parseFloat(this.cashAmount);
               const newbalance = (existingCashAmountPay + parseFloat(this.cashAmount) < parseFloat(this.subtotal)) ? parseFloat(transaction.totalAmountToPay) - parseFloat(newcashAmountPay) : 0;
               const origbal = parseFloat(this.subtotal) - newcashAmountPay;
-              const payamountnow = (existingbalance - newbalance <= 0) ? origCash : existingbalance - newbalance;
+              // const payamountnow = (existingbalance - newbalance <= 0) ? origCash : existingbalance - newbalance;
+              const payamountnow = origCash;
               const transactionData = {
                 clientname: this.billing.clientName,
                 clientemail: this.billing.clientEmail,

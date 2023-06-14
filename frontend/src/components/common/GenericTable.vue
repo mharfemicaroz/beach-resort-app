@@ -53,7 +53,7 @@
                 <tbody>
                     <template v-for="(mainItem, mainIndex) in paginatedMainItems" :key="mainItem.id">
                         <tr :class="{ 'table-active': showTable[mainItem.id] }">
-                            <td v-for="(header, index) in mainHeaders" :key="index" style="word-wrap: break-word;white-space: nowrap; text-overflow:ellipsis; overflow: hidden; max-width:1px;">
+                            <td v-for="(header, index) in mainHeaders" :key="index" style="word-wrap: break-word;white-space: normal; overflow: hidden; max-width:1px;">
                                 
                                 <template v-if="header.field === 'toggle' && toggleable">
                                     <button type="button" @click="toggleTable(mainItem.id)"
