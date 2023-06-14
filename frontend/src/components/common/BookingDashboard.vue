@@ -103,6 +103,31 @@
     </div>
     <div class="row row justify-content-center">
         <div class="row">
+            <div class="col-md-6">
+                <div class="card x">
+                    <div class="card-header text-primary text-center">
+                        <strong>Collection Summary Report</strong>
+                    </div>
+                    <div class="card-body chart">
+                        <bar-chart :key="componentKey" v-if="loaded[6]" :chartData="bar3Data" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card x">
+                    <div class="card-header text-primary text-center">
+                        <strong>Guest Counter Report</strong>
+                    </div>
+                    <div class="card-body chart">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row row justify-content-center">
+        <div class="row">
             <div class="col-md-4">
                 <div class="card x">
                     <div class="card-header text-primary text-center">
@@ -210,6 +235,14 @@ export default {
                     }
                 ]
             },
+            bar3Data: {
+                labels: [],
+                datasets: [
+                    {
+                        data: [],
+                    }
+                ]
+            },
             line1Data: {
                 labels: [],
                 datasets: [
@@ -295,6 +328,20 @@ export default {
             }, 0);
             this.bar2Data.datasets[0].data = [br, pl, bc, pc, gc]
         },
+        bar3Datasets(data){
+            const processedByList = data.map(record => record.processedBy);
+            const uniqueProcessedByList = [...new Set(processedByList)].filter(name => name !== '');
+            let collection = [];
+            for(const name of uniqueProcessedByList){
+                const total = data.filter(item => item.processedBy === name).reduce((accumulator, currentValue) => {
+                    return accumulator + parseFloat(currentValue.cashAmountPay);
+                }, 0);
+                collection.push(total);
+            }
+
+            this.bar3Data.labels = uniqueProcessedByList;
+            this.bar3Data.datasets[0].data = collection;
+        },
         line1Datasets(data) {
             const arr = data.reduce((acc, curr) => {
                 const date = this.parseDate(curr.checkinDate);
@@ -361,7 +408,7 @@ export default {
                     this.prevBookings = bookingData.data;
                     this.prevTransactions = transactionData.data;
                     this.prevransItems = transactionItemsData.data;
-                    this.loaded = Array(6).fill(false);
+                    this.loaded = Array(7).fill(false);
                 }
 
                 const roomsData = await axios.get(this.API_URL + "rooms/");
@@ -412,10 +459,17 @@ export default {
                 } ));
                 this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
                 this.bar2Datasets(transactionItemsData.data);
+                this.bar3Datasets(transactionData.data.filter((item) => {
+                    const transactionDate = new Date(item.transaction_date);
+                    return (
+                        transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
+                        transactionDate < new Date(new Date(new Date(new Date().getTime() + 86400000)).setHours(0, 0, 0, 0))
+                    );
+                }));
                 this.line1Datasets(bookingData.data);
                 this.line2Datasets(transactionData.data);
 
-                this.loaded = Array(6).fill(true);
+                this.loaded = Array(7).fill(true);
             } catch (error) {
 
             }
