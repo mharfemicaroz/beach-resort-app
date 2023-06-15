@@ -21,11 +21,12 @@
                     &nbsp;
                     <button class="btn btn-sm btn-primary" @click="exportXLSX">
                         <i class="fas fa-file-excel"></i>
+                        <sup><span class="badge badge-danger">beta</span></sup>
                     </button>
                     &nbsp;
                     <button class="btn btn-sm btn-primary" @click="saveAsPDF">
                         <i class="fas fa-file-pdf"></i>
-                    </button>
+                    <sup><span class="badge badge-danger">beta</span></sup></button>
 
                 </p>
                 <div class="form-outline col-md-3 mb-0 no-print">
