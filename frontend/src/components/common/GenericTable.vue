@@ -18,11 +18,19 @@
                     <button class="btn btn-sm btn-primary" @click="printSection">
                         <i class="fas fa-print"></i>
                     </button>
+                    &nbsp;
+                    <button class="btn btn-sm btn-primary" @click="exportXLSX">
+                        <i class="fas fa-file-excel"></i>
+                    </button>
+                    &nbsp;
+                    <button class="btn btn-sm btn-primary" @click="saveAsPDF">
+                        <i class="fas fa-file-pdf"></i>
+                    </button>
 
                 </p>
                 <div class="form-outline col-md-3 mb-0 no-print">
-                  <input type="search" class="form-control" placeholder="Type query" v-model="searchText"
-                    aria-label="Search" autocomplete="off" aria-autocomplete="off" />
+                    <input type="search" class="form-control" placeholder="Type query" v-model="searchText"
+                        aria-label="Search" autocomplete="off" aria-autocomplete="off" />
                 </div>
             </div>
 
@@ -40,11 +48,11 @@
                                 {{ header.label }}
                                 <span v-if="header.sortable" class="sort-icon no-print">
                                     <i :class="[
-                                            'fas',
-                                            sortColumn === header.field && sortDirection === 1
-                                                ? 'fa-sort-alpha-up'
-                                                : 'fa-sort-alpha-down',
-                                        ]"></i>
+                                        'fas',
+                                        sortColumn === header.field && sortDirection === 1
+                                            ? 'fa-sort-alpha-up'
+                                            : 'fa-sort-alpha-down',
+                                    ]"></i>
                                 </span>
                             </th>
                         </template>
@@ -53,8 +61,9 @@
                 <tbody>
                     <template v-for="(mainItem, mainIndex) in paginatedMainItems" :key="mainItem.id">
                         <tr :class="{ 'table-active': showTable[mainItem.id] }">
-                            <td v-for="(header, index) in mainHeaders" :key="index" style="word-wrap: break-word;white-space: normal; overflow: hidden; max-width:1px;">
-                                
+                            <td v-for="(header, index) in mainHeaders" :key="index"
+                                style="word-wrap: break-word;white-space: normal; overflow: hidden; max-width:1px;">
+
                                 <template v-if="header.field === 'toggle' && toggleable">
                                     <button type="button" @click="toggleTable(mainItem.id)"
                                         class="btn btn-primary btn-sm toggle no-print">
@@ -73,7 +82,7 @@
                                 </template>
                                 <template v-else>
                                     <template v-if="header.slot">
-                                        <slot name="content" :data="{'h':header.field,'dt':mainItem}"></slot>
+                                        <slot name="content" :data="{ 'h': header.field, 'dt': mainItem }"></slot>
                                     </template>
                                     <template v-else>
                                         {{ mainItem[header.field] }}
@@ -98,7 +107,7 @@
                                             </thead>
                                             <tbody>
                                                 <template v-for="(subItem, subIndex) in mainItem.items" :key="subIndex">
-                                                    
+
                                                     <tr>
                                                         <template v-for="(subHeader, index) in subHeaders" :key="index">
                                                             <template v-if="subHeader.field.includes('date')">
@@ -148,7 +157,8 @@
                     </template>
                     <tr>
                         <td v-for="(header, index) in mainHeaders" :key="index">
-                            <span class="text-primary" v-if="header.reducible" style="font-weight: bold;">{{ sumColumn(header.field).toFixed(2) }}</span>
+                            <span class="text-primary" v-if="header.reducible" style="font-weight: bold;">{{
+                                sumColumn(header.field).toFixed(2) }}</span>
                         </td>
                     </tr>
                 </tbody>
@@ -205,6 +215,10 @@
 </template>
   
 <script>
+
+import xlsx from "json-as-xlsx"
+import jsPDF from "jspdf";
+
 export default {
     props: {
         uniqueID: {
@@ -361,9 +375,74 @@ export default {
             return new Intl.DateTimeFormat('en-US', options).format(date);
         },
 
-        sumColumn(col){
+        sumColumn(col) {
             const total = this.paginatedMainItems.reduce((accumulator, currentValue) => accumulator + parseFloat(currentValue[col]), 0);
             return total;
+        },
+
+        getObjectProperties(object) {
+            return Object.keys(object).map(key => {
+                return {
+                    label: key,
+                    value: key
+                };
+            });
+        },
+
+        transformData(jsonData) {
+            const transformedData = [];
+
+            jsonData.forEach((item) => {
+                const mainRow = { ...item };
+
+                // Remove items and items2 from the main row
+                delete mainRow.items;
+                delete mainRow.items2;
+
+                // Add each item in 'items' as a new row under the main row
+                item.items.forEach((itemRow) => {
+                    transformedData.push({ ...mainRow, ...itemRow });
+                });
+
+                // Add each item in 'items2' as a new row under the main row
+                item.items2.forEach((itemRow) => {
+                    transformedData.push({ ...mainRow, ...itemRow });
+                });
+            });
+
+            return transformedData;
+        },
+
+
+        exportXLSX() {
+
+            let data = [
+                {
+                    sheet: "data",
+                    columns: this.getObjectProperties(this.filteredItems[0]),
+                    content: this.transformData(this.filteredItems)
+                }
+            ]
+
+            let settings = {
+                fileName: "jsondata", // Name of the resulting spreadsheet
+                extraLength: 3, // A bigger number means that columns will be wider
+                writeMode: "writeFile", // The available parameters are 'WriteFile' and 'write'. This setting is optional. Useful in such cases https://docs.sheetjs.com/docs/solutions/output#example-remote-file
+                writeOptions: {}, // Style options from https://docs.sheetjs.com/docs/api/write-options
+                RTL: false, // Display the columns from right-to-left (the default value is false)
+            }
+
+            xlsx(data, settings) // Will download the excel file
+        },
+
+        saveAsPDF() {
+            const doc = new jsPDF('l','pt',[612,936]);
+            const content = "<div style='width:675pt'>" + document.getElementById(this.uniqueID).outerHTML + "</div>";
+            doc.html(content, {
+                callback: function (doc) {
+                    doc.save("download.pdf");
+                }
+            });
         },
 
         printSection() {

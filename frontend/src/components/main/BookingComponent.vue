@@ -21,7 +21,7 @@
         <button class="nav-link" id="others-tab" data-bs-toggle="tab" data-bs-target="#others" type="button" role="tab"
           aria-controls="others" aria-selected="false" @click="resetSummary(2)">Account</button>
       </li>
-      <li class="nav-item" role="presentation">
+      <li v-if="userdata.role === 'superuser'" class="nav-item" role="presentation">
         <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab"
           aria-controls="reports" aria-selected="false" @click="resetSummary(3)">Reports</button>
       </li>

@@ -18,6 +18,7 @@
     "bootstrap-vue-datatable": "^1.0.7",
     "chart.js": "^4.2.1",
     "ipify": "^6.0.0",
+    "json-as-xlsx": "^2.5.3",
     "jspdf": "^2.5.1",
     "mdb-vue-ui-kit": "^3.2.0",
     "moment": "^2.29.4",
@@ -43,7 +44,8 @@
     "vue-simple-context-menu": "^4.0.4",
     "vue-sweetalert2": "^5.0.5",
     "vuex": "^4.0.2",
-    "ws": "^8.13.0"
+    "ws": "^8.13.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",
