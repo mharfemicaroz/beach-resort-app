@@ -421,7 +421,7 @@ export default {
                 {
                     sheet: "data",
                     columns: this.getObjectProperties(this.filteredItems[0]),
-                    content: this.transformData(this.filteredItems)
+                    content: this.filteredItems
                 }
             ]
 
