@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid login-background">
+  <div class="container-fluid login-background" :style="{ 'background-image': currentBackground, 'background-repeat': 'no-repeat', 'background-position': 'center center', 'background-attachment': 'fixed' }">
     <div class="row justify-content-center align-items-center vh-100">
       <div class="col-md-3">
         <form @submit.prevent="login" class="animated-form login-form">
@@ -32,13 +32,10 @@
             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
           </div>
         </form>
-
-
       </div>
     </div>
   </div>
 </template>
-
 <script>
 import { useAuthStore } from "@/stores/authStore"; // Import the authStore
 import axios from 'axios';
@@ -49,9 +46,21 @@ export default {
   name: "Login",
   data() {
     return {
+      backgroundIndex: 0,
+      backgrounds: [
+        "src/assets/beach-resort-background1.jpg",
+        "src/assets/beach-resort-background2.jpg",
+        "src/assets/beach-resort-background3.jpg",
+        "src/assets/beach-resort-background4.jpg",
+      ],
       username: "",
       password: "",
     };
+  },
+  computed: {
+    currentBackground() {
+      return `url(${this.backgrounds[this.backgroundIndex]})`;
+    },
   },
   methods: {
     login() {
@@ -141,11 +150,17 @@ export default {
         });
     },
 
+    startBackgroundSlideshow() {
+      setInterval(() => {
+        this.backgroundIndex = (this.backgroundIndex + 1) % this.backgrounds.length;
+      }, 5000);
+    },
+
   },
   mounted() {
     let barcode = "";
     let reading = false;
-
+    this.startBackgroundSlideshow();
     document.addEventListener('keypress', e => {
       //usually barcode scanners throw an 'Enter' key at the end of read
       if (e.keyCode === 13) {
@@ -172,22 +187,45 @@ export default {
         }, 200);  //200 works fine for me but you can adjust it
       }
     });
+    
   }
 };
 </script>
 
 <style>
-/* Add custom styles here */
+
 .login-background {
-  background: url("@/assets/beach-resort-background.jpg") no-repeat center center fixed;
   background-size: cover;
-  background-position: center;
+  transition: background-image 1s ease-out;
+}
+
+.login-background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: inherit;
+  filter: blur(1px);
+}
+
+.container-fluid.login-background {
+  background-image: url(src/assets/beach-resort-background1.jpg);
+  background-repeat: 'no-repeat';
+  background-position: 'center center';
+  background-attachment: 'fixed';
 }
 
 .animated-form {
   animation: fly-in 0.5s ease-out;
   opacity: 1;
   transform: translateY(0);
+}
+
+.animated-form.login-form {
+  position: relative;
+  z-index: 1;
 }
 
 @keyframes fly-in {

@@ -864,11 +864,13 @@
       <!-- <img src="@/assets/barcode.png"> -->
     </div>
   </div>
+  <FooterComponent />
 </template>
 <script>
 import { useAuthStore } from "@/stores/authStore";
 import TopNavBarComponent from "@/components/common/TopNavBar.vue";
 import TableComponent from "@/components/common/GenericTable.vue";
+import FooterComponent from "../common/FooterComponent.vue";
 import CardItems from "../common/CardItems.vue";
 import axios from 'axios';
 
@@ -900,6 +902,7 @@ function formatDate(date) {
 export default {
   components: {
     TopNavBarComponent,
+    FooterComponent,
     TableComponent,
     CardItems,
   },
@@ -2484,7 +2487,7 @@ export default {
   },
 }
 </script>
-<style>
+<style scoped>
 .title {
   margin: 0;
   font-size: 1rem;

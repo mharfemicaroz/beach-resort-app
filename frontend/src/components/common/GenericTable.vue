@@ -26,7 +26,7 @@
                     &nbsp;
                     <button class="btn btn-sm btn-primary" @click="saveAsPDF">
                         <i class="fas fa-file-pdf"></i>
-                    <sup><span class="badge badge-danger">beta</span></sup></button>
+                        <sup><span class="badge badge-danger">beta</span></sup></button>
 
                 </p>
                 <div class="form-outline col-md-3 mb-0 no-print">
@@ -437,7 +437,7 @@ export default {
         },
 
         saveAsPDF() {
-            const doc = new jsPDF('l','pt',[612,936]);
+            const doc = new jsPDF('l', 'pt', [612, 936]);
             const content = "<div style='width:675pt'>" + document.getElementById(this.uniqueID).outerHTML + "</div>";
             doc.html(content, {
                 callback: function (doc) {
@@ -524,3 +524,10 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.badge-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+</style>

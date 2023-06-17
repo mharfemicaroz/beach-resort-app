@@ -192,7 +192,7 @@
                           v-model.number="howMany[index]">
                       </td>
                       <td>
-                        <button class="btn btn-success" @click="addToCart(item, index)" :disabled="!item.isAvailable">
+                        <button class="btn btn-primary" @click="addToCart(item, index)" :disabled="!item.isAvailable">
                           <i class="fa fa-cart-plus"></i>
                         </button>
                       </td>
@@ -205,15 +205,17 @@
 
               <div class="d-flex align-items-center">
                 <h2 class="position-relative">
-                  <i class="fa fa-cart-arrow-down me-2"></i>Inclusion
+                  Cart
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    style="font-size: 0.75rem;">
+                    {{ countInclusion }}
+                    <span class="visually-hidden">items in cart</span>
+                  </span>
                 </h2>
-                <button type="button" class="btn btn-danger ms-auto" @click="moveInclusionCartToMain()">Add all</button>
-              </div>
-              <div class="card">
-                <div class="card-body">
-                  <span><strong>No. of items:</strong> {{ countInclusion }}</span><br />
-                  <span><strong>Total:</strong> {{ sumInclusion }}</span>
-                </div>
+                <button type="button" class="btn btn-primary ms-auto" @click="moveInclusionCartToMain()">
+                    <i class="fas fa-arrow-right"></i> 
+                </button>
+
               </div>
 
               <div class="card-deck" style="  max-height: 545px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
@@ -1331,10 +1333,12 @@
   <vue-simple-context-menu element-id="myFirstMenu" :options="optionsArray1" ref="vueSimpleContextMenu1"
     @option-clicked="optionClicked1">
   </vue-simple-context-menu>
+  <FooterComponent />
 </template>
 <script>
 import { useAuthStore } from "@/stores/authStore";
 import TopNavBarComponent from "@/components/common/TopNavBar.vue";
+import FooterComponent from "../common/FooterComponent.vue";
 import TableComponent from "@/components/common/GenericTable.vue";
 import BookingDashboard from "@/components/common/BookingDashboard.vue";
 import CardBookingsVue from "../common/CardBookings.vue";
@@ -1411,6 +1415,7 @@ export default {
     CalendarView,
     CalendarViewHeader,
     TopNavBarComponent,
+    FooterComponent,
     TableComponent,
     BookingDashboard,
     CardBookingsVue,
