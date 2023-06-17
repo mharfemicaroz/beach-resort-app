@@ -91,8 +91,7 @@
                                     <div class="col-md-9">
 
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" v-model="showItems"
-                                                >
+                                            <input class="form-check-input" type="checkbox" v-model="showItems">
                                             <label class="form-check-label" for="unavailableItemsCheckbox">
                                                 Show available items only?
                                             </label>
@@ -160,10 +159,9 @@
                                     </div>
                                     <div class="col-md-9"
                                         style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
-                                        
+
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" v-model="showSuppliers"
-                                                >
+                                            <input class="form-check-input" type="checkbox" v-model="showSuppliers">
                                             <label class="form-check-label" for="unavailableItemsCheckbox">
                                                 Show available items only?
                                             </label>
@@ -556,7 +554,42 @@ export default {
             searchSales: '',
         };
     },
-    created() {
+    async created() {
+
+        const countdownMessage = `This app is for evaluation and not the full version. Please wait for <span id="countdowntimer">${this.EVALUATION_TIME}</span> seconds to load.`;
+        let countdownResult;
+        let timeoutExpired = false; // New variable for tracking timeout
+
+        countdownResult = await this.$swal.fire({
+            title: 'Please wait',
+            html: countdownMessage,
+            icon: 'info',
+            showCancelButton: false,
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            didOpen: () => {
+                const countdownEl = document.querySelector('#countdowntimer');
+                let count = this.EVALUATION_TIME - 1;
+                const timerId = setInterval(() => {
+                    countdownEl.textContent = count;
+                    count--;
+                    if (count < 0) {
+                        clearInterval(timerId);
+                        timeoutExpired = true; // Update timeoutExpired to true
+                        this.$swal.close();
+                    }
+                }, 1000);
+            }
+        });
+
+        if (!countdownResult.isConfirmed && timeoutExpired) {
+            countdownResult.isConfirmed = true; // Set isConfirmed to true if timeout expired
+        }
+
+        if (!countdownResult.isConfirmed) {
+            return;
+        }
+
         this.getInventory();
         this.getSuppliers();
         this.getPurchases();
@@ -568,15 +601,15 @@ export default {
             const user = authStore.user;
             return user;
         },
-        switchStocks(){
-            if(this.showItems){
+        switchStocks() {
+            if (this.showItems) {
                 return this.stocks.filter(item => item.isAvailable);
             } else {
                 return this.stocks;
             }
         },
-        switchSuppliers(){
-            if(this.showSuppliers){
+        switchSuppliers() {
+            if (this.showSuppliers) {
                 return this.suppliers.filter(item => item.isAvailable);
             } else {
                 return this.suppliers;
@@ -1057,4 +1090,5 @@ export default {
 </script>
 
 <style>
-@import "vue-select/dist/vue-select.css";</style>
+@import "vue-select/dist/vue-select.css";
+</style>
