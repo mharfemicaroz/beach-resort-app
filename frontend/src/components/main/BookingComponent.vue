@@ -1825,7 +1825,7 @@ export default {
     };
   },
   created() {
-    const countdownMessage = 'This app is for evaluation and not full version. Please wait for <span id="countdowntimer">10</span> seconds to load.';
+    const countdownMessage = 'This app is for evaluation and not full version. Please wait for <span id="countdowntimer">15</span> seconds to load.';
     let countdownResult;
     countdownResult = this.$swal.fire({
       title: 'Please wait',
@@ -1836,7 +1836,7 @@ export default {
       allowOutsideClick: false,
       didOpen: () => {
         const countdownEl = document.querySelector('#countdowntimer');
-        let count = 9;
+        let count = 14;
         const timerId = setInterval(() => {
           countdownEl.textContent = count;
           count--;
