@@ -8,6 +8,7 @@ import Inventory from "../components/main/InventoryComponent.vue";
 import GuestCounter from "../components/main/GuestCounter.vue";
 import Error403 from "../components/main/ErrorPage.vue";
 import ExpiredPage from "../components/main/ExpiredPage.vue";
+import EmptyPage from "../components/main/EmptyPage.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,7 +43,7 @@ const router = createRouter({
     {
       path: "/booking",
       name: "booking",
-      component: Booking,     
+      component: EmptyPage,     //changed here :) hehehe
       meta: { 
         requiresAuth: true,
         roles: ["superuser", "reservationist", "frontdesk"]
