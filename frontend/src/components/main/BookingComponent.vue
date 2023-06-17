@@ -578,8 +578,7 @@
           <div class="col-12">
             <div class="row justify-content-between" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
               <div class="col-4">
-                <img src="@/assets/pantukan-waterworld-logo.jpg" width="60" height="60"
-                  alt="Company Logo" class="logo">
+                <img src="@/assets/pantukan-waterworld-logo.jpg" width="60" height="60" alt="Company Logo" class="logo">
               </div>
               <div class="col-4 text-right">
                 <span style="font-size: small;">Billing Statement</span>
@@ -1826,7 +1825,35 @@ export default {
     };
   },
   created() {
-    this.loadAlldata();
+    const countdownMessage = 'This app is for evaluation and not full version. Please wait for <span id="countdowntimer">10</span> seconds to load.';
+    let countdownResult;
+    countdownResult = this.$swal.fire({
+      title: 'Please wait',
+      html: countdownMessage,
+      icon: 'info',
+      showCancelButton: false,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      didOpen: () => {
+        const countdownEl = document.querySelector('#countdowntimer');
+        let count = 9;
+        const timerId = setInterval(() => {
+          countdownEl.textContent = count;
+          count--;
+          if (count < 0) {
+            clearInterval(timerId);
+            this.$swal.close();
+            this.loadAlldata();
+          }
+        }, 1000);
+      }
+    });
+
+    if (!countdownResult.isConfirmed) {
+      return;
+    }
+
+    
   },
   computed: {
     userdata() {
@@ -2637,7 +2664,7 @@ export default {
       this.alreadyDiscounted = false;
       this.itemIndex = -1;
       this.walkinStatus = false;
-      if(no === 1){
+      if (no === 1) {
         this.$refs.searchQuery.focus();
         this.$refs.searchQuery.blur();
       }
@@ -3518,13 +3545,13 @@ export default {
       this.toggleShowAllModal();
     },
     onClickDay(d) {
-      if(this.booksearchtext !== ""){
+      if (this.booksearchtext !== "") {
         this.$swal.fire({
           icon: 'error',
           title: 'Calendar Day Selection Restricted',
           text: 'Unable to select a day on the calendar when the search query is not empty.',
           confirmButtonText: 'OK'
-        });        
+        });
         return;
       }
       this.dayreserve = d;
@@ -3532,13 +3559,13 @@ export default {
       this.toggledayMenuModal();
     },
     onClickItem(e) {
-      if(this.booksearchtext !== ""){
+      if (this.booksearchtext !== "") {
         this.$swal.fire({
           icon: 'error',
           title: 'Calendar Item Selection Restricted',
           text: 'Unable to select an item on the calendar when the search query is not empty.',
           confirmButtonText: 'OK'
-        }); 
+        });
         return;
       }
       this.itemIndex = this.bookings.findIndex(
@@ -3730,7 +3757,7 @@ export default {
       });
 
       let suggestionsArray = this.rooms.map(room => room.name);
-      const roomStatus = ["cancelled","reserved","checkedin","checkedout"];
+      const roomStatus = ["cancelled", "reserved", "checkedin", "checkedout"];
       suggestionsArray = roomStatus.concat(suggestionsArray);
 
       // Filter the suggestions based on the search text
@@ -4686,7 +4713,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {
-      //document.body.addEventListener('contextmenu', this.handleContextMenu);
+      document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
     const modal = this.$refs.modal;
