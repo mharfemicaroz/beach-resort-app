@@ -21,7 +21,7 @@
                                 <i class="fa fa-minus"></i>
                             </button>
                             <button type="button" class="m-btn btn-light btn btn-default" @click="undo"
-                                :disabled="iconHistory.length === 0">
+                                :disabled="iconHistory.length === 1">
                                 <i class="fa fa-undo"></i>
                             </button>
                             <button type="button" class="m-btn btn-light btn btn-default" @click="incrementCounter"
@@ -56,6 +56,9 @@ export default {
             previousCounter: 0 // Stores the previous counter value for undo functionality
         };
     },
+    created(){
+        this.loadData();
+    },
     computed: {
         userdata() {
             const authStore = useAuthStore();
@@ -71,6 +74,16 @@ export default {
         },
     },
     methods: {
+        loadData(){
+            axios
+            .get(`${this.API_URL}guestcounter/`)
+            .then(response => {
+                this.iconHistory = response.data;
+            })
+            .catch(error => {
+            console.log(error);
+            });
+        },
         selectIcon(icon) {
             this.selectedIcon = this.selectedIcon === icon ? '' : icon; // Toggle the selectedIcon value
         },
@@ -89,8 +102,11 @@ export default {
         undo() {
             if (this.iconHistory.length > 0) {
                 const previousState = this.iconHistory.pop();
-                this.counter = previousState.counter;
-                this.selectedIcon = previousState.icon;
+                this.counter = previousState.counter - 1;
+                this.selectedIcon = this.iconHistory[this.iconHistory.length - 1].icon;
+            } else {
+                this.counter = 0;
+                this.selectedIcon = '';
             }
         },
         addToHistory() {

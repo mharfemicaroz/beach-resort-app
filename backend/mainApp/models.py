@@ -223,5 +223,6 @@ class TasksRecord(models.Model):
 class GuestCounter(models.Model):
     id = models.AutoField(primary_key=True)
     counter = models.IntegerField()
+    history = models.TextField(null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
