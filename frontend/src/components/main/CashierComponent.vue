@@ -820,7 +820,8 @@
           <tr>
             <td> </td>
             <td>ORDER ID:</td>
-            <td>{{ (this.customer.order_id === undefined)?'N/A': this.customer.order_type + '/' + this.customer.order_id }}</td>
+            <td>{{ (this.customer.order_id === undefined) ? 'N/A' : this.customer.order_type + '/' + this.customer.order_id
+            }}</td>
           </tr>
           <tr>
             <td colspan="3" style="height: 10px;"></td>
@@ -833,22 +834,22 @@
           <tr>
             <td> </td>
             <td>TAX:</td>
-            <td>₱{{ (parseFloat(taxValue)/100 * parseFloat(subTotal)).toFixed(2) }}</td>
+            <td>₱{{ (parseFloat(taxValue) / 100 * parseFloat(subTotal)).toFixed(2) }}</td>
           </tr>
           <tr>
             <td> </td>
             <td>DISCOUNT:</td>
-            <td>₱{{  (parseFloat(discountValue)/100 * parseFloat(subTotal)).toFixed(2) }}</td>
+            <td>₱{{ (parseFloat(discountValue) / 100 * parseFloat(subTotal)).toFixed(2) }}</td>
           </tr>
           <tr>
             <td> </td>
             <td>TOTAL:</td>
-            <td>₱{{  parseFloat(totalCost).toFixed(2) }}</td>
+            <td>₱{{ parseFloat(totalCost).toFixed(2) }}</td>
           </tr>
           <tr>
             <td> </td>
             <td>Change:</td>
-            <td>₱{{  parseFloat(totalChange).toFixed(2) }}</td>
+            <td>₱{{ parseFloat(totalChange).toFixed(2) }}</td>
           </tr>
         </table>
         <div style="text-align: center;">
@@ -1131,7 +1132,42 @@ export default {
       },],
     }
   },
-  created() {
+  async created() {
+
+    const countdownMessage = `This app is for evaluation and not the full version. Please wait for <span id="countdowntimer">${this.EVALUATION_TIME}</span> seconds to load.`;
+    let countdownResult;
+    let timeoutExpired = false; // New variable for tracking timeout
+
+    countdownResult = await this.$swal.fire({
+      title: 'Please wait',
+      html: countdownMessage,
+      icon: 'info',
+      showCancelButton: false,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      didOpen: () => {
+        const countdownEl = document.querySelector('#countdowntimer');
+        let count = this.EVALUATION_TIME - 1;
+        const timerId = setInterval(() => {
+          countdownEl.textContent = count;
+          count--;
+          if (count < 0) {
+            clearInterval(timerId);
+            timeoutExpired = true; // Update timeoutExpired to true
+            this.$swal.close();
+          }
+        }, 1000);
+      }
+    });
+
+    if (!countdownResult.isConfirmed && timeoutExpired) {
+      countdownResult.isConfirmed = true; // Set isConfirmed to true if timeout expired
+    }
+
+    if (!countdownResult.isConfirmed) {
+      return;
+    }
+
     this.loadAlldata();
     this.loadCookiedata();
   },
@@ -1286,10 +1322,10 @@ export default {
       }
       return itemsArray
     },
-    transactionno(){
-      return parseFloat(this.transactions[this.transactions.length - 1].id)+1;
+    transactionno() {
+      return parseFloat(this.transactions[this.transactions.length - 1].id) + 1;
     },
-    customerno(){
+    customerno() {
       const today = new Date().toLocaleDateString();
       return this.transactions.filter(transaction => {
         const transactionDate = new Date(transaction.date_created).toLocaleDateString();
@@ -1818,15 +1854,15 @@ export default {
       this.totalCash = isNaN(parseFloat(this.totalCash)) ? 0 : parseFloat(this.totalCash) + d;
     },
     clearAll() {
-      if(this.cartItems.length > 0 && this.customer.order_id === undefined){
+      if (this.cartItems.length > 0 && this.customer.order_id === undefined) {
         this.customer = {
-        reference_id: null,
-        type: '',
-        identifier: '',
-        order_type: '',
-        items: [],
-      },
-        this.cartItems = [];
+          reference_id: null,
+          type: '',
+          identifier: '',
+          order_type: '',
+          items: [],
+        },
+          this.cartItems = [];
         this.totalCash = 0;
       }
     },
@@ -2286,19 +2322,19 @@ export default {
           event.preventDefault()
           if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
             this.setQty();
-            this.$refs.tenderedCash.focus();
+          this.$refs.tenderedCash.focus();
           break;
         case 'F4':
           event.preventDefault()
           if (this.userdata.role !== 'waiter')
             this.setDiscount();
-            this.$refs.tenderedCash.focus();
+          this.$refs.tenderedCash.focus();
           break;
         case 'F5':
           event.preventDefault()
           if (this.userdata.role !== 'waiter')
             this.setTax();
-            this.$refs.tenderedCash.focus();
+          this.$refs.tenderedCash.focus();
           break;
         case 'F6':
           event.preventDefault()
@@ -2328,7 +2364,7 @@ export default {
           event.preventDefault()
           if (this.cartItems.length > 0 && this.customer.order_id === undefined)
             this.clearAll();
-            this.$refs.tenderedCash.focus();
+          this.$refs.tenderedCash.focus();
           break;
         case 'F12':
           event.preventDefault()
