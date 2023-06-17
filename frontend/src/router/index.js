@@ -43,7 +43,7 @@ const router = createRouter({
     {
       path: "/booking",
       name: "booking",
-      component: EmptyPage,     //changed here :) hehehe
+      component: Booking,     
       meta: { 
         requiresAuth: true,
         roles: ["superuser", "reservationist", "frontdesk"]
