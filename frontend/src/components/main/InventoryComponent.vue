@@ -556,38 +556,40 @@ export default {
     },
     async created() {
 
-        const countdownMessage = `This app is for evaluation and not the full version. Please wait for <span id="countdowntimer">${this.EVALUATION_TIME}</span> seconds to load.`;
-        let countdownResult;
-        let timeoutExpired = false; // New variable for tracking timeout
+        if (this.EVALUATION_STAGE) {
+            const countdownMessage = `This app is for evaluation and not the full version. Please wait for <span id="countdowntimer">${this.EVALUATION_TIME}</span> seconds to load.`;
+            let countdownResult;
+            let timeoutExpired = false; // New variable for tracking timeout
 
-        countdownResult = await this.$swal.fire({
-            title: 'Please wait',
-            html: countdownMessage,
-            icon: 'info',
-            showCancelButton: false,
-            showConfirmButton: false,
-            allowOutsideClick: false,
-            didOpen: () => {
-                const countdownEl = document.querySelector('#countdowntimer');
-                let count = this.EVALUATION_TIME - 1;
-                const timerId = setInterval(() => {
-                    countdownEl.textContent = count;
-                    count--;
-                    if (count < 0) {
-                        clearInterval(timerId);
-                        timeoutExpired = true; // Update timeoutExpired to true
-                        this.$swal.close();
-                    }
-                }, 1000);
+            countdownResult = await this.$swal.fire({
+                title: 'Please wait',
+                html: countdownMessage,
+                icon: 'info',
+                showCancelButton: false,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    const countdownEl = document.querySelector('#countdowntimer');
+                    let count = this.EVALUATION_TIME - 1;
+                    const timerId = setInterval(() => {
+                        countdownEl.textContent = count;
+                        count--;
+                        if (count < 0) {
+                            clearInterval(timerId);
+                            timeoutExpired = true; // Update timeoutExpired to true
+                            this.$swal.close();
+                        }
+                    }, 1000);
+                }
+            });
+
+            if (!countdownResult.isConfirmed && timeoutExpired) {
+                countdownResult.isConfirmed = true; // Set isConfirmed to true if timeout expired
             }
-        });
 
-        if (!countdownResult.isConfirmed && timeoutExpired) {
-            countdownResult.isConfirmed = true; // Set isConfirmed to true if timeout expired
-        }
-
-        if (!countdownResult.isConfirmed) {
-            return;
+            if (!countdownResult.isConfirmed) {
+                return;
+            }
         }
 
         this.getInventory();
