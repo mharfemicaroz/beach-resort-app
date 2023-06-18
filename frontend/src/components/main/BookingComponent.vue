@@ -181,7 +181,7 @@
             <div class="col-md-3">
               <h2>Add-ons</h2>
               <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3">
-              <div class="wrapper-content" style="max-height:450px;height: 450px;">
+              <div class="wrapper-content" :style="`height:${calcMeasure.height1}`">
                 <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -224,7 +224,7 @@
 
               </div>
 
-              <div class="card-deck" style="  max-height: 515px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
+              <div class="card-deck" :style="`height:${calcMeasure.height2};overflow-y: auto;overflow-x: hidden;padding-right: 1px;`">
                 <div class="card" v-for="(item, index) in filteredInclusionCart" :key="item.id">
                   <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title">{{ item.name }}</h5>
@@ -269,7 +269,7 @@
                   <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
                 </div>
               </div>
-              <div class="card-deck wrapper-content" style="max-height: 380px!important;">
+              <div class="card-deck wrapper-content"  :style="`height:${calcMeasure.height3};`">
                 <div class="card" v-for="(item, index) in combinedcart" :key="item.id">
                   <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title">{{ item.name }}</h5>
@@ -289,7 +289,7 @@
               </div>
 
             </div>
-            <div class="col-md-3" style="  max-height: 550px;overflow-y: auto;overflow-x: hidden;">
+            <div class="col-md-3" :style="`height:${calcMeasure.height4};overflow-y: auto;overflow-x: hidden;`">
               <h2>Payment Transaction</h2>
               <div class="container">
                 <form>
@@ -1878,6 +1878,14 @@ export default {
       const authStore = useAuthStore();
       const user = authStore.user;
       return user;
+    },
+    calcMeasure(){
+      return {
+        "height1" : parseFloat(window.innerHeight) - 300 +"px",
+        "height2" : parseFloat(window.innerHeight) - 230 +"px",
+        "height3" : parseFloat(window.innerHeight) - 366 +"px",
+        "height4" : parseFloat(window.innerHeight) - 185 +"px",
+      }
     },
     combinedcart() {
       // let result = [];
@@ -4814,7 +4822,6 @@ img {
 }
 
 .wrapper-content {
-  max-height: 450px;
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 1px;
