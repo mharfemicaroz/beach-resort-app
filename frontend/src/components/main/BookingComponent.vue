@@ -86,6 +86,11 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="card" style="height: 60px!important;">
+              
+            </div>
+          </div>
 
         </div>
       </div>
@@ -284,7 +289,7 @@
               </div>
 
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3" style="  max-height: 550px;overflow-y: auto;overflow-x: hidden;">
               <h2>Payment Transaction</h2>
               <div class="container">
                 <form>
@@ -360,16 +365,16 @@
                         <div class="col-6 text-right">{{ subtotal }}</div>
                       </div>
                       <div class="row mb-2">
-                        <div class="col-6"><strong>Partial Payment:</strong></div>
+                        <div class="col-6"><strong>Partial:</strong></div>
                         <div class="col-6 text-right">{{ partialPayment }}</div>
                       </div>
                       <div class="row mb-2">
-                        <div class="col-6"><strong class="text-primary" style="font-size: 20px;">Total:</strong></div>
-                        <div class="col-6 text-right"><strong style="font-size: 20px;">{{ total }}</strong></div>
+                        <div class="col-6"><strong class="text-primary" style="font-size: 18px;">Total:</strong></div>
+                        <div class="col-6 text-right"><strong style="font-size: 18px;">{{ total }}</strong></div>
                       </div>
                       <div class="row">
-                        <div class="col-6"><strong style="font-size: 20px;">Change:</strong></div>
-                        <div class="col-6 text-right text-danger" style="font-size: 24px;">{{ change }}</div>
+                        <div class="col-6"><strong style="font-size: 18px;">Change:</strong></div>
+                        <div class="col-6 text-right text-danger" style="font-size: 18px;">{{ change }}</div>
                       </div>
                     </div>
                   </div>
@@ -1716,7 +1721,7 @@ export default {
       startingDayOfWeek: 0,
       disablePast: false,
       disableFuture: false,
-      displayPeriodUom: "month",
+      displayPeriodUom: "week",
       displayPeriodCount: 1,
       displayWeekNumbers: false,
       showTimes: true,
@@ -4771,8 +4776,8 @@ body {
 
   overflow-x: hidden;
   overflow-y: hidden;
-  height: 500px;
-  max-height: 500px;
+  height: 800px;
+  max-height: 800px;
   background-color: white;
 }
 
