@@ -1,6 +1,7 @@
 <template :key="componentKey">
-  <div class="container-fluid">
-    <TopNavBarComponent />
+<TopNavBarComponent />
+  <div class="container-fluid main">
+    
 
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -289,7 +290,7 @@
               </div>
 
             </div>
-            <div class="col-md-3" :style="`height:${calcMeasure.height4};overflow-y: auto;overflow-x: hidden;`">
+            <div class="col-md-3" :style="`height:${calcMeasure.height4}!important;overflow-y: auto;overflow-x: hidden;`">
               <h2>Payment Transaction</h2>
               <div class="container">
                 <form>
@@ -1889,7 +1890,7 @@ export default {
         "height1": parseFloat(window.innerHeight) - 300 + "px",
         "height2": parseFloat(window.innerHeight) - 230 + "px",
         "height3": parseFloat(window.innerHeight) - 366 + "px",
-        "height4": parseFloat(window.innerHeight) - 185 + "px",
+        "height4": parseFloat(window.innerHeight) - 130 + "px",
       }
     },
     combinedcart() {

@@ -1,15 +1,18 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-light bg-primary shadow-sm no-print fixed-top" :style="{
+    <nav class="navbar navbar-fixed-top navbar-expand-lg navbar-light bg-primary shadow-sm no-print" :style="{
         'background-image': currentBackground,
         'background-repeat': 'no-repeat',
         'background-position': 'center',
         'background-size': 'cover',
         'background-attachment': 'fixed',
-        'position': 'relative',
-        'margin-left': '-50px',
-        'margin-right': '-50px',
+        'position': 'fixed',
+        'width': '100vw',
+        'left': 0,
+        'top': 0,
+        'display': 'flex',
+        'z-index': 200,
     }">
-        <div class="container-fluid">
+        <div class="container-fluid" style="padding-left: 25px; padding-right: 25px;">
             <!-- Logo and Search Bar -->
             <a class="navbar-brand text-white align-middlev vv  vv  v  vv v " href="#">
                 <div style="display: flex; align-items: center;">
@@ -79,6 +82,7 @@ export default {
     },
     created() {
         this.startBackgroundSlideshow();
+        this.enterFullscreen();
     },
     computed: {
         userdata() {
@@ -118,6 +122,23 @@ export default {
             }, 5000);
         },
 
+        enterFullscreen() {
+            const element = document.documentElement; // Select the root element of your component
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            }
+        },
+
+
+    },
+    mounted() {
+        this.enterFullscreen();
     }
 }
 </script>

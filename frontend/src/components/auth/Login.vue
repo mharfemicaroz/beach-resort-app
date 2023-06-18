@@ -157,10 +157,24 @@ export default {
       }, 5000);
     },
 
+    enterFullscreen() {
+      const element = document.documentElement; // Select the root element of your component
+      if (element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if (element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+      } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+      }
+    },
+
   },
   mounted() {
     let barcode = "";
     let reading = false;
+    this.enterFullscreen();
     this.startBackgroundSlideshow();
     document.addEventListener('keypress', e => {
       //usually barcode scanners throw an 'Enter' key at the end of read
@@ -194,6 +208,11 @@ export default {
 </script>
 
 <style>
+
+div.container-fluid.main {
+  margin-top: 75px;
+}
+
 .login-background {
   background-size: cover;
   transition: background-image 1s ease-out;

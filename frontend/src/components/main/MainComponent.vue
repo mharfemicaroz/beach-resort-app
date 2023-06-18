@@ -1,8 +1,6 @@
 <template>
-    <div class="container-fluid">
-
-        <TopNavBarComponent />
-
+    <TopNavBarComponent />
+    <div class="container-fluid main">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-12">
