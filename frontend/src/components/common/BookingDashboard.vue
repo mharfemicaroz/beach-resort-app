@@ -161,6 +161,13 @@
         </div>
 
     </div>
+    <div class="row row justify-content-center">
+        <div class="col-md-4">
+                <div class="card x">
+                        ----------------
+                </div>
+            </div>
+    </div>
 </template>
 <script>
 import arima from 'arima/async';

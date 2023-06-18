@@ -231,7 +231,7 @@
             </ul>
 
             <div class="tab-content" id="myTabContent"
-              :style="`height: ${(userdata.role === 'waiter') ? 370 : 462}px; overflow-y: auto;`">
+              :style="`height: ${(userdata.role === 'waiter') ? 330 : 330}px; overflow-y: auto;`">
               <div class="tab-pane fade show active" id="alltab" role="tabpanel" aria-labelledby="all-tab">
                 <div class="container-fluid">
                   <div class="row">
@@ -422,7 +422,7 @@
           </div>
           <div class="col-md-4">
 
-            <div class="card" :style="`height: ${(userdata.role !== 'waiter') ? 340 : 595}px; overflow-y: auto;`">
+            <div class="card" :style="`height: ${(userdata.role !== 'waiter') ? 240 : 555}px; overflow-y: auto;`">
 
               <div class="row">
                 <div class="col-md-12">

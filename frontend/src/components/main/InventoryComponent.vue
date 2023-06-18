@@ -334,17 +334,20 @@
 
 
     </div>
+    <FooterComponent />
 </template>
   
 <script>
 import { useAuthStore } from "@/stores/authStore";
 import TopNavBarComponent from "@/components/common/TopNavBar.vue";
+import FooterComponent from "../common/FooterComponent.vue";
 import TableComponent from "@/components/common/GenericTable.vue";
 import axios from 'axios';
 
 export default {
     components: {
         TopNavBarComponent,
+        FooterComponent,
         TableComponent,
     },
     data() {

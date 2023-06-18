@@ -88,7 +88,7 @@
                                         </form>
                                     </div>
                                     <div class="col-md-9"
-                                        style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
+                                        style=" height: 550px ;max-height: 550px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
                                         <table class="table">
                                             <thead>
                                                 <tr>
@@ -164,7 +164,7 @@
                                         </form>
                                     </div>
                                     <div class="col-md-9"
-                                        style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
+                                        style=" height: 550px ;max-height: 550px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
                                         <table class="table">
                                             <thead>
                                                 <tr>
@@ -245,7 +245,7 @@
                                         </form>
                                     </div>
                                     <div class="col-md-9"
-                                        style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
+                                        style=" height: 550px ;max-height: 550px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
                                         <table class="table">
                                             <thead>
                                                 <tr>
@@ -308,7 +308,7 @@
 
                                     </div>
                                     <div class="col-md-9"
-                                        style=" height: 600px ;max-height: 600px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
+                                        style=" height: 550px ;max-height: 550px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
                                         <table class="table">
                                             <thead>
                                                 <tr>
@@ -358,17 +358,20 @@
 
 
     </div>
+    <FooterComponent />
 </template>
   
 <script>
 import { useAuthStore } from "@/stores/authStore";
 import TopNavBarComponent from "@/components/common/TopNavBar.vue";
+import FooterComponent from "../common/FooterComponent.vue";
 import TableComponent from "@/components/common/GenericTable.vue";
 import axios from 'axios';
 
 export default {
     components: {
         TopNavBarComponent,
+        FooterComponent,
         TableComponent,
     },
     data() {

@@ -1,11 +1,15 @@
 <template>
-<nav class="navbar navbar-expand-lg navbar-light bg-primary shadow-sm no-print"
+<nav class="navbar navbar-expand-lg navbar-light bg-primary shadow-sm no-print fixed-top"
+    
     :style="{
         'background-image': currentBackground,
         'background-repeat': 'no-repeat',
         'background-position': 'center',
         'background-size': 'cover',
-        'background-attachment': 'fixed'
+        'background-attachment': 'fixed',
+        'position': 'relative',
+        'margin-left': '-50px',
+        'margin-right': '-50px',
     }">
         <div class="container-fluid">
             <!-- Logo and Search Bar -->

@@ -1,7 +1,8 @@
 <template :key="componentKey">
-  <div class="container-fluid">
 
+  <div class="container-fluid">
     <TopNavBarComponent />
+    
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li v-if="userdata.role === 'superuser'" class="nav-item" role="presentation">
@@ -175,7 +176,7 @@
             <div class="col-md-3">
               <h2>Add-ons</h2>
               <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3">
-              <div class="wrapper-content" style="max-height:570px;height: 570px;">
+              <div class="wrapper-content" style="max-height:450px;height: 450px;">
                 <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -218,7 +219,7 @@
 
               </div>
 
-              <div class="card-deck" style="  max-height: 545px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
+              <div class="card-deck" style="  max-height: 515px;overflow-y: auto;overflow-x: hidden;padding-right: 1px;">
                 <div class="card" v-for="(item, index) in filteredInclusionCart" :key="item.id">
                   <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title">{{ item.name }}</h5>
@@ -263,7 +264,7 @@
                   <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
                 </div>
               </div>
-              <div class="card-deck wrapper-content" style="max-height: 500px!important;">
+              <div class="card-deck wrapper-content" style="max-height: 380px!important;">
                 <div class="card" v-for="(item, index) in combinedcart" :key="item.id">
                   <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title">{{ item.name }}</h5>
@@ -363,17 +364,15 @@
                         <div class="col-6 text-right">{{ partialPayment }}</div>
                       </div>
                       <div class="row mb-2">
-                        <div class="col-6"><strong class="text-primary" style="font-size: 24px;">Total:</strong></div>
-                        <div class="col-6 text-right"><strong style="font-size: 24px;">{{ total }}</strong></div>
+                        <div class="col-6"><strong class="text-primary" style="font-size: 20px;">Total:</strong></div>
+                        <div class="col-6 text-right"><strong style="font-size: 20px;">{{ total }}</strong></div>
                       </div>
                       <div class="row">
-                        <div class="col-6"><strong style="font-size: 24px;">Change:</strong></div>
+                        <div class="col-6"><strong style="font-size: 20px;">Change:</strong></div>
                         <div class="col-6 text-right text-danger" style="font-size: 24px;">{{ change }}</div>
                       </div>
                     </div>
                   </div>
-
-
 
                   <button type="button" class="btn btn-primary" @click="generateBillingStatement">Generate
                     BS</button>&nbsp;
@@ -4772,8 +4771,8 @@ body {
 
   overflow-x: hidden;
   overflow-y: hidden;
-  height: 900px;
-  max-height: 900px;
+  height: 500px;
+  max-height: 500px;
   background-color: white;
 }
 
