@@ -4727,11 +4727,12 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
   async mounted() {
     this.$refs.searchQuery.focus();
     this.$refs.searchQuery.blur();
+    $('.currentPeriod').click();
 
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {
-      document.body.addEventListener('contextmenu', this.handleContextMenu);
+      //document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
     const modal = this.$refs.modal;
