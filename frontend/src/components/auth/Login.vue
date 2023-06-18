@@ -1,5 +1,6 @@
 <template>
-  <div class="container-fluid login-background" :style="{ 'background-image': currentBackground, 'background-repeat': 'no-repeat', 'background-position': 'center center', 'background-attachment': 'fixed' }">
+  <div class="container-fluid login-background"
+    :style="{ 'background-image': currentBackground, 'background-repeat': 'no-repeat', 'background-position': 'center center', 'background-attachment': 'fixed' }">
     <div class="row justify-content-center align-items-center vh-100">
       <div class="col-md-3">
         <form @submit.prevent="login" class="animated-form login-form">
@@ -187,13 +188,12 @@ export default {
         }, 200);  //200 works fine for me but you can adjust it
       }
     });
-    
+
   }
 };
 </script>
 
 <style>
-
 .login-background {
   background-size: cover;
   transition: background-image 1s ease-out;

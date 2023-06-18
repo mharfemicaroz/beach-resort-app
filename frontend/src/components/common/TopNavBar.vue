@@ -1,7 +1,5 @@
 <template>
-<nav class="navbar navbar-expand-lg navbar-light bg-primary shadow-sm no-print fixed-top"
-    
-    :style="{
+    <nav class="navbar navbar-expand-lg navbar-light bg-primary shadow-sm no-print fixed-top" :style="{
         'background-image': currentBackground,
         'background-repeat': 'no-repeat',
         'background-position': 'center',
@@ -79,7 +77,7 @@ export default {
             },
         }
     },
-    created() { 
+    created() {
         this.startBackgroundSlideshow();
     },
     computed: {
@@ -116,7 +114,7 @@ export default {
         startBackgroundSlideshow() {
             setInterval(() => {
                 this.backgroundIndex = (this.backgroundIndex + 1) % this.backgrounds.length;
-                
+
             }, 5000);
         },
 

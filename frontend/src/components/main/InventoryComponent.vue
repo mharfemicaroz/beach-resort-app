@@ -110,6 +110,11 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="card" style="height: 60px!important;">
+
+                                    </div>
+                                </div>
                             </div>
 
                         </div>
@@ -176,6 +181,11 @@
                                                 </template>
                                             </table-component>
                                         </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="card" style="height: 60px!important;">
 
                                     </div>
                                 </div>
@@ -254,6 +264,11 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="card" style="height: 60px!important;">
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div id="sales" class="tab-pane">
@@ -322,6 +337,11 @@
                                                 :subHeaders="salessubOptions" @edit-action="editInventory" :editable="true"
                                                 :toggleable="true" />
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="card" style="height: 60px!important;">
+
                                     </div>
                                 </div>
                             </div>

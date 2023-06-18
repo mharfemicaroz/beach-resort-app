@@ -1,8 +1,7 @@
 <template :key="componentKey">
-
   <div class="container-fluid">
     <TopNavBarComponent />
-    
+
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li v-if="userdata.role === 'superuser'" class="nav-item" role="presentation">
@@ -88,7 +87,7 @@
           </div>
           <div class="row">
             <div class="card" style="height: 60px!important;">
-              
+
             </div>
           </div>
 
@@ -219,12 +218,13 @@
                   </span>
                 </h2>
                 <button type="button" class="btn btn-primary ms-auto" @click="moveInclusionCartToMain()">
-                    <i class="fas fa-arrow-right"></i> 
+                  <i class="fas fa-arrow-right"></i>
                 </button>
 
               </div>
 
-              <div class="card-deck" :style="`height:${calcMeasure.height2};overflow-y: auto;overflow-x: hidden;padding-right: 1px;`">
+              <div class="card-deck"
+                :style="`height:${calcMeasure.height2};overflow-y: auto;overflow-x: hidden;padding-right: 1px;`">
                 <div class="card" v-for="(item, index) in filteredInclusionCart" :key="item.id">
                   <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title">{{ item.name }}</h5>
@@ -269,7 +269,7 @@
                   <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
                 </div>
               </div>
-              <div class="card-deck wrapper-content"  :style="`height:${calcMeasure.height3};`">
+              <div class="card-deck wrapper-content" :style="`height:${calcMeasure.height3};`">
                 <div class="card" v-for="(item, index) in combinedcart" :key="item.id">
                   <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title">{{ item.name }}</h5>
@@ -547,6 +547,11 @@
 
                   </div>
                 </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="card" style="height: 60px!important;">
+
               </div>
             </div>
 
@@ -1879,12 +1884,12 @@ export default {
       const user = authStore.user;
       return user;
     },
-    calcMeasure(){
+    calcMeasure() {
       return {
-        "height1" : parseFloat(window.innerHeight) - 300 +"px",
-        "height2" : parseFloat(window.innerHeight) - 230 +"px",
-        "height3" : parseFloat(window.innerHeight) - 366 +"px",
-        "height4" : parseFloat(window.innerHeight) - 185 +"px",
+        "height1": parseFloat(window.innerHeight) - 300 + "px",
+        "height2": parseFloat(window.innerHeight) - 230 + "px",
+        "height3": parseFloat(window.innerHeight) - 366 + "px",
+        "height4": parseFloat(window.innerHeight) - 185 + "px",
       }
     },
     combinedcart() {

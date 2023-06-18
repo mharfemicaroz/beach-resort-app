@@ -619,6 +619,11 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="card" style="height: 60px!important;">
+
+          </div>
+        </div>
       </div>
       <div class="tab-pane fade" id="inventory" role="tabpanel" aria-labelledby="inventory-tab">
         <div class="row">
@@ -702,6 +707,11 @@
             </div>
           </div>
         </div>
+        <div class="row">
+          <div class="card" style="height: 60px!important;">
+
+          </div>
+        </div>
       </div>
       <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
         <div class="row">
@@ -768,6 +778,11 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="card" style="height: 60px!important;">
+
           </div>
         </div>
       </div>
