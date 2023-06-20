@@ -6,11 +6,11 @@
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li v-if="userdata.role === 'superuser'" class="nav-item" role="presentation">
-        <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button"
+        <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button"
           role="tab" aria-controls="dashboard" aria-selected="true" @click="resetSummary(0)">Dashboard</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button :class="userdata.role === 'superuser' ? 'nav-link' : 'nav-link active'" id="booking-tab"
+        <button class="nav-link active" id="booking-tab"
           data-bs-toggle="tab" data-bs-target="#booking" type="button" role="tab" aria-controls="booking"
           aria-selected="true" @click="resetSummary(1)">Reservation</button>
       </li>
@@ -30,7 +30,7 @@
 
 
     <div class="tab-content mt-3" id="myTabContent">
-      <div v-if="userdata.role === 'superuser'" class="tab-pane fade show active" id="dashboard" role="tabpanel"
+      <div v-if="userdata.role === 'superuser'" class="tab-pane fade" id="dashboard" role="tabpanel"
         aria-labelledby="dashboard-tab">
         <div class="container-fluid">
           <div class="row">
@@ -41,7 +41,7 @@
         </div>
       </div>
 
-      <div :class="userdata.role === 'superuser' ? 'tab-pane fade' : 'tab-pane fade show active'" id="booking"
+      <div class="tab-pane fade show active" id="booking"
         role="tabpanel" aria-labelledby="booking-tab">
         <div class="container-fluid">
           <div class="row">
@@ -1300,10 +1300,6 @@
                     <button v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(this.reservation.checkinDate)"
                       type="button" class="btn btn-success" @click="checkinGuest()"
                       :style="{ display: toggleselect ? 'none' : '' }">Check-in</button>
-                    &nbsp;
-                    <button @click="transferRoom()" type="button" class="btn btn-success">{{ toggleselect ? 'Save' :
-                      'Transfer' }}</button>
-
                   </span>
                 </div>
 
@@ -1327,8 +1323,11 @@
 
                 <button v-else-if="this.reservation.status == 'vacant'" type="submit" class="btn btn-primary">Book
                   Now</button> &nbsp;
-                <button v-if="userdata.role !== 'reservationist' && this.reservation.status !== 'vacant' " type="button"
-                  @click="voidBook()" class="btn btn-danger" :style="{ display: toggleselect ? 'none' : '' }">Void</button> &nbsp;
+                <button v-if="userdata.role !== 'reservationist' && (this.reservation.status !== 'vacant' && this.reservation.status !== 'checkedout' && this.reservation.status !== 'cancelled')" @click="transferRoom()" type="button" class="btn btn-success">{{ toggleselect ? 'Save' :
+                  'Transfer' }}</button> &nbsp;
+                <button v-if="userdata.role !== 'reservationist' && this.reservation.status !== 'vacant'" type="button"
+                  @click="voidBook()" class="btn btn-danger"
+                  :style="{ display: toggleselect ? 'none' : '' }">Void</button> &nbsp;
                 &nbsp;<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
