@@ -1,7 +1,7 @@
 <template :key="componentKey">
-<TopNavBarComponent />
+  <TopNavBarComponent />
   <div class="container-fluid main">
-    
+
 
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -4008,6 +4008,7 @@ export default {
 
         let bookid = null;
         let groupid = null;
+        const item = this.bookings[this.itemIndex];
         let reserveStatus = null;
         try {
           bookid = this.bookings[this.itemIndex].itemID;
@@ -4266,6 +4267,12 @@ export default {
 
               }
 
+              try {
+                this.partialPayment = doneTransaction.data.cashAmountPay;
+              } catch (error) {
+
+              }
+
             } else {
               // Update the transaction if it already exists
               payStatus = (parseFloat(this.total) - parseFloat(this.cashAmount)) <= 0 ? 'full' : 'partial';
@@ -4367,16 +4374,23 @@ export default {
                 }
                 this.updateBookings(this.bookings[this.itemIndex].id);
               }
+              try {
+                this.partialPayment = newcashAmountPay;
+              } catch (error) {
+
+              }
             }
             this.taskRecord(`action:/transaction added/client:/${this.billing.clientName}`)
             this.walkinStatus = false;
-            this.generateBillingStatement();
             await this.$swal.fire({
               title: 'Success',
               text: 'Transaction saved successfully!',
               icon: 'success'
             }).then(response => {
-              document.location.reload();
+              setTimeout(() => {
+                this.generateBillingStatement();
+              }, 500);
+              //document.location.reload();
             })
           } catch (error) {
             // Show an error message using SweetAlert
@@ -4397,7 +4411,7 @@ export default {
       }
 
     },
-    printSection(idstring, pLength, pWidth, ft) {
+    async printSection(idstring, pLength, pWidth, ft) {
       const section = document.getElementById(idstring);
       const sectionHTML = section.outerHTML;
       const printBtn = '<div class="row no-print"><div class="col-md-12 text-right"><button class="btn btn-danger" onclick="window.print()">Print Now</button></div></div>';
@@ -4405,19 +4419,25 @@ export default {
       const footerSummary = (ft) ? footerContent : '';
       const bootstrapCSS = `<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 1.25;padding: 0.5in;font-size:16px} hr {margin-top: 0.5px;;margin-bottom: 0.5px;} p {margin-top: 0.5px;;margin-bottom: 0.5px;} table {table-layout: auto;width:100%;margin:0 auto;border-collapse:collapse;margin-top: 1px;margin-bottom: 1px;} tr td:last-child{width:1%;white-space:nowrap;} .container {width: ${pWidth}px;height: ${pLength}px;padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}}html, body {width: ${pWidth}px;height: ${pLength}px;margin: 0;padding: 0;}}</style>`;
       const bootstrapJS = '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">';
-      const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${printBtn}${sectionHTML}${footerSummary}${bootstrapJS}</body></html>`;
+      const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${printBtn}${sectionHTML}${footerSummary}${bootstrapJS}<script>setTimeout('alert()',1000)<\/script></body></html>`;
       // Create a new jsPDF instance
 
 
-      const options = "height=500,width=800,scrollbars=no,status=no,toolbar=no,location=no";
-      const newWindow = window.open("", "_blank", options);
-      newWindow.document.write(html);
-      newWindow.document.close();
-      newWindow.onload = function () {
-        newWindow.focus();
-        newWindow.print();
-        newWindow.close();
-      };
+      function printAndDetect() {
+        const options = 'height=500,width=800,scrollbars=no,status=no,toolbar=no,location=no';
+        const printWindow = window.open('', options);
+        printWindow.document.write(html);
+        printWindow.document.close();
+
+        printWindow.addEventListener('load', function () {
+          printWindow.focus();
+          printWindow.print();
+          printWindow.close();
+          document.location.reload();
+        });
+      }
+
+      printAndDetect();
     },
     async generateBillingStatement() {
       // const response = await axios.get(this.API_URL + "transaction/");

@@ -422,7 +422,7 @@
           </div>
           <div class="col-md-4">
 
-            <div class="card" :style="`height: ${(userdata.role !== 'waiter') ? 240 : 555}px; overflow-y: auto;`">
+            <div ref="itemCart" class="card" :style="`height: ${(userdata.role !== 'waiter') ? 240 : 555}px; overflow-y: auto;`">
 
               <div class="row">
                 <div class="col-md-12">
@@ -445,23 +445,23 @@
                       <tr v-for="(item, index) in cartItems" :key="index">
                         <td>
                           <div class="row d-flex flex-row">
-                            <div class="col-sm-6 text-left">
+                            <div class="col-sm-4 text-left">
                               <img :src="item.image" class="img-thumbnail img-xs">
                             </div>
-                            <div class="col-sm-6 text-left m-0 p-0 ">
-                              <h6 class="text-left title text-truncate" style="font-weight: bold;">{{ item.name }}</h6>
+                            <div class="col-sm-8 text-left m-0 p-0 ">
+                              <h6 class="text-left" style="font-weight: bold;">{{ item.name }}</h6>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <div class="m-btn-group m-btn-group--pill btn-group mr-2" role="group" aria-label="...">
-                            <button type="button" class="m-btn btn-light btn btn-default" @click="decreaseQty(item)">
+                          <div class="btn-group mr-2" role="group" aria-label="...">
+                            <button type="button" class="m-btn btn-light btn btn-default" style="font-size: small; width: 20px;" @click="decreaseQty(item)">
                               <i class="fa fa-minus"></i>
                             </button>
-                            <button type="button" class="m-btn btn-light btn btn-default" disabled>
+                            <button type="button" class="m-btn btn-light btn btn-default" style="font-size: medium;width: 20px;" disabled>
                               {{ item.qty }}
                             </button>
-                            <button type="button" class="m-btn btn-light btn btn-default" @click="increaseQty(item, 1)">
+                            <button type="button" class="m-btn btn-light btn btn-default" style="font-size: small;width: 20px;" @click="increaseQty(item, 1)">
                               <i class="fa fa-plus"></i>
                             </button>
                           </div>
@@ -2255,7 +2255,7 @@ export default {
 
       if (item.stocks > 0) {
         if (!isItemExist) {
-          this.cartItems.push(cart);
+          this.cartItems.unshift(cart);
           this.currentItem = cart;
         } else {
           const obj = this.cartItems.find(item => item.id === cart.id);

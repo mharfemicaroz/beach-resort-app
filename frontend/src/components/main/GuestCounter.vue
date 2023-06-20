@@ -143,7 +143,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 /* Add custom styles here */
 .login-background {
     background: url("@/assets/beach-resort-background.jpg") no-repeat center center fixed;
