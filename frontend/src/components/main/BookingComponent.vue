@@ -4983,6 +4983,19 @@ img {
   /* adjust the color as needed */
 }
 
+.cv-item {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.cv-item:hover {
+  cursor: pointer;
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
 .card {
   margin: 5px;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);

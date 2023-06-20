@@ -1,5 +1,5 @@
 <template>
-    <footer class="bg-primary text-white mt-2 fixed-bottom">
+    <footer class="text-dark mt-2 fixed-bottom" style="background-color: #ECEFF1;">
         <div class="container py-3">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
