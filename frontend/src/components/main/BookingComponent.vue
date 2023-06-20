@@ -10,9 +10,8 @@
           role="tab" aria-controls="dashboard" aria-selected="true" @click="resetSummary(0)">Dashboard</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="booking-tab"
-          data-bs-toggle="tab" data-bs-target="#booking" type="button" role="tab" aria-controls="booking"
-          aria-selected="true" @click="resetSummary(1)">Reservation</button>
+        <button class="nav-link active" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking" type="button"
+          role="tab" aria-controls="booking" aria-selected="true" @click="resetSummary(1)">Reservation</button>
       </li>
       <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
         <button class="nav-link" id="monitor-tab" data-bs-toggle="tab" data-bs-target="#monitor" type="button" role="tab"
@@ -41,8 +40,7 @@
         </div>
       </div>
 
-      <div class="tab-pane fade show active" id="booking"
-        role="tabpanel" aria-labelledby="booking-tab">
+      <div class="tab-pane fade show active" id="booking" role="tabpanel" aria-labelledby="booking-tab">
         <div class="container-fluid">
           <div class="row">
 
@@ -1190,8 +1188,7 @@
 
           <form v-else @submit.prevent="clickTestAddItem">
             <!-- Client Information -->
-            <h5>Booking Details<p class="text-muted" style="font-size: 12px;">*Field required</p>
-            </h5>
+            <h5>Booking Details<span class="text-muted" style="font-size: 12px;">*Field required</span></h5>
             <div class="form-group row">
               <label for="name" class="col-sm-2 col-form-label">Name:*</label>
               <div class="col-sm-4">
@@ -1218,7 +1215,6 @@
             <div class="form-group row mt-2">
               <label for="nationality" class="col-sm-2 col-form-label">Nationality:*</label>
               <div class="col-sm-4">
-
                 <select class="form-control" id="nationality" v-model="reservation.clientNationality" required>
                   <option value="">-- Please select --</option>
                   <option value="Filipino">Filipino</option>
@@ -1241,97 +1237,114 @@
               </div>
               <label for="checkout" class="col-sm-2 col-form-label">Check-out Date:*</label>
               <div class="col-sm-4">
-                <input v-if="this.reservation.status == 'vacant'" aria-describedby="inputhelp2" type="date"
+                <input v-if="reservation.status == 'vacant'" aria-describedby="inputhelp2" type="date"
                   class="form-control" id="checkout" v-model="reservation.checkoutDate" required>
                 <input v-else type="text" class="form-control" id="checkout" v-model="reservation.checkoutDate" readonly>
-                <small v-if="this.reservation.status == 'vacant'" id="inputhelp2" class="form-text text-muted mt-0"
+                <small v-if="reservation.status == 'vacant'" id="inputhelp2" class="form-text text-muted mt-0"
                   style="font-size: 11px;">Please enter the date in the format: DD/MM/YYYY.</small>
               </div>
             </div>
             <div class="form-group row mt-2">
               <label for="room" class="col-sm-2 col-form-label">Room:*</label>
-              <div v-if="this.reservation.status === 'vacant' || this.toggleselect" class="col-sm-4">
-                <v-select :disabled="(roomSelect !== 'ok') ? true : false" aria-describedby="inputhelp3"
-                  :multiple="!toggleselect" :options="updatedRooms" label="name" v-model="reservation.roomName" required>
+              <div v-if="reservation.status === 'vacant' || toggleselect" class="col-sm-4">
+                <v-select :disabled="roomSelect !== 'ok'" aria-describedby="inputhelp3" :multiple="!toggleselect"
+                  :options="updatedRooms" label="name" v-model="reservation.roomName" required>
                   <template #option="{ name, type, price }">
                     <h6 style="margin: 0">{{ name }}</h6>
                     <em><small>{{ type }}</small></em>
                     <em><small> ({{ price }} units)</small></em>
                   </template>
                 </v-select>
-                <small v-if="this.toggleselect" id="inputhelp3" class="form-text text-muted mt-0">Please select new
+                <small v-if="toggleselect" id="inputhelp3" class="form-text text-muted mt-0">Please select a new
                   room.</small>
               </div>
               <div v-else class="col-sm-4">
                 <input type="text" class="form-control" v-model="reservation.roomName" readonly>
               </div>
-              <!-- <label for="guests" class="col-sm-2 col-form-label">No. of Guests:</label>
-              <div class="col-sm-4">
-
-                <input type="number" class="form-control" v-model="reservation.numguests" autocomplete="off" min="0"
-                  required />
-
-              </div> -->
-              <label for="name" class="col-sm-2 col-form-label">Remarks:</label>
+              <label for="remarks" class="col-sm-2 col-form-label">Remarks:</label>
               <div class="col-sm-4">
                 <input type="text" class="form-control" v-model="reservation.remarks" autocomplete="off">
               </div>
             </div>
-            <!-- <div class="form-group row">
 
-            </div> -->
             <div class="form-group row mt-2">
+
               <div class="mt-3 mb-3 d-flex justify-content-end">
-                <div v-if="this.reservation.status == 'reserved'">
-                  <button type="button" class="btn btn-primary" @click="cancelReservation()"
-                    :style="{ display: toggleselect ? 'none' : '' }">Cancel
-                    Reservation</button>&nbsp;
+                <div v-if="reservation.status == 'reserved'">
+                  <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded" @click="cancelReservation()">
+                    <i class="fas fa-times"></i> Cancel Reservation
+                  </button>
                   <span v-if="userdata.role !== 'reservationist'">
-                    <button v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'" @click="moveToCart()"
-                      type="button" class="btn btn-success" :style="{ display: toggleselect ? 'none' : '' }">Down
-                      Payment</button>
-                    &nbsp;
-                    <button v-else-if="this.reservation.isPaid == 'partial'" @click="moveToCart()" type="button"
-                      class="btn btn-success" :style="{ display: toggleselect ? 'none' : '' }">Partial Payment</button>
-                    &nbsp;
-                    <button v-else-if="this.reservation.isPaid == 'yes'" @click="moveToCart()" type="button"
-                      class="btn btn-success" :style="{ display: toggleselect ? 'none' : '' }">View Summary</button>
-                    &nbsp;
-                    <button v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(this.reservation.checkinDate)"
-                      type="button" class="btn btn-success" @click="checkinGuest()"
-                      :style="{ display: toggleselect ? 'none' : '' }">Check-in</button>
+                    <button v-show="!toggleselect" v-if="reservation.isPaid === '' || reservation.isPaid === 'no'" @click="moveToCart()"
+                      type="button" class="btn btn-success btn-sm btn-margin rounded">
+                      <i class="fas fa-check"></i> Down Payment
+                    </button>
+                    <button v-show="!toggleselect" v-else-if="reservation.isPaid === 'partial'" @click="moveToCart()" type="button"
+                      class="btn btn-warning btn-sm btn-margin rounded">
+                      <i class="fas fa-check"></i> Partial Payment
+                    </button>
+                    <button v-show="!toggleselect" v-else-if="reservation.isPaid === 'yes'" @click="moveToCart()" type="button"
+                      class="btn btn-primary btn-sm btn-margin rounded">
+                      <i class="fas fa-eye"></i> View Summary
+                    </button>
+                    <button v-show="!toggleselect" v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(reservation.checkinDate)" type="button"
+                      class="btn btn-success btn-sm btn-margin rounded" @click="checkinGuest()">
+                      <i class="fas fa-sign-in-alt"></i> Check-in
+                    </button>
                   </span>
                 </div>
 
-                <div v-else-if="this.reservation.status == 'checkedin'" :style="{ display: toggleselect ? 'none' : '' }">
-
+                <div v-else-if="reservation.status == 'checkedin'">
                   <span v-if="userdata.role !== 'reservationist'">
-                    <div v-if="this.reservation.isPaid == '' || this.reservation.isPaid == 'no'">
-                      <button @click="moveToCart()" type="button" class="btn btn-success">Pay Now</button>
+                    <div v-if="reservation.isPaid === '' || reservation.isPaid === 'no'">
+                      <button v-show="!toggleselect" @click="moveToCart()" type="button" class="btn btn-success btn-sm btn-margin rounded">
+                        <i class="fas fa-credit-card"></i> Pay Now
+                      </button>
                     </div>
-                    <div v-else-if="this.reservation.isPaid == 'partial'">
-                      <button @click="moveToCart()" type="button" class="btn btn-success">Pay Now</button>&nbsp;
-                      <button type="button" class="btn btn-primary" @click="extendBooking()">Extend (1 day)</button>
+                    <div v-else-if="reservation.isPaid === 'partial'">
+                      <button v-show="!toggleselect" @click="moveToCart()" type="button" class="btn btn-success btn-sm btn-margin rounded">
+                        <i class="fas fa-credit-card"></i> Pay Now
+                      </button>
+                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded" @click="extendBooking()">
+                        <i class="fas fa-calendar-plus"></i> Extend (1 day)
+                      </button>
                     </div>
                     <div v-else>
-                      <button type="button" class="btn btn-success" @click="viewSummary()">View Summary</button>&nbsp;
-                      <button type="button" class="btn btn-primary" @click="extendBooking()">Extend (1 day)</button>&nbsp;
-                      <button type="button" class="btn btn-success" @click="checkOutGuest()">Check-out</button>
+                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded" @click="viewSummary()">
+                        <i class="fas fa-eye"></i> View Summary
+                      </button>
+                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded" @click="extendBooking()">
+                        <i class="fas fa-calendar-plus"></i> Extend (1 day)
+                      </button>
+                      <button v-show="!toggleselect" type="button" class="btn btn-success btn-sm btn-margin rounded" @click="checkOutGuest()">
+                        <i class="fas fa-sign-out-alt"></i> Check-out
+                      </button>
                     </div>
                   </span>
                 </div>
 
-                <button v-else-if="this.reservation.status == 'vacant'" type="submit" class="btn btn-primary">Book
-                  Now</button> &nbsp;
-                <button v-if="userdata.role !== 'reservationist' && (this.reservation.status !== 'vacant' && this.reservation.status !== 'checkedout' && this.reservation.status !== 'cancelled')" @click="transferRoom()" type="button" class="btn btn-success">{{ toggleselect ? 'Save' :
-                  'Transfer' }}</button> &nbsp;
-                <button v-if="userdata.role !== 'reservationist' && this.reservation.status !== 'vacant'" type="button"
-                  @click="voidBook()" class="btn btn-danger"
-                  :style="{ display: toggleselect ? 'none' : '' }">Void</button> &nbsp;
-                &nbsp;<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button v-else-if="reservation.status == 'vacant'" type="submit"
+                  class="btn btn-primary btn-sm btn-margin rounded">
+                  <i class="fas fa-book"></i> Book Now
+                </button>
+                <button
+                  v-if="new Date().setHours(0, 0, 0, 0) <= parseDate2(reservation.checkinDate) && userdata.role !== 'reservationist' && (reservation.status !== 'vacant' && reservation.status !== 'checkedout' && reservation.status !== 'cancelled')"
+                  @click="transferRoom()" type="button" class="btn btn-success btn-sm btn-margin rounded">
+                  <i class="fas fa-exchange-alt"></i> {{ toggleselect ? 'Save' : 'Transfer' }}
+                </button>
+                <button v-if="userdata.role !== 'reservationist' && reservation.status !== 'vacant'" type="button"
+                  @click="voidBook()" class="btn btn-danger btn-sm btn-margin rounded" v-show="!toggleselect">
+                  <i class="fas fa-trash"></i> Void
+                </button>
+                <button type="button" class="btn btn-danger btn-sm btn-margin rounded" data-bs-dismiss="modal">
+                  <i class="fas fa-times"></i> Close
+                </button>
               </div>
+
+
             </div>
           </form>
+
 
 
         </div>
@@ -3175,6 +3188,7 @@ export default {
       })
     },
     async transferRoom() {
+
       if (this.toggleselect === false) {
         this.reservation.roomName = "";
         this.toggleselect = true;
@@ -3182,6 +3196,10 @@ export default {
       } else {
         const item = this.bookings[this.itemIndex];
         const room = this.reservation.roomName;
+        
+        if(room.name === undefined){
+          return;
+        }
 
         const oldroom = {
           name: this.bookings[this.itemIndex].room_name,
@@ -5009,6 +5027,10 @@ img {
 
 .autosuggestions li:hover {
   background-color: #f2f2f2;
+}
+
+.btn-margin {
+  margin-right: 10px;
 }
 </style>
 
