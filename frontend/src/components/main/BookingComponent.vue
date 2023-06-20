@@ -1300,9 +1300,10 @@
                     <button v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(this.reservation.checkinDate)"
                       type="button" class="btn btn-success" @click="checkinGuest()"
                       :style="{ display: toggleselect ? 'none' : '' }">Check-in</button>
-                    <!-- <button @click="transferRoom()" type="button"
-                      class="btn btn-success">{{ toggleselect ? 'Save' : 'Transfer' }}</button>
-                     -->
+                    &nbsp;
+                    <button @click="transferRoom()" type="button" class="btn btn-success">{{ toggleselect ? 'Save' :
+                      'Transfer' }}</button>
+
                   </span>
                 </div>
 
@@ -1326,8 +1327,8 @@
 
                 <button v-else-if="this.reservation.status == 'vacant'" type="submit" class="btn btn-primary">Book
                   Now</button> &nbsp;
-                <button v-if="userdata.role !== 'reservationist' && this.reservation.status !== 'vacant'" type="button"
-                  @click="voidBook()" class="btn btn-danger">Void</button> &nbsp;
+                <button v-if="userdata.role !== 'reservationist' && this.reservation.status !== 'vacant' " type="button"
+                  @click="voidBook()" class="btn btn-danger" :style="{ display: toggleselect ? 'none' : '' }">Void</button> &nbsp;
                 &nbsp;<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
               </div>
             </div>
@@ -3175,114 +3176,91 @@ export default {
       })
     },
     async transferRoom() {
-      // if (this.toggleselect === false) {
-      //   this.reservation.roomName = "";
-      //   this.toggleselect = true;
-      //   this.roomSelect = "ok";
-      // } else {
-      //   const room = this.reservation.roomName;
+      if (this.toggleselect === false) {
+        this.reservation.roomName = "";
+        this.toggleselect = true;
+        this.roomSelect = "ok";
+      } else {
+        const item = this.bookings[this.itemIndex];
+        const room = this.reservation.roomName;
 
-      //   const oldroom = {
-      //     name: this.bookings[this.itemIndex].room_name,
-      //     type: this.bookings[this.itemIndex].room_type,
-      //     price: this.bookings[this.itemIndex].room_price
-      //   }
+        const oldroom = {
+          name: this.bookings[this.itemIndex].room_name,
+          type: this.bookings[this.itemIndex].room_type,
+          price: this.bookings[this.itemIndex].room_price
+        }
 
-      //   const newroom = {
-      //     name: room.name,
-      //     type: room.type,
-      //     price: room.price
-      //   }
+        const newroom = {
+          name: room.name,
+          type: room.type,
+          price: room.price
+        }
 
-      //   const result = await this.$swal.fire({
-      //     icon: 'warning',
-      //     title: 'Are you sure?',
-      //     text: 'Are you sure you want to transfer from ' + oldroom.name + ' to ' + newroom.name + '?',
-      //     confirmButtonText: 'Yes',
-      //     cancelButtonText: 'No',
-      //     showCancelButton: true
-      //   })
-      //   if (!result.isConfirmed) {
-      //     return;
-      //   }
+        const result = await this.$swal.fire({
+          icon: 'warning',
+          title: 'Are you sure?',
+          text: 'Are you sure you want to transfer from ' + oldroom.name + ' to ' + newroom.name + '?',
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'No',
+          showCancelButton: true
+        })
 
-      //   const item = this.bookings[this.itemIndex];
-      //   const bookingID = item.itemID;
-      //   const groupkey = (item.groupkey || '');
-      //   let groupbookings = [];
-      //   let existingTransactionItems = [];
+        if (!result.isConfirmed) {
+          return;
+        }
 
-      //   if (groupkey.length > 0) {
-      //     try {
-      //       const o = await axios.post(`${this.API_URL}bookings/filter/`, [
-      //         { "columnName": "groupkey", "columnKey": groupkey },
-      //       ])
-      //       groupbookings = o.data;
-      //     } catch (error) {
+        if (oldroom.type !== newroom.type) {
+          this.$swal({
+            title: "Transfer Error",
+            text: "Room types do not match. Unable to transfer room.",
+            icon: "error",
+            buttons: {
+              confirm: {
+                text: "OK",
+                value: true,
+                visible: true,
+                className: "confirm-button",
+                closeModal: true
+              }
+            }
+          });
+          return;
+        }
 
-      //     }
-      //   }
+        if (oldroom.price !== newroom.price) {
+          this.$swal({
+            title: "Transfer Error",
+            text: "Room prices do not match. Unable to transfer room.",
+            icon: "error",
+            buttons: {
+              confirm: {
+                text: "OK",
+                value: true,
+                visible: true,
+                className: "confirm-button",
+                closeModal: true
+              }
+            }
+          });
+          return;
+        }
 
-      //   if (groupbookings.length > 0) {
-      //     existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-      //       columnName: 'groupkey',
-      //       columnKey: groupkey
-      //     });
-      //   } else {
-      //     existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-      //       columnName: 'bookingID',
-      //       columnKey: bookingID
-      //     });
-      //   }
+        item.room_name = newroom.name;
+        item.room_price = newroom.price;
+        item.room_type = newroom.type;
+        item.remarks = "transferred from: " + oldroom.name + " on " + formatDate();
+        this.updateBookings(item.id);
+        this.taskRecord(`action:/transfer guest/client:/${item.name}`)
+        this.$swal.fire({
+          icon: 'success',
+          title: 'Room Transfer',
+          text: 'Room transferred successfully.',
+          confirmButtonText: 'OK'
+        }).then(response => {
+          document.location.reload();
+        })
 
-      //   if (groupbookings.length > 0) {
-      //     groupbookings.forEach(async item => {
-      //       let itemIndex = this.bookings.findIndex(
-      //         o => o.itemID === item.itemID
-      //       );
-
-      //       const numDays = Math.ceil((
-      //         new Date(this.bookings[itemIndex].checkoutDate.split('/')[2] + "-" + this.bookings[itemIndex].checkoutDate.split('/')[1] + "-" + this.bookings[itemIndex].checkoutDate.split('/')[0]).setHours(0, 0, 0, 0)
-      //         -
-      //         new Date(this.bookings[itemIndex].checkinDate.split('/')[2] + "-" + this.bookings[itemIndex].checkinDate.split('/')[1] + "-" + this.bookings[itemIndex].checkinDate.split('/')[0]).setHours(0, 0, 0, 0)
-      //       ) / (1000 * 60 * 60 * 24));
-      //       const newTotalPrice = parseFloat(this.bookings[itemIndex].totalPrice) - parseFloat(oldroom.price) * numDays + parseFloat(newroom.price);
-
-      //       try {
-      //         const bookingData = {
-      //           itemID: this.bookings[itemIndex].itemID,
-      //           status: this.bookings[itemIndex].status,
-      //           name: this.bookings[itemIndex].name,
-      //           clientemail: this.bookings[itemIndex].clientemail,
-      //           clientaddress: this.bookings[itemIndex].clientaddress,
-      //           clientnationality: this.bookings[itemIndex].clientnationality,
-      //           clientType: this.bookings[itemIndex].clientType,
-      //           checkinDate: this.bookings[itemIndex].checkinDate,
-      //           checkoutDate: this.bookings[itemIndex].checkoutDate,
-      //           room_name: this.bookings[itemIndex].room_name,
-      //           room_price: this.bookings[itemIndex].room_price,
-      //           room_type: this.bookings[itemIndex].room_type,
-      //           remarks: this.bookings[itemIndex].remarks,
-      //           contactNumber: this.bookings[itemIndex].contactNumber,
-      //           actualCheckoutDate: this.bookings[itemIndex].actualCheckoutDate,
-      //           cancellationDate: this.bookings[itemIndex].cancellationDate,
-      //           isPaid: "partial",
-      //           totalPrice: newTotalPrice,
-      //           partialPayment: this.bookings[itemIndex].partialPayment,
-      //           processedBy: this.userdata.fName + " " + this.userdata.lName,
-      //           groupkey: this.bookings[itemIndex].groupkey,
-      //         };
-      //         await axios.put(this.API_URL + `bookings/${this.bookings[itemIndex].id}/`, bookingData);
-      //       } catch (error) {
-      //         console.log(error);
-      //       }
-      //     })
-      //   } else {
-
-      //   }
-
-
-      // }
+      }
     },
     async extendBooking() {
       const result = await this.$swal.fire({
