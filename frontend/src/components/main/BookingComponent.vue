@@ -1724,7 +1724,7 @@ export default {
       },
       showDate: this.thisMonth(1),
       message: "",
-      startingDayOfWeek: 0,
+      startingDayOfWeek: 1,
       disablePast: false,
       disableFuture: false,
       displayPeriodUom: "week",
