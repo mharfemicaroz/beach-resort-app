@@ -102,15 +102,10 @@
                 <li class="nav-item">
                   <a class="nav-link active " data-bs-toggle="tab" @click="activeMainTab = 'BEACH ROOM'"
                     href="#beachroom">Beach Rooms</a>
-
                 </li>
                 <li class="nav-item">
                   <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'POOL ROOM'" href="#poolrooms">Pool
                     Rooms</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'BEACH COTTAGE'"
-                    href="#beachcottages">Beach Cottages</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'POOL COTTAGE'"
@@ -118,7 +113,19 @@
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" data-bs-toggle="tab" @click="activeMainTab = 'GAZEBO COTTAGE'"
-                    href="#gazebocottages">Gazebo Cottages</a>
+                    href="#gazebocottages">Native Gazebo Cottages</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'BEACH COTTAGE'"
+                    href="#beachcottages">Beach Cottages (Day)</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'N-BEACH COTTAGE'"
+                    href="#nbeachcottages">Beach Cottages (Night)</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'HALL'"
+                    href="#halls">Halls</a>
                 </li>
               </ul>
             </div>
@@ -126,20 +133,15 @@
             <div class="col-sm-10">
               <div class="tab-content mt-3" id="propertyTabContent">
                 <div class="tab-pane fade show active" id="beachroom" role="tabpanel" aria-labelledby="beachroom-tab">
-
-                  <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
-
-                </div>
-                <div class="tab-pane fade" id="poolrooms" role="tabpanel" aria-labelledby="poolroom-tab">
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col-md-12">
-                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                  <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="beachcottages" role="tabpanel" aria-labelledby="beachcottage-tab">
+                <div class="tab-pane fade" id="poolrooms" role="tabpanel" aria-labelledby="poolroom-tab">
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col-md-12">
@@ -166,6 +168,34 @@
                     </div>
                   </div>
                 </div>
+                <div class="tab-pane fade" id="beachcottages" role="tabpanel" aria-labelledby="beachcottage-tab">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="nbeachcottages" role="tabpanel" aria-labelledby="nbeachcottage-tab">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="halls" role="tabpanel" aria-labelledby="halls-tab">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
 

@@ -144,9 +144,11 @@
                                                     <option value="">-- Select Type --</option>
                                                     <option value="BEACH ROOM">BEACH ROOM</option>
                                                     <option value="POOL ROOM">POOL ROOM</option>
-                                                    <option value="BEACH COTTAGE">BEACH COTTAGE</option>
                                                     <option value="POOL COTTAGE">POOL COTTAGE</option>
-                                                    <option value="GAZEBO COTTAGE">GAZEBO COTTAGE</option>
+                                                    <option value="GAZEBO COTTAGE">NATIVE GAZEBO COTTAGE</option>
+                                                    <option value="BEACH COTTAGE">BEACH COTTAGE (day)</option>
+                                                    <option value="N-BEACH COTTAGE">BEACH COTTAGE (night)</option>
+                                                    <option value="HALL">HALL</option>
                                                 </select>
                                             </div>
                                             <div class="mb-3">
