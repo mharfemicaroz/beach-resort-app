@@ -54,7 +54,7 @@
                   <input type="search" id="form1" class="form-control" placeholder="Type query" v-model="booksearchtext"
                     @input="populateCalendarItems" @click="showAutosuggestions = false" @blur="hideAutosuggestions"
                     aria-label="Search" ref="searchQuery" autocomplete="off" aria-autocomplete="off" />
-                  <ul class="autosuggestions" v-if="!showAutosuggestions">
+                  <ul id="suglist" class="autosuggestions" v-if="!showAutosuggestions">
                     <li v-for="suggestion in autosuggestions" @click="selectSuggestion(suggestion)">{{ suggestion }}</li>
                   </ul>
                 </div>
@@ -124,8 +124,7 @@
                     href="#nbeachcottages">Beach Cottages (Night)</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'HALL'"
-                    href="#halls">Halls</a>
+                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'HALL'" href="#halls">Halls</a>
                 </li>
               </ul>
             </div>
@@ -136,7 +135,7 @@
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col-md-12">
-                  <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
                       </div>
                     </div>
                   </div>
@@ -567,8 +566,8 @@
                         <div id="transactionHistory">
                           <h2>Transaction History</h2>
                           <table-component :mainHeaders=transactionsOptions :mainItems="filteredTransactions"
-                            :subHeaders2="transactionhistory" :subHeaders="transactionitem" :editable="false"
-                            :toggleable="true" />
+                            :subHeaders2="transactionhistory" :subHeaders="transactionitem"
+                            @delete-action="deleteTransaction" :deletable="true" :editable="false" :toggleable="true" />
                         </div>
 
                       </div>
@@ -1301,23 +1300,25 @@
 
               <div class="mt-3 mb-3 d-flex justify-content-end">
                 <div v-if="reservation.status == 'reserved'">
-                  <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded" @click="cancelReservation()">
+                  <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
+                    @click="cancelReservation()">
                     <i class="fas fa-times"></i> Cancel Reservation
                   </button>
                   <span v-if="userdata.role !== 'reservationist'">
-                    <button v-show="!toggleselect" v-if="reservation.isPaid === '' || reservation.isPaid === 'no'" @click="moveToCart()"
-                      type="button" class="btn btn-success btn-sm btn-margin rounded">
+                    <button v-show="!toggleselect" v-if="reservation.isPaid === '' || reservation.isPaid === 'no'"
+                      @click="moveToCart()" type="button" class="btn btn-success btn-sm btn-margin rounded">
                       <i class="fas fa-check"></i> Down Payment
                     </button>
-                    <button v-show="!toggleselect" v-else-if="reservation.isPaid === 'partial'" @click="moveToCart()" type="button"
-                      class="btn btn-warning btn-sm btn-margin rounded">
+                    <button v-show="!toggleselect" v-else-if="reservation.isPaid === 'partial'" @click="moveToCart()"
+                      type="button" class="btn btn-warning btn-sm btn-margin rounded">
                       <i class="fas fa-check"></i> Partial Payment
                     </button>
-                    <button v-show="!toggleselect" v-else-if="reservation.isPaid === 'yes'" @click="moveToCart()" type="button"
-                      class="btn btn-primary btn-sm btn-margin rounded">
+                    <button v-show="!toggleselect" v-else-if="reservation.isPaid === 'yes'" @click="moveToCart()"
+                      type="button" class="btn btn-primary btn-sm btn-margin rounded">
                       <i class="fas fa-eye"></i> View Summary
                     </button>
-                    <button v-show="!toggleselect" v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(reservation.checkinDate)" type="button"
+                    <button v-show="!toggleselect"
+                      v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(reservation.checkinDate)" type="button"
                       class="btn btn-success btn-sm btn-margin rounded" @click="checkinGuest()">
                       <i class="fas fa-sign-in-alt"></i> Check-in
                     </button>
@@ -1327,26 +1328,32 @@
                 <div v-else-if="reservation.status == 'checkedin'">
                   <span v-if="userdata.role !== 'reservationist'">
                     <div v-if="reservation.isPaid === '' || reservation.isPaid === 'no'">
-                      <button v-show="!toggleselect" @click="moveToCart()" type="button" class="btn btn-success btn-sm btn-margin rounded">
+                      <button v-show="!toggleselect" @click="moveToCart()" type="button"
+                        class="btn btn-success btn-sm btn-margin rounded">
                         <i class="fas fa-credit-card"></i> Pay Now
                       </button>
                     </div>
                     <div v-else-if="reservation.isPaid === 'partial'">
-                      <button v-show="!toggleselect" @click="moveToCart()" type="button" class="btn btn-success btn-sm btn-margin rounded">
+                      <button v-show="!toggleselect" @click="moveToCart()" type="button"
+                        class="btn btn-success btn-sm btn-margin rounded">
                         <i class="fas fa-credit-card"></i> Pay Now
                       </button>
-                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded" @click="extendBooking()">
+                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
+                        @click="extendBooking()">
                         <i class="fas fa-calendar-plus"></i> Extend (1 day)
                       </button>
                     </div>
                     <div v-else>
-                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded" @click="viewSummary()">
+                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
+                        @click="viewSummary()">
                         <i class="fas fa-eye"></i> View Summary
                       </button>
-                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded" @click="extendBooking()">
+                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
+                        @click="extendBooking()">
                         <i class="fas fa-calendar-plus"></i> Extend (1 day)
                       </button>
-                      <button v-show="!toggleselect" type="button" class="btn btn-success btn-sm btn-margin rounded" @click="checkOutGuest()">
+                      <button v-show="!toggleselect" type="button" class="btn btn-success btn-sm btn-margin rounded"
+                        @click="checkOutGuest()">
                         <i class="fas fa-sign-out-alt"></i> Check-out
                       </button>
                     </div>
@@ -1652,6 +1659,10 @@ export default {
         'label': 'Latest Transaction Date',
         'field': 'transaction_date',
         'sortable': true
+      }, {
+        'label': '',
+        'field': 'action',
+        'sortable': false
       }],
       transactionhistory: [{
         'label': 'Method',
@@ -2251,15 +2262,108 @@ export default {
     },
   },
   methods: {
+    async deleteTransaction(id) {
+      axios.get(this.API_URL + `transaction/${id}/`).then(async response => {
+        const data = response.data;
+        const itemID = data.bookingID;
+        const gkey = data.groupkey || "";
+        const cname = data.clientname;
+        const type = itemID.charAt(0);
+        this.$swal.fire({
+          title: 'Authorization Required',
+          input: 'text',
+          showCancelButton: true,
+          allowOutsideClick: false,
+          inputAttributes: {
+            minlength: 6, // Minimum length of 3 characters
+            maxlength: 24, // Maximum length of 24 characters
+            autocomplete: "off",
+            style: "text-security:disc; -webkit-text-security:disc;"
+          },
+          confirmButtonText: 'Submit',
+          cancelButtonText: 'Cancel',
+          inputPlaceholder: 'Enter authorization code',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            const authorizationCode = result.value;
+            // Validate the authorization code and perform necessary actions
+            if (authorizationCode.toLowerCase() === this.AUTHORIZATION_KEY.toLowerCase()) {
+              // Code is correct, proceed with the desired action
+              const confirmMessage = ' If you proceed with voiding, all associated items and booking and transaction records will be permanently deleted, and this action cannot be reversed.';
+              const result = await this.$swal.fire({
+                title: 'Are you sure you want to void this?',
+                text: confirmMessage,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, void it!',
+                cancelButtonText: 'Cancel'
+              });
+              if (result.isConfirmed) {
+                const countdownMessage = 'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
+                let countdownResult;
+                countdownResult = await this.$swal.fire({
+                  title: 'Please wait',
+                  html: countdownMessage,
+                  icon: 'info',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Confirm now',
+                  cancelButtonText: 'Cancel',
+                  didOpen: () => {
+                    const countdownEl = document.querySelector('#countdown');
+                    let count = 5;
+                    const timerId = setInterval(() => {
+                      countdownEl.textContent = count;
+                      count--;
+                      if (count < 0) {
+                        clearInterval(timerId);
+                        this.$swal.close();
+                      }
+                    }, 1000);
+                  }
+                });
+
+                if (!countdownResult.isConfirmed) {
+                  return;
+                }
+
+                if (type === "f") {
+                  this.voidAction(null, null, itemID, gkey, cname, false);
+                } else if (type === "e") {
+                  const bID = this.bookings.findIndex(
+                  o => o.itemID === itemID
+                  );
+                  const request = await axios.post(`${this.API_URL}bookings/filter/`, [
+                    { "columnName": "itemID", "columnKey": itemID },
+                  ])
+                  const keyID = request.data[0].id;
+                  this.voidAction(bID, keyID, itemID, gkey, cname, true);
+                }
+
+              }
+
+            } else {
+              // Code is incorrect, show an error message or take appropriate action
+              this.$swal.fire({
+                icon: 'error',
+                title: 'Incorrect Passcode',
+                text: 'The entered passcode is incorrect. Please try again.',
+                allowOutsideClick: false,
+              });
+            }
+          }
+        });
+
+      })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     async voidBook() {
       this.toggleItemModal();
-      const item = this.bookings[this.itemIndex];
-      const bookID = item.id;
-      const bookKey = item.itemID;
-      const groupkey = item.groupkey;
-      let transdata_ID = null;
-      let transdata_gkey = null;
-
       this.$swal.fire({
         title: 'Authorization Required',
         input: 'text',
@@ -2321,134 +2425,7 @@ export default {
                 return;
               }
 
-              if (groupkey) {
-
-                try {
-                  const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-                    columnName: 'groupkey',
-                    columnKey: groupkey
-                  });
-                  transdata_ID = existingTransaction.data[0].id;
-                } catch (error) {
-
-                }
-
-                try {
-                  const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-                    columnName: 'groupkey',
-                    columnKey: groupkey
-                  });
-
-                  for (const item of existingTransaction_ITEM.data) {
-                    axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
-                  }
-                } catch (error) {
-
-                }
-
-                try {
-                  if (transdata_ID) {
-                    const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
-                      columnName: 'transaction',
-                      columnKey: transdata_ID
-                    });
-
-                    for (const item of existingTransaction_RECORD.data) {
-                      axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
-                    }
-                  }
-
-                } catch (error) {
-
-                }
-
-                try {
-                  if (transdata_ID) {
-                    axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
-                  }
-
-                } catch (error) {
-
-                }
-
-                try {
-                  const existingBooking = await axios.post(`${this.API_URL}bookings/filter/`, {
-                    columnName: 'groupkey',
-                    columnKey: groupkey
-                  });
-                  for (const item of existingBooking.data) {
-                    axios.get(this.API_URL + `bookings/delete/${item.id}/`);
-                  }
-                } catch (error) {
-
-                }
-
-
-              } else {
-
-                try {
-                  const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-                    columnName: 'bookingID',
-                    columnKey: bookKey
-                  });
-                  transdata_ID = existingTransaction.data[0].id;
-                } catch (error) {
-
-                }
-
-                try {
-                  const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-                    columnName: 'bookingID',
-                    columnKey: bookKey
-                  });
-
-                  for (const item of existingTransaction_ITEM.data) {
-                    axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
-                  }
-                } catch (error) {
-
-                }
-
-                try {
-                  if (transdata_ID) {
-                    const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
-                      columnName: 'transaction',
-                      columnKey: transdata_ID
-                    });
-
-                    for (const item of existingTransaction_RECORD.data) {
-                      axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
-                    }
-                  }
-
-                } catch (error) {
-
-                }
-
-                try {
-                  if (transdata_ID) {
-                    axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
-                  }
-
-                } catch (error) {
-
-                }
-
-                try {
-                  await axios.get(this.API_URL + `bookings/delete/${bookID}/`)
-                } catch (error) {
-
-                }
-
-              }
-              this.taskRecord(`action:/void/client:/${item.name}`);
-              await this.$swal.fire({
-                title: 'Success',
-                text: 'Item was voided successfully!',
-                icon: 'success'
-              }).then(response => {
-                document.location.reload();
-              })
+              this.voidAction(this.itemIndex, null, null, null, null, true);
 
             }
 
@@ -2463,7 +2440,163 @@ export default {
           }
         }
       });
+    },
+    async voidAction(o, keyID, bkey, gkey, name, brute) {
+      let transdata_ID = null;
+      let item = null;
+      let bookID = null;
+      let bookKey = null;
+      let groupkey = null;
+      let cname = null;
+      let kid = null;
+      if (bkey === null && gkey === null && name === null) {
+        item = this.bookings[o];
+        bookID = item.id;
+        bookKey = item.itemID;
+        groupkey = item.groupkey;
+        cname = item.name;
+        kid = bookID;
+      } else {
+        item = null;
+        bookID = o;
+        bookKey = bkey;
+        groupkey = gkey;
+        cname = name;
+        kid = keyID;
+      }
 
+      if (groupkey) {
+
+        try {
+          const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+            columnName: 'groupkey',
+            columnKey: groupkey
+          });
+          transdata_ID = existingTransaction.data[0].id;
+        } catch (error) {
+
+        }
+
+        try {
+          const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+            columnName: 'groupkey',
+            columnKey: groupkey
+          });
+
+          for (const item of existingTransaction_ITEM.data) {
+            axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
+          }
+        } catch (error) {
+
+        }
+
+        try {
+          if (transdata_ID) {
+            const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
+              columnName: 'transaction',
+              columnKey: transdata_ID
+            });
+
+            for (const item of existingTransaction_RECORD.data) {
+              axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
+            }
+          }
+
+        } catch (error) {
+
+        }
+
+        try {
+          if (transdata_ID) {
+            axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
+          }
+
+        } catch (error) {
+
+        }
+
+        if (brute) {
+          try {
+            const existingBooking = await axios.post(`${this.API_URL}bookings/filter/`, {
+              columnName: 'groupkey',
+              columnKey: groupkey
+            });
+            for (const item of existingBooking.data) {
+              axios.get(this.API_URL + `bookings/delete/${item.id}/`);
+            }
+          } catch (error) {
+
+          }
+        }
+
+
+      } else {
+
+        try {
+          const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
+            columnName: 'bookingID',
+            columnKey: bookKey
+          });
+          transdata_ID = existingTransaction.data[0].id;
+        } catch (error) {
+
+        }
+
+        try {
+          const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+            columnName: 'bookingID',
+            columnKey: bookKey
+          });
+
+          for (const item of existingTransaction_ITEM.data) {
+            axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
+          }
+        } catch (error) {
+
+        }
+
+        try {
+          if (transdata_ID) {
+            const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
+              columnName: 'transaction',
+              columnKey: transdata_ID
+            });
+
+            for (const item of existingTransaction_RECORD.data) {
+              axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
+            }
+          }
+
+        } catch (error) {
+
+        }
+
+        try {
+          if (transdata_ID) {
+            axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
+          }
+
+        } catch (error) {
+
+        }
+
+        if (brute) {
+          try {
+            await axios.get(this.API_URL + `bookings/delete/${kid}/`)
+          } catch (error) {
+
+          }
+        }
+
+      }
+      this.taskRecord(`action:/void/client:/${cname}`);
+      await this.$swal.fire({
+        title: 'Success',
+        text: 'Item was voided successfully!',
+        icon: 'success'
+      }).then(response => {
+        document.location.reload();
+      })
     },
     async taskRecord(msg) {
       this.socket.send(JSON.stringify({
@@ -3227,7 +3360,7 @@ export default {
         const item = this.bookings[this.itemIndex];
         const room = this.reservation.roomName;
 
-        if(room.name === undefined){
+        if (room.name === undefined) {
           return;
         }
 
@@ -4787,11 +4920,12 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     this.$refs.searchQuery.focus();
     this.$refs.searchQuery.blur();
     $('.currentPeriod').click();
+    $('#suglist').hide();
 
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {
-      document.body.addEventListener('contextmenu', this.handleContextMenu);
+      //document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
     const modal = this.$refs.modal;

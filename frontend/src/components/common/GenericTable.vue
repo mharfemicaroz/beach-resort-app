@@ -72,10 +72,14 @@
                                         <span v-else>-</span>
                                     </button>
                                 </template>
-                                <template v-else-if="header.field === 'action' && this.editable">
-                                    <button type="button" class="btn btn-primary btn-sm no-print"
-                                        @click="$emit('edit-action', mainItem.id)">
+                                <template v-else-if="header.field === 'action'">
+                                    <button v-if="this.editable" type="button" class="btn btn-primary btn-sm no-print"
+                                        @click="$emit('edit-action', mainItem.id)" style="margin-right: 10px;">
                                         <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button v-if="this.deletable" type="button" class="btn btn-danger btn-sm no-print"
+                                        @click="$emit('delete-action', mainItem.id)">
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </template>
                                 <template v-else-if="header.field.includes('date')">
@@ -246,6 +250,10 @@ export default {
             required: true,
         },
         editable: {
+            type: Boolean,
+            required: true,
+        },
+        deletable: {
             type: Boolean,
             required: true,
         },
