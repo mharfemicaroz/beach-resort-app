@@ -2334,7 +2334,7 @@ export default {
                   this.voidAction(null, null, itemID, gkey, cname, false);
                 } else if (type === "e") {
                   const bID = this.bookings.findIndex(
-                  o => o.itemID === itemID
+                    o => o.itemID === itemID
                   );
                   const request = await axios.post(`${this.API_URL}bookings/filter/`, [
                     { "columnName": "itemID", "columnKey": itemID },
@@ -3430,6 +3430,28 @@ export default {
         item.room_type = newroom.type;
         item.remarks = "transferred from: " + oldroom.name + " on " + formatDate();
         this.updateBookings(item.id);
+
+        const existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
+          columnName: 'bookingID',
+          columnKey: item.itemID
+        });
+
+        try {
+          await axios.put(`${this.API_URL}transaction/item/${existingTransactionItems.data[0].id}/`, {
+            bookingID: existingTransactionItems.data[0].bookingID,
+            itemName: newroom.name,
+            itemType: existingTransactionItems.data[0].itemType,
+            itemPriceRate: existingTransactionItems.data[0].itemPriceRate,
+            purchaseQty: existingTransactionItems.data[0].purchaseQty,
+            totalCost: existingTransactionItems.data[0].totalCost,
+            category: existingTransactionItems.data[0].category,
+            itemOption: existingTransactionItems.data[0].itemOption,
+          });
+
+        } catch (error) {
+
+        }
+
         this.taskRecord(`action:/transfer guest/client:/${item.name}`)
         this.$swal.fire({
           icon: 'success',
