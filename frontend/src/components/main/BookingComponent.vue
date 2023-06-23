@@ -3780,7 +3780,6 @@ export default {
         });
         return;
       }
-      alert(e.id)
       this.itemIndex = this.bookings.findIndex(
         o => o.itemID === e.id
       );
