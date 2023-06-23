@@ -4038,7 +4038,8 @@ export default {
         }
 
         roomBooked.forEach(async res => {
-          let id = "e" + this.bookings.length + this.generateUniqueString();
+          //change id format
+          let id = "e" + parseDate(new Date().toDateString()).toString() + this.generateUniqueString();
           let startDate = this.reservation.checkinDate.split('/')[2] + "-" + this.reservation.checkinDate.split('/')[1] + "-" + this.reservation.checkinDate.split('/')[0];
           let endDate = this.reservation.checkoutDate.split('/')[2] + "-" + this.reservation.checkoutDate.split('/')[1] + "-" + this.reservation.checkoutDate.split('/')[0];
           let title = res.name + "-" + this.reservation.clientName;
