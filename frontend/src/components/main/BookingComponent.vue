@@ -3231,7 +3231,6 @@ export default {
             });
           this.cart.push(this.itemCart);
         }
-        this.isItNew = true;
 
       } else {
         //show instead
@@ -4458,6 +4457,8 @@ export default {
               } catch (error) {
 
               }
+
+              this.billing.bookingID = doneTransaction.data.id;
 
             } else {
               // Update the transaction if it already exists
