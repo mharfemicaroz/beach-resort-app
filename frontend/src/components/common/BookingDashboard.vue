@@ -31,7 +31,7 @@
                 <div class="card-body row">
                     <div class="col-md-8">
                         <h5 class="card-title">Guests</h5>
-                        <p class="card-text">{{ numGuests }}</p>
+                        <p class="card-text">{{ numGuests }} / {{ counter }}</p>
                     </div>
                     <div class="col-md-4 d-flex justify-content-center align-items-center">
                         <i class="fas fa-users fa-2x"></i>
@@ -184,6 +184,25 @@ function formatdate(currentDate) {
     return formattedDate;
 }
 
+function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+}
+
+function parseDate(date = new Date()) {
+    return [
+        date.getFullYear(),
+        padTo2Digits(date.getMonth() + 1),
+        padTo2Digits(date.getDate()),
+    ].join('-');
+}
+
+function formatDate2(dateString) {
+    const index = dateString.indexOf('T');
+    const result = dateString.substring(0, index);
+    const [year, month, day] = result.split('-');
+    return `${year}-${month}-${day}`;
+}
+
 export default {
     components: {
         PieChart,
@@ -198,6 +217,7 @@ export default {
     },
     data() {
         return {
+            counter: 0,
             forecastedData: null,
             componentKey: 0,
             prevBookings: [],
@@ -405,11 +425,20 @@ export default {
         },
         async loadData() {
             try {
+                const guestcounterdata = await axios.get(this.API_URL + "guestcounter/");
+
+                const foundItem = guestcounterdata.data.find((item) => formatDate2(item.date_created) === parseDate(new Date()));
+                if (foundItem) {
+                    this.counter = parseFloat(foundItem.counter);
+                } else {
+                    this.counter = 0;
+                }
+
                 const bookingData = await axios.get(this.API_URL + "bookings/");
                 const transactionData = await axios.get(this.API_URL + "transaction/");
                 const transactionItemsData = await axios.get(this.API_URL + "transaction/item/");
                 const transactionRecordsData = await axios.get(this.API_URL + "transaction/record/");
-                const trans_itemizer_data =  await axios.get(this.API_URL + 'transactions_itemizer/day/');
+                
 
                 if (JSON.stringify(bookingData.data) !== JSON.stringify(this.prevBookings)) {
                     this.componentKey += 1;
@@ -434,6 +463,14 @@ export default {
                     return overlappingBookings.length === 0;
                 }).length;
 
+                this.pie1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
+                this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
+                this.bar2Datasets(transactionItemsData.data);
+                this.line1Datasets(bookingData.data);
+                this.line2Datasets(transactionData.data);
+                
+                const trans_itemizer_data =  await axios.get(this.API_URL + 'transactions_itemizer/day/');
+
                 this.grossIncome = trans_itemizer_data.data
                     .filter((item) => {
                         const transactionDate = new Date(item.transaction_date);
@@ -457,7 +494,7 @@ export default {
                         return accumulator + parseFloat(currentValue.balance);
                     }, 0);
 
-                this.pie1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
+                
                 this.pie2Datasets(trans_itemizer_data.data.filter((item) => {
                     const transactionDate = new Date(item.transaction_date);
                         return (
@@ -465,8 +502,7 @@ export default {
                             transactionDate < new Date(new Date(new Date(new Date().getTime() + 86400000)).setHours(0,0,0,0))
                         );
                 } ));
-                this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
-                this.bar2Datasets(transactionItemsData.data);
+
                 this.bar3Datasets(trans_itemizer_data.data.filter((item) => {
                     const transactionDate = new Date(item.transaction_date);
                     return (
@@ -474,8 +510,6 @@ export default {
                         transactionDate < new Date(new Date(new Date(new Date().getTime() + 86400000)).setHours(0, 0, 0, 0))
                     );
                 }));
-                this.line1Datasets(bookingData.data);
-                this.line2Datasets(transactionData.data);
 
                 this.loaded = Array(7).fill(true);
             } catch (error) {

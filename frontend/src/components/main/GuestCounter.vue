@@ -1,4 +1,4 @@
-<template>
+<template :key="componentKey">
     <TopNavBarComponent />
     <div class="container-fluid login-background">
         <div class="row justify-content-center align-items-center vh-100">
@@ -59,6 +59,8 @@ export default {
     },
     data() {
         return {
+            socket : null,
+            componentKey : 0,
             counter: 0, // Tracks the counter value
             track: [],
         };
@@ -114,6 +116,7 @@ export default {
                     counter: this.counter,
                 })
             }
+            this.socket.send('{"message":"add+1 guest"}');
         },
         async undo() {
             const confirmMessage = 'This action cannot be undone.';
@@ -183,7 +186,14 @@ export default {
         },
     },
     mounted() {
-
+        this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
+        const vm = this;
+        this.socket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            console.log(data.message)
+            vm.loadData();
+            vm.componentKey += 1;
+        };
     },
 }
 

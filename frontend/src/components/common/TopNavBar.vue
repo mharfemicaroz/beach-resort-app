@@ -83,7 +83,7 @@ export default {
     },
     created() {
         this.startBackgroundSlideshow();
-        this.enterFullscreen();
+        //this.enterFullscreen();
     },
     computed: {
         userdata() {
@@ -139,7 +139,7 @@ export default {
 
     },
     mounted() {
-        this.enterFullscreen();
+        //this.enterFullscreen();
     }
 }
 </script>
