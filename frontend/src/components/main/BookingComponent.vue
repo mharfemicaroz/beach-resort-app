@@ -168,7 +168,7 @@
                   </div>
                 </div>
                 <div class="tab-pane fade" id="beachcottages" role="tabpanel" aria-labelledby="beachcottage-tab">
-                  <div class="container-fluid">
+                  <div class="container-fluid bg-beachday">
                     <div class="row">
                       <div class="col-md-12">
                         <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
@@ -1300,7 +1300,7 @@
 
               <div class="mt-3 mb-3 d-flex justify-content-end">
                 <div v-if="reservation.status == 'reserved'">
-                  <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
+                  <button v-if="reservation.isPaid === 'no'" v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
                     @click="cancelReservation()">
                     <i class="fas fa-times"></i> Cancel Reservation
                   </button>
@@ -5232,5 +5232,6 @@ img {
 .btn-margin {
   margin-right: 10px;
 }
+
 </style>
 
