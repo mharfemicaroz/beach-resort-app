@@ -5,14 +5,6 @@
             <div class="col-md-3">
                 <form @submit.prevent="login" class="animated-form login-form">
                     <div class="widget-container">
-                        <div class="status-icons">
-                            <div v-for="icon in icons" :key="icon.name"
-                                :class="['status-icon', { active: selectedIcon === icon.name }]"
-                                @click="selectIcon(icon.name)">
-                                <i :class="icon.class"></i>
-                                <span>{{ icon.label }}</span>
-                            </div>
-                        </div>
                         <div class="counter text-dark">
                             {{ counter }}
                         </div>
@@ -20,12 +12,10 @@
                             <button type="button" class="m-btn btn-light btn btn-default" @click="decrementCounter">
                                 <i class="fa fa-minus"></i>
                             </button>
-                            <button type="button" class="m-btn btn-light btn btn-default" @click="undo"
-                                :disabled="iconHistory.length === 1">
+                            <button type="button" class="m-btn btn-light btn btn-default" @click="undo">
                                 <i class="fa fa-undo"></i>
                             </button>
-                            <button type="button" class="m-btn btn-light btn btn-default" @click="incrementCounter"
-                                :disabled="selectedIcon === ''">
+                            <button type="button" class="m-btn btn-light btn btn-default" @click="incrementCounter">
                                 <i class="fa fa-plus"></i>
                             </button>
                         </div>
@@ -34,29 +24,46 @@
             </div>
         </div>
     </div>
+    <FooterComponent />
 </template>
 
 <script>
+import axios from 'axios';
 import { useAuthStore } from "@/stores/authStore";
 import TopNavBarComponent from "@/components/common/TopNavBar.vue";
+import FooterComponent from "../common/FooterComponent.vue";
+
+function padTo2Digits(num) {
+    return num.toString().padStart(2, '0');
+}
+
+function parseDate(date = new Date()) {
+    return [
+        date.getFullYear(),
+        padTo2Digits(date.getMonth() + 1),
+        padTo2Digits(date.getDate()),
+    ].join('-');
+}
+
+function formatDate(dateString) {
+    const index = dateString.indexOf('T');
+    const result = dateString.substring(0, index);
+    const [year, month, day] = result.split('-');
+    return `${year}-${month}-${day}`;
+}
+
 export default {
     components: {
         TopNavBarComponent,
+        FooterComponent,
     },
     data() {
         return {
-            selectedIcon: '', // Tracks the currently selected icon
             counter: 0, // Tracks the counter value
-            iconHistory: [
-                {
-                    counter: 0,
-                    icon: '',
-                }
-            ], // Stores the history of selected icons
-            previousCounter: 0 // Stores the previous counter value for undo functionality
+            track: [],
         };
     },
-    created(){
+    created() {
         this.loadData();
     },
     computed: {
@@ -65,56 +72,95 @@ export default {
             const user = authStore.user;
             return user;
         },
-        icons() {
-            return [
-                { name: 'walk-in', class: 'fa fa-walking', label: 'Walk-in' },
-                { name: 'reserved', class: 'fa fa-calendar-check', label: 'Reserved' },
-                { name: 'guest', class: 'fa fa-user', label: 'Guest' }
-            ];
-        },
     },
     methods: {
-        loadData(){
+        loadData() {
             axios
-            .get(`${this.API_URL}guestcounter/`)
-            .then(response => {
-                this.iconHistory = response.data;
-            })
-            .catch(error => {
-            console.log(error);
-            });
-        },
-        selectIcon(icon) {
-            this.selectedIcon = this.selectedIcon === icon ? '' : icon; // Toggle the selectedIcon value
+                .get(`${this.API_URL}guestcounter/`)
+                .then(response => {
+                    this.track = response.data;
+                    this.viewCounter();
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         },
         incrementCounter() {
-            this.previousCounter = this.counter; // Store the previous counter value
             this.counter++;
-            this.addToHistory();
+            this.setCounter();
         },
         decrementCounter() {
             if (this.counter > 0) {
-                this.previousCounter = this.counter; // Store the previous counter value
                 this.counter--;
-                this.addToHistory();
+                this.setCounter();
             }
         },
-        undo() {
-            if (this.iconHistory.length > 0) {
-                const previousState = this.iconHistory.pop();
-                this.counter = previousState.counter - 1;
-                this.selectedIcon = this.iconHistory[this.iconHistory.length - 1].icon;
+        async viewCounter() {
+            const foundItem = this.track.find((item) => formatDate(item.date_created) === parseDate(new Date()));
+            if (foundItem) {
+                this.counter = parseFloat(foundItem.counter);
             } else {
                 this.counter = 0;
-                this.selectedIcon = '';
             }
         },
-        addToHistory() {
-            const state = {
-                counter: this.counter,
-                icon: this.selectedIcon
-            };
-            this.iconHistory.push(state);
+        async setCounter() {
+            const foundItem = this.track.find((item) => formatDate(item.date_created) === parseDate(new Date()));
+            if (foundItem) {
+                await axios.put(`${this.API_URL}guestcounter/${foundItem.id}/`, {
+                    counter: this.counter,
+                })
+            } else {
+                await axios.post(`${this.API_URL}guestcounter/`, {
+                    counter: this.counter,
+                })
+            }
+        },
+        async undo() {
+            const confirmMessage = 'This action cannot be undone.';
+            const result = await this.$swal.fire({
+                title: 'Are you sure you want to reset the counter? ',
+                text: confirmMessage,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, reset it!',
+                cancelButtonText: 'Cancel'
+            });
+            if (result.isConfirmed) {
+                const countdownMessage = 'This counter will be resetted to zero in <span id="countdown">5</span> seconds. Do you want to cancel?';
+                let countdownResult;
+                countdownResult = await this.$swal.fire({
+                    title: 'Please wait',
+                    html: countdownMessage,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm now',
+                    cancelButtonText: 'Cancel',
+                    didOpen: () => {
+                        const countdownEl = document.querySelector('#countdown');
+                        let count = 4;
+                        const timerId = setInterval(() => {
+                            countdownEl.textContent = count;
+                            count--;
+                            if (count < 0) {
+                                clearInterval(timerId);
+                                this.$swal.close();
+                            }
+                        }, 1000);
+                    }
+                });
+
+                if (!countdownResult.isConfirmed) {
+                    return;
+                }
+
+                this.counter = 0;
+                this.setCounter();
+            }
+
         },
         async logout() {
             const authStore = useAuthStore();
@@ -146,7 +192,7 @@ export default {
 <style scoped>
 /* Add custom styles here */
 .login-background {
-    background: url("@/assets/beach-resort-background.jpg") no-repeat center center fixed;
+    background: url("@/assets/beach-resort-background2.jpg") no-repeat center center fixed;
     background-size: cover;
     background-position: center;
 }
@@ -188,13 +234,8 @@ export default {
 }
 
 .counter {
-    font-size: 64px;
+    font-size: 128px;
     font-weight: bold;
-    margin-bottom: 20px;
-}
-
-.m-btn-group {
-    margin-top: 20px;
 }
 
 .btn-default {
@@ -215,35 +256,5 @@ export default {
 
 .btn-default:hover i {
     color: #888888;
-}
-
-.status-icons {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.status-icon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-}
-
-.status-icon.active {
-    font-size: 24px;
-    /* Increase the font size when active */
-    color: blue;
-    /* Change the color when active */
-}
-
-.status-icon i {
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-.status-icon span {
-    font-size: 12px;
-    color: #333333;
 }
 </style>

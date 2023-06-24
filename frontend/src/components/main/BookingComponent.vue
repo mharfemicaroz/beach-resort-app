@@ -407,7 +407,7 @@
                     </div>
                   </div>
 
-                  <button type="button" class="btn btn-primary" @click="generateBillingStatement">Generate
+                  <button v-show="this.isItNew" v-if="!this.walkinStatus" type="button" class="btn btn-primary" @click="generateBillingStatement">Generate
                     BS</button>&nbsp;
                   <button type="button" class="btn btn-success" @click="placeOrder"
                     :disabled="total <= 0 || countInclusion > 0">Place
@@ -1492,6 +1492,7 @@ export default {
       activeMainTab: 'BEACH ROOM',
       roomSelect: "ok",
       toggleselect: false,
+      isItNew: false,
       bookingsOptions: [{
         'label': 'Room Name',
         'field': 'room_name',
@@ -2721,6 +2722,7 @@ export default {
       this.billing.clientAddress = this.walkinreservation.clientAddress;
       this.billing.clientNationality = this.walkinreservation.clientNationality;
       this.billing.clientType = this.walkinreservation.clientType;
+      this.isItNew = true;
       this.walkinStatus = true;
       try {
         const response = await axios.get(this.API_URL + 'transaction/');
@@ -2872,6 +2874,7 @@ export default {
       this.alreadyDiscounted = false;
       this.itemIndex = -1;
       this.walkinStatus = false;
+      this.isItNew = false;
       if (no === 1) {
         this.$refs.searchQuery.focus();
         this.$refs.searchQuery.blur();
@@ -3228,11 +3231,12 @@ export default {
             });
           this.cart.push(this.itemCart);
         }
-
+        this.isItNew = true;
 
       } else {
         //show instead
         //update this.cart
+        
         this.cart = [];
 
         if (groupbookings.length > 0) {
@@ -3288,6 +3292,7 @@ export default {
       this.billing.clientType = item.clientType;
       if (existingTransaction.data[0] !== undefined) {
         this.billing.bookingID = existingTransaction.data[0].id;
+        this.isItNew = true;
       } else {
         this.billing.bookingID = "";
       }

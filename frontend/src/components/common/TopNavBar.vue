@@ -40,6 +40,7 @@
                                 <li><router-link to="/booking" tag="a" class="dropdown-item">Booking</router-link></li>
                                 <li><router-link to="/inventory" tag="a" class="dropdown-item">Inventory</router-link></li>
                                 <li><router-link to="/cashier" tag="a" class="dropdown-item">Cashier</router-link></li>
+                                <li><router-link to="/counter" tag="a" class="dropdown-item">Guest Counter</router-link></li>
                                 <hr class="dropdown-divider">
                             </div>
                             <li><a class="dropdown-item" href="#" @click=logout()><i class="fas fa-sign-out-alt me-1"></i>
