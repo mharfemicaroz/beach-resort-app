@@ -3035,6 +3035,7 @@ export default {
       this.billing.clientType = item.clientType;
       if (existingTransaction.data[0] !== undefined) {
         this.billing.bookingID = existingTransaction.data[0].id;
+        this.isItNew = true;
       } else {
         this.billing.bookingID = "";
       }
@@ -3127,6 +3128,7 @@ export default {
 
       try {
         if (existingTransaction.length !== 0) {
+          
           transaction = existingTransaction.data[0];
           this.discountMode = transaction.discountMode;
           this.discountValue = transaction.discountValue;
