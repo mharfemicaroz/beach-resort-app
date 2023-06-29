@@ -2,7 +2,7 @@
     <Bar :data="data" :options="options" />
 </template>
   
-<script lang="ts">
+<script lang="ts" scope>
 import {
     Chart as ChartJS,
     Title,
@@ -12,9 +12,10 @@ import {
     CategoryScale,
     LinearScale
 } from 'chart.js'
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Bar } from 'vue-chartjs'
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels)
 
 export default {
     props: {
@@ -42,10 +43,20 @@ export default {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-      legend: {
-         display: false
-      }
-   }
+                    legend: {
+                        display: false
+                    },
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: 'red',
+                        formatter: Math.round,
+                        font: {
+                            weight: 'bold',
+                            size: 16,
+                        }
+                    }
+                }
             }
         }
     },

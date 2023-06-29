@@ -52,6 +52,9 @@ export default {
                 plugins: {
                     legend: {
                         display: false
+                    },
+                    datalabels: {
+                        display: false
                     }
                 },
                 scales: {
