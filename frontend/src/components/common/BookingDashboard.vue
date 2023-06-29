@@ -361,7 +361,7 @@ export default {
             let collection = [];
             for(const name of uniqueProcessedByList){
                 const total = data.filter(item => item.processedBy === name).reduce((accumulator, currentValue) => {
-                    return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
+                    return accumulator + parseFloat(currentValue.cashAmountPay);
                 }, 0);
                 collection.push(total);
             }
@@ -439,7 +439,6 @@ export default {
                 const transactionItemsData = await axios.get(this.API_URL + "transaction/item/");
                 const transactionRecordsData = await axios.get(this.API_URL + "transaction/record/");
                 
-
                 if (JSON.stringify(bookingData.data) !== JSON.stringify(this.prevBookings)) {
                     this.componentKey += 1;
                     this.prevBookings = bookingData.data;
@@ -503,7 +502,7 @@ export default {
                         );
                 } ));
 
-                this.bar3Datasets(trans_itemizer_data.data.filter((item) => {
+                this.bar3Datasets(transactionRecordsData.data.filter((item) => {
                     const transactionDate = new Date(item.transaction_date);
                     return (
                         transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&

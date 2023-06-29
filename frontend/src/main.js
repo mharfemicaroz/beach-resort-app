@@ -11,7 +11,7 @@ import moment from 'moment-timezone'
 moment.tz.setDefault('Asia/Hongkong')
 
 const app = createApp(App);
-
+//note fix bug in summary collection report
 app.config.globalProperties = {
     AUTHORIZATION_KEY: '7A8B2C1D9E4F3G6H5I0J7K8L',
     EVALUATION_STAGE: false,
