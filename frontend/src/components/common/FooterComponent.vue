@@ -20,7 +20,7 @@
 export default {
     data() {
         return {
-            version: "1.3.0",
+            version: "1.6.1",
             provider: "Web App Solutions",
             pageVisits: 0
         };
