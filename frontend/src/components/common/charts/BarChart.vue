@@ -2,7 +2,7 @@
     <Bar :data="data" :options="options" />
 </template>
   
-<script lang="ts" scope>
+<script lang="ts">
 import {
     Chart as ChartJS,
     Title,

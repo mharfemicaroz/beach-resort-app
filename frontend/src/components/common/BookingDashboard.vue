@@ -247,7 +247,7 @@ export default {
                 ]
             },
             bar1Data: {
-                labels: ['Beach Room', 'Pool Room', 'Beach Cottage', 'Pool Cottage', 'Gazebo Cottage'],
+                labels: ['Beach Rooms', 'Pool Rooms', 'Beach Cottages (day)', 'Beach Cottages (night)', 'Pool Cottages', 'Gazebo Cottages'],
                 datasets: [
                     {
                         data: [],
@@ -330,9 +330,10 @@ export default {
             const br = data.filter(item => item.room_type === 'BEACH ROOM').length;
             const pl = data.filter(item => item.room_type === 'POOL ROOM').length;
             const bc = data.filter(item => item.room_type === 'BEACH COTTAGE').length;
+            const bcn = data.filter(item => item.room_type === 'N-BEACH COTTAGE').length;
             const pc = data.filter(item => item.room_type === 'POOL COTTAGE').length;
             const gc = data.filter(item => item.room_type === 'GAZEBO COTTAGE').length;
-            this.bar1Data.datasets[0].data = [br, pl, bc, pc, gc]
+            this.bar1Data.datasets[0].data = [br, pl, bc, bcn, pc, gc]
         },
         bar2Datasets(data) {
             const all = data.reduce((accumulator, currentValue) => {

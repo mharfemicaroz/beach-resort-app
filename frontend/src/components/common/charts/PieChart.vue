@@ -31,7 +31,19 @@ export default {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        plugins: {
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'middle',
+                        color: 'red',
+                        formatter: Math.round,
+                        font: {
+                            weight: 'bold',
+                            size: 16,
+                        }
+                    }
+                }
       }
     }
   },
