@@ -221,7 +221,7 @@ export default {
         }
     },
     mounted() {
-        document.getElementById('screenshot').addEventListener('change', this.handleFileSelection);
+        
     }
 };
 </script>
