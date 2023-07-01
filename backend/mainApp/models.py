@@ -225,3 +225,9 @@ class GuestCounter(models.Model):
     counter = models.IntegerField()
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+
+class BugReports(models.Model):
+    id = models.AutoField(primary_key=True)
+    description = models.TextField(null=True, blank=True)
+    screenshot_file_name = models.CharField(max_length=256)
+    date_created = models.DateTimeField(auto_now_add=True)

@@ -6,6 +6,7 @@ from .serializers import *
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.core.files.storage import default_storage
 
 @csrf_exempt
 def login(request):
@@ -187,8 +188,15 @@ def get_transactions_with_items(request, type=None):
 
     return JsonResponse(transaction_data, safe=False)
 
+@csrf_exempt
+def SaveFile(request):
+    file=request.FILES['file']
+    file_name=default_storage.save(file.name,file)
+    return JsonResponse(file_name,safe=False)
 
-
+@csrf_exempt    
+def bugreports_list(request, pk=None):
+    return generic_list(request, BugReports, BugReportsSerializer, pk)
 
 @csrf_exempt    
 def guestcounter_list(request, pk=None):

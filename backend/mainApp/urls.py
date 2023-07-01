@@ -1,7 +1,12 @@
 from django.urls import re_path
+from django.conf.urls.static import static
+from django.conf import settings
 from .views import *
 
 urlpatterns = [ 
+    re_path(r'^bugreports/savefile', SaveFile),
+    re_path(r'^bugreports/$',bugreports_list , name='bugreports-list'),
+    re_path(r'^bugreports/(?P<pk>\d+)/$',bugreports_list, name='bugreports-detail'), 
     re_path(r'^transactions_itemizer/(?P<type>\w+)/$', get_transactions_with_items, name='transactions'),
     re_path(r'^login/$', login, name='login'),
     re_path(r'^guestcounter/$',guestcounter_list , name='guestcounter-list'),
@@ -64,4 +69,4 @@ urlpatterns = [
     re_path(r'^transaction/item/(?P<pk>\d+)/$', transactionitem_list, name='transactionItem-detail'),
     re_path(r'^transaction/item/delete/(?P<pk>\d+)/$', transactionitem_delete, name='transactionItem-delete'),
     re_path(r'^transaction/item/filter/$', transactionitem_filter, name='transactionItem-list'),
-]
+]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

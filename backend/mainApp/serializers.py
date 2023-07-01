@@ -104,3 +104,8 @@ class GuestCounterSerializer(serializers.ModelSerializer):
     class Meta:
         model = GuestCounter
         fields = '__all__' 
+
+class BugReportsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BugReports
+        fields = '__all__' 
