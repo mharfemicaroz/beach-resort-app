@@ -112,6 +112,9 @@ export default {
                   case "waiter":
                     route = "cashier"
                     break;
+                  case "foodserver":
+                    route = "cashier"
+                    break;
                   case "guard":
                     route = "counter"
                     break;

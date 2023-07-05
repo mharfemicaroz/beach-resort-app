@@ -2,17 +2,17 @@
   <div class="container-fluid main">
     <TopNavBarComponent />
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="tables-tab" data-bs-toggle="tab" data-bs-target="#tables" type="button"
+      <li class="nav-item" role="presentation" v-if="userdata.role !== 'foodserver'">
+        <button :class="(userdata.role !== 'foodserver')?'nav-link active':'nav-link'" id="tables-tab" data-bs-toggle="tab" data-bs-target="#tables" type="button"
           role="tab" aria-controls="tables" aria-selected="true" @click="resetCounter">Customers</button>
       </li>
-      <li class="nav-item" role="presentation">
+      <li class="nav-item" role="presentation" v-if="userdata.role !== 'foodserver'">
         <button class="nav-link" id="pos-tab" data-bs-toggle="tab" data-bs-target="#pos" type="button" role="tab"
           aria-controls="pos" aria-selected="true" @click="activatePOS">{{ (userdata.role !== 'waiter') ? 'POS' : 'Menu'
           }}</button>
       </li>
-      <li class="nav-item" role="presentation" v-if="userdata.role !== 'cashier'">
-        <button class="nav-link" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab"
+      <li class="nav-item" role="presentation" v-if="userdata.role !== 'cashier' && userdata.role === 'foodserver' || userdata.role === 'superuser'">
+        <button :class="(userdata.role === 'foodserver')?'nav-link active':'nav-link'" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab"
           aria-controls="orders" aria-selected="true">Orders</button>
       </li>
       <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser'">
@@ -26,7 +26,7 @@
     </ul>
 
     <div class="tab-content mt-3" id="myTabContent">
-      <div class="tab-pane fade show active" id="tables" role="tabpanel" aria-labelledby="tables-tab">
+      <div :class="(userdata.role === 'foodserver')?'tab-pane fade':'tab-pane fade show active'" id="tables" role="tabpanel" aria-labelledby="tables-tab">
         <div class="row mt-2">
           <div class="col-md-3">
             <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
@@ -576,7 +576,7 @@
           </div>
         </div>
       </div>
-      <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+      <div :class="(userdata.role !== 'foodserver')?'tab-pane fade':'tab-pane fade show active'" id="orders" role="tabpanel" aria-labelledby="orders-tab">
         <div class="row mt-2">
           <div class="col-md-12">
             <div class="row">
@@ -1411,6 +1411,7 @@ export default {
             items: JSON.stringify(item.items),
             processedBy: this.userdata.fName + " " + this.userdata.lName,
           })
+        document.location.reload();
       }
     },
     activatePOS() {
