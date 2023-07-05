@@ -530,7 +530,7 @@
                     <span class="input-group-text bg-primary text-white "
                       style="vertical-align: middle;font-weight: bold;border: none; font-size: x-large;">₱</span>
                     <input :disabled="(cartItems.length < 1)" type="number" min="0" ref="tenderedCash"
-                      class="form-control bg-primary text-white rounded-lg px-2 outline-none"
+                      class="form-control bg-primary text-white rounded-lg px-2 outline-none" @keyup="updateTotalCash" @keydown="updateTotalCash"
                       style="text-align:right; font-weight: bold; font-size: x-large; border: none;" v-model="totalCash">
                   </div>
                 </div>
@@ -1107,10 +1107,10 @@ export default {
         'field': 'date_created',
       },],
       activeTab: 'alltab',
+      totalCash: 0,
       taxValue: 12,
       discountType: 'percentage',
       discountValue: 0,
-      totalCash: 0,
       resto_order: [
 
       ],
@@ -1398,6 +1398,17 @@ export default {
           break;
         }
       }
+    },
+    updateTotalCash(){
+      
+      if(this.totalCash === 0 || this.totalCash.toString() === "" || this.totalCash === NaN) {
+        this.totalCash = 0;
+      } else {
+        this.totalCash = this.totalCash.toString();
+        
+        
+      }
+      //alert(this.totalCash)
     },
     getTime() {
       const date = new Date();
@@ -2305,6 +2316,8 @@ export default {
           },
         });
       }
+      this.$refs.tenderedCash.disabled = false;
+      this.$refs.tenderedCash.focus();
     },
     removeFromCart(item) {
       const index = this.cartItems.indexOf(item)
