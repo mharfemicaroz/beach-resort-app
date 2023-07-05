@@ -3,17 +3,20 @@
     <TopNavBarComponent />
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation" v-if="userdata.role !== 'foodserver'">
-        <button :class="(userdata.role !== 'foodserver')?'nav-link active':'nav-link'" id="tables-tab" data-bs-toggle="tab" data-bs-target="#tables" type="button"
-          role="tab" aria-controls="tables" aria-selected="true" @click="resetCounter">Customers</button>
+        <button :class="(userdata.role !== 'foodserver') ? 'nav-link active' : 'nav-link'" id="tables-tab"
+          data-bs-toggle="tab" data-bs-target="#tables" type="button" role="tab" aria-controls="tables"
+          aria-selected="true" @click="resetCounter">Customers</button>
       </li>
       <li class="nav-item" role="presentation" v-if="userdata.role !== 'foodserver'">
         <button class="nav-link" id="pos-tab" data-bs-toggle="tab" data-bs-target="#pos" type="button" role="tab"
           aria-controls="pos" aria-selected="true" @click="activatePOS">{{ (userdata.role !== 'waiter') ? 'POS' : 'Menu'
           }}</button>
       </li>
-      <li class="nav-item" role="presentation" v-if="userdata.role !== 'cashier' && userdata.role === 'foodserver' || userdata.role === 'superuser'">
-        <button :class="(userdata.role === 'foodserver')?'nav-link active':'nav-link'" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab"
-          aria-controls="orders" aria-selected="true">Orders</button>
+      <li class="nav-item" role="presentation"
+        v-if="userdata.role !== 'cashier' && userdata.role === 'foodserver' || userdata.role === 'superuser'">
+        <button :class="(userdata.role === 'foodserver') ? 'nav-link active' : 'nav-link'" id="orders-tab"
+          data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders"
+          aria-selected="true">Orders</button>
       </li>
       <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser'">
         <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button"
@@ -26,7 +29,8 @@
     </ul>
 
     <div class="tab-content mt-3" id="myTabContent">
-      <div :class="(userdata.role === 'foodserver')?'tab-pane fade':'tab-pane fade show active'" id="tables" role="tabpanel" aria-labelledby="tables-tab">
+      <div :class="(userdata.role === 'foodserver') ? 'tab-pane fade' : 'tab-pane fade show active'" id="tables"
+        role="tabpanel" aria-labelledby="tables-tab">
         <div class="row mt-2">
           <div class="col-md-3">
             <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
@@ -422,7 +426,8 @@
           </div>
           <div class="col-md-4">
 
-            <div ref="itemCart" class="card" :style="`height: ${(userdata.role !== 'waiter') ? 240 : 555}px; overflow-y: auto;`">
+            <div ref="itemCart" class="card"
+              :style="`height: ${(userdata.role !== 'waiter') ? 240 : 555}px; overflow-y: auto;`">
 
               <div class="row">
                 <div class="col-md-12">
@@ -455,13 +460,16 @@
                         </td>
                         <td>
                           <div class="btn-group mr-2" role="group" aria-label="...">
-                            <button type="button" class="m-btn btn-light btn btn-default" style="font-size: small; width: 20px;" @click="decreaseQty(item)">
+                            <button type="button" class="m-btn btn-light btn btn-default"
+                              style="font-size: small; width: 20px;" @click="decreaseQty(item)">
                               <i class="fa fa-minus"></i>
                             </button>
-                            <button type="button" class="m-btn btn-light btn btn-default" style="font-size: medium;width: 20px;" disabled>
+                            <button type="button" class="m-btn btn-light btn btn-default"
+                              style="font-size: medium;width: 20px;" disabled>
                               {{ item.qty }}
                             </button>
-                            <button type="button" class="m-btn btn-light btn btn-default" style="font-size: small;width: 20px;" @click="increaseQty(item, 1)">
+                            <button type="button" class="m-btn btn-light btn btn-default"
+                              style="font-size: small;width: 20px;" @click="increaseQty(item, 1)">
                               <i class="fa fa-plus"></i>
                             </button>
                           </div>
@@ -495,7 +503,7 @@
                   <dt>Discount:</dt>
                 </div>
                 <div class="col-md-6 d-flex flex-row-reverse">
-                  <dd class="text-right"><a href="#">{{ discountValue }}%</a></dd>
+                  <dd class="text-right"><a href="#">{{ discountValue }}{{ (discountType === 'percentage')?'%':' off' }}</a></dd>
                 </div>
               </div>
               <div class="row p-0 m-0">
@@ -576,7 +584,8 @@
           </div>
         </div>
       </div>
-      <div :class="(userdata.role !== 'foodserver')?'tab-pane fade':'tab-pane fade show active'" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+      <div :class="(userdata.role !== 'foodserver') ? 'tab-pane fade' : 'tab-pane fade show active'" id="orders"
+        role="tabpanel" aria-labelledby="orders-tab">
         <div class="row mt-2">
           <div class="col-md-12">
             <div class="row">
@@ -855,7 +864,7 @@
           <tr>
             <td> </td>
             <td>DISCOUNT:</td>
-            <td>₱{{ (parseFloat(discountValue) / 100 * parseFloat(subTotal)).toFixed(2) }}</td>
+            <td>₱{{ (discountType === 'percentage')?(parseFloat(discountValue) / 100 * parseFloat(subTotal)).toFixed(2):parseFloat(discountValue) }}</td>
           </tr>
           <tr>
             <td> </td>
@@ -985,6 +994,10 @@ export default {
         'field': 'taxValue',
         'sortable': true,
       }, {
+        'label': 'Discount Type',
+        'field': 'discountType',
+        'sortable': true,
+      }, {
         'label': 'Discount Value',
         'field': 'discountValue',
         'sortable': true,
@@ -1095,6 +1108,7 @@ export default {
       },],
       activeTab: 'alltab',
       taxValue: 12,
+      discountType: 'percentage',
       discountValue: 0,
       totalCash: 0,
       resto_order: [
@@ -1212,7 +1226,7 @@ export default {
       return this.cartItems.reduce((acc, item) => acc + parseFloat(item.totalPrice), 0).toFixed(2);
     },
     totalCost() {
-      return (this.subTotal * (1 + this.taxValue / 100) * (1 - this.discountValue / 100)).toFixed(2);
+      return ( (this.discountType === 'percentage')? this.subTotal * (1 + this.taxValue / 100) * (1 - this.discountValue / 100) : this.subTotal * (1 + this.taxValue / 100) - this.discountValue ).toFixed(2);
     },
     totalChange() {
       return (this.totalCash - this.totalCost).toFixed(2);
@@ -1477,27 +1491,44 @@ export default {
     setDiscount() {
       this.$swal.fire({
         title: 'Set discount value',
-        input: 'number',
-        inputPlaceholder: 'Enter discount percentage',
-        inputAttributes: {
-          min: 0, // Minimum value
-          max: 100,
-          step: 'any',
-        },
+        html: `
+      <div>
+        <input type="radio" class="form-check-input" id="fixedDiscount" name="discountType" value="fixed" checked>
+        <label for="fixedDiscount" class="form-check-label">Fixed</label> &nbsp;
+        <input type="radio" class="form-check-input" id="percentageDiscount" name="discountType" value="percentage">
+        <label for="percentageDiscount" class="form-check-label">Percentage</label>
+        <br><br>
+        <input type="number" class="form-control" id="discountValue" placeholder="Enter discount value" min="0" step="any">
+      </div>
+    `,
         showCancelButton: true,
         confirmButtonText: 'Submit',
         cancelButtonText: 'Cancel',
         allowOutsideClick: false,
+        preConfirm: () => {
+          const discountType = document.querySelector('input[name="discountType"]:checked').value;
+          const discountValue = document.getElementById('discountValue').value;
+          return { discountType, discountValue };
+        }
       }).then((result) => {
         if (result.isConfirmed) {
-          const inputValue = result.value;
-          if (inputValue !== "") {
-            this.discountValue = parseFloat(inputValue).toFixed(2);
+          const { discountType, discountValue } = result.value;
+          if (discountValue !== "") {
+            if (discountType === "fixed") {
+              // Apply fixed discount
+              this.discountType = "fixed";
+              this.discountValue = parseFloat(discountValue).toFixed(2);
+            } else {
+              // Apply percentage discount
+              this.discountType = "percentage";
+              this.discountValue = parseFloat(discountValue).toFixed(2);
+            }
             this.$refs.tenderedCash.focus();
           }
         }
       });
     },
+
     setTax() {
       this.$swal.fire({
         title: 'Set tax value',
@@ -2004,6 +2035,7 @@ export default {
         axios
           .post(`${this.API_URL}restotransaction/`, {
             taxValue: this.taxValue,
+            discountType: this.discountType,
             discountValue: this.discountValue,
             subTotal: this.subTotal,
             totalCharge: this.totalCost,
@@ -2337,35 +2369,35 @@ export default {
           break;
         case 'F2':
           event.preventDefault()
-          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
+          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
             this.payOrder();
           break;
         case 'F3':
           event.preventDefault()
-          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
+          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
             this.setQty();
           this.$refs.tenderedCash.focus();
           break;
         case 'F4':
           event.preventDefault()
-          if (this.userdata.role !== 'waiter')
+          if (this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
             this.setDiscount();
           this.$refs.tenderedCash.focus();
           break;
         case 'F5':
           event.preventDefault()
-          if (this.userdata.role !== 'waiter')
+          if (this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
             this.setTax();
           this.$refs.tenderedCash.focus();
           break;
         case 'F6':
           event.preventDefault()
-          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.customer.reference_id === null)
+          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver' && this.customer.reference_id === null)
             this.holdCustomer();
           break;
         case 'F7':
           event.preventDefault()
-          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
+          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
             //toggle drawer
             break;
         case 'F8':
@@ -2374,12 +2406,12 @@ export default {
           break;
         case 'F9':
           event.preventDefault()
-          if (this.userdata.role !== 'waiter')
+          if (this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
             this.toggleInquire();
           break;
         case 'F10':
           event.preventDefault()
-          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter')
+          if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
             this.voidAction();
           break;
         case 'F11':
@@ -2583,5 +2615,4 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-</style>
+}</style>

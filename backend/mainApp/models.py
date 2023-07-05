@@ -130,6 +130,7 @@ class RestoItem(models.Model):
 class RestoTransaction(models.Model):
     id = models.AutoField(primary_key=True)
     taxValue = models.DecimalField(max_digits=10, decimal_places=2)
+    discountType = models.TextField(null=True, blank=True)
     discountValue = models.DecimalField(max_digits=10, decimal_places=2)
     subTotal = models.DecimalField(max_digits=10, decimal_places=2)
     totalCharge = models.DecimalField(max_digits=10, decimal_places=2)
