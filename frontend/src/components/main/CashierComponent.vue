@@ -503,7 +503,8 @@
                   <dt>Discount:</dt>
                 </div>
                 <div class="col-md-6 d-flex flex-row-reverse">
-                  <dd class="text-right"><a href="#">{{ discountValue }}{{ (discountType === 'percentage')?'%':' off' }}</a></dd>
+                  <dd class="text-right"><a href="#">{{ discountValue }}{{ (discountType === 'percentage') ? '%' : ' off'
+                  }}</a></dd>
                 </div>
               </div>
               <div class="row p-0 m-0">
@@ -530,7 +531,8 @@
                     <span class="input-group-text bg-primary text-white "
                       style="vertical-align: middle;font-weight: bold;border: none; font-size: x-large;">₱</span>
                     <input :disabled="(cartItems.length < 1)" type="number" min="0" ref="tenderedCash"
-                      class="form-control bg-primary text-white rounded-lg px-2 outline-none" @keyup="updateTotalCash" @keydown="updateTotalCash"
+                      class="form-control bg-primary text-white rounded-lg px-2 outline-none" @keyup="updateTotalCash"
+                      @keydown="updateTotalCash"
                       style="text-align:right; font-weight: bold; font-size: x-large; border: none;" v-model="totalCash">
                   </div>
                 </div>
@@ -651,8 +653,8 @@
                 <input type="text" class="form-control" id="SKU" v-model="stock.sku" required>
               </div>
               <div class="mb-3">
-                <label for="imgurl" class="form-label">Image URL</label>
-                <input type="text" class="form-control" id="imgurl" v-model="stock.imageUrl" required>
+                <label for="image" class="form-label">Image</label>
+                <input type="file" class="form-control" id="image" @change="handleImageUpload" required>
               </div>
               <div class="mb-3">
                 <label for="is-available" class="form-label">Category</label>
@@ -864,7 +866,8 @@
           <tr>
             <td> </td>
             <td>DISCOUNT:</td>
-            <td>₱{{ (discountType === 'percentage')?(parseFloat(discountValue) / 100 * parseFloat(subTotal)).toFixed(2):parseFloat(discountValue) }}</td>
+            <td>₱{{ (discountType === 'percentage') ? (parseFloat(discountValue) / 100 *
+              parseFloat(subTotal)).toFixed(2) : parseFloat(discountValue) }}</td>
           </tr>
           <tr>
             <td> </td>
@@ -1226,7 +1229,7 @@ export default {
       return this.cartItems.reduce((acc, item) => acc + parseFloat(item.totalPrice), 0).toFixed(2);
     },
     totalCost() {
-      return ( (this.discountType === 'percentage')? this.subTotal * (1 + this.taxValue / 100) * (1 - this.discountValue / 100) : this.subTotal * (1 + this.taxValue / 100) - this.discountValue ).toFixed(2);
+      return ((this.discountType === 'percentage') ? this.subTotal * (1 + this.taxValue / 100) * (1 - this.discountValue / 100) : this.subTotal * (1 + this.taxValue / 100) - this.discountValue).toFixed(2);
     },
     totalChange() {
       return (this.totalCash - this.totalCost).toFixed(2);
@@ -1387,6 +1390,23 @@ export default {
       this.getAllOrders();
       this.getCurrentOrders();
     },
+    async saveImageFile() {
+      try {
+        const formData = new FormData();
+        formData.append('file', this.imageFile);
+
+        const response = await axios.post(this.API_URL + 'restoitem/savefile', formData);
+
+        // Handle the response as needed
+        console.log('Image file saved successfully!', response.data);
+      } catch (error) {
+        // Handle any errors that occur during the request
+        console.error('Error saving image file:', error);
+      }
+    },
+    handleImageUpload(event) {
+      this.imageFile = event.target.files[0];
+    },
     loadCookiedata() {
       const cookies = document.cookie.split(';'); // Split cookies into an array
 
@@ -1399,14 +1419,14 @@ export default {
         }
       }
     },
-    updateTotalCash(){
-      
-      if(this.totalCash === 0 || this.totalCash.toString() === "" || this.totalCash === NaN) {
+    updateTotalCash() {
+
+      if (this.totalCash === 0 || this.totalCash.toString() === "" || this.totalCash === NaN) {
         this.totalCash = 0;
       } else {
         this.totalCash = this.totalCash.toString();
-        
-        
+
+
       }
       //alert(this.totalCash)
     },
@@ -1938,12 +1958,12 @@ export default {
       }
     },
     async payOrder() {
-
+      
       if (this.cartItems.length < 1) {
         return;
       }
 
-      if (this.totalCash < this.totalCost) {
+      if (parseFloat(this.totalCash) < parseFloat(this.totalCost)) {
         this.$swal({
           title: 'Warning',
           text: 'The tendered amount is less than the total cost.',
@@ -2628,4 +2648,5 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}</style>
+}
+</style>

@@ -5,6 +5,7 @@ from .views import *
 
 urlpatterns = [ 
     re_path(r'^bugreports/savefile', SaveFile),
+    re_path(r'^restoitem/savefile', SaveFile),
     re_path(r'^bugreports/$',bugreports_list , name='bugreports-list'),
     re_path(r'^bugreports/(?P<pk>\d+)/$',bugreports_list, name='bugreports-detail'), 
     re_path(r'^transactions_itemizer/(?P<type>\w+)/$', get_transactions_with_items, name='transactions'),
