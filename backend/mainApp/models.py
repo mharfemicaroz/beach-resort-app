@@ -119,6 +119,7 @@ class RestoItem(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(null=True, blank=True)
     imageUrl = models.TextField(null=True, blank=True)
+    imageFileName = models.TextField(null=True, blank=True)
     category = models.CharField(max_length=255)
     stocks = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)

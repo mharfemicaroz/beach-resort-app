@@ -655,6 +655,7 @@
               <div class="mb-3">
                 <label for="image" class="form-label">Image</label>
                 <input type="file" class="form-control" id="image" @change="handleImageUpload" required>
+                <a v-if="stock.imageFileName !==''" :href="this.API_URL+'Photos/'+stock.imageFileName" target="_blank" class="text-info">{{ stock.imageFileName }}</a>
               </div>
               <div class="mb-3">
                 <label for="is-available" class="form-label">Category</label>
@@ -711,7 +712,8 @@
                     <span v-else>No</span>
                   </template>
                   <template v-else="data.h==='imageUrl'">
-                    <img :src="data.dt.imageUrl" class="img-thumbnail" style="height: 80px;width: 80px;" />
+                    <img v-if="data.dt.imageUrl !== ''" :src="data.dt.imageUrl" class="img-thumbnail" style="height: 80px;width: 80px;" />
+                    <img v-else :src="this.API_URL+'Photos/'+data.dt.imageFileName" class="img-thumbnail" style="height: 80px;width: 80px;" />
                   </template>
                 </template>
               </table-component>
@@ -955,6 +957,7 @@ export default {
       stock: {
         name: "",
         imageUrl: "",
+        imageFileName: "",
         description: "",
         sku: "",
         category: "",
@@ -1114,6 +1117,8 @@ export default {
       taxValue: 12,
       discountType: 'percentage',
       discountValue: 0,
+      imageFile: null,
+      imageFileName: null,
       resto_order: [
 
       ],
@@ -1392,8 +1397,9 @@ export default {
     },
     async saveImageFile() {
       try {
+
         const formData = new FormData();
-        formData.append('file', this.imageFile);
+        formData.append('file', this.imageFile, this.imageFileName);
 
         const response = await axios.post(this.API_URL + 'restoitem/savefile', formData);
 
@@ -1405,8 +1411,53 @@ export default {
       }
     },
     handleImageUpload(event) {
-      this.imageFile = event.target.files[0];
+      const file = event.target.files[0];
+
+      // Check if a file was selected
+      if (!file) {
+        // Handle error when no file is selected
+        this.$swal({
+          title: "Error",
+          text: "No file selected.",
+          icon: "error",
+        });
+        return;
+      }
+
+      // Check if the file is an image
+      if (!file.type.startsWith("image/")) {
+        // Handle error when selected file is not an image
+        this.$swal({
+          title: "Error",
+          text: "Selected file is not an image.",
+          icon: "error",
+        });
+        return;
+      }
+
+      // Check if the file size is within the limit (2MB)
+      const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+      if (file.size > maxSizeInBytes) {
+        // Handle error when file size exceeds the limit
+        this.$swal({
+          title: "Error",
+          text: "Selected file exceeds the size limit (2MB).",
+          icon: "error",
+        });
+        return;
+      }
+
+      // File passed all the validation checks, proceed with setting properties
+      this.imageFile = file;
+
+      const currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, '_');
+      const uniqueID = Math.floor(100000 + Math.random() * 900000);
+      const fileExtension = file.name.split(".").pop(); // Get the actual file extension
+      const fileName = `restoitem_${currentDate}_${uniqueID}.${fileExtension}`;
+      this.imageFileName = fileName;
+      this.stock.imageFileName = fileName;
     },
+
     loadCookiedata() {
       const cookies = document.cookie.split(';'); // Split cookies into an array
 
@@ -1958,7 +2009,7 @@ export default {
       }
     },
     async payOrder() {
-      
+
       if (this.cartItems.length < 1) {
         return;
       }
@@ -2218,13 +2269,18 @@ export default {
             }
             this.stock.inventory = JSON.stringify(items);
             axios
-              .put(`${this.API_URL}restoitem/${this.stock.id}/`, this.stock)
+              .put(`${this.API_URL}restoitem/${this.stock.id}/`, {
+                ...this.stock,
+                imageFileName: this.imageFileName
+              })
               .then(response => {
                 this.$swal({
                   icon: "success",
                   title: "Item updated successfully"
-                }).then((result) => {
-                  document.location.reload();
+                }).then(async (result) => {
+                  await this.saveImageFile().then(response => {
+                    document.location.reload();
+                  });
                 });
                 // this.getInventory();
                 // this.stock = {
@@ -2257,13 +2313,18 @@ export default {
             } else {
               this.stock.inventory = `[{"type":"stockin","qty":${this.stock.stocks},"stocks":${this.stock.stocks},"date_created":"${formatDate(new Date())}", "processedBy": "${this.userdata.fName + " " + this.userdata.lName}"}]`;
               axios
-                .post(`${this.API_URL}restoitem/`, this.stock)
+                .post(`${this.API_URL}restoitem/`, {
+                  ...this.stock,
+                  imageFileName: this.imageFileName
+                })
                 .then(response => {
                   this.$swal({
                     icon: "success",
                     title: "Item saved successfully"
-                  }).then((result) => {
-                    document.location.reload();
+                  }).then(async (result) => {
+                    await this.saveImageFile().then(response => {
+                      document.location.reload();
+                    });
                   });
                   // this.getInventory();
                   // this.stock = {

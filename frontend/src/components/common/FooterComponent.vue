@@ -60,7 +60,7 @@ import html2canvas from 'html2canvas';
 export default {
     data() {
         return {
-            version: "1.7.1",
+            version: "1.7.5",
             provider: "Web App Solutions",
             pageVisits: 0,
             bugDescription: "",
