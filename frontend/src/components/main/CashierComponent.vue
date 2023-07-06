@@ -2,12 +2,12 @@
   <div class="container-fluid main">
     <TopNavBarComponent />
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item" role="presentation" v-if="userdata.role !== 'foodserver'">
-        <button :class="(userdata.role !== 'foodserver') ? 'nav-link active' : 'nav-link'" id="tables-tab"
+      <li class="nav-item" role="presentation" v-if="userdata.role !== 'foodserver' && userdata.role !=='restoinventory' ">
+        <button :class="(userdata.role !== 'foodserver' || userdata.role !== 'restoinventory') ? 'nav-link active' : 'nav-link'" id="tables-tab"
           data-bs-toggle="tab" data-bs-target="#tables" type="button" role="tab" aria-controls="tables"
           aria-selected="true" @click="resetCounter">Customers</button>
       </li>
-      <li class="nav-item" role="presentation" v-if="userdata.role !== 'foodserver'">
+      <li class="nav-item" role="presentation" v-if="userdata.role !== 'foodserver' && userdata.role !=='restoinventory'">
         <button class="nav-link" id="pos-tab" data-bs-toggle="tab" data-bs-target="#pos" type="button" role="tab"
           aria-controls="pos" aria-selected="true" @click="activatePOS">{{ (userdata.role !== 'waiter') ? 'POS' : 'Menu'
           }}</button>
@@ -18,8 +18,8 @@
           data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders"
           aria-selected="true">Orders</button>
       </li>
-      <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser'">
-        <button class="nav-link" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button"
+      <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser' || userdata.role ==='restoinventory'">
+        <button :class="(userdata.role === 'restoinventory') ? 'nav-link active' : 'nav-link'" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button"
           role="tab" aria-controls="inventory" aria-selected="true" @click="resetCounter">Inventory</button>
       </li>
       <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser'">
@@ -29,7 +29,7 @@
     </ul>
 
     <div class="tab-content mt-3" id="myTabContent">
-      <div :class="(userdata.role === 'foodserver') ? 'tab-pane fade' : 'tab-pane fade show active'" id="tables"
+      <div :class="(userdata.role === 'foodserver' || userdata.role === 'restoinventory') ? 'tab-pane fade' : 'tab-pane fade show active'" id="tables"
         role="tabpanel" aria-labelledby="tables-tab">
         <div class="row mt-2">
           <div class="col-md-3">
@@ -636,7 +636,7 @@
           </div>
         </div>
       </div>
-      <div class="tab-pane fade" id="inventory" role="tabpanel" aria-labelledby="inventory-tab">
+      <div :class="(userdata.role !== 'restoinventory') ? 'tab-pane fade' : 'tab-pane fade show active'" id="inventory" role="tabpanel" aria-labelledby="inventory-tab">
         <div class="row">
           <div class="col-md-3">
             <form @submit.prevent="saveInventory" class="no-print">

@@ -78,6 +78,7 @@
                                                     <option value="cashier">Cashier</option>
                                                     <option value="waiter">Server/Waiter</option>
                                                     <option value="foodserver">Food Server</option>
+                                                    <option value="restoinventory">Restaurant Inventory Manager</option>
                                                     <option value="guard">Guest Counter</option>
                                                 </select>
                                             </div>
@@ -557,7 +558,7 @@ export default {
                 this.user.route = "booking";
             } else if (this.user.role === "inventorymanager") {
                 this.user.route = "inventory";
-            } else if (this.user.role === "cashier" || this.user.role === "waiter" || this.user.role === "foodserver") {
+            } else if (this.user.role === "cashier" || this.user.role === "waiter" || this.user.role === "foodserver" || this.user.role === "restoinventory") {
                 this.user.route = "pos";
             } else if (this.user.role === "guard") {
                 this.user.route = "counter";

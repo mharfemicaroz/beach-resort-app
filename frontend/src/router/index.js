@@ -55,7 +55,7 @@ const router = createRouter({
       component: Cashier,
       meta: { 
         requiresAuth: true,
-        roles: ["superuser", "cashier", "waiter", "foodserver"]
+        roles: ["superuser", "cashier", "waiter", "foodserver", "restoinventory"]
       },
     },
     {
