@@ -712,7 +712,7 @@
                     <span v-else>No</span>
                   </template>
                   <template v-else="data.h==='imageUrl'">
-                    <img v-if="data.dt.imageUrl !== ''" :src="data.dt.imageUrl" class="img-thumbnail" style="height: 80px;width: 80px;" />
+                    <img v-if="data.dt.imageFileName ===null" :src="data.dt.imageUrl" class="img-thumbnail" style="height: 80px;width: 80px;" />
                     <img v-else :src="this.API_URL+'Photos/'+data.dt.imageFileName" class="img-thumbnail" style="height: 80px;width: 80px;" />
                   </template>
                 </template>
