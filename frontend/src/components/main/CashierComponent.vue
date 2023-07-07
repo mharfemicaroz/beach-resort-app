@@ -2003,9 +2003,10 @@ export default {
       this.totalCash = isNaN(parseFloat(this.totalCash)) ? 0 : parseFloat(this.totalCash) + d;
     },
     clearAll() {
-      if (this.cartItems.length > 0 && this.customer.order_id === undefined) {
+      if (this.cartItems.length > 0) {
         this.customer = {
           reference_id: null,
+          customer_id: null,
           type: '',
           identifier: '',
           order_type: '',
