@@ -2,12 +2,15 @@
   <div class="container-fluid main">
     <TopNavBarComponent />
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item" role="presentation" v-if="userdata.role !== 'foodserver' && userdata.role !=='restoinventory' ">
-        <button :class="(userdata.role !== 'foodserver' || userdata.role !== 'restoinventory') ? 'nav-link active' : 'nav-link'" id="tables-tab"
-          data-bs-toggle="tab" data-bs-target="#tables" type="button" role="tab" aria-controls="tables"
+      <li class="nav-item" role="presentation"
+        v-if="userdata.role !== 'foodserver' && userdata.role !== 'restoinventory'">
+        <button
+          :class="(userdata.role !== 'foodserver' || userdata.role !== 'restoinventory') ? 'nav-link active' : 'nav-link'"
+          id="tables-tab" data-bs-toggle="tab" data-bs-target="#tables" type="button" role="tab" aria-controls="tables"
           aria-selected="true" @click="resetCounter">Customers</button>
       </li>
-      <li class="nav-item" role="presentation" v-if="userdata.role !== 'foodserver' && userdata.role !=='restoinventory'">
+      <li class="nav-item" role="presentation"
+        v-if="userdata.role !== 'foodserver' && userdata.role !== 'restoinventory'">
         <button class="nav-link" id="pos-tab" data-bs-toggle="tab" data-bs-target="#pos" type="button" role="tab"
           aria-controls="pos" aria-selected="true" @click="activatePOS">{{ (userdata.role !== 'waiter') ? 'POS' : 'Menu'
           }}</button>
@@ -18,9 +21,10 @@
           data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders"
           aria-selected="true">Orders</button>
       </li>
-      <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser' || userdata.role ==='restoinventory'">
-        <button :class="(userdata.role === 'restoinventory') ? 'nav-link active' : 'nav-link'" id="inventory-tab" data-bs-toggle="tab" data-bs-target="#inventory" type="button"
-          role="tab" aria-controls="inventory" aria-selected="true" @click="resetCounter">Inventory</button>
+      <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser' || userdata.role === 'restoinventory'">
+        <button :class="(userdata.role === 'restoinventory') ? 'nav-link active' : 'nav-link'" id="inventory-tab"
+          data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory"
+          aria-selected="true" @click="resetCounter">Inventory</button>
       </li>
       <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser'">
         <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab"
@@ -29,21 +33,22 @@
     </ul>
 
     <div class="tab-content mt-3" id="myTabContent">
-      <div :class="(userdata.role === 'foodserver' || userdata.role === 'restoinventory') ? 'tab-pane fade' : 'tab-pane fade show active'" id="tables"
-        role="tabpanel" aria-labelledby="tables-tab">
+      <div
+        :class="(userdata.role === 'foodserver' || userdata.role === 'restoinventory') ? 'tab-pane fade' : 'tab-pane fade show active'"
+        id="tables" role="tabpanel" aria-labelledby="tables-tab">
         <div class="row mt-2">
           <div class="col-md-3">
             <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active show" data-bs-toggle="tab" role="tab" href="#dineintab">
+                <a class="nav-link active show" data-bs-toggle="tab"  @click="resetCounter" role="tab" href="#dineintab">
                   <i class="fa fa-tags"></i>Dine-in</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#takeouttab">
+                <a class="nav-link" data-bs-toggle="tab" role="tab"  @click="resetCounter" href="#takeouttab">
                   <i class="fa fa-tags"></i>Take Out</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#onholdtab">
+                <a class="nav-link" data-bs-toggle="tab" role="tab"  @click="resetCounter" href="#onholdtab">
                   <i class="fa fa-tags"></i>On hold</a>
               </li>
             </ul>
@@ -604,9 +609,13 @@
                         <ul style="list-style-type: none; padding-left: 20px;">
                           {{ item.order_type.toString().toUpperCase() }}/{{ item.customer_name }} <span
                             style="font-style: italic;">({{ item.status }})</span>
-                          <li v-for="orderItem in item.order_items" :key="orderItem.id"
-                            style="font-weight:bold; font-size:16px; padding-left:30px;">
-                            {{ orderItem.qty }} &times; {{ orderItem.name }}
+                          <li v-for="orderItem in item.order_items" :key="orderItem.id" class="order-item">
+                            <div class="form-check">
+                              <input v-if="item.isRunning" type="checkbox" class="form-check-input" :id='"cb"+orderItem.id'>
+                              <label class="form-check-label" for="checkbox-{{ orderItem.id }}">
+                                {{ orderItem.qty }} &times; {{ orderItem.name }}
+                              </label>
+                            </div>
                           </li>
                         </ul>
                       </div>
@@ -636,7 +645,8 @@
           </div>
         </div>
       </div>
-      <div :class="(userdata.role !== 'restoinventory') ? 'tab-pane fade' : 'tab-pane fade show active'" id="inventory" role="tabpanel" aria-labelledby="inventory-tab">
+      <div :class="(userdata.role !== 'restoinventory') ? 'tab-pane fade' : 'tab-pane fade show active'" id="inventory"
+        role="tabpanel" aria-labelledby="inventory-tab">
         <div class="row">
           <div class="col-md-3">
             <form @submit.prevent="saveInventory" class="no-print">
@@ -655,7 +665,8 @@
               <div class="mb-3">
                 <label for="image" class="form-label">Image</label>
                 <input type="file" class="form-control" id="image" @change="handleImageUpload" required>
-                <a v-if="stock.imageFileName !==''" :href="this.API_URL+'Photos/'+stock.imageFileName" target="_blank" class="text-info">{{ stock.imageFileName }}</a>
+                <a v-if="stock.imageFileName !== ''" :href="this.API_URL + 'Photos/' + stock.imageFileName"
+                  target="_blank" class="text-info">{{ stock.imageFileName }}</a>
               </div>
               <div class="mb-3">
                 <label for="is-available" class="form-label">Category</label>
@@ -712,8 +723,10 @@
                     <span v-else>No</span>
                   </template>
                   <template v-else="data.h==='imageUrl'">
-                    <img v-if="data.dt.imageFileName ===null" :src="data.dt.imageUrl" class="img-thumbnail" style="height: 80px;width: 80px;" />
-                    <img v-else :src="this.API_URL+'Photos/'+data.dt.imageFileName" class="img-thumbnail" style="height: 80px;width: 80px;" />
+                    <img v-if="data.dt.imageFileName === null" :src="data.dt.imageUrl" class="img-thumbnail"
+                      style="height: 80px;width: 80px;" />
+                    <img v-else :src="this.API_URL + 'Photos/' + data.dt.imageFileName" class="img-thumbnail"
+                      style="height: 80px;width: 80px;" />
                   </template>
                 </template>
               </table-component>
@@ -1220,6 +1233,7 @@ export default {
       const user = authStore.user;
       return user;
     },
+
     getTimePassed() {
       return function (datestarted) {
         const startedTime = new Date(datestarted).getTime();
@@ -2005,7 +2019,6 @@ export default {
       this.clearAll();
       this.customer = {
         reference_id: null,
-
       }
     },
     async payOrder() {
@@ -2709,5 +2722,11 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.order-item {
+  font-weight: bold;
+  font-size: 16px;
+  padding-left: 30px;
 }
 </style>
