@@ -2919,6 +2919,7 @@ export default {
       }
     },
     async viewSummary() {
+      this.movetocartFlag = false;
       const item = this.bookings[this.itemIndex];
       const bookingID = item.itemID;
       let existingTransaction = null;
@@ -3048,7 +3049,7 @@ export default {
 
 
       this.toggleItemModal();
-
+      this.movetocartFlag = true;
       $("#others-tab").tab('show');
 
       this.itemCart = {
