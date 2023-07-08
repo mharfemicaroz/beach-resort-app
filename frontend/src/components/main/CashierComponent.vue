@@ -598,7 +598,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="row row-cols-1 row-cols-md-4">
-                  <div class="col mb-4" v-for="(item, index) in resto_allorders" :key="item.id">
+                  <div class="col mb-4" v-for="(item, index) in filteredResto_allorders" :key="item.id">
                     <div class="card" style="transition: transform 0.2s ease-in-out;">
                       <div
                         :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : (item.status === 'void' ? 'bg-warning' : (item.status === 'served' ? 'bg-info' : 'bg-success'))}`">
@@ -1233,7 +1233,9 @@ export default {
       const user = authStore.user;
       return user;
     },
-
+    filteredResto_allorders(){
+      return this.resto_allorders.filter(item => new Date(item.date_created).setHours(0,0,0,0) === new Date().setHours(0,0,0,0));
+    },
     getTimePassed() {
       return function (datestarted) {
         const startedTime = new Date(datestarted).getTime();
@@ -1527,6 +1529,7 @@ export default {
     activatePOS() {
       this.$nextTick(() => {
         this.setFocus();
+        this.resetCounter();
       });
     },
     setFocus() {
