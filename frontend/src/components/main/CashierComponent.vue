@@ -1261,7 +1261,7 @@ export default {
     },
     filteredresto_takeouts() {
       return this.resto_takeouts.map(item => {
-        const order = this.resto_order.filter(o => o.table_id === item.id);
+        const order = this.resto_order.filter(o => o.table_id === item.id && o.order_type === "take-out");
         if (order.length > 0) {
           const order_data = order[0];
           const order_id = order_data.id;
@@ -1286,7 +1286,7 @@ export default {
     },
     filteredresto_tables() {
       return this.resto_tables.map(item => {
-        const order = this.resto_order.filter(o => o.table_id === item.id);
+        const order = this.resto_order.filter(o => o.table_id === item.id && o.order_type === "dine-in");
         if (order.length > 0) {
           const order_data = order[0];
           const order_id = order_data.id;
@@ -1322,7 +1322,7 @@ export default {
     },
     filteredresto_onholds() {
       return this.resto_onholds.map(item => {
-        const order = this.resto_order.filter(o => o.table_id === item.id);
+        const order = this.resto_order.filter(o => o.table_id === item.id && o.order_type === "on-hold");
         if (order.length > 0) {
           const order_data = order[0];
           const order_id = order_data.id;
