@@ -599,7 +599,8 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="row row-cols-1 row-cols-md-4">
-                  <div class="col mb-4" v-for="(item, index) in filteredResto_allorders" :key="item.id">
+                  <template v-for="(item, index) in filteredResto_allorders" :key="item.id">
+                    <div class="col mb-4" v-if="item.order_items.filter(o => o.category.toLowerCase() !== 'drinks' && o.category.toLowerCase() !== 'miscellaneous').length > 0">
                     <div class="card" style="transition: transform 0.2s ease-in-out;">
                       <div
                         :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : (item.status === 'void' ? 'bg-warning' : (item.status === 'served' ? 'bg-info' : 'bg-success'))}`">
@@ -610,7 +611,7 @@
                         <ul style="list-style-type: none; padding-left: 20px;">
                           {{ item.order_type.toString().toUpperCase() }}/{{ item.customer_name }} <span
                             style="font-style: italic;">({{ item.status }})</span>
-                          <li v-for="orderItem in item.order_items" :key="orderItem.id" class="order-item">
+                          <li v-for="orderItem in item.order_items.filter(o => o.category.toLowerCase() !== 'drinks' && o.category.toLowerCase() !== 'miscellaneous')" :key="orderItem.id" class="order-item">
                             <div class="form-check">
                               <input v-if="item.isRunning" type="checkbox" class="form-check-input" :id='"cb"+orderItem.id'>
                               <label class="form-check-label" for="checkbox-{{ orderItem.id }}">
@@ -635,6 +636,7 @@
                     </div>
 
                   </div>
+                  </template>
                 </div>
               </div>
             </div>
