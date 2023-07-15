@@ -453,6 +453,7 @@
                     </thead>
                     <tbody>
                       <tr v-for="(item, index) in cartItems" :key="index">
+                     
                         <td>
                           <div class="row d-flex flex-row">
                             <div class="col-sm-4 text-left">
@@ -483,7 +484,7 @@
                           <strong>₱{{ item.totalPrice.toFixed(2) }}</strong>
                         </td>
                         <td>
-                          <button v-if="customer.order_id === undefined" class="btn btn-outline-danger btn-sm"
+                          <button v-if="item.justadded" class="btn btn-outline-danger btn-sm"
                             type="button" @click="removeFromCart(item)">
                             <i class="fas fa-times"></i>
                           </button>
@@ -2386,6 +2387,7 @@ export default {
       const isItemExist = (this.cartItems.filter(o => o.id === item.id).length > 0);
       const cart = {
         id: item.id,
+        justadded: true,
         sku: item.sku,
         name: item.name,
         description: item.description,
