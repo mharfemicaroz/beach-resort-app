@@ -138,55 +138,63 @@ from dateutil import parser
 @api_view(['GET'])
 @csrf_exempt
 def get_transactions_with_items(request, type=None):
+    today = date.today()
+    current_month = today.month
+    current_year = today.year
 
-    if type == 'all':
-        transactions = Transaction.objects.all()
-    elif type == 'month':
-        today = date.today()
-        current_month = today.month
-        current_year = today.year
+    transactions = Transaction.objects.all()
 
-        # Filter transactions by the current month
-        transactions = Transaction.objects.filter(transaction_date__year=current_year, transaction_date__month=current_month)
+    if type == 'month':
+        transactions = transactions.filter(transaction_date__year=current_year, transaction_date__month=current_month)
     elif type == 'day':
-        today = date.today()
-        current_month = today.month
-        current_year = today.year
         current_day = today.day
-
-        # Filter transactions by the current month
-        transactions = Transaction.objects.filter(transaction_date__year=current_year, transaction_date__month=current_month, transaction_date__day=current_day)
+        transactions = transactions.filter(transaction_date__year=current_year, transaction_date__month=current_month, transaction_date__day=current_day)
 
     transaction_data = TransactionSerializer(transactions, many=True).data
+
+    booking_ids = [transaction['bookingID'] for transaction in transaction_data]
+    trans_ids = [transaction['id'] for transaction in transaction_data]
+    trans_gkeys = [transaction['groupkey'] for transaction in transaction_data if transaction['groupkey'] is not None]
+
+    items = TransactionItem.objects.filter(bookingID__in=booking_ids)
+    items2 = TransactionRecord.objects.filter(transaction__in=trans_ids)
+    items_data = TransactionItemSerializer(items, many=True).data
+    items2_data = TransactionRecordSerializer(items2, many=True).data
+
+    transaction_item_dict = {}
+    transaction_record_dict = {}
+
+    for item in items_data:
+        booking_id = item['bookingID']
+        if booking_id not in transaction_item_dict:
+            transaction_item_dict[booking_id] = []
+        transaction_item_dict[booking_id].append(item)
+
+    for item in items2_data:
+        trans_id = item['transaction']
+        if trans_id not in transaction_record_dict:
+            transaction_record_dict[trans_id] = []
+        transaction_record_dict[trans_id].append(item)
 
     for transaction in transaction_data:
         booking_id = transaction['bookingID']
         trans_id = transaction['id']
         trans_gkey = transaction['groupkey']
-        if trans_gkey is None:
-            items = TransactionItem.objects.filter(bookingID=booking_id)
-        else:
-            items = TransactionItem.objects.filter(groupkey=trans_gkey)
-        items2 = TransactionRecord.objects.filter(transaction=trans_id)
-        items_data = TransactionItemSerializer(items, many=True).data
-        items2_data = TransactionRecordSerializer(items2, many=True).data
-        transaction['items'] = items_data
-        transaction['items2'] = items2_data
+        transaction['items'] = transaction_item_dict.get(booking_id, [])
+        transaction['items2'] = transaction_record_dict.get(trans_id, [])
 
         # Calculate actualIncomeOfThisDay
         transaction_date_str = transaction['transaction_date']
         transaction_date = parser.parse(transaction_date_str).date()
         transaction_date = datetime.combine(transaction_date, time.min)
-        transaction_records = TransactionRecord.objects.filter(
-            transaction=trans_id,
-            transaction_date__lt=transaction_date
-        )
-        previous_income = transaction_records.aggregate(total_income=Sum('cashAmountPay'))['total_income'] or Decimal('0')
+        transaction_records = transaction_record_dict.get(trans_id, [])
+        previous_income = sum([Decimal(record['cashAmountPay']) for record in transaction_records if parser.parse(record['transaction_date']) < transaction_date], Decimal('0'))
         cash_amount_pay = Decimal(transaction['cashAmountPay'])
         actual_income = cash_amount_pay - previous_income
         transaction['actualIncomeOfThisDay'] = actual_income
 
     return JsonResponse(transaction_data, safe=False)
+
 
 @csrf_exempt
 def SaveFile(request):
