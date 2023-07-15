@@ -664,7 +664,7 @@
               </div>
               <div class="mb-3">
                 <label for="image" class="form-label">Image</label>
-                <input type="file" class="form-control" id="image" @change="handleImageUpload" required>
+                <input type="file" class="form-control" id="image" @change="handleImageUpload">
                 <a v-if="stock.imageFileName !== ''" :href="this.API_URL + 'Photos/' + stock.imageFileName"
                   target="_blank" class="text-info">{{ stock.imageFileName }}</a>
               </div>

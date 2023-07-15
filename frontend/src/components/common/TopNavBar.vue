@@ -39,7 +39,7 @@
                                 <li><router-link to="/main" tag="a" class="dropdown-item">Main</router-link></li>
                                 <li><router-link to="/booking" tag="a" class="dropdown-item">Booking</router-link></li>
                                 <li><router-link to="/inventory" tag="a" class="dropdown-item">Inventory</router-link></li>
-                                <li><router-link to="/cashier" tag="a" class="dropdown-item">Cashier</router-link></li>
+                                <li><router-link to="/cashier" tag="a" class="dropdown-item">Restaurant</router-link></li>
                                 <li><router-link to="/counter" tag="a" class="dropdown-item">Guest Counter</router-link></li>
                                 <hr class="dropdown-divider">
                             </div>
