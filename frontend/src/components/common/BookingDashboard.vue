@@ -79,8 +79,11 @@
                     <div class="card-header text-primary text-center">
                         <strong>Reservation Summary</strong>
                     </div>
-                    <div class="card-body chart">
+                    <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
                         <pie-chart :key="componentKey" v-if="loaded[0]" :chartData="pie1Data" />
+                        <div v-else class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -89,8 +92,11 @@
                     <div class="card-header text-primary text-center">
                         <strong>Current Occupancy</strong>
                     </div>
-                    <div class="card-body chart">
+                    <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
                         <bar-chart :key="componentKey" v-if="loaded[1]" :chartData="bar1Data" />
+                        <div v-else class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -99,8 +105,11 @@
                     <div class="card-header text-primary text-center">
                         <strong>Transaction Type</strong>
                     </div>
-                    <div class="card-body chart">
+                    <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
                         <pie-chart :key="componentKey" v-if="loaded[3]" :chartData="pie2Data" />
+                        <div v-else class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -114,8 +123,11 @@
                     <div class="card-header text-primary text-center">
                         <strong>Collection Summary Report</strong>
                     </div>
-                    <div class="card-body chart">
+                    <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
                         <bar-chart :key="componentKey" v-if="loaded[6]" :chartData="bar3Data" />
+                        <div v-else class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -139,8 +151,11 @@
                     <div class="card-header text-primary text-center">
                         <strong>Reservation Trend</strong>
                     </div>
-                    <div class="card-body chart">
+                    <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
                         <line-chart :key="componentKey" v-if="loaded[2]" :chartData="line1Data" />
+                        <div v-else class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -149,8 +164,11 @@
                     <div class="card-header text-primary text-center">
                         <strong>Total Revenue</strong>
                     </div>
-                    <div class="card-body chart">
+                    <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
                         <bar-chart :key="componentKey" v-if="loaded[5]" :chartData="bar2Data" />
+                        <div v-else class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -159,8 +177,11 @@
                     <div class="card-header text-primary text-center">
                         <strong>Sales Trend</strong>
                     </div>
-                    <div class="card-body chart">
+                    <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
                         <line-chart :key="componentKey" v-if="loaded[4]" :chartData="line2Data" />
+                        <div v-else class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
