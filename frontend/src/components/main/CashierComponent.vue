@@ -835,19 +835,23 @@
         <div>TRANS#: {{ transactionno }}</div>
         <div>CUST#: {{ customerno }}</div>
       </div>
-      <table style="width: 100%; margin-top: 10px;">
+      <table style="width: 100%; margin-top: 10px; font-size: smaller;">
         <thead>
           <tr>
             <th>#</th>
             <th>Item</th>
+            <td>Qty</td>
             <th>Price</th>
+            <th>Total</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(item, index) in cartItems" :key="index">
             <td>{{ index + 1 }}</td>
             <td>{{ item.name }}</td>
+            <td>{{ item.qty }}</td>
             <td>{{ parseFloat(item.price).toFixed(2) }}</td>
+            <td>{{ (parseFloat(item.qty) * parseFloat(item.price)).toFixed(2) }}</td>
           </tr>
         </tbody>
       </table>
