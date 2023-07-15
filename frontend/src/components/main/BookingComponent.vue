@@ -1215,7 +1215,7 @@
             <p class="loading-text h5">Loading...(Do not click anywhere!)</p>
           </div>
 
-          <form v-else @submit.prevent="clickTestAddItem">
+          <form v-else>
             <!-- Client Information -->
             <h5>Booking Details<span class="text-muted" style="font-size: 12px;">*Field required</span></h5>
             <div class="form-group row">
@@ -1305,21 +1305,21 @@
                     <i class="fas fa-times"></i> Cancel Reservation
                   </button>
                   <span v-if="userdata.role !== 'reservationist'">
-                    <button v-show="!toggleselect" v-if="reservation.isPaid === '' || reservation.isPaid === 'no'"
-                      @click="moveToCart()" type="button" class="btn btn-success btn-sm btn-margin rounded">
+                    <button :disabled="disablebutton" v-show="!toggleselect" v-if="reservation.isPaid === '' || reservation.isPaid === 'no'"
+                      @click="moveToCart(); disablebutton = true" type="button" class="btn btn-success btn-sm btn-margin rounded">
                       <i class="fas fa-check"></i> Down Payment
                     </button>
-                    <button v-show="!toggleselect" v-else-if="reservation.isPaid === 'partial'" @click="moveToCart()"
+                    <button :disabled="disablebutton" v-show="!toggleselect" v-else-if="reservation.isPaid === 'partial'" @click="moveToCart(); disablebutton = true"
                       type="button" class="btn btn-warning btn-sm btn-margin rounded">
                       <i class="fas fa-check"></i> Partial Payment
                     </button>
-                    <button v-show="!toggleselect" v-else-if="reservation.isPaid === 'yes'" @click="moveToCart()"
+                    <button :disabled="disablebutton" v-show="!toggleselect" v-else-if="reservation.isPaid === 'yes'" @click="moveToCart(); disablebutton = true"
                       type="button" class="btn btn-primary btn-sm btn-margin rounded">
                       <i class="fas fa-eye"></i> View Summary
                     </button>
-                    <button v-show="!toggleselect"
+                    <button :disabled="disablebutton" v-show="!toggleselect"
                       v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(reservation.checkinDate)" type="button"
-                      class="btn btn-success btn-sm btn-margin rounded" @click="checkinGuest()">
+                      class="btn btn-success btn-sm btn-margin rounded" @click="checkinGuest(); disablebutton = true">
                       <i class="fas fa-sign-in-alt"></i> Check-in
                     </button>
                   </span>
@@ -1328,52 +1328,52 @@
                 <div v-else-if="reservation.status == 'checkedin'">
                   <span v-if="userdata.role !== 'reservationist'">
                     <div v-if="reservation.isPaid === '' || reservation.isPaid === 'no'">
-                      <button v-show="!toggleselect" @click="moveToCart()" type="button"
+                      <button :disabled="disablebutton" v-show="!toggleselect" @click="moveToCart(); disablebutton = true" type="button"
                         class="btn btn-success btn-sm btn-margin rounded">
                         <i class="fas fa-credit-card"></i> Pay Now
                       </button>
                     </div>
                     <div v-else-if="reservation.isPaid === 'partial'">
-                      <button v-show="!toggleselect" @click="moveToCart()" type="button"
+                      <button :disabled="disablebutton" v-show="!toggleselect" @click="moveToCart(); disablebutton = true" type="button"
                         class="btn btn-success btn-sm btn-margin rounded">
                         <i class="fas fa-credit-card"></i> Pay Now
                       </button>
-                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
-                        @click="extendBooking()">
+                      <button :disabled="disablebutton" v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
+                        @click="extendBooking(); disablebutton = true">
                         <i class="fas fa-calendar-plus"></i> Extend (1 day)
                       </button>
                     </div>
                     <div v-else>
-                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
-                        @click="viewSummary()">
+                      <button :disabled="disablebutton" v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
+                        @click="viewSummary(); disablebutton = true">
                         <i class="fas fa-eye"></i> View Summary
                       </button>
-                      <button v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
-                        @click="extendBooking()">
+                      <button :disabled="disablebutton" v-show="!toggleselect" type="button" class="btn btn-primary btn-sm btn-margin rounded"
+                        @click="extendBooking(); disablebutton = true">
                         <i class="fas fa-calendar-plus"></i> Extend (1 day)
                       </button>
-                      <button v-show="!toggleselect" type="button" class="btn btn-success btn-sm btn-margin rounded"
-                        @click="checkOutGuest()">
+                      <button :disabled="disablebutton" v-show="!toggleselect" type="button" class="btn btn-success btn-sm btn-margin rounded"
+                        @click="checkOutGuest(); disablebutton = true">
                         <i class="fas fa-sign-out-alt"></i> Check-out
                       </button>
                     </div>
                   </span>
                 </div>
 
-                <button v-else-if="reservation.status == 'vacant'" type="submit"
+                <button :disabled="disablebutton" @click="clickTestAddItem(); disablebutton = true" v-else-if="reservation.status == 'vacant'" type="button"
                   class="btn btn-primary btn-sm btn-margin rounded">
                   <i class="fas fa-book"></i> Book Now
                 </button>
-                <button
+                <button :disabled="disablebutton"
                   v-if="new Date().setHours(0, 0, 0, 0) <= parseDate2(reservation.checkinDate) && userdata.role !== 'reservationist' && (reservation.status !== 'vacant' && reservation.status !== 'checkedout' && reservation.status !== 'cancelled')"
-                  @click="transferRoom()" type="button" class="btn btn-success btn-sm btn-margin rounded">
+                  @click="transferRoom(); disablebutton = true" type="button" class="btn btn-success btn-sm btn-margin rounded">
                   <i class="fas fa-exchange-alt"></i> {{ toggleselect ? 'Save' : 'Transfer' }}
                 </button>
-                <button v-if="userdata.role !== 'reservationist' && reservation.status !== 'vacant'" type="button"
-                  @click="voidBook()" class="btn btn-danger btn-sm btn-margin rounded" v-show="!toggleselect">
+                <button :disabled="disablebutton" v-if="userdata.role !== 'reservationist' && reservation.status !== 'vacant'" type="button"
+                  @click="voidBook(); disablebutton = true" class="btn btn-danger btn-sm btn-margin rounded" v-show="!toggleselect">
                   <i class="fas fa-trash"></i> Void
                 </button>
-                <button type="button" class="btn btn-danger btn-sm btn-margin rounded" data-bs-dismiss="modal">
+                <button :disabled="disablebutton" @click="disablebutton = true" type="button" class="btn btn-danger btn-sm btn-margin rounded" data-bs-dismiss="modal">
                   <i class="fas fa-times"></i> Close
                 </button>
               </div>
@@ -1493,6 +1493,7 @@ export default {
       roomSelect: "ok",
       toggleselect: false,
       isItNew: false,
+      disablebutton: false,
       bookingsOptions: [{
         'label': 'Room Name',
         'field': 'room_name',
@@ -2900,6 +2901,7 @@ export default {
       $("#addAccountModal").modal("toggle");
     },
     toggleItemModal() {
+      this.disablebutton = false;
       $("#BookDayModal").modal("toggle");
     },
     toggleSettingsModal() {
@@ -3049,8 +3051,10 @@ export default {
 
 
       this.toggleItemModal();
+      
+      
+      
       this.movetocartFlag = true;
-      $("#others-tab").tab('show');
 
       this.itemCart = {
         id: 0,
@@ -3305,12 +3309,12 @@ export default {
 
       }
 
-
+      
       this.toggleItemModal();
 
       $("#others-tab").tab('show');
-
       this.movetocartFlag = true;
+      
 
       this.itemCart = {
         id: 0,
@@ -4143,7 +4147,7 @@ export default {
           text: "There is an error!",
           icon: "error",
         });
-
+        this.toggleItemModal();
       }
       this.bookNowFlag = true;
     },
