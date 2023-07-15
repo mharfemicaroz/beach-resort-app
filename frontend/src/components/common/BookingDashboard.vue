@@ -1,6 +1,13 @@
 <template>
     <div class="row justify-content-center">
         <div class="col-md-12 m-2">
+            <div class="card-body bg-success text-white h3" style="display: flex; justify-content: center; align-items: center;">
+                Daily Reports
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-12 m-2">
             <label for="customRange3" class="form-label">Showing {{ (10 - backtrack === 0)? ' today...':`${10 - backtrack} day${(10 - backtrack === 1)?'':'s'} ago...` }}</label>
                 <input type="range" class="form-range" @change="scrollRecord" min="0" max="10" step="1" v-model="backtrack" id="customRange3">
         </div>
@@ -106,7 +113,7 @@
                         <strong>Transaction Type</strong>
                     </div>
                     <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
-                        <pie-chart :key="componentKey" v-if="loaded[3]" :chartData="pie2Data" />
+                        <pie-chart :key="componentKey" v-if="loaded[2]" :chartData="pie2Data" />
                         <div v-else class="spinner-border" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
@@ -124,7 +131,7 @@
                         <strong>Collection Summary Report</strong>
                     </div>
                     <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
-                        <bar-chart :key="componentKey" v-if="loaded[6]" :chartData="bar3Data" />
+                        <bar-chart :key="componentKey" v-if="loaded[3]" :chartData="bar3Data" />
                         <div v-else class="spinner-border" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
@@ -144,6 +151,13 @@
         </div>
 
     </div>
+    <div class="row justify-content-center">
+        <div class="col-md-12 m-2">
+            <div class="card-body bg-success text-white h3" style="display: flex; justify-content: center; align-items: center;">
+                Overall Reports
+            </div>
+        </div>
+    </div>
     <div class="row row justify-content-center">
         <div class="row">
             <div class="col-md-4">
@@ -152,7 +166,7 @@
                         <strong>Reservation Trend</strong>
                     </div>
                     <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
-                        <line-chart :key="componentKey" v-if="loaded[2]" :chartData="line1Data" />
+                        <line-chart :key="componentKey" v-if="loaded[4]" :chartData="line1Data" />
                         <div v-else class="spinner-border" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
@@ -178,7 +192,7 @@
                         <strong>Sales Trend</strong>
                     </div>
                     <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
-                        <line-chart :key="componentKey" v-if="loaded[4]" :chartData="line2Data" />
+                        <line-chart :key="componentKey" v-if="loaded[6]" :chartData="line2Data" />
                         <div v-else class="spinner-border" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
@@ -453,7 +467,7 @@ export default {
             })
         },
         scrollRecord(){
-            this.loaded = Array(6).fill(false);
+            this.loaded.fill(false, 0, 4);
             this.loadData();
         },
         async loadData() {
