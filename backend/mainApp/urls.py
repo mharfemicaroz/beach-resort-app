@@ -8,7 +8,7 @@ urlpatterns = [
     re_path(r'^restoitem/savefile', SaveFile),
     re_path(r'^bugreports/$',bugreports_list , name='bugreports-list'),
     re_path(r'^bugreports/(?P<pk>\d+)/$',bugreports_list, name='bugreports-detail'), 
-    re_path(r'^transactions_itemizer/(?P<type>\w+)/$', get_transactions_with_items, name='transactions'),
+    re_path(r'^transactions_itemizer/(?P<prevday>\d+)/$', get_transactions_with_items, name='transactions'),
     re_path(r'^login/$', login, name='login'),
     re_path(r'^guestcounter/$',guestcounter_list , name='guestcounter-list'),
     re_path(r'^guestcounter/(?P<pk>\d+)/$',guestcounter_list, name='guestcounter-detail'), 

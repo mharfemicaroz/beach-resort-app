@@ -4157,7 +4157,7 @@ export default {
     },
     async loadTransactionData() {
       try {
-        const response = await axios.get(this.API_URL + 'transactions_itemizer/all/');
+        const response = await axios.get(this.API_URL + 'transactions_itemizer/0/');
         this.transactions = response.data;
         // this.transactions.forEach(async (item, index) => {
         //   try {

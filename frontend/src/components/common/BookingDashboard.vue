@@ -1,5 +1,11 @@
 <template>
     <div class="row justify-content-center">
+        <div class="col-md-12 m-2">
+            <label for="customRange3" class="form-label">Showing {{ (10 - backtrack === 0)? ' today...':`${10 - backtrack} day${(10 - backtrack === 1)?'':'s'} ago...` }}</label>
+                <input type="range" class="form-range" @change="scrollRecord" min="0" max="10" step="1" v-model="backtrack" id="customRange3">
+        </div>
+    </div>
+    <div class="row justify-content-center">
         <div class="col-md-2 m-2">
             <div class="card x bg-primary text-white">
                 <div class="card-body row">
@@ -217,6 +223,7 @@ export default {
     },
     data() {
         return {
+            backtrack: 10,
             counter: 0,
             forecastedData: null,
             componentKey: 0,
@@ -424,8 +431,17 @@ export default {
                 vm.forecastedData = pred
             })
         },
+        scrollRecord(){
+            this.loaded = Array(6).fill(false);
+            this.loadData();
+        },
         async loadData() {
             try {
+                const daycount = 10 - this.backtrack;
+                const today = new Date();
+                const curday = new Date(today);
+                curday.setDate(today.getDate() - daycount);
+
                 const guestcounterdata = await axios.get(this.API_URL + "guestcounter/");
 
                 const foundItem = guestcounterdata.data.find((item) => formatDate2(item.date_created) === parseDate(new Date()));
@@ -450,33 +466,33 @@ export default {
 
                 const roomsData = await axios.get(this.API_URL + "rooms/");
 
-                this.numReservations = bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')).length;
-                this.numGuests = transactionItemsData.data.filter(item => item.itemType === 'ENTRANCE' && new Date(item.dateCreated).setHours(0, 0, 0, 0).toLocaleString('en-US') === new Date().setHours(0, 0, 0, 0).toLocaleString('en-US')).length
+                this.numReservations = bookingData.data.filter(item => item.checkinDate === curday.toLocaleDateString('en-GB')).length;
+                this.numGuests = transactionItemsData.data.filter(item => item.itemType === 'ENTRANCE' && new Date(item.dateCreated).setHours(0, 0, 0, 0).toLocaleString('en-US') === curday.setHours(0, 0, 0, 0).toLocaleString('en-US')).length
                 this.availableRooms = roomsData.data.filter(room => {
                     // Check if there are any bookings for this room that overlap with the specified date range
                     const overlappingBookings = bookingData.data.filter(booking => {
                         return booking.room_name === room.name &&
-                            booking.status === 'checkedin' && booking.checkinDate === new Date().toLocaleDateString('en-GB');
+                            booking.status === 'checkedin' && booking.checkinDate === curday.toLocaleDateString('en-GB');
                     });
 
                     // Return true if there are no overlapping bookings
                     return overlappingBookings.length === 0;
                 }).length;
 
-                this.pie1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
-                this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === new Date().toLocaleDateString('en-GB')));
+                this.pie1Datasets(bookingData.data.filter(item => item.checkinDate === curday.toLocaleDateString('en-GB')));
+                this.bar1Datasets(bookingData.data.filter(item => item.checkinDate === curday.toLocaleDateString('en-GB')));
                 this.bar2Datasets(transactionItemsData.data);
                 this.line1Datasets(bookingData.data);
                 this.line2Datasets(transactionData.data);
                 
-                const trans_itemizer_data =  await axios.get(this.API_URL + 'transactions_itemizer/day/');
+                const trans_itemizer_data =  await axios.get(this.API_URL + `transactions_itemizer/${daycount}/`);
 
                 this.grossIncome = trans_itemizer_data.data
                     .filter((item) => {
                         const transactionDate = new Date(item.transaction_date);
                         return (
-                            transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
-                            transactionDate < new Date(new Date(new Date(new Date().getTime() + 86400000)).setHours(0,0,0,0))
+                            transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
+                            transactionDate < new Date(new Date(new Date(curday.getTime() + 86400000)).setHours(0,0,0,0))
                         );
                     })
                     .reduce((accumulator, currentValue) => {
@@ -486,8 +502,8 @@ export default {
                     .filter((item) => {
                         const transactionDate = new Date(item.transaction_date);
                         return (
-                            transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
-                            transactionDate < new Date(new Date(new Date(new Date().getTime() + 86400000)).setHours(0,0,0,0))
+                            transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
+                            transactionDate < new Date(new Date(new Date(curday.getTime() + 86400000)).setHours(0,0,0,0))
                         );
                     })
                     .reduce((accumulator, currentValue) => {
@@ -498,16 +514,16 @@ export default {
                 this.pie2Datasets(trans_itemizer_data.data.filter((item) => {
                     const transactionDate = new Date(item.transaction_date);
                         return (
-                            transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
-                            transactionDate < new Date(new Date(new Date(new Date().getTime() + 86400000)).setHours(0,0,0,0))
+                            transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
+                            transactionDate < new Date(new Date(new Date(curday.getTime() + 86400000)).setHours(0,0,0,0))
                         );
                 } ));
 
                 this.bar3Datasets(transactionRecordsData.data.filter((item) => {
                     const transactionDate = new Date(item.transaction_date);
                     return (
-                        transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
-                        transactionDate < new Date(new Date(new Date(new Date().getTime() + 86400000)).setHours(0, 0, 0, 0))
+                        transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
+                        transactionDate < new Date(new Date(new Date(curday.getTime() + 86400000)).setHours(0, 0, 0, 0))
                     );
                 }));
 

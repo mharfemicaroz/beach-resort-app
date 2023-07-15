@@ -132,13 +132,13 @@ def generic_getitems(request, ref_model, item_model, item_serializer, identifier
 
 from decimal import Decimal
 from django.db.models import Sum
-from datetime import datetime, time, date
+from datetime import datetime, time, date, timedelta
 from dateutil import parser
 
 @api_view(['GET'])
 @csrf_exempt
-def get_transactions_with_items(request, type=None):
-    today = date.today()
+def get_transactions_with_items(request, prevday=0):
+    today = date.today()- timedelta(days=int(prevday))
     current_month = today.month
     current_year = today.year
 
