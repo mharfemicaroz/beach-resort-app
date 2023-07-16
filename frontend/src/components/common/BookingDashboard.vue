@@ -8,7 +8,7 @@
     </div>
     <div class="row justify-content-center">
         <div class="col-md-12 m-2">
-            <label for="customRange3" class="form-label">Showing {{ (10 - backtrack === 0)? ' today...':`${10 - backtrack} day${(10 - backtrack === 1)?'':'s'} ago...` }}</label>
+            <label for="customRange3" class="form-label">Showing {{ (10 - backtrack === 0)? ' today...':`${10 - backtrack} day${(10 - backtrack === 1)?'':'s'} ago...` }} ({{ this.chosenDate }})</label>
                 <input type="range" class="form-range" @change="scrollRecord" min="0" max="10" step="1" v-model="backtrack" id="customRange3">
         </div>
     </div>
@@ -258,6 +258,7 @@ export default {
     },
     data() {
         return {
+            chosenDate: null,
             backtrack: 10,
             counter: 0,
             forecastedData: null,
@@ -476,6 +477,7 @@ export default {
                 const today = new Date();
                 const curday = new Date(today);
                 curday.setDate(today.getDate() - daycount);
+                this.chosenDate = curday.toDateString();
 
                 const guestcounterdata = await axios.get(this.API_URL + "guestcounter/");
 
