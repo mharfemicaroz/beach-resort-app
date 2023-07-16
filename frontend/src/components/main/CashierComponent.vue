@@ -72,24 +72,26 @@
                     <div class="tab-content">
                       <div id="byresto" class="tab-pane active">
                         <div class="row">
-                            <div class="col-md-12">
-                              <div class="row row-cols-1 row-cols-md-6">
-                                <div class="col mb-6" v-for="(item, index) in filteredresto_tables" :key="item.id">
-                                  <div class="card" style="transition: transform 0.2s ease-in-out;" @click="dineInAction(item)">
-                                    <div class="card-header d-flex justify-content-between align-items-center"
-                                      :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
-                                      <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
-                                    </div>
-                                    <div class="card-body">
-                                      <h6 class="text-dark">
-                                        <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' : 'vacant' }}
-                                      </h6>
-                                    </div>
-
+                          <div class="col-md-12">
+                            <div class="row row-cols-1 row-cols-md-6">
+                              <div class="col mb-6" v-for="(item, index) in filteredresto_tables" :key="item.id">
+                                <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                  @click="dineInAction(item)">
+                                  <div class="card-header d-flex justify-content-between align-items-center"
+                                    :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                    <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
                                   </div>
+                                  <div class="card-body">
+                                    <h6 class="text-dark">
+                                      <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' : 'vacant'
+                                      }}
+                                    </h6>
+                                  </div>
+
                                 </div>
                               </div>
                             </div>
+                          </div>
                         </div>
                       </div>
                       <div id="byrooms" class="tab-pane">
@@ -97,61 +99,209 @@
                           <div class="col-md-12">
 
                             <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active show" data-bs-toggle="tab" role="tab" href="#ca1">
-                  <i class="fa fa-tags"></i>Beach Rooms</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#cat2">
-                  <i class="fa fa-tags"></i>Pool Rooms</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" role="tab"  href="#cat3">
-                  <i class="fa fa-tags"></i>Pool Cottages</a>
-              </li>
-            </ul>
+                              <li class="nav-item">
+                                <a class="nav-link active show" data-bs-toggle="tab" @click="activeroomtable = 'BEACH ROOM'" role="tab" href="#cat1">
+                                  <i class="fa fa-tags"></i>Beach Rooms</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'POOL ROOM'" role="tab" href="#cat2">
+                                  <i class="fa fa-tags"></i>Pool Rooms</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'POOL COTTAGE'" role="tab" href="#cat3">
+                                  <i class="fa fa-tags"></i>Pool Cottages</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'GAZEBO COTTAGE'" role="tab" href="#cat4">
+                                  <i class="fa fa-tags"></i>Native Gazebo Cottages</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'BEACH COTTAGE'" role="tab" href="#cat5">
+                                  <i class="fa fa-tags"></i>Beach Cottages (Day)</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'N-BEACH COTTAGE'" role="tab" href="#cat6">
+                                  <i class="fa fa-tags"></i>Beach Cottages (Night)</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'HALL'" role="tab" href="#cat7">
+                                  <i class="fa fa-tags"></i>Halls</a>
+                              </li>
+                            </ul>
 
-          <div class="tab-content">
-            <div class="tab-pane fade show active" id="dineintab" role="tabpanel" aria-labelledby="cat1">
-              <div class="container-fluid">
-                <div class="row">
-                  <div class="row row-cols-1 row-cols-md-6">
-                                <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                  <div class="card" style="transition: transform 0.2s ease-in-out;" @click="dineInAction(item)">
-                                    <div class="card-header d-flex justify-content-between align-items-center"
-                                      :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
-                                      <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
-                                    </div>
-                                    <div class="card-body">
-                                      <h6 class="text-dark">
-                                        <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' : 'vacant' }}
-                                      </h6>
-                                    </div>
+                            <div class="tab-content">
+                              <div class="tab-pane fade show active" id="cat1" role="tabpanel" aria-labelledby="cat1">
+                                <div class="container-fluid">
+                                  <div class="row">
+                                    <div class="row row-cols-1 row-cols-md-6">
+                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                          @click="dineInAction(item)">
+                                          <div class="card-header d-flex justify-content-between align-items-center"
+                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                          </div>
+                                          <div class="card-body">
+                                            <h6 class="text-dark">
+                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                'vacant' }}
+                                            </h6>
+                                          </div>
 
+                                        </div>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                </div>
-              </div>
-            </div>
-            <div class="tab-pane fade" id="dineintab" role="tabpanel" aria-labelledby="cat1">
-              <div class="container-fluid">
-                <div class="row">
+                              <div class="tab-pane fade" id="cat2" role="tabpanel" aria-labelledby="cat2">
+                                <div class="container-fluid">
+                                  <div class="row">
+                                    <div class="row row-cols-1 row-cols-md-6">
+                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                          @click="dineInAction(item)">
+                                          <div class="card-header d-flex justify-content-between align-items-center"
+                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                          </div>
+                                          <div class="card-body">
+                                            <h6 class="text-dark">
+                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                'vacant' }}
+                                            </h6>
+                                          </div>
 
-                </div>
-              </div>
-            </div>
-            <div class="tab-pane fade" id="dineintab" role="tabpanel" aria-labelledby="cat1">
-              <div class="container-fluid">
-                <div class="row">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="cat3" role="tabpanel" aria-labelledby="cat3">
+                                <div class="container-fluid">
+                                  <div class="row">
+                                    <div class="row row-cols-1 row-cols-md-6">
+                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                          @click="dineInAction(item)">
+                                          <div class="card-header d-flex justify-content-between align-items-center"
+                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                          </div>
+                                          <div class="card-body">
+                                            <h6 class="text-dark">
+                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                'vacant' }}
+                                            </h6>
+                                          </div>
 
-                </div>
-              </div>
-            </div>
-          </div>
-                            
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="cat4" role="tabpanel" aria-labelledby="cat4">
+                                <div class="container-fluid">
+                                  <div class="row">
+                                    <div class="row row-cols-1 row-cols-md-6">
+                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                          @click="dineInAction(item)">
+                                          <div class="card-header d-flex justify-content-between align-items-center"
+                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                          </div>
+                                          <div class="card-body">
+                                            <h6 class="text-dark">
+                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                'vacant' }}
+                                            </h6>
+                                          </div>
 
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="cat5" role="tabpanel" aria-labelledby="cat5">
+                                <div class="container-fluid">
+                                  <div class="row">
+                                    <div class="row row-cols-1 row-cols-md-6">
+                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                          @click="dineInAction(item)">
+                                          <div class="card-header d-flex justify-content-between align-items-center"
+                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                          </div>
+                                          <div class="card-body">
+                                            <h6 class="text-dark">
+                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                'vacant' }}
+                                            </h6>
+                                          </div>
+
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="cat6" role="tabpanel" aria-labelledby="cat6">
+                                <div class="container-fluid">
+                                  <div class="row">
+                                    <div class="row row-cols-1 row-cols-md-6">
+                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                          @click="dineInAction(item)">
+                                          <div class="card-header d-flex justify-content-between align-items-center"
+                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                          </div>
+                                          <div class="card-body">
+                                            <h6 class="text-dark">
+                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                'vacant' }}
+                                            </h6>
+                                          </div>
+
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="tab-pane fade" id="cat7" role="tabpanel" aria-labelledby="cat7">
+                                <div class="container-fluid">
+                                  <div class="row">
+                                    <div class="row row-cols-1 row-cols-md-6">
+                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                          @click="dineInAction(item)">
+                                          <div class="card-header d-flex justify-content-between align-items-center"
+                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                          </div>
+                                          <div class="card-body">
+                                            <h6 class="text-dark">
+                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                'vacant' }}
+                                            </h6>
+                                          </div>
+
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
+
+
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1042,6 +1192,7 @@ export default {
   },
   data() {
     return {
+      activeroomtable: "BEACH ROOM",
       currentItem: null,
       inquiretoggle: false,
       restypeFilter: "0",
@@ -1376,7 +1527,7 @@ export default {
       }).filter(item => item.status !== 'done')
     },
     filteredroom_tables() {
-      return this.room_tables.map(item => {
+      return this.room_tables.filter(o => o.type === this.activeroomtable).map(item => {
         const order = this.resto_order.filter(o => o.table_id === item.id && o.customer_name === item.name && o.order_type === "dine-in");
         if (order.length > 0) {
           const order_data = order[0];
