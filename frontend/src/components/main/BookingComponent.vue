@@ -3715,11 +3715,19 @@ export default {
         if (result.isConfirmed) {
           // Perform reservation cancellation logic here
 
-          const restorders = axios.post(`${this.API_URL}restoorders/filter/`, { columnName: 'customer_name', columnKey: this.bookings[this.itemIndex].room_name })
+          axios.post(`${this.API_URL}restoorders/filter/`, { columnName: 'customer_name', columnKey: this.bookings[this.itemIndex].room_name })
             .then(response => {
-              const tableID = response.data[0].table_id;
-              const restoStatus = response.data[0].status;
-              const checkTable = this.rooms.find(table => table.id === tableID).name;
+              let checkTable = null;
+              let restoStatus = null;
+              try{
+                const tableID = response.data[0].table_id;
+                restoStatus = response.data[0].status;
+                checkTable = this.rooms.find(table => table.id === tableID).name;
+              }catch(error){
+                checkTable = this.bookings[this.itemIndex].room_name;
+                restoStatus = "closed";
+              }
+
               if (checkTable === this.bookings[this.itemIndex].room_name) {
                 if (restoStatus !== "closed") {
                   this.$swal.fire({
