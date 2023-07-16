@@ -1364,9 +1364,9 @@
                   class="btn btn-primary btn-sm btn-margin rounded">
                   <i class="fas fa-book"></i> Book Now
                 </button>
-                <button :disabled="disablebutton"
+                <button
                   v-if="new Date().setHours(0, 0, 0, 0) <= parseDate2(reservation.checkinDate) && userdata.role !== 'reservationist' && (reservation.status !== 'vacant' && reservation.status !== 'checkedout' && reservation.status !== 'cancelled')"
-                  @click="transferRoom(); disablebutton = true" type="button" class="btn btn-success btn-sm btn-margin rounded">
+                  @click="transferRoom()" type="button" class="btn btn-success btn-sm btn-margin rounded">
                   <i class="fas fa-exchange-alt"></i> {{ toggleselect ? 'Save' : 'Transfer' }}
                 </button>
                 <button :disabled="disablebutton" v-if="userdata.role !== 'reservationist' && reservation.status !== 'vacant'" type="button"
@@ -3362,12 +3362,14 @@ export default {
       })
     },
     async transferRoom() {
-
+      
       if (this.toggleselect === false) {
         this.reservation.roomName = "";
         this.toggleselect = true;
         this.roomSelect = "ok";
+        
       } else {
+        
         const item = this.bookings[this.itemIndex];
         const room = this.reservation.roomName;
 
@@ -3400,7 +3402,7 @@ export default {
           return;
         }
 
-        if (oldroom.type !== newroom.type) {
+        if (oldroom.type !== newroom.type && (oldroom.type !== 'BEACH COTTAGE' && newroom.type !== 'BEACH COTTAGE')) {
           this.$swal({
             title: "Transfer Error",
             text: "Room types do not match. Unable to transfer room.",
