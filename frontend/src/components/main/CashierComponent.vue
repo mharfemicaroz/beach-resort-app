@@ -83,7 +83,7 @@
                                   </div>
                                   <div class="card-body">
                                     <h6 class="text-dark">
-                                      <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' : 'vacant'
+                                      <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' : 'no order'
                                       }}
                                     </h6>
                                   </div>
@@ -134,22 +134,24 @@
                                 <div class="container-fluid">
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
-                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
-                                          @click="dineInAction(item)">
-                                          <div class="card-header d-flex justify-content-between align-items-center"
-                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
-                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
-                                          </div>
-                                          <div class="card-body">
-                                            <h6 class="text-dark">
-                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
-                                                'vacant' }}
-                                            </h6>
-                                          </div>
+                                      <template v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                          <div class="col mb-6" v-show="item.b_status">
+                                          <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                            @click="dineInAction(item)">
+                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                              :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                              <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                            </div>
+                                            <div class="card-body">
+                                              <h6 class="text-dark">
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                  'no order' }}
+                                              </h6>
+                                            </div>
 
+                                          </div>
                                         </div>
-                                      </div>
+                                      </template>
                                     </div>
                                   </div>
                                 </div>
@@ -158,22 +160,24 @@
                                 <div class="container-fluid">
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
-                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
-                                          @click="dineInAction(item)">
-                                          <div class="card-header d-flex justify-content-between align-items-center"
-                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
-                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
-                                          </div>
-                                          <div class="card-body">
-                                            <h6 class="text-dark">
-                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
-                                                'vacant' }}
-                                            </h6>
-                                          </div>
+                                      <template v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                          <div class="col mb-6" v-show="item.b_status">
+                                          <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                            @click="dineInAction(item)">
+                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                              :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                              <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                            </div>
+                                            <div class="card-body">
+                                              <h6 class="text-dark">
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                  'no order' }}
+                                              </h6>
+                                            </div>
 
+                                          </div>
                                         </div>
-                                      </div>
+                                      </template>
                                     </div>
                                   </div>
                                 </div>
@@ -182,22 +186,24 @@
                                 <div class="container-fluid">
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
-                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
-                                          @click="dineInAction(item)">
-                                          <div class="card-header d-flex justify-content-between align-items-center"
-                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
-                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
-                                          </div>
-                                          <div class="card-body">
-                                            <h6 class="text-dark">
-                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
-                                                'vacant' }}
-                                            </h6>
-                                          </div>
+                                      <template v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                          <div class="col mb-6" v-show="item.b_status">
+                                          <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                            @click="dineInAction(item)">
+                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                              :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                              <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                            </div>
+                                            <div class="card-body">
+                                              <h6 class="text-dark">
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                  'no order' }}
+                                              </h6>
+                                            </div>
 
+                                          </div>
                                         </div>
-                                      </div>
+                                      </template>
                                     </div>
                                   </div>
                                 </div>
@@ -206,22 +212,24 @@
                                 <div class="container-fluid">
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
-                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
-                                          @click="dineInAction(item)">
-                                          <div class="card-header d-flex justify-content-between align-items-center"
-                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
-                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
-                                          </div>
-                                          <div class="card-body">
-                                            <h6 class="text-dark">
-                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
-                                                'vacant' }}
-                                            </h6>
-                                          </div>
+                                      <template v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                          <div class="col mb-6" v-show="item.b_status">
+                                          <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                            @click="dineInAction(item)">
+                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                              :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                              <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                            </div>
+                                            <div class="card-body">
+                                              <h6 class="text-dark">
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                  'no order' }}
+                                              </h6>
+                                            </div>
 
+                                          </div>
                                         </div>
-                                      </div>
+                                      </template>
                                     </div>
                                   </div>
                                 </div>
@@ -230,22 +238,24 @@
                                 <div class="container-fluid">
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
-                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
-                                          @click="dineInAction(item)">
-                                          <div class="card-header d-flex justify-content-between align-items-center"
-                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
-                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
-                                          </div>
-                                          <div class="card-body">
-                                            <h6 class="text-dark">
-                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
-                                                'vacant' }}
-                                            </h6>
-                                          </div>
+                                      <template v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                          <div class="col mb-6" v-show="item.b_status">
+                                          <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                            @click="dineInAction(item)">
+                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                              :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                              <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                            </div>
+                                            <div class="card-body">
+                                              <h6 class="text-dark">
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                  'no order' }}
+                                              </h6>
+                                            </div>
 
+                                          </div>
                                         </div>
-                                      </div>
+                                      </template>
                                     </div>
                                   </div>
                                 </div>
@@ -254,22 +264,24 @@
                                 <div class="container-fluid">
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
-                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
-                                          @click="dineInAction(item)">
-                                          <div class="card-header d-flex justify-content-between align-items-center"
-                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
-                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
-                                          </div>
-                                          <div class="card-body">
-                                            <h6 class="text-dark">
-                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
-                                                'vacant' }}
-                                            </h6>
-                                          </div>
+                                      <template v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                          <div class="col mb-6" v-show="item.b_status">
+                                          <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                            @click="dineInAction(item)">
+                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                              :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                              <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                            </div>
+                                            <div class="card-body">
+                                              <h6 class="text-dark">
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                  'no order' }}
+                                              </h6>
+                                            </div>
 
+                                          </div>
                                         </div>
-                                      </div>
+                                      </template>
                                     </div>
                                   </div>
                                 </div>
@@ -278,22 +290,24 @@
                                 <div class="container-fluid">
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
-                                      <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                        <div class="card" style="transition: transform 0.2s ease-in-out;"
-                                          @click="dineInAction(item)">
-                                          <div class="card-header d-flex justify-content-between align-items-center"
-                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
-                                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
-                                          </div>
-                                          <div class="card-body">
-                                            <h6 class="text-dark">
-                                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
-                                                'vacant' }}
-                                            </h6>
-                                          </div>
+                                      <template v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                          <div class="col mb-6" v-show="item.b_status">
+                                          <div class="card" style="transition: transform 0.2s ease-in-out;"
+                                            @click="dineInAction(item)">
+                                            <div class="card-header d-flex justify-content-between align-items-center"
+                                              :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                              <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                            </div>
+                                            <div class="card-body">
+                                              <h6 class="text-dark">
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                  'no order' }}
+                                              </h6>
+                                            </div>
 
+                                          </div>
                                         </div>
-                                      </div>
+                                      </template>
                                     </div>
                                   </div>
                                 </div>
@@ -1387,6 +1401,9 @@ export default {
       room_tables: [
 
       ],
+      bookings: [
+
+      ],
       resto_tables: [
 
       ],
@@ -1529,6 +1546,8 @@ export default {
     filteredroom_tables() {
       return this.room_tables.filter(o => o.type === this.activeroomtable).map(item => {
         const order = this.resto_order.filter(o => o.table_id === item.id && o.customer_name === item.name && o.order_type === "dine-in");
+        const booking = this.bookings.filter(o => o.status === "checkedin" && o.room_name === item.name && parseDate(new Date().toLocaleDateString('en-GB')) === parseDate(o.checkinDate))
+        const b_status = (booking.length > 0)? true: false;
         if (order.length > 0) {
           const order_data = order[0];
           const order_id = order_data.id;
@@ -1543,10 +1562,12 @@ export default {
             order_cname,
             order_status,
             order_items,
+            b_status,
           };
         } else {
           return {
             ...item,
+            b_status,
           };
         }
       })
@@ -1677,6 +1698,7 @@ export default {
       this.getInventory();
       this.getTransaction();
       this.getRoomTables();
+      this.getRoomBookings();
       this.getRestoTables();
       this.getRestoTakeout();
       this.getRestoOnholds();
@@ -2461,6 +2483,16 @@ export default {
         .get(`${this.API_URL}rooms/`)
         .then(response => {
           this.room_tables = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getRoomBookings() {
+      axios
+        .get(`${this.API_URL}bookings/`)
+        .then(response => {
+          this.bookings = response.data;
         })
         .catch(error => {
           console.log(error);
