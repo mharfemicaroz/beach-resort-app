@@ -40,15 +40,15 @@
           <div class="col-md-3">
             <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
               <li class="nav-item">
-                <a class="nav-link active show" data-bs-toggle="tab"  @click="resetCounter" role="tab" href="#dineintab">
+                <a class="nav-link active show" data-bs-toggle="tab" @click="resetCounter" role="tab" href="#dineintab">
                   <i class="fa fa-tags"></i>Dine-in</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" role="tab"  @click="resetCounter" href="#takeouttab">
+                <a class="nav-link" data-bs-toggle="tab" role="tab" @click="resetCounter" href="#takeouttab">
                   <i class="fa fa-tags"></i>Take Out</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="tab" role="tab"  @click="resetCounter" href="#onholdtab">
+                <a class="nav-link" data-bs-toggle="tab" role="tab" @click="resetCounter" href="#onholdtab">
                   <i class="fa fa-tags"></i>On hold</a>
               </li>
             </ul>
@@ -58,24 +58,105 @@
             <div class="tab-pane fade show active" id="dineintab" role="tabpanel" aria-labelledby="dinein-tab">
               <div class="container-fluid">
                 <div class="row">
-                  <div class="col-md-12">
-                    <div class="row row-cols-1 row-cols-md-6">
-                      <div class="col mb-6" v-for="(item, index) in filteredresto_tables" :key="item.id">
-                        <div class="card" style="transition: transform 0.2s ease-in-out;" @click="dineInAction(item)">
-                          <div class="card-header d-flex justify-content-between align-items-center"
-                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
-                            <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
-                          </div>
-                          <div class="card-body">
-                            <h6 class="text-dark">
-                              <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' : 'vacant' }}
-                            </h6>
-                          </div>
+                  <div class="col-sm-1">
+                    <ul class="nav nav-tabs flex-column">
+                      <li class="nav-item">
+                        <a class="nav-link rotated-text active" data-bs-toggle="tab" href="#byresto">Restaurant</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link rotated-text" data-bs-toggle="tab" href="#byrooms">Rooms</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-sm-11">
+                    <div class="tab-content">
+                      <div id="byresto" class="tab-pane active">
+                        <div class="row">
+                            <div class="col-md-12">
+                              <div class="row row-cols-1 row-cols-md-6">
+                                <div class="col mb-6" v-for="(item, index) in filteredresto_tables" :key="item.id">
+                                  <div class="card" style="transition: transform 0.2s ease-in-out;" @click="dineInAction(item)">
+                                    <div class="card-header d-flex justify-content-between align-items-center"
+                                      :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                      <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                    </div>
+                                    <div class="card-body">
+                                      <h6 class="text-dark">
+                                        <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' : 'vacant' }}
+                                      </h6>
+                                    </div>
 
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div id="byrooms" class="tab-pane">
+                        <div class="row">
+                          <div class="col-md-12">
+
+                            <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active show" data-bs-toggle="tab" role="tab" href="#ca1">
+                  <i class="fa fa-tags"></i>Beach Rooms</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#cat2">
+                  <i class="fa fa-tags"></i>Pool Rooms</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" role="tab"  href="#cat3">
+                  <i class="fa fa-tags"></i>Pool Cottages</a>
+              </li>
+            </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="dineintab" role="tabpanel" aria-labelledby="cat1">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="row row-cols-1 row-cols-md-6">
+                                <div class="col mb-6" v-for="(item, index) in filteredroom_tables" :key="item.id">
+                                  <div class="card" style="transition: transform 0.2s ease-in-out;" @click="dineInAction(item)">
+                                    <div class="card-header d-flex justify-content-between align-items-center"
+                                      :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                      <h5 class="card-title"><i class="fas fa-table"></i> {{ item.name }}</h5>
+                                    </div>
+                                    <div class="card-body">
+                                      <h6 class="text-dark">
+                                        <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' : 'vacant' }}
+                                      </h6>
+                                    </div>
+
+                                  </div>
+                                </div>
+                              </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="dineintab" role="tabpanel" aria-labelledby="cat1">
+              <div class="container-fluid">
+                <div class="row">
+
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="dineintab" role="tabpanel" aria-labelledby="cat1">
+              <div class="container-fluid">
+                <div class="row">
+
+                </div>
+              </div>
+            </div>
+          </div>
+                            
+
+                            </div>
                         </div>
                       </div>
                     </div>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -453,7 +534,7 @@
                     </thead>
                     <tbody>
                       <tr v-for="(item, index) in cartItems" :key="index">
-                     
+
                         <td>
                           <div class="row d-flex flex-row">
                             <div class="col-sm-4 text-left">
@@ -484,8 +565,8 @@
                           <strong>₱{{ item.totalPrice.toFixed(2) }}</strong>
                         </td>
                         <td>
-                          <button v-if="item.justadded" class="btn btn-outline-danger btn-sm"
-                            type="button" @click="removeFromCart(item)">
+                          <button v-if="item.justadded" class="btn btn-outline-danger btn-sm" type="button"
+                            @click="removeFromCart(item)">
                             <i class="fas fa-times"></i>
                           </button>
                         </td>
@@ -600,42 +681,46 @@
               <div class="col-md-12">
                 <div class="row row-cols-1 row-cols-md-4">
                   <template v-for="(item, index) in filteredResto_allorders" :key="item.id">
-                    <div class="col mb-4" v-if="item.order_items.filter(o => o.category.toLowerCase() !== 'drinks' && o.category.toLowerCase() !== 'miscellaneous').length > 0">
-                    <div class="card" style="transition: transform 0.2s ease-in-out;">
-                      <div
-                        :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : (item.status === 'void' ? 'bg-warning' : (item.status === 'served' ? 'bg-info' : 'bg-success'))}`">
-                        <h5 class="card-title">#{{ Number(item.id).toString().padStart(5, "0") }}</h5>
-                        <p class="card-subtitle" style="font-size: 12px;">{{ item.datestarted }}</p>
-                      </div>
-                      <div class="card-body" style="height: 250px; overflow-y: auto;">
-                        <ul style="list-style-type: none; padding-left: 20px;">
-                          {{ item.order_type.toString().toUpperCase() }}/{{ item.customer_name }} <span
-                            style="font-style: italic;">({{ item.status }})</span>
-                          <li v-for="orderItem in item.order_items.filter(o => o.category.toLowerCase() !== 'drinks' && o.category.toLowerCase() !== 'miscellaneous')" :key="orderItem.id" class="order-item">
-                            <div class="form-check">
-                              <input v-if="item.isRunning" type="checkbox" class="form-check-input" :id='"cb"+orderItem.id'>
-                              <label class="form-check-label" for="checkbox-{{ orderItem.id }}">
-                                {{ orderItem.qty }} &times; {{ orderItem.name }}
-                              </label>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="card-footer d-flex justify-content-between" v-if="item.status === 'progress'">
-                        <span>
-                          <button class="btn btn-sm btn-outline-primary" @click="doneServe(item)">Done</button>
-                          &NonBreakingSpace;
-                          <button class="btn btn-sm btn-outline-danger" @click="toggleTimer(item)">
-                            {{ item.isRunning ? 'Hold' : 'Resume' }}
-                          </button>
-                        </span>
+                    <div class="col mb-4"
+                      v-if="item.order_items.filter(o => o.category.toLowerCase() !== 'drinks' && o.category.toLowerCase() !== 'miscellaneous').length > 0">
+                      <div class="card" style="transition: transform 0.2s ease-in-out;">
+                        <div
+                          :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : (item.status === 'void' ? 'bg-warning' : (item.status === 'served' ? 'bg-info' : 'bg-success'))}`">
+                          <h5 class="card-title">#{{ Number(item.id).toString().padStart(5, "0") }}</h5>
+                          <p class="card-subtitle" style="font-size: 12px;">{{ item.datestarted }}</p>
+                        </div>
+                        <div class="card-body" style="height: 250px; overflow-y: auto;">
+                          <ul style="list-style-type: none; padding-left: 20px;">
+                            {{ item.order_type.toString().toUpperCase() }}/{{ item.customer_name }} <span
+                              style="font-style: italic;">({{ item.status }})</span>
+                            <li
+                              v-for="orderItem in item.order_items.filter(o => o.category.toLowerCase() !== 'drinks' && o.category.toLowerCase() !== 'miscellaneous')"
+                              :key="orderItem.id" class="order-item">
+                              <div class="form-check">
+                                <input v-if="item.isRunning" type="checkbox" class="form-check-input"
+                                  :id='"cb" + orderItem.id'>
+                                <label class="form-check-label" for="checkbox-{{ orderItem.id }}">
+                                  {{ orderItem.qty }} &times; {{ orderItem.name }}
+                                </label>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between" v-if="item.status === 'progress'">
+                          <span>
+                            <button class="btn btn-sm btn-outline-primary" @click="doneServe(item)">Done</button>
+                            &NonBreakingSpace;
+                            <button class="btn btn-sm btn-outline-danger" @click="toggleTimer(item)">
+                              {{ item.isRunning ? 'Hold' : 'Resume' }}
+                            </button>
+                          </span>
 
-                        <span>{{ item.timePassed }}</span>
+                          <span>{{ item.timePassed }}</span>
 
+                        </div>
                       </div>
+
                     </div>
-
-                  </div>
                   </template>
                 </div>
               </div>
@@ -1148,6 +1233,9 @@ export default {
       resto_allorders: [
 
       ],
+      room_tables: [
+
+      ],
       resto_tables: [
 
       ],
@@ -1240,8 +1328,8 @@ export default {
       const user = authStore.user;
       return user;
     },
-    filteredResto_allorders(){
-      return this.resto_allorders.filter(item => new Date(item.date_created).setHours(0,0,0,0) === new Date().setHours(0,0,0,0));
+    filteredResto_allorders() {
+      return this.resto_allorders.filter(item => new Date(item.date_created).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0));
     },
     getTimePassed() {
       return function (datestarted) {
@@ -1287,9 +1375,34 @@ export default {
         }
       }).filter(item => item.status !== 'done')
     },
+    filteredroom_tables() {
+      return this.room_tables.map(item => {
+        const order = this.resto_order.filter(o => o.table_id === item.id && o.customer_name === item.name && o.order_type === "dine-in");
+        if (order.length > 0) {
+          const order_data = order[0];
+          const order_id = order_data.id;
+          const order_type = order_data.order_type;
+          const order_cname = order_data.customer_name;
+          const order_status = order_data.status;
+          const order_items = JSON.parse(order_data.items);
+          return {
+            ...item,
+            order_id,
+            order_type,
+            order_cname,
+            order_status,
+            order_items,
+          };
+        } else {
+          return {
+            ...item,
+          };
+        }
+      })
+    },
     filteredresto_tables() {
       return this.resto_tables.map(item => {
-        const order = this.resto_order.filter(o => o.table_id === item.id && o.order_type === "dine-in");
+        const order = this.resto_order.filter(o => o.table_id === item.id && o.customer_name === item.name && o.order_type === "dine-in");
         if (order.length > 0) {
           const order_data = order[0];
           const order_id = order_data.id;
@@ -1412,6 +1525,7 @@ export default {
     loadAlldata() {
       this.getInventory();
       this.getTransaction();
+      this.getRoomTables();
       this.getRestoTables();
       this.getRestoTakeout();
       this.getRestoOnholds();
@@ -2191,6 +2305,16 @@ export default {
           console.log(error);
         });
     },
+    getRoomTables() {
+      axios
+        .get(`${this.API_URL}rooms/`)
+        .then(response => {
+          this.room_tables = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     getRestoTakeout() {
       axios
         .get(`${this.API_URL}restotakeouts/`)
@@ -2740,5 +2864,4 @@ input::-webkit-inner-spin-button {
   font-weight: bold;
   font-size: 16px;
   padding-left: 30px;
-}
-</style>
+}</style>

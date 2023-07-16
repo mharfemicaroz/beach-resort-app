@@ -3051,9 +3051,7 @@ export default {
 
 
       this.toggleItemModal();
-      
-      
-      
+      $("#others-tab").tab('show');
       this.movetocartFlag = true;
 
       this.itemCart = {
