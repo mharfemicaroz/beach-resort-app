@@ -2,6 +2,10 @@
   <div class="container-fluid main">
     <TopNavBarComponent />
     <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser'">
+        <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button"
+          role="tab" aria-controls="dashboard" aria-selected="true" @click="resetCounter">Dashboard</button>
+      </li>
       <li class="nav-item" role="presentation"
         v-if="userdata.role !== 'foodserver' && userdata.role !== 'restoinventory'">
         <button
@@ -33,6 +37,11 @@
     </ul>
 
     <div class="tab-content mt-3" id="myTabContent">
+      <div class="tab-pane fade" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+        <div class="row mt-2" id="dashboard">
+          <RestoDashboard />
+        </div>
+      </div>
       <div
         :class="(userdata.role === 'foodserver' || userdata.role === 'restoinventory') ? 'tab-pane fade' : 'tab-pane fade show active'"
         id="tables" role="tabpanel" aria-labelledby="tables-tab">
@@ -100,31 +109,38 @@
 
                             <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
                               <li class="nav-item">
-                                <a class="nav-link active show" data-bs-toggle="tab" @click="activeroomtable = 'BEACH ROOM'" role="tab" href="#cat1">
+                                <a class="nav-link active show" data-bs-toggle="tab"
+                                  @click="activeroomtable = 'BEACH ROOM'" role="tab" href="#cat1">
                                   <i class="fa fa-tags"></i>Beach Rooms</a>
                               </li>
                               <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'POOL ROOM'" role="tab" href="#cat2">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'POOL ROOM'" role="tab"
+                                  href="#cat2">
                                   <i class="fa fa-tags"></i>Pool Rooms</a>
                               </li>
                               <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'POOL COTTAGE'" role="tab" href="#cat3">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'POOL COTTAGE'"
+                                  role="tab" href="#cat3">
                                   <i class="fa fa-tags"></i>Pool Cottages</a>
                               </li>
                               <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'GAZEBO COTTAGE'" role="tab" href="#cat4">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'GAZEBO COTTAGE'"
+                                  role="tab" href="#cat4">
                                   <i class="fa fa-tags"></i>Native Gazebo Cottages</a>
                               </li>
                               <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'BEACH COTTAGE'" role="tab" href="#cat5">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'BEACH COTTAGE'"
+                                  role="tab" href="#cat5">
                                   <i class="fa fa-tags"></i>Beach Cottages (Day)</a>
                               </li>
                               <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'N-BEACH COTTAGE'" role="tab" href="#cat6">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'N-BEACH COTTAGE'"
+                                  role="tab" href="#cat6">
                                   <i class="fa fa-tags"></i>Beach Cottages (Night)</a>
                               </li>
                               <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'HALL'" role="tab" href="#cat7">
+                                <a class="nav-link" data-bs-toggle="tab" @click="activeroomtable = 'HALL'" role="tab"
+                                  href="#cat7">
                                   <i class="fa fa-tags"></i>Halls</a>
                               </li>
                             </ul>
@@ -135,7 +151,7 @@
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
                                       <template v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                          <div class="col mb-6" v-show="item.b_status">
+                                        <div class="col mb-6" v-show="item.b_status">
                                           <div class="card" style="transition: transform 0.2s ease-in-out;"
                                             @click="dineInAction(item)">
                                             <div class="card-header d-flex justify-content-between align-items-center"
@@ -161,7 +177,7 @@
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
                                       <template v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                          <div class="col mb-6" v-show="item.b_status">
+                                        <div class="col mb-6" v-show="item.b_status">
                                           <div class="card" style="transition: transform 0.2s ease-in-out;"
                                             @click="dineInAction(item)">
                                             <div class="card-header d-flex justify-content-between align-items-center"
@@ -187,7 +203,7 @@
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
                                       <template v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                          <div class="col mb-6" v-show="item.b_status">
+                                        <div class="col mb-6" v-show="item.b_status">
                                           <div class="card" style="transition: transform 0.2s ease-in-out;"
                                             @click="dineInAction(item)">
                                             <div class="card-header d-flex justify-content-between align-items-center"
@@ -213,7 +229,7 @@
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
                                       <template v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                          <div class="col mb-6" v-show="item.b_status">
+                                        <div class="col mb-6" v-show="item.b_status">
                                           <div class="card" style="transition: transform 0.2s ease-in-out;"
                                             @click="dineInAction(item)">
                                             <div class="card-header d-flex justify-content-between align-items-center"
@@ -239,7 +255,7 @@
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
                                       <template v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                          <div class="col mb-6" v-show="item.b_status">
+                                        <div class="col mb-6" v-show="item.b_status">
                                           <div class="card" style="transition: transform 0.2s ease-in-out;"
                                             @click="dineInAction(item)">
                                             <div class="card-header d-flex justify-content-between align-items-center"
@@ -265,7 +281,7 @@
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
                                       <template v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                          <div class="col mb-6" v-show="item.b_status">
+                                        <div class="col mb-6" v-show="item.b_status">
                                           <div class="card" style="transition: transform 0.2s ease-in-out;"
                                             @click="dineInAction(item)">
                                             <div class="card-header d-flex justify-content-between align-items-center"
@@ -291,7 +307,7 @@
                                   <div class="row">
                                     <div class="row row-cols-1 row-cols-md-6">
                                       <template v-for="(item, index) in filteredroom_tables" :key="item.id">
-                                          <div class="col mb-6" v-show="item.b_status">
+                                        <div class="col mb-6" v-show="item.b_status">
                                           <div class="card" style="transition: transform 0.2s ease-in-out;"
                                             @click="dineInAction(item)">
                                             <div class="card-header d-flex justify-content-between align-items-center"
@@ -1170,6 +1186,7 @@ import TopNavBarComponent from "@/components/common/TopNavBar.vue";
 import TableComponent from "@/components/common/GenericTable.vue";
 import FooterComponent from "../common/FooterComponent.vue";
 import CardItems from "../common/CardItems.vue";
+import RestoDashboard from "../common/RestoDashboard.vue";
 import axios from 'axios';
 
 //helper functions
@@ -1203,6 +1220,7 @@ export default {
     FooterComponent,
     TableComponent,
     CardItems,
+    RestoDashboard,
   },
   data() {
     return {
@@ -1547,7 +1565,7 @@ export default {
       return this.room_tables.filter(o => o.type === this.activeroomtable).map(item => {
         const order = this.resto_order.filter(o => o.table_id === item.id && o.customer_name === item.name && o.order_type === "dine-in");
         const booking = this.bookings.filter(o => o.status === "checkedin" && o.room_name === item.name && parseDate(new Date().toLocaleDateString('en-GB')) === parseDate(o.checkinDate))
-        const b_status = (booking.length > 0)? true: false;
+        const b_status = (booking.length > 0) ? true : false;
         if (order.length > 0) {
           const order_data = order[0];
           const order_id = order_data.id;
@@ -1891,7 +1909,7 @@ export default {
         <input type="radio" class="form-check-input" id="percentageDiscount" name="discountType" value="percentage">
         <label for="percentageDiscount" class="form-check-label">Percentage</label>
         <br><br>
-        <input type="number" class="form-control" id="discountValue" placeholder="Enter discount value" min="0" step="any">
+        <input type="number" class="form-control" id="discountValue" v-model="discount" placeholder="Enter discount value" min="0" step="any">
       </div>
     `,
         showCancelButton: true,
@@ -1921,6 +1939,31 @@ export default {
         }
       });
     },
+
+    // setDiscount() {
+    //   this.$swal.fire({
+    //     title: 'Set discount value',
+    //     input: 'number',
+    //     inputPlaceholder: 'Enter discount value',
+    //     inputAttributes: {
+    //       min: 0, // Minimum value
+    //       max: 100,
+    //       step: 'any',
+    //     },
+    //     showCancelButton: true,
+    //     confirmButtonText: 'Submit',
+    //     cancelButtonText: 'Cancel',
+    //     allowOutsideClick: false,
+    //   }).then((result) => {
+    //     if (result.isConfirmed) {
+    //       const inputValue = result.value;
+    //       if (inputValue !== "") {
+    //         this.discountValue = parseFloat(inputValue).toFixed(2);
+    //         this.$refs.tenderedCash.focus();
+    //       }
+    //     }
+    //   });
+    // },
 
     setTax() {
       this.$swal.fire({
@@ -2219,7 +2262,7 @@ export default {
                     description: item.description,
                     imageUrl: item.image,
                     category: item.category,
-                    price: item.price,
+                    discount: this.discountValue,
                     inventory: inventory,
                     isAvailable: item.isAvailable,
                     stocks: parseFloat(item.stocks) - parseFloat(item.qty),
@@ -2261,7 +2304,7 @@ export default {
                     description: item.description,
                     imageUrl: item.image,
                     category: item.category,
-                    price: item.price,
+                    discount: this.discountValue,
                     inventory: inventory,
                     isAvailable: item.isAvailable,
                     stocks: parseFloat(item.stocks) - parseFloat(item.qty),

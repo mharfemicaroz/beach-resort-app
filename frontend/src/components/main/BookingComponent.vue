@@ -662,7 +662,7 @@
                       <td v-if="item.itemOption !== 'room'">{{ item.totalCartPrice }}</td>
                       <td v-else>
                         <span v-if="!isNaN(subroom.discountValue)"
-                          v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode === 'percentage') ? subroom.discountValue + '%' : (subroom.discountValue / 3).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${(subroom.discountMode === 'percentage') ? item.totalCartPrice * (1 - parseFloat(subroom.discountValue / 100)) : item.totalCartPrice - (subroom.discountValue / 3).toFixed(2)}</span>`"></span>
+                          v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode === 'percentage') ? subroom.discountValue.toFixed(2) + '%' : (subroom.discountValue / 3).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${(subroom.discountMode === 'percentage') ? item.totalCartPrice * (1 - parseFloat(subroom.discountValue / 100)) : item.totalCartPrice - (subroom.discountValue / 3).toFixed(2)}</span>`"></span>
                         <span v-else v-html="`${item.totalCartPrice}`"></span>
                       </td>
                     </tr>
