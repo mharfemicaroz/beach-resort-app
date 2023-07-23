@@ -240,6 +240,9 @@ export default {
                 datasets: [
                     {
                         data: [],
+                    },
+                    {
+                        data: [],
                     }
                 ]
             },
@@ -250,10 +253,6 @@ export default {
                         label:"Dataset1",
                         data: [],
                     },
-                    {
-                        label:"Dataset2",
-                        data: [],
-                    }
                 ]
             },
         }
@@ -305,11 +304,13 @@ export default {
             const processedByList = data.map(record => record.processedBy);
             const uniqueProcessedByList = [...new Set(processedByList)].filter(name => name !== '');
             let collection = [];
+            let collection2 = [];
             for(const name of uniqueProcessedByList){
                 const total = data.filter(item => item.processedBy === name).reduce((accumulator, currentValue) => {
                     return accumulator + parseFloat(currentValue.totalPay);
                 }, 0);
                 collection.push(total);
+                collection2.push(-total);
             }
 
             this.bar1Data.labels = uniqueProcessedByList;

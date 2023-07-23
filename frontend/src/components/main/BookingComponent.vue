@@ -3715,7 +3715,10 @@ export default {
         if (result.isConfirmed) {
           // Perform reservation cancellation logic here
 
-          axios.post(`${this.API_URL}restoorders/filter/`, { columnName: 'customer_name', columnKey: this.bookings[this.itemIndex].room_name })
+          axios.post(`${this.API_URL}restoorders/filter/`, [
+            { columnName: 'customer_name', columnKey: this.bookings[this.itemIndex].room_name },
+            { columnName: 'status', columnKey: 'closed' },
+          ])
             .then(response => {
               let checkTable = null;
               let restoStatus = null;

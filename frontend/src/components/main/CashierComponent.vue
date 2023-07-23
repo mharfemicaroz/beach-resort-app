@@ -3121,6 +3121,11 @@ export default {
               $("#pos-tab").tab('show');
               this.$refs.tenderedCash.focus();
               this.totalCash = 0;
+              if(this.userdata.role === 'restoinventory'){
+                const stock = this.itemarray.find(item => item.id === itemlist[0].id)
+                this.stock = stock;
+                $("#stockModal").modal("toggle");
+              }
             }
           } else {
             this.searchText = barcode;
