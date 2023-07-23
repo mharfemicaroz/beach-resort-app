@@ -77,6 +77,10 @@
                                         @click="$emit('edit-action', mainItem.id)" style="margin-right: 10px;">
                                         <i class="fas fa-edit"></i>
                                     </button>
+                                    <button v-if="this.custombtn" type="button" class="btn btn-primary btn-sm no-print"
+                                        @click="$emit('custombtn-action', mainItem.id)">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
                                     <button v-if="this.deletable" type="button" class="btn btn-danger btn-sm no-print"
                                         @click="$emit('delete-action', mainItem.id)">
                                         <i class="fas fa-trash"></i>
@@ -250,6 +254,10 @@ export default {
             required: true,
         },
         editable: {
+            type: Boolean,
+            required: true,
+        },
+        custombtn: {
             type: Boolean,
             required: true,
         },

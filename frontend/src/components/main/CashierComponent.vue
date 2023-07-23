@@ -160,7 +160,7 @@
                                             </div>
                                             <div class="card-body">
                                               <h6 class="text-dark">
-                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'w/ order' :
                                                   'no order' }}
                                               </h6>
                                             </div>
@@ -186,7 +186,7 @@
                                             </div>
                                             <div class="card-body">
                                               <h6 class="text-dark">
-                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'w/ order' :
                                                   'no order' }}
                                               </h6>
                                             </div>
@@ -212,7 +212,7 @@
                                             </div>
                                             <div class="card-body">
                                               <h6 class="text-dark">
-                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'w/ order' :
                                                   'no order' }}
                                               </h6>
                                             </div>
@@ -238,7 +238,7 @@
                                             </div>
                                             <div class="card-body">
                                               <h6 class="text-dark">
-                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'w/ order' :
                                                   'no order' }}
                                               </h6>
                                             </div>
@@ -264,7 +264,7 @@
                                             </div>
                                             <div class="card-body">
                                               <h6 class="text-dark">
-                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'w/ order' :
                                                   'no order' }}
                                               </h6>
                                             </div>
@@ -290,7 +290,7 @@
                                             </div>
                                             <div class="card-body">
                                               <h6 class="text-dark">
-                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'w/ order' :
                                                   'no order' }}
                                               </h6>
                                             </div>
@@ -316,7 +316,7 @@
                                             </div>
                                             <div class="card-body">
                                               <h6 class="text-dark">
-                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'occupied' :
+                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ? 'w/ order' :
                                                   'no order' }}
                                               </h6>
                                             </div>
@@ -981,7 +981,8 @@
           <div class="col-md-9">
             <div>
               <table-component :mainHeaders=stocksOptions :mainItems="filtereditemarray" :subHeaders="inventorysubitem"
-                @edit-action="editInventory" :editable="true" :toggleable="true" :slotsub="true">
+                @edit-action="editInventory" :editable="true" @custombtn-action="viewStock" :custombtn="true"
+                :toggleable="true" :slotsub="true">
                 <template #subcontent="{ data }">
                   <table-component :mainHeaders="inventorysubitem" :mainItems="data" />
                 </template>
@@ -1179,6 +1180,57 @@
     </div>
   </div>
   <FooterComponent />
+  <div class="modal fade show" id="stockModal" tabindex="-1" role="dialog" aria-labelledby="stockModalLabel"
+    style="display: none; padding-right: 17px;" aria-modal="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="addAccountModalLabel">View Stock</h4>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div v-if="stock">
+                <img :src="stock.imageUrl" alt="Stock Image" class="img-fluid mb-2 w-75 h-75" v-if="stock.imageUrl" />
+                <h5>{{ stock.name }}</h5>
+                <p>Description: {{ stock.description }}</p>
+              </div>
+              <div v-else>
+                <p>No stock information available.</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div v-if="stock">
+                <p>Category: {{ stock.category }}</p>
+                <p>Price: ₱{{ stock.price }}</p>
+                <div class="btn-group mr-2" role="group" aria-label="...">
+                  <button type="button" class="m-btn btn-light btn btn-default" style="font-size: small; width: 20px;"
+                    @click="this.stock.stocks--">
+                    <i class="fa fa-minus"></i>
+                  </button>
+                  <button type="button" class="m-btn btn-light btn btn-default" style="font-size: medium;width: 20px;"
+                    disabled>
+                    {{ stock.stocks }}
+                  </button>
+                  <button type="button" class="m-btn btn-light btn btn-default" style="font-size: small;width: 20px;"
+                    @click="this.stock.stocks++">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" @click="updateInventory">Save</button> &nbsp;
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import { useAuthStore } from "@/stores/authStore";
@@ -1564,7 +1616,15 @@ export default {
     filteredroom_tables() {
       return this.room_tables.filter(o => o.type === this.activeroomtable).map(item => {
         const order = this.resto_order.filter(o => o.table_id === item.id && o.customer_name === item.name && o.order_type === "dine-in");
-        const booking = this.bookings.filter(o => o.status === "checkedin" && o.room_name === item.name && parseDate(new Date().toLocaleDateString('en-GB')) === parseDate(o.checkinDate))
+        const today = parseDate(new Date().toLocaleDateString('en-GB'));
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const formattedYesterday = parseDate(yesterday.toLocaleDateString('en-GB'));
+        const booking = this.bookings.filter(o =>
+          o.status === "checkedin" &&
+          o.room_name === item.name &&
+          (parseDate(o.checkinDate) === today || parseDate(o.checkinDate) === formattedYesterday || parseDate(o.checkoutDate) >= today)
+        );
         const b_status = (booking.length > 0) ? true : false;
         if (order.length > 0) {
           const order_data = order[0];
@@ -1722,6 +1782,11 @@ export default {
       this.getRestoOnholds();
       this.getAllOrders();
       this.getCurrentOrders();
+    },
+    viewStock(id) {
+      const stock = this.itemarray.find(item => item.id === id)
+      this.stock = stock;
+      $("#stockModal").modal("toggle");
     },
     async saveImageFile() {
       try {
@@ -2262,6 +2327,7 @@ export default {
                     description: item.description,
                     imageUrl: item.image,
                     category: item.category,
+                    price: item.price,
                     discount: this.discountValue,
                     inventory: inventory,
                     isAvailable: item.isAvailable,
@@ -2303,6 +2369,7 @@ export default {
                     name: item.name,
                     description: item.description,
                     imageUrl: item.image,
+                    price: item.price,
                     category: item.category,
                     discount: this.discountValue,
                     inventory: inventory,
@@ -2628,6 +2695,10 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    updateInventory(){
+      this.isUpdatingInventory = true;
+      this.saveInventory();
     },
     saveInventory() {
       if (this.isUpdatingInventory) {
@@ -3090,4 +3161,5 @@ input::-webkit-inner-spin-button {
   font-weight: bold;
   font-size: 16px;
   padding-left: 30px;
-}</style>
+}
+</style>

@@ -456,8 +456,6 @@ export default {
             this.line2Data.labels = result.dates;
             this.line2Data.datasets[0].data = result.totalCashAmountPay;
 
-
-
         },
         forecast(data) {
             let vm = this;
