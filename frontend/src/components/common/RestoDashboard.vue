@@ -62,7 +62,7 @@
     </div>
     <div class="row row justify-content-center">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="card x">
                     <div class="card-header text-primary text-center">
                         <strong>Order Type Summary</strong>
@@ -75,13 +75,26 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="card x">
                     <div class="card-header text-primary text-center">
                         <strong>Order Status Summary</strong>
                     </div>
                     <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
                         <pie-chart :key="componentKey" v-if="loaded[1]" :chartData="pie2Data" />
+                        <div v-else class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card x">
+                    <div class="card-header text-primary text-center">
+                        <strong>Transaction Type</strong>
+                    </div>
+                    <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
+                        <pie-chart :key="componentKey" v-if="loaded[3]" :chartData="pie3Data" />
                         <div v-else class="spinner-border" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
@@ -99,7 +112,7 @@
                         <strong>Collection Summary Report</strong>
                     </div>
                     <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
-                        <bar-chart :key="componentKey" v-if="loaded[2]" :chartData="bar1Data" />
+                        <bar-chart :key="componentKey" v-if="loaded[4]" :chartData="bar1Data" />
                         <div v-else class="spinner-border" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
@@ -125,7 +138,7 @@
                         <strong>Sales Trend</strong>
                     </div>
                     <div class="card-body chart" style="display: flex; justify-content: center; align-items: center;">
-                        <line-chart :key="componentKey" v-if="loaded[3]" :chartData="line1Data" />
+                        <line-chart :key="componentKey" v-if="loaded[5]" :chartData="line1Data" />
                         <div v-else class="spinner-border" role="status">
                             <span class="sr-only">Loading...</span>
                         </div>
@@ -214,6 +227,14 @@ export default {
                     }
                 ]
             },
+            pie3Data: {
+                labels: ['cash', 'noncash'],
+                datasets: [
+                    {
+                        data: [],
+                    }
+                ]
+            },
             bar1Data: {
                 labels: [],
                 datasets: [
@@ -226,6 +247,11 @@ export default {
                 labels: [],
                 datasets: [
                     {
+                        label:"Dataset1",
+                        data: [],
+                    },
+                    {
+                        label:"Dataset2",
                         data: [],
                     }
                 ]
@@ -266,6 +292,15 @@ export default {
             const voided = data.filter(item => item.status === 'void').length;
             this.pie2Data.datasets[0].data = [progress, closed, voided]
         },
+        pie3Datasets(data) {
+            const cash = data.filter(item => item.payMethod === 'cash').reduce((accumulator, currentValue) => {
+                return accumulator + parseFloat(currentValue.totalPay);
+            }, 0);
+            const noncash = data.filter(item => item.payMethod === 'noncash').reduce((accumulator, currentValue) => {
+                return accumulator + parseFloat(currentValue.totalPay);
+            }, 0);
+            this.pie3Data.datasets[0].data = [cash, noncash]
+        },
         bar1Datasets(data){
             const processedByList = data.map(record => record.processedBy);
             const uniqueProcessedByList = [...new Set(processedByList)].filter(name => name !== '');
@@ -279,7 +314,6 @@ export default {
 
             this.bar1Data.labels = uniqueProcessedByList;
             this.bar1Data.datasets[0].data = collection;
-            
         },
         async line1Datasets(data) {
             const summary = data.reduce((acc, curr) => {
@@ -312,12 +346,12 @@ export default {
 
         },
         scrollRecord() {
-            this.loaded.fill(false, 0, 2);
+            this.loaded.fill(false, 0, 3);
             this.loadData();
         },
         async loadData() {
             try {
-                this.loaded = Array(4).fill(false);
+                this.loaded = Array(6).fill(false);
 
                 const daycount = 10 - this.backtrack;
                 const today = new Date();
@@ -371,8 +405,8 @@ export default {
                 this.pie2Datasets(restoordersData.data.filter(item => new Date(item.date_created).toLocaleDateString('en-GB') === curday.toLocaleDateString('en-GB')));
                 this.bar1Datasets(restotransData.data.filter(item => new Date(item.date_created).toLocaleDateString('en-GB') === curday.toLocaleDateString('en-GB')));
                 this.line1Datasets(restotransData.data);
-
-                this.loaded = Array(4).fill(true);
+                this.pie3Datasets(restotransData.data.filter(item => new Date(item.date_created).toLocaleDateString('en-GB') === curday.toLocaleDateString('en-GB')))
+                this.loaded = Array(6).fill(true);
             } catch (error) {
                 alert(error)
             }

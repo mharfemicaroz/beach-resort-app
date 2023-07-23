@@ -693,7 +693,7 @@
           <div class="col-md-4">
 
             <div ref="itemCart" class="card"
-              :style="`height: ${(userdata.role !== 'waiter') ? 240 : 555}px; overflow-y: auto;`">
+              :style="`height: ${(userdata.role !== 'waiter') ? 190 : 555}px; overflow-y: auto;`">
 
               <div class="row">
                 <div class="col-md-12">
@@ -790,10 +790,18 @@
                   <dd class="text-right h4 b"> ₱{{ totalCost }} </dd>
                 </div>
               </div>
+              <div class="row p-0 m-0" v-if="payMethod === 'noncash'">
+                <div class="col-md-6">
+                  <dt>Reference no.: </dt>
+                </div>
+                <div class="col-md-6 d-flex flex-row-reverse">
+                  <dd class="text-right"> {{ noncashType }} - {{ referenceno }} </dd>
+                </div>
+              </div>
             </div> <!-- box.// -->
             <div class="box mt-2" v-if="userdata.role !== 'waiter'">
               <div class="row bg-primary text-white d-flex flex-row-reverse align-items-center">
-                <div class="col-md-6">
+                <div class="col-md-8">
                   <div class="input-group">
                     <span class="input-group-text bg-primary text-white "
                       style="vertical-align: middle;font-weight: bold;border: none; font-size: x-large;">₱</span>
@@ -803,8 +811,12 @@
                       style="text-align:right; font-weight: bold; font-size: x-large; border: none;" v-model="totalCash">
                   </div>
                 </div>
-                <div class="col-md-6">
-                  <dd class="text-right h3 b" style="margin-right: 10px;"> Cash</dd>
+                <div class="col-md-4">
+                  <select id="payment-method" v-model="payMethod" class="form-control bg-primary text-white"
+                    style="font-weight: bolder; font-size: larger;" @change="setNonCash">
+                    <option value="cash">Cash</option>
+                    <option value="noncash">Non-cash</option>
+                  </select>
                 </div>
               </div>
               <div class="row mt-2" v-if="userdata.role !== 'waiter'">
@@ -961,7 +973,7 @@
 
               <div class="mb-3">
                 <label for="price" class="form-label">Price</label>
-                <input type="number" min="0" class="form-control" id="price" v-model="stock.price" required>
+                <input type="number" min="0" step="0.1" class="form-control" id="price" v-model="stock.price" required>
               </div>
 
               <div class="mb-3">
@@ -1138,6 +1150,11 @@
               this.customer.order_id
             }}</td>
           </tr>
+          <tr v-if="this.payMethod === 'noncash'">
+            <td> </td>
+            <td>RN:</td>
+            <td>{{ this.noncashType }} - {{ this.referenceno }}</td>
+          </tr>
           <tr>
             <td colspan="3" style="height: 10px;"></td>
           </tr>
@@ -1276,6 +1293,9 @@ export default {
   },
   data() {
     return {
+      payMethod: "cash",
+      noncashType: "",
+      referenceno: "",
       activeroomtable: "BEACH ROOM",
       currentItem: null,
       inquiretoggle: false,
@@ -1329,6 +1349,14 @@ export default {
       }, {
         'label': 'Transaction ID',
         'field': 'id',
+        'sortable': true,
+      }, {
+        'label': 'Type',
+        'field': 'payMethod',
+        'sortable': true,
+      }, {
+        'label': 'Ref. No.',
+        'field': 'nonCashref',
         'sortable': true,
       }, {
         'label': 'Sub-Total',
@@ -2423,6 +2451,58 @@ export default {
         this.totalCash = 0;
       }
     },
+    setNonCash() {
+      if (this.payMethod === 'noncash') {
+
+        this.$swal.fire({
+          title: 'Choose non-cash type',
+          html: `
+      <div>
+        <input type="radio" class="form-check-input" id="cat1" name="noncashType" value="gcash" checked>
+        <label for="cat1" class="form-check-label">GCash</label> &nbsp;
+        <input type="radio" class="form-check-input" id="cat2" name="noncashType" value="paymaya">
+        <label for="cat2" class="form-check-label">PayMaya</label> &nbsp;
+        <input type="radio" class="form-check-input" id="cat3" name="noncashType" value="debitcard">
+        <label for="cat3" class="form-check-label">Debit Card</label> &nbsp;
+        <input type="radio" class="form-check-input" id="cat4" name="noncashType" value="creditcard">
+        <label for="cat4" class="form-check-label">Credit Card</label> &nbsp;
+        <input type="radio" class="form-check-input" id="cat5" name="noncashType" value="bank">
+        <label for="cat5" class="form-check-label">Bank</label> &nbsp;
+        <br><br>
+        <input type="text" class="form-control" maxlength=32 id="referenceno" placeholder="Enter reference/transaction no. here after non-cash payment.">
+      </div>
+    `,
+          showCancelButton: true,
+          confirmButtonText: 'Submit',
+          cancelButtonText: 'Cancel',
+          allowOutsideClick: false,
+          preConfirm: () => {
+            const noncashType = document.querySelector('input[name="noncashType"]:checked').value;
+            const referenceno = document.getElementById('referenceno').value;
+            return { noncashType, referenceno };
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const { noncashType, referenceno } = result.value;
+            if (noncashType !== "" || referenceno !== "") {
+              this.noncashType = noncashType;
+              this.referenceno = referenceno;
+            } else {
+              this.$swal({
+                title: 'Warning',
+                text: 'Please provide both the non-cash type and the reference number.',
+                icon: 'warning',
+              });
+              return;
+            }
+          }
+        });
+      } else {
+        this.noncashType = "";
+        this.referenceno = "";
+      }
+
+    },
     resetCounter() {
       this.clearAll();
       this.customer = {
@@ -2439,6 +2519,15 @@ export default {
         this.$swal({
           title: 'Warning',
           text: 'The tendered amount is less than the total cost.',
+          icon: 'warning',
+        });
+        return;
+      }
+
+      if (this.payMethod === 'noncash' && this.referenceno === '') {
+        this.$swal({
+          title: 'Warning',
+          text: 'Provide the reference no. for non-cash payment.',
           icon: 'warning',
         });
         return;
@@ -2543,6 +2632,8 @@ export default {
             subTotal: this.subTotal,
             totalCharge: this.totalCost,
             totalPay: this.totalCost,
+            payMethod: this.payMethod,
+            nonCashref: this.noncashType + "-" + this.referenceno,
             items: JSON.stringify(this.cartItems),
             processedBy: this.userdata.fName + " " + this.userdata.lName,
           })
@@ -2696,7 +2787,7 @@ export default {
           console.log(error);
         });
     },
-    updateInventory(){
+    updateInventory() {
       this.isUpdatingInventory = true;
       this.saveInventory();
     },
