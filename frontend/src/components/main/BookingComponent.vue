@@ -205,7 +205,7 @@
       <div class="tab-pane fade" id="others" role="tabpanel" aria-labelledby="others-tab">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
               <h2>Add-ons</h2>
               <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3">
               <div class="wrapper-content" :style="`height:${calcMeasure.height1}`">
@@ -233,7 +233,7 @@
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> -->
             <div class="col-md-3">
 
               <div class="d-flex align-items-center">
@@ -241,21 +241,31 @@
                   Cart
                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                     style="font-size: 0.75rem;">
-                    {{ countInclusion }}
+                    {{ numItemCart }}
                     <span class="visually-hidden">items in cart</span>
                   </span>
                 </h2>
-                <button type="button" class="btn btn-primary ms-auto" @click="moveInclusionCartToMain()">
-                  <i class="fas fa-arrow-right"></i>
-                </button>
-
+                <div class="ms-auto d-flex align-items-center"> <!-- Wrap the buttons in a flex container -->
+                  <button type="button" class="btn btn-primary me-2" @click="showShoppingModal()">
+                    <i class="fa fa-shopping-cart"></i>
+                  </button>
+                  <button type="button" class="btn btn-primary" @click="moveInclusionCartToMain()">
+                    <i class="fas fa-thumbs-up"></i>
+                  </button>
+                </div>
               </div>
+
 
               <div class="card-deck"
                 :style="`height:${calcMeasure.height2};overflow-y: auto;overflow-x: hidden;padding-right: 1px;`">
-                <div class="card" v-for="(item, index) in filteredInclusionCart" :key="item.id">
+                <div class="card" v-for="(item, index) in cart.sort((a, b) => a.category.localeCompare(b.category))"
+                  :key="item.id">
                   <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">{{ item.name }}</h5>
+                    <h5 class="card-title">{{ item.name }} <span
+                        v-html="(item.category === 'main') ? '<i class=\'fas fa-check text-success\'></i>' : '<i class=\'fas fa-hourglass-start text-warning\'></i>'"></span>
+                    </h5>
+
+
                     <button v-if="item.category === 'inclusion'" type="button" class="btn btn-sm btn-close"
                       aria-label="Close" @click="cancelItem(item)"></button>
                   </div>
@@ -272,7 +282,7 @@
 
 
             </div>
-            <div class="col-md-3">
+            <!-- <div class="col-md-3">
               <div class="d-flex align-items-center">
                 <h2 class="position-relative">
                   Order Summary
@@ -286,16 +296,6 @@
                   @click="toggleAddAccountModal()">
                   <i class="fa fa-plus"></i>
                 </button>
-              </div>
-
-
-              <div class="card">
-                <div class="card-body">
-                  <span><strong>Name:</strong> {{ billing.clientName }}</span><br />
-                  <span><strong>Email:</strong> {{ billing.clientEmail }}</span><br />
-                  <span><strong>Phone:</strong> {{ billing.clientPhone }}</span><br />
-                  <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
-                </div>
               </div>
               <div class="card-deck wrapper-content" :style="`height:${calcMeasure.height3};`">
                 <div class="card" v-for="(item, index) in combinedcart" :key="item.id">
@@ -316,9 +316,148 @@
                 </div>
               </div>
 
+            </div> -->
+            <div class="col-md-6">
+
+              <div class="d-flex align-items-center">
+                <h2 class="position-relative">
+                  Billing Statement (preview)
+                </h2>
+                <div class="ms-auto d-flex align-items-center"> <!-- Wrap the buttons in a flex container -->
+                  <button type="button" class="btn btn-primary" v-show="this.isItNew" v-if="!this.walkinStatus"
+                    @click="generateBillingStatement()">
+                    <i class="fas fa-print"></i>
+                  </button>
+                </div>
+              </div>
+              <!-- <div class="card">
+                  <div class="card-body">
+                    <span><strong>Name:</strong> {{ billing.clientName }}</span><br />
+                    <span><strong>Email:</strong> {{ billing.clientEmail }}</span><br />
+                    <span><strong>Phone:</strong> {{ billing.clientPhone }}</span><br />
+                    <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
+                  </div>
+                </div> -->
+              <div id="billing-details-preview" class="bg-light"
+                :style="`height:${calcMeasure.height3}!important;overflow-y: auto;overflow-x: hidden;font-size: 100%;padding: 20px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);`">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="row justify-content-between" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
+                        <div class="col-4">
+                          <img src="@/assets/pantukan-waterworld-logo.jpg" width="60" height="60" alt="Company Logo"
+                            class="logo">
+                        </div>
+                        <div class="col-4 text-right">
+                          <span style="font-size: small;">Billing Statement</span>
+                          <p>Transaction No.: {{ this.billing.bookingID }}</p>
+                        </div>
+                      </div>
+                      <hr style="margin-bottom: 0px; margin-top: 0px;">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
+                      <div class="row">
+                        <div class="col-6">
+                          <span style="font-size: small;">Client Details:</span>
+                          <p style="margin-bottom: 0px;">Name: {{ this.billing.clientName }}</p>
+                          <p style="margin-bottom: 0px;">Email: {{ this.billing.clientEmail }}</p>
+                          <p style="margin-bottom: 0px;">Contact No.: {{ this.billing.clientPhone }}</p>
+                          <p style="margin-bottom: 0px;">Address: {{ this.billing.clientAddress }}</p>
+                        </div>
+                      </div>
+                      <hr style="margin-bottom: 0px; margin-top: 0px;">
+                      <div class="row">
+                        <div class="col-12">
+                          <span style="font-size: small;">Order Details:</span>
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th>Item Name</th>
+                                <th>Category</th>
+                                <th>Rate</th>
+                                <th>Qty</th>
+                                <th>Total Cost</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="item in combinedcart" :key="item.id">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.type }}</td>
+                                <td>{{ item.priceRate }}</td>
+                                <td>{{ item.purqty }}</td>
+                                <td v-if="item.itemOption !== 'room'">{{ item.totalCartPrice }}</td>
+                                <td v-else>
+                                  <span v-if="!isNaN(subroom.discountValue)"
+                                    v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode === 'percentage') ? subroom.discountValue.toFixed(2) + '%' : (subroom.discountValue / 3).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${(subroom.discountMode === 'percentage') ? item.totalCartPrice * (1 - parseFloat(subroom.discountValue / 100)) : item.totalCartPrice - (subroom.discountValue / 3).toFixed(2)}</span>`"></span>
+                                  <span v-else v-html="`${item.totalCartPrice}`"></span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td colspan="4" class="text-right"><strong>Partial Payment:</strong></td>
+                                <td class="text-danger"><strong>-Php {{ partialPayment }}</strong></td>
+                              </tr>
+                              <tr>
+                                <td colspan="4" class="text-right"><strong>Total Due:</strong></td>
+                                <td><strong>Php {{ total }}</strong></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <hr style="margin-bottom: 0px; margin-top: 0px;">
+                      <div class="row">
+                        <div class="col-12">
+                          <span style="font-size: small;">Account History:</span>
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Invoice ID</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Balance</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr v-for="(item, index) in cashHistory" :key="item.id">
+                                <td>
+                                  {{ new Date(item.transaction_date).toLocaleDateString() }}, {{ getTime(new Date(item.transaction_date)) }}
+                                </td>
+                                <td>
+                                  {{ item.paymentMethod }}
+                                </td>
+                                <td>
+                                  {{ (item.nonCashReference.toString().replace("-", "") ===
+                                    "") ? item.transactionrecord_id : item.transactionrecord_id + "-" +
+                                    item.nonCashReference }}
+                                </td>
+                                <td>
+                                  {{ (index === 0) ? 'Init/DP' : (parseFloat(item.balance) === 0) ? 'Full' : 'Partial'
+                                  }}
+                                </td>
+                                <td>
+                                  {{ item.cashAmountPay }}
+                                </td>
+                                <td>
+                                  {{ item.balance }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
             <div class="col-md-3" :style="`height:${calcMeasure.height4}!important;overflow-y: auto;overflow-x: hidden;`">
-              <h2>Payment Transaction</h2>
+              <h2>Payment</h2>
               <div class="container">
                 <form>
 
@@ -406,13 +545,17 @@
                       </div>
                     </div>
                   </div>
-
+                  <!-- 
                   <button v-show="this.isItNew" v-if="!this.walkinStatus" type="button" class="btn btn-primary"
                     @click="generateBillingStatement">Generate
-                    BS</button>&nbsp;
-                  <button type="button" class="btn btn-success" @click="placeOrder"
-                    :disabled="total <= 0 || countInclusion > 0">Place
-                    Order</button>
+                    BS</button>&nbsp; -->
+                  <button type="button" class="btn btn-primary d-flex align-items-center" @click="placeOrder"
+                    :disabled="total <= 0 || countInclusion > 0">
+                    <i class="fas fa-shopping-cart me-2"></i> Place Order
+                  </button> &nbsp;
+
+
+
                 </form>
               </div>
             </div>
@@ -694,7 +837,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item,index) in cashHistory" :key="item.id">
+                    <tr v-for="(item, index) in cashHistory" :key="item.id">
                       <td>
                         {{ item.transaction_date }}
                       </td>
@@ -702,10 +845,11 @@
                         {{ item.paymentMethod }}
                       </td>
                       <td>
-                        {{ (item.nonCashReference.toString().replace("-","") === "")?item.transactionrecord_id:item.transactionrecord_id+"-"+item.nonCashReference }}
+                        {{ (item.nonCashReference.toString().replace("-", "") ===
+                          "") ? item.transactionrecord_id : item.transactionrecord_id + "-" + item.nonCashReference }}
                       </td>
                       <td>
-                        {{ (index === 0 && item.balance !== 0)?'Init/DP':(item.balance === 0)?'Full':'Partial' }}
+                        {{ (index === 0) ? 'Init/DP' : (parseFloat(item.balance) === 0) ? 'Full' : 'Partial' }}
                       </td>
                       <td>
                         {{ item.cashAmountPay }}
@@ -1203,6 +1347,54 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal fade come-from-modal left" id="shopModal" tabindex="-1" aria-labelledby="shopModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="shopModalLabel">Add-ons
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <h2>Add-ons</h2>
+              <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3">
+              <div class="wrapper-content">
+                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
+                  <thead>
+                    <tr>
+                      <th style="white-space: nowrap;">Item</th>
+                      <th>Qty</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item, index) in filteredItems" :key="index">
+                      <td>{{ item.item }} ({{ item.priceRate }}/{{ item.counter }})</td>
+                      <td>
+                        <input style="width:75px!important" class="form-control input-sm" type="number"
+                          v-model.number="howMany[index]">
+                      </td>
+                      <td>
+                        <button class="btn btn-primary" @click="addToCart(item, index)" :disabled="!item.isAvailable">
+                          <i class="fa fa-cart-plus"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1995,8 +2187,8 @@ export default {
       return {
         "height1": parseFloat(window.innerHeight) - 300 + "px",
         "height2": parseFloat(window.innerHeight) - 230 + "px",
-        "height3": parseFloat(window.innerHeight) - 366 + "px",
-        "height4": parseFloat(window.innerHeight) - 130 + "px",
+        "height3": parseFloat(window.innerHeight) - 240 + "px",
+        "height4": parseFloat(window.innerHeight) - 150 + "px",
       }
     },
     combinedcart() {
@@ -2031,6 +2223,13 @@ export default {
       //   });
       // }
       return this.cart.filter(item => item.category === 'main');
+    },
+    filteredInclusionCart() {
+      return this.cart.map(o => {
+        return {
+          ...o
+        };
+      }).filter(item => item.category === 'inclusion');
     },
     filteredReservationsHistory() {
       let filtered = this.bookings.filter(reservation => {
@@ -2263,13 +2462,6 @@ export default {
         };
       }).filter(item => item.category === 'main');
     },
-    filteredInclusionCart() {
-      return this.cart.map(o => {
-        return {
-          ...o
-        };
-      }).filter(item => item.category === 'inclusion');
-    },
     bookings() {
       return this.origbookings
         .map(book => {
@@ -2413,6 +2605,12 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    getTime(d) {
+      const date = d;
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${hours}:${minutes}`;
     },
     async voidBook() {
       this.toggleItemModal();
@@ -2784,6 +2982,9 @@ export default {
 
       this.toggleAddAccountModal();
     },
+    showShoppingModal() {
+      $("#shopModal").modal("toggle");
+    },
     async moveInclusionCartToMain() {
       let bId = null;
       let gkey = null;
@@ -2898,6 +3099,7 @@ export default {
         clientType: "walkin",
         bookingID: ""
       };
+      this.cashHistory = [];
       this.walkinreservation = {
         clientName: "",
         clientEmail: "",
@@ -3101,7 +3303,7 @@ export default {
         const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
           { "columnName": "transaction", "columnKey": transaction.id },
         ]);
-        this.cashHistory = response.data;    
+        this.cashHistory = response.data;
       } catch (error) {
 
       }
@@ -3363,7 +3565,7 @@ export default {
         const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
           { "columnName": "transaction", "columnKey": transaction.id },
         ]);
-        this.cashHistory = response.data;  
+        this.cashHistory = response.data;
       } catch (error) {
 
       }
@@ -4555,7 +4757,7 @@ export default {
                 const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
                   { "columnName": "transaction", "columnKey": doneTransaction.data.id },
                 ]);
-                this.cashHistory = response.data;  
+                this.cashHistory = response.data;
               } catch (error) {
 
               }
@@ -4666,9 +4868,9 @@ export default {
               try {
                 this.partialPayment = newcashAmountPay;
                 const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
-                  { "columnName": "transaction", "columnKey": transactionRecordData.id },
+                  { "columnName": "transaction", "columnKey": transactionRecordData.transaction },
                 ]);
-                this.cashHistory = response.data; 
+                this.cashHistory = response.data;
               } catch (error) {
 
               }
@@ -4868,6 +5070,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
           }
           console.log(this.itemCart)
           this.cart.push(this.itemCart);
+          $("#shopModal").modal("toggle");
           this.howMany[index] = '';
           this.itemCart = {
             id: 0,
@@ -5343,6 +5546,42 @@ img {
 
 .btn-margin {
   margin-right: 10px;
+}
+
+.come-from-modal.left .modal-dialog,
+.come-from-modal.right .modal-dialog {
+  position: fixed;
+  margin: auto;
+  width: 320px;
+  height: 100%;
+  -webkit-transform: translate3d(0%, 0, 0);
+  -ms-transform: translate3d(0%, 0, 0);
+  -o-transform: translate3d(0%, 0, 0);
+  transform: translate3d(0%, 0, 0);
+}
+
+.come-from-modal.left .modal-content,
+.come-from-modal.right .modal-content {
+  height: 100%;
+  overflow-y: auto;
+  border-radius: 0px;
+}
+
+.come-from-modal.left .modal-body,
+.come-from-modal.right .modal-body {
+  padding: 15px 15px 80px;
+}
+
+.come-from-modal.right.fade .modal-dialog {
+  right: -320px;
+  -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+  -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+  -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+  transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+
+.come-from-modal.right.fade.in .modal-dialog {
+  right: 0;
 }
 </style>
 
