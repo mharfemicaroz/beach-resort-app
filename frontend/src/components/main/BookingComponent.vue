@@ -681,6 +681,46 @@
             <hr>
             <div class="row">
               <div class="col-12">
+                <span style="font-size: small;">Account History:</span>
+                <table border="1">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Type</th>
+                      <th>Invoice ID</th>
+                      <th>Description</th>
+                      <th>Amount</th>
+                      <th>Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item,index) in cashHistory" :key="item.id">
+                      <td>
+                        {{ item.transaction_date }}
+                      </td>
+                      <td>
+                        {{ item.paymentMethod }}
+                      </td>
+                      <td>
+                        {{ (item.nonCashReference.toString().replace("-","") === "")?item.transactionrecord_id:item.transactionrecord_id+"-"+item.nonCashReference }}
+                      </td>
+                      <td>
+                        {{ (index === 0 && item.balance !== 0)?'Init/DP':(item.balance === 0)?'Full':'Partial' }}
+                      </td>
+                      <td>
+                        {{ item.cashAmountPay }}
+                      </td>
+                      <td>
+                        {{ item.balance }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-12">
                 <span style="font-size: small;">Terms &amp; Conditions:</span>
                 <p>1. Check-in time is at 2:00 PM. Check-out time is at 12:00 PM.</p>
                 <p>2. Late check-out is subject to availability and may be charged an additional fee.</p>
@@ -1855,6 +1895,7 @@ export default {
       discountMode: 'percentage',
       discountValue: 0,
       partialPayment: 0,
+      cashHistory: [],
       cashRemarks: '',
 
       activeTab: 'all',
@@ -2968,7 +3009,10 @@ export default {
           columnName: 'bookingID',
           columnKey: bookingID
         });
+
       }
+
+
 
       try {
         if (existingTransaction.length !== 0) {
@@ -3054,6 +3098,10 @@ export default {
 
       try {
         this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
+        const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
+          { "columnName": "transaction", "columnKey": transaction.id },
+        ]);
+        this.cashHistory = response.data;    
       } catch (error) {
 
       }
@@ -3312,6 +3360,10 @@ export default {
 
       try {
         this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
+        const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
+          { "columnName": "transaction", "columnKey": transaction.id },
+        ]);
+        this.cashHistory = response.data;  
       } catch (error) {
 
       }
@@ -3722,11 +3774,11 @@ export default {
             .then(response => {
               let checkTable = null;
               let restoStatus = null;
-              try{
+              try {
                 const tableID = response.data[0].table_id;
                 restoStatus = response.data[0].status;
                 checkTable = this.rooms.find(table => table.id === tableID).name;
-              }catch(error){
+              } catch (error) {
                 checkTable = this.bookings[this.itemIndex].room_name;
                 restoStatus = "closed";
               }
@@ -4500,6 +4552,10 @@ export default {
 
               try {
                 this.partialPayment = doneTransaction.data.cashAmountPay;
+                const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
+                  { "columnName": "transaction", "columnKey": doneTransaction.data.id },
+                ]);
+                this.cashHistory = response.data;  
               } catch (error) {
 
               }
@@ -4609,6 +4665,10 @@ export default {
               }
               try {
                 this.partialPayment = newcashAmountPay;
+                const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
+                  { "columnName": "transaction", "columnKey": transactionRecordData.id },
+                ]);
+                this.cashHistory = response.data; 
               } catch (error) {
 
               }
@@ -5283,5 +5343,6 @@ img {
 
 .btn-margin {
   margin-right: 10px;
-}</style>
+}
+</style>
 
