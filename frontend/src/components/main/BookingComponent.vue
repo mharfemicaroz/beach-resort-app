@@ -352,7 +352,7 @@
                 <div class="container">
                   <div class="row">
                     <div class="col-12">
-                      <div class="row justify-content-between" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
+                      <div class="row justify-content-between">
                         <div class="col-4">
                           <img src="@/assets/pantukan-waterworld-logo.jpg" width="60" height="60" alt="Company Logo"
                             class="logo">
@@ -366,7 +366,7 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-12" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
+                    <div class="col-12">
                       <div class="row">
                         <div class="col-6">
                           <span style="font-size: small;">Client Details:</span>
