@@ -23,6 +23,7 @@ urlpatterns = [
     re_path(r'^restotables/$',restotables_list , name='restotables-list'),
     re_path(r'^restotables/(?P<pk>\d+)/$',restotables_list, name='restotables-detail'), 
     re_path(r'^restotables/filter/$', restotables_filter, name='restotables-filter'),
+    re_path(r'^restotransaction/delete/(?P<pk>\d+)/$', restotransaction_delete, name='restotransaction-delete'), 
     re_path(r'^restotransaction/$',restotransaction_list , name='restotransaction-list'),
     re_path(r'^restoitem/$',restoitem_list , name='restoitem-list'),
     re_path(r'^restoitem/(?P<pk>\d+)/$',restoitem_list, name='restoitem-detail'), 

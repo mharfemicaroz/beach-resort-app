@@ -7,6 +7,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.core.files.storage import default_storage
+from decimal import Decimal
+from django.db.models import Sum
+from datetime import datetime, time, date, timedelta
+from dateutil import parser
 
 @csrf_exempt
 def login(request):
@@ -128,13 +132,6 @@ def generic_getitems(request, ref_model, item_model, item_serializer, identifier
     else:
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
-
-
-from decimal import Decimal
-from django.db.models import Sum
-from datetime import datetime, time, date, timedelta
-from dateutil import parser
-
 @api_view(['GET'])
 @csrf_exempt
 def get_transactions_with_items(request, prevday=0):
@@ -245,6 +242,10 @@ def restoonholds_list(request, pk=None):
 @csrf_exempt    
 def restotables_list(request, pk=None):
     return generic_list(request, RestoTables, RestoTablesSerializer, pk)
+
+@csrf_exempt    
+def restotransaction_delete(request, pk=None):
+    return generic_delete(request, RestoTransaction, pk)
 
 @csrf_exempt    
 def restotransaction_list(request, pk=None):

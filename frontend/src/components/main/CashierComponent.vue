@@ -1055,7 +1055,7 @@
                   </div>
                   <div class="col-sm-10">
                     <table-component :mainHeaders=transactionsOptions :mainItems="superfilteredTransactions"
-                      :subHeaders="transactionitem" :toggleable="true" />
+                      :subHeaders="transactionitem" :toggleable="true" :deletable="true" @delete-action="voidItem" />
                   </div>
                 </div>
               </div>
@@ -1388,6 +1388,10 @@ export default {
         'label': 'Processed By',
         'field': 'processedBy',
         'sortable': true,
+      }, {
+        'label': '',
+        'field': 'action',
+        'sortable': false,
       }],
       transactionordersoptions: [{
         'label': '',
@@ -2180,6 +2184,96 @@ export default {
           }).then(response => {
             this.getRestoTakeout();
           })
+        }
+      });
+    },
+    voidItem(id) {
+      this.$swal.fire({
+        title: 'Authorization Required',
+        input: 'text',
+        showCancelButton: true,
+        allowOutsideClick: false,
+        inputAttributes: {
+          minlength: 6, // Minimum length of 3 characters
+          maxlength: 24, // Maximum length of 24 characters
+          autocomplete: "off",
+          style: "text-security:disc; -webkit-text-security:disc;"
+        },
+        confirmButtonText: 'Submit',
+        cancelButtonText: 'Cancel',
+        inputPlaceholder: 'Enter authorization code',
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const authorizationCode = result.value;
+          // Validate the authorization code and perform necessary actions
+          if (authorizationCode.toLowerCase() === this.AUTHORIZATION_KEY.toLowerCase()) {
+            // Code is correct, proceed with the desired action
+            const confirmMessage = ' If you proceed with voiding, all associated items and transaction records will be permanently deleted, and this action cannot be reversed.';
+            const result = await this.$swal.fire({
+              title: 'Are you sure you want to void this?',
+              text: confirmMessage,
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes, void it!',
+              cancelButtonText: 'Cancel'
+            });
+            if (result.isConfirmed) {
+              const countdownMessage = 'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
+              let countdownResult;
+              countdownResult = await this.$swal.fire({
+                title: 'Please wait',
+                html: countdownMessage,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirm now',
+                cancelButtonText: 'Cancel',
+                didOpen: () => {
+                  const countdownEl = document.querySelector('#countdown');
+                  let count = 5;
+                  const timerId = setInterval(() => {
+                    countdownEl.textContent = count;
+                    count--;
+                    if (count < 0) {
+                      clearInterval(timerId);
+                      this.$swal.close();
+                    }
+                  }, 1000);
+                }
+              });
+
+              if (!countdownResult.isConfirmed) {
+                return;
+              }
+
+              try {
+                axios.get(this.API_URL + `restotransaction/delete/${id}/`);
+                this.taskRecord(`action:/void/transaction:/${id}`);
+                await this.$swal.fire({
+                  title: 'Success',
+                  text: 'Item was voided successfully!',
+                  icon: 'success'
+                }).then(response => {
+                  document.location.reload();
+                })
+              } catch (error) {
+
+              }
+
+            }
+
+          } else {
+            // Code is incorrect, show an error message or take appropriate action
+            this.$swal.fire({
+              icon: 'error',
+              title: 'Incorrect Passcode',
+              text: 'The entered passcode is incorrect. Please try again.',
+              allowOutsideClick: false,
+            });
+          }
         }
       });
     },
@@ -3121,7 +3215,7 @@ export default {
               $("#pos-tab").tab('show');
               this.$refs.tenderedCash.focus();
               this.totalCash = 0;
-              if(this.userdata.role === 'restoinventory'){
+              if (this.userdata.role === 'restoinventory') {
                 const stock = this.itemarray.find(item => item.id === itemlist[0].id)
                 this.stock = stock;
                 $("#stockModal").modal("toggle");
