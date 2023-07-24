@@ -1748,7 +1748,7 @@ export default {
           items,
           searchCode
         };
-      }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchText.toLowerCase()));
+      }).filter(item => item.isAvailable && item.searchCode.toString().toLowerCase().includes(this.searchText.toLowerCase()));
     },
     superfilteredTransactions() {
 

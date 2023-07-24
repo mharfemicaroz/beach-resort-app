@@ -37,7 +37,7 @@
                     <div class="col-md-8">
                         <h5 class="card-title mb-0">Gross</h5>
                         <p class="mt-0" style="font-size: xx-small;">w/ tax & discount</p>
-                        <p class="card-text">{{ grossIncome }}</p>
+                        <p class="card-text">{{ grossIncome.toFixed(2) }}</p>
                     </div>
                     <div class="col-md-4 d-flex justify-content-center align-items-center">
                         <i class="fas fa-money-bill-alt fa-2x"></i>
