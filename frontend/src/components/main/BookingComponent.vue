@@ -246,12 +246,21 @@
                   </span>
                 </h2>
                 <div class="ms-auto d-flex align-items-center"> <!-- Wrap the buttons in a flex container -->
-                  <button type="button" class="btn btn-primary me-2" @click="showShoppingModal()">
+                  <button type="button" class="btn btn-primary me-2" :class="{ 'wiggle-animation': countInclusion === 0 }" @click="showShoppingModal()">
                     <i class="fa fa-shopping-cart"></i>
                   </button>
-                  <button type="button" class="btn btn-primary" @click="moveInclusionCartToMain()">
-                    <i class="fas fa-thumbs-up"></i>
+                  <button type="button" class="btn btn-primary" :class="{ 'wiggle-animation': countInclusion > 0 }"
+                    @click="moveInclusionCartToMain()">
+                    <i class="fas fa-thumbs-up" style="position: relative;">
+                      <span class="position-absolute start-1000 translate-middle badge rounded-pill bg-danger"
+                        style="font-size: 0.50rem; top: -25%; left: 120%;">
+                        {{ countInclusion }}
+                        <span class="visually-hidden">items in cart</span>
+                      </span>
+                    </i>
                   </button>
+
+
                 </div>
               </div>
 
@@ -424,7 +433,8 @@
                             <tbody>
                               <tr v-for="(item, index) in cashHistory" :key="item.id">
                                 <td>
-                                  {{ new Date(item.transaction_date).toLocaleDateString() }}, {{ getTime(new Date(item.transaction_date)) }}
+                                  {{ new Date(item.transaction_date).toLocaleDateString() }}, {{ getTime(new
+                                    Date(item.transaction_date)) }}
                                 </td>
                                 <td>
                                   {{ item.paymentMethod }}
@@ -5583,5 +5593,33 @@ img {
 .come-from-modal.right.fade.in .modal-dialog {
   right: 0;
 }
-</style>
+
+/* CSS for the continuous wiggle animation */
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(5deg);
+  }
+
+  50% {
+    transform: rotate(-5deg);
+  }
+
+  75% {
+    transform: rotate(5deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Apply the animation to the button */
+.wiggle-animation {
+  animation: wiggle 1.5s infinite;
+  /* Adjust animation duration as needed */
+}</style>
 
