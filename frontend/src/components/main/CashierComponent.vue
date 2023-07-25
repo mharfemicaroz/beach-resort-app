@@ -360,7 +360,7 @@
                         </div>
                       </div>
                       <template v-for="(item, index) in filteredresto_takeouts" :key="item.id">
-                        <div class="col mb-6" v-if="'order_id' in item">
+                        <div class="col mb-6">
                           <div class="card" style="transition: transform 0.2s ease-in-out;">
                             <div class="card-header d-flex justify-content-between align-items-center"
                               :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">

@@ -294,7 +294,7 @@
             <!-- <div class="col-md-3">
               <div class="d-flex align-items-center">
                 <h2 class="position-relative">
-                  Order Summary
+                  Order Summary 
                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                     style="font-size: 0.75rem;">
                     {{ numItemCart }}
