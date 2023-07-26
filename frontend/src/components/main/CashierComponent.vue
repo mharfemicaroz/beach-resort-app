@@ -1596,6 +1596,9 @@ export default {
     this.loadCookiedata();
   },
   computed: {
+    currentRouteName() {
+        return this.$route.name;
+    },
     userdata() {
       const authStore = useAuthStore();
       const user = authStore.user;
@@ -1904,8 +1907,6 @@ export default {
         this.totalCash = 0;
       } else {
         this.totalCash = this.totalCash.toString();
-
-
       }
       //alert(this.totalCash)
     },
@@ -3089,6 +3090,9 @@ export default {
 
 
     handleKeyPress(event) {
+      if(this.currentRouteName !== "cashier"){
+        return;
+      }
       switch (event.key) {
         case 'F1':
           event.preventDefault()

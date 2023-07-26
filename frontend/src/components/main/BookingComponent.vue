@@ -246,12 +246,15 @@
                   </span>
                 </h2>
                 <div class="ms-auto d-flex align-items-center"> <!-- Wrap the buttons in a flex container -->
-                  <button type="button" class="btn btn-primary me-2" :class="{ 'wiggle-animation': countInclusion === 0 }" @click="showShoppingModal()">
-                    <i class="fa fa-shopping-cart"></i>
+                  <button type="button" class="btn btn-primary me-2" :class="{ 'wiggle-animation': countInclusion === 0 }"
+                    @click="showShoppingModal()">
+                    <i class="fa fa-shopping-cart"><br>
+                      <span style="font-size: 8px;">[F1]</span></i>
                   </button>
                   <button type="button" class="btn btn-primary" :class="{ 'wiggle-animation': countInclusion > 0 }"
                     @click="moveInclusionCartToMain()">
-                    <i class="fas fa-thumbs-up" style="position: relative;">
+                    <i class="fas fa-thumbs-up" style="position: relative;"><br>
+                      <span style="font-size: 8px;">[F2]</span>
                       <span class="position-absolute start-1000 translate-middle badge rounded-pill bg-danger"
                         style="font-size: 0.50rem; top: -25%; left: 120%;">
                         {{ countInclusion }}
@@ -335,7 +338,8 @@
                 <div class="ms-auto d-flex align-items-center"> <!-- Wrap the buttons in a flex container -->
                   <button type="button" class="btn btn-primary" v-show="this.isItNew" v-if="!this.walkinStatus"
                     @click="generateBillingStatement()">
-                    <i class="fas fa-print"></i>
+                    <i class="fas fa-print"><br>
+                      <span style="font-size: 8px;">[F10]</span></i>
                   </button>
                 </div>
               </div>
@@ -467,28 +471,37 @@
 
             </div>
             <div class="col-md-3" :style="`height:${calcMeasure.height4}!important;overflow-y: auto;overflow-x: hidden;`">
-              <h2>Payment</h2>
-              <div class="container">
-                <form>
+              <div class="d-flex align-items-center">
+                <h2 class="position-relative">
+                  Payment
+                </h2>
+                <div class="ms-auto d-flex align-items-center"> <!-- Wrap the buttons in a flex container -->
+                  <button type="button" class="btn btn-primary" @click="placeOrder"
+                    :disabled="total <= 0 || countInclusion > 0"
+                    style="display: flex; flex-direction: column; align-items: center;">
+                    <i class="fas fa-money-bill"></i>
+                    <span style="font-size: 8px;">[Enter]</span>
+                  </button>
 
-                  <div class="form-group">
+                </div>
+
+
+              </div>
+
+              <div class="container">
+                <div class="row">
+                  <div class="col-12">
+                    <form>
+
+                      <!-- <div class="form-group">
                     <label for="paymentMethod">Payment method:</label>
                     <select class="form-control" id="paymentMethod" v-model="paymentMethod">
                       <option value="cash">Cash</option>
                       <option value="non-cash">Non-cash</option>
                     </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="cashAmount">Cash amount:</label>
-                    <div class="input-group">
-                      <span class="input-group-text">₱</span>
-                      <input type="number" class="form-control form-control-lg" id="cashAmount"
-                        v-model.number="cashAmount" step="0.01">
-                      <span class="input-group-text">{{ (cashAmount - Math.floor(cashAmount)).toFixed(2).substr(1)
-                      }}</span>
-                    </div>
-                  </div>
-                  <div v-if="paymentMethod === 'non-cash'" class="form-group">
+                  </div> -->
+
+                      <!-- <div v-if="paymentMethod === 'non-cash'" class="form-group">
                     <label for="nonCashReference">Reference No.:</label>
                     <div class="input-group">
                       <div class="input-group-prepend">
@@ -504,8 +517,8 @@
                       </div>
                       <input type="text" class="form-control" id="nonCashReference" v-model="nonCashReference">
                     </div>
-                  </div>
-                  <div class="form-group row mt-2">
+                  </div> -->
+                      <!-- <div class="form-group row mt-2">
                     <label for="name" class="col-sm-4 col-form-label">Dicount:</label>
                     <div class="col-sm-4">
                       <div v-if="alreadyDiscounted === false">
@@ -518,55 +531,124 @@
                     <div class="col-sm-4">
                       <input type="number" class="form-control" id="discountValue" v-model="discountValue">
                     </div>
-                  </div>
+                  </div> -->
 
-                  <div class="form-group">
-                    <label for="remarks">Remarks:</label>
-                    <input type="text" class="form-control" v-model="cashRemarks">
-                  </div>
-                  <div class="form-group mb-2">
-                    <label class="font-weight-bold">Summary:</label>
-                    <div class="form-control p-3">
-                      <div class="row mb-2">
-                        <div class="col-6"><strong>Reservation:</strong></div>
-                        <div class="col-6 text-right" v-html="subroom.original + ' ' + subroom.discounted"></div>
-                      </div>
+                      <div class="form-group mb-2">
+                        <div class="form-control p-3">
 
-                      <div class="row mb-2">
-                        <div class="col-6"><strong>Add-ons:</strong></div>
-                        <div class="col-6 text-right">{{ subaddons }}</div>
-                      </div>
-                      <hr class="my-2">
-                      <div class="row mb-2">
-                        <div class="col-6"><strong>Subtotal:</strong></div>
-                        <div class="col-6 text-right">{{ subtotal }}</div>
-                      </div>
-                      <div class="row mb-2">
-                        <div class="col-6"><strong>Partial:</strong></div>
-                        <div class="col-6 text-right">{{ partialPayment }}</div>
-                      </div>
-                      <div class="row mb-2">
-                        <div class="col-6"><strong class="text-primary" style="font-size: 18px;">Total:</strong></div>
-                        <div class="col-6 text-right"><strong style="font-size: 18px;">{{ total }}</strong></div>
-                      </div>
-                      <div class="row">
+                          <div class="row mb-2">
+                            <div class="col-6">
+                              <a href="#" @click="setTax">
+                                <i class="fas fa-pencil-alt"></i>
+                              </a>
+                              <strong>Tax:</strong>
+                            </div>
+                            <div class="col-6 text-right">{{ taxValue }}</div>
+                          </div>
+
+                          <div class="row mb-2">
+                            <div class="col-6">
+                              <a href="#" @click="setDiscount">
+                                <i class="fas fa-pencil-alt"></i>
+                              </a>
+                              <strong>Discount:</strong>
+                            </div>
+                            <div class="col-6 text-right">{{ discountValue }}{{ (discountMode === 'percentage') ? '%' :
+                              'off'
+                            }}</div>
+                          </div>
+
+                          <hr class="my-2">
+                          <div class="row mb-2">
+                            <div class="col-6"><strong>Reservation:</strong></div>
+                            <div class="col-6 text-right" v-html="subroom.original + ' ' + subroom.discounted"></div>
+                          </div>
+
+                          <div class="row mb-2">
+                            <div class="col-6"><strong>Add-ons:</strong></div>
+                            <div class="col-6 text-right">{{ subaddons }}</div>
+                          </div>
+                          <hr class="my-2">
+                          <div class="row mb-2" v-if="paymentMethod === 'non-cash'">
+                            <div class="col-6"><strong>Reference No.:</strong></div>
+                            <div class="col-6 text-right">{{ nonCashPayPlatform }} - {{ nonCashReference }}</div>
+                          </div>
+                          <div class="row mb-2">
+                            <div class="col-6"><strong>Subtotal:</strong></div>
+                            <div class="col-6 text-right">{{ subtotal }}</div>
+                          </div>
+                          <div class="row mb-2">
+                            <div class="col-6"><strong>Partial:</strong></div>
+                            <div class="col-6 text-right">{{ partialPayment }}</div>
+                          </div>
+                          <div class="row mb-0">
+                            <div class="col-6"><strong class="text-primary" style="font-size: x-large;">Total:</strong>
+                            </div>
+                            <div class="col-6 text-right"><strong style="font-size: x-large;">{{ total }}</strong></div>
+                          </div>
+                          <!-- <div class="row">
                         <div class="col-6"><strong style="font-size: 18px;">Change:</strong></div>
                         <div class="col-6 text-right text-danger" style="font-size: 18px;">{{ change }}</div>
+                      </div> -->
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <!-- 
+
+                      <div class="form-group">
+                        <div class="input-group">
+                          <select id="payment-method" v-model="paymentMethod" class="form-control"
+                            style="font-weight: bolder; font-size: larger;" @change="setNonCash">
+                            <option value="cash">Cash</option>
+                            <option value="non-cash">Non-cash</option>
+                          </select>
+                          <span class="input-group-text">₱</span>
+                          <input type="number" class="form-control form-control-lg" id="cashAmount"
+                            v-model.number="cashAmount" step="0.01" @keyup="updateTotalCash" @keydown="updateTotalCash">
+                          <span class="input-group-text">{{ (cashAmount - Math.floor(cashAmount)).toFixed(2).substr(1)
+                          }}</span>
+                        </div>
+                      </div>
+
+                      <div class="row mt-2 mb-2">
+                        <div class="col-md-12">
+                          <div class="row row-cols-1 row-cols-md-4">
+                            <div class="col mb-1" v-for="item in cashDenominations" :key="item.id">
+                              <button type="button"
+                                class="btn bg-white rounded-lg shadow hover:shadow-xs focus:outline-none inline-block px-0 py-0 text-sm"
+                                @click="addToCash(item.value)"><span>{{
+                                  item.label }}</span></button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <div class="input-group">
+                          <span class="input-group-text">Remarks</span>
+                          <input type="text" class="form-control" v-model="cashRemarks">
+                        </div>
+
+                      </div>
+
+                      <div class="row mt-2 mb-2 bg-light">
+                        <div class="col-md-6">
+                          <dt v-if="change >= 0">Change: </dt>
+                        </div>
+                        <div class="col-md-6 d-flex flex-row-reverse">
+                          <dd class="text-right h4 b"> ₱{{ change }} </dd>
+                        </div>
+                      </div>
+
+                      <!-- 
                   <button v-show="this.isItNew" v-if="!this.walkinStatus" type="button" class="btn btn-primary"
                     @click="generateBillingStatement">Generate
                     BS</button>&nbsp; -->
-                  <button type="button" class="btn btn-primary d-flex align-items-center" @click="placeOrder"
-                    :disabled="total <= 0 || countInclusion > 0">
-                    <i class="fas fa-shopping-cart me-2"></i> Place Order
-                  </button> &nbsp;
 
 
 
-                </form>
+
+                    </form>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1733,6 +1815,7 @@ export default {
   },
   data() {
     return {
+      activeAccountFlag: false,
       movetocartFlag: true,
       bookNowFlag: true,
       socket: null,
@@ -2096,6 +2179,7 @@ export default {
       nonCashReference: '',
       discountMode: 'percentage',
       discountValue: 0,
+      taxValue: 0,
       partialPayment: 0,
       cashHistory: [],
       cashRemarks: '',
@@ -2144,7 +2228,32 @@ export default {
       searchTerm: "",
       searchTerm2: "",
       walkinStatus: false,
-      alreadyDiscounted: false
+      alreadyDiscounted: false,
+      cashDenominations: [{
+        'label': '+1.00',
+        'value': 1,
+      }, {
+        'label': '+5.00',
+        'value': 5,
+      }, {
+        'label': '+10.00',
+        'value': 10,
+      }, {
+        'label': '+20.00',
+        'value': 20,
+      }, {
+        'label': '+50.00',
+        'value': 50,
+      }, {
+        'label': '+100.00',
+        'value': 100,
+      }, {
+        'label': '+500.00',
+        'value': 500,
+      }, {
+        'label': '+1000.00',
+        'value': 1000,
+      },],
     };
   },
   async created() {
@@ -2188,6 +2297,9 @@ export default {
   }
   ,
   computed: {
+    currentRouteName() {
+      return this.$route.name;
+    },
     userdata() {
       const authStore = useAuthStore();
       const user = authStore.user;
@@ -2515,7 +2627,139 @@ export default {
       }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchText3.toLowerCase()));
     },
   },
+
   methods: {
+    handleKeyPress(event) {
+      if (this.currentRouteName !== "booking") {
+        return;
+      }
+      if (!this.activeAccountFlag) {
+        return;
+      }
+
+      switch (event.key) {
+        case 'Enter':
+          event.preventDefault()
+            this.placeOrder();
+          break;
+        case 'F1':
+          event.preventDefault()
+            this.showShoppingModal();
+          break;
+        case 'F2':
+          event.preventDefault()
+            this.moveInclusionCartToMain();
+          break;
+        case 'F10':
+          event.preventDefault()
+            this.generateBillingStatement();
+          break;
+      }
+    },
+    addToCash(d) {
+      this.cashAmount = isNaN(parseFloat(this.cashAmount)) ? 0 : parseFloat(this.cashAmount) + d;
+    },
+    updateTotalCash() {
+
+      if (this.cashAmount === 0 || this.cashAmount.toString() === "" || this.cashAmount === NaN) {
+        this.cashAmount = 0;
+      } else {
+        this.cashAmount = this.cashAmount.toString();
+
+
+      }
+      //alert(this.totalCash)
+    },
+    setDiscount() {
+      this.$swal.fire({
+        title: 'Set discount value',
+        html: `
+      <div>
+        <input type="radio" class="form-check-input" id="fixedDiscount" name="discountType" value="fixed" checked>
+        <label for="fixedDiscount" class="form-check-label">Fixed</label> &nbsp;
+        <input type="radio" class="form-check-input" id="percentageDiscount" name="discountType" value="percentage">
+        <label for="percentageDiscount" class="form-check-label">Percentage</label>
+        <br><br>
+        <input type="number" class="form-control" id="discountValue" v-model="discount" placeholder="Enter discount value" min="0" step="any">
+      </div>
+    `,
+        showCancelButton: true,
+        confirmButtonText: 'Submit',
+        cancelButtonText: 'Cancel',
+        allowOutsideClick: false,
+        preConfirm: () => {
+          const discountType = document.querySelector('input[name="discountType"]:checked').value;
+          const discountValue = document.getElementById('discountValue').value;
+          return { discountType, discountValue };
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const { discountType, discountValue } = result.value;
+          if (discountValue !== "") {
+            if (discountType === "fixed") {
+              // Apply fixed discount
+              this.discountMode = "fixed";
+            } else {
+              // Apply percentage discount
+              this.discountMode = "percentage";
+            }
+            this.discountValue = parseFloat(discountValue).toFixed(2);
+          }
+        }
+      });
+    },
+    setNonCash() {
+      if (this.paymentMethod === 'non-cash') {
+
+        this.$swal.fire({
+          title: 'Choose non-cash type',
+          html: `
+      <div>
+        <input type="radio" class="form-check-input" id="cat1" name="noncashType" value="gcash" checked>
+        <label for="cat1" class="form-check-label">GCash</label> &nbsp;
+        <input type="radio" class="form-check-input" id="cat2" name="noncashType" value="paymaya">
+        <label for="cat2" class="form-check-label">PayMaya</label> &nbsp;
+        <input type="radio" class="form-check-input" id="cat3" name="noncashType" value="debitcard">
+        <label for="cat3" class="form-check-label">Debit Card</label> &nbsp;
+        <input type="radio" class="form-check-input" id="cat4" name="noncashType" value="creditcard">
+        <label for="cat4" class="form-check-label">Credit Card</label> &nbsp;
+        <input type="radio" class="form-check-input" id="cat5" name="noncashType" value="bank">
+        <label for="cat5" class="form-check-label">Bank</label> &nbsp;
+        <br><br>
+        <input type="text" class="form-control" maxlength=32 id="referenceno" placeholder="Enter reference/transaction no. here after non-cash payment.">
+      </div>
+    `,
+          showCancelButton: true,
+          confirmButtonText: 'Submit',
+          cancelButtonText: 'Cancel',
+          allowOutsideClick: false,
+          preConfirm: () => {
+            const noncashType = document.querySelector('input[name="noncashType"]:checked').value;
+            const referenceno = document.getElementById('referenceno').value;
+            return { noncashType, referenceno };
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const { noncashType, referenceno } = result.value;
+            if (noncashType !== "" || referenceno !== "") {
+              this.nonCashPayPlatform = noncashType;
+              this.nonCashReference = referenceno;
+            } else {
+              this.$swal({
+                title: 'Warning',
+                text: 'Please provide both the non-cash type and the reference number.',
+                icon: 'warning',
+              });
+              return;
+            }
+          }
+        });
+      } else {
+        this.nonCashPayPlatform = "";
+        this.nonCashReference = "";
+      }
+
+    },
     async deleteTransaction(id) {
       axios.get(this.API_URL + `transaction/${id}/`).then(async response => {
         const data = response.data;
@@ -3123,6 +3367,9 @@ export default {
       this.total = 0;
       this.discountValue = 0;
       this.change = 0;
+      this.paymentMethod = "cash";
+      this.nonCashPayPlatform = "";
+      this.nonCashReference = "";
       this.itemCart = {
         id: 0,
         name: "",
@@ -3143,7 +3390,11 @@ export default {
         this.$refs.searchQuery.blur();
       }
       if (no === 2 && this.billing.clientName === "") {
-        this.toggleAddAccountModal();
+        this.activeAccountFlag = true;
+        // this.toggleAddAccountModal();
+      }
+      if (no !== 2) {
+        this.activeAccountFlag = false;
       }
     },
     changeTab(tab) {
@@ -5276,6 +5527,8 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
 
+    document.addEventListener('keydown', this.handleKeyPress);
+
     const modal = this.$refs.modal;
 
     // Attach event listener for modal hidden event
@@ -5621,5 +5874,6 @@ img {
 .wiggle-animation {
   animation: wiggle 1.5s infinite;
   /* Adjust animation duration as needed */
-}</style>
+}
+</style>
 
