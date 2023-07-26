@@ -1,9 +1,6 @@
 <template :key="componentKey">
   <TopNavBarComponent />
   <div class="container-fluid main">
-
-
-
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li v-if="userdata.role === 'superuser'" class="nav-item" role="presentation">
         <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button"
@@ -26,8 +23,6 @@
           aria-controls="reports" aria-selected="false" @click="resetSummary(3)">Reports</button>
       </li>
     </ul>
-
-
     <div class="tab-content mt-3" id="myTabContent">
       <div v-if="userdata.role === 'superuser'" class="tab-pane fade" id="dashboard" role="tabpanel"
         aria-labelledby="dashboard-tab">
@@ -39,17 +34,13 @@
           </div>
         </div>
       </div>
-
       <div class="tab-pane fade show active" id="booking" role="tabpanel" aria-labelledby="booking-tab">
         <div class="container-fluid">
           <div class="row">
-
             <div class="col-md-12">
               <div class="d-flex justify-content-between">
                 <h2>Calendar <a href="#" class="btn btn-link text-decoration-none" @click="toggleSettingsModal()"><i
                       class="fa fa-bars" style="font-size: 1.25em;"></i></a></h2>
-
-
                 <div class="form-outline col-md-3">
                   <input type="search" id="form1" class="form-control" placeholder="Type query" v-model="booksearchtext"
                     @input="populateCalendarItems" @click="showAutosuggestions = false" @blur="hideAutosuggestions"
@@ -58,13 +49,7 @@
                     <li v-for="suggestion in autosuggestions" @click="selectSuggestion(suggestion)">{{ suggestion }}</li>
                   </ul>
                 </div>
-
-
               </div>
-
-
-
-
               <div class="calendar-parent">
                 <calendar-view :items="calendarItems" :show-date="showDate"
                   :time-format-options="{ hour: 'numeric', minute: '2-digit' }" :enable-drag-drop="true"
@@ -86,14 +71,10 @@
           </div>
           <div class="row">
             <div class="card" style="height: 60px!important;">
-
             </div>
           </div>
-
         </div>
       </div>
-
-
       <div class="tab-pane fade" id="monitor" role="tabpanel" aria-labelledby="monitor-tab">
         <div class="container-fluid">
           <div class="row">
@@ -128,7 +109,6 @@
                 </li>
               </ul>
             </div>
-
             <div class="col-sm-10">
               <div class="tab-content mt-3" id="propertyTabContent">
                 <div class="tab-pane fade show active" id="beachroom" role="tabpanel" aria-labelledby="beachroom-tab">
@@ -194,14 +174,11 @@
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
-
           </div>
         </div>
       </div>
-
       <div class="tab-pane fade" id="others" role="tabpanel" aria-labelledby="others-tab">
         <div class="container-fluid">
           <div class="row">
@@ -235,7 +212,6 @@
               </div>
             </div> -->
             <div class="col-md-3">
-
               <div class="d-flex align-items-center">
                 <h2 class="position-relative">
                   Cart
@@ -262,12 +238,8 @@
                       </span>
                     </i>
                   </button>
-
-
                 </div>
               </div>
-
-
               <div class="card-deck"
                 :style="`height:${calcMeasure.height2};overflow-y: auto;overflow-x: hidden;padding-right: 1px;`">
                 <div class="card" v-for="(item, index) in cart.sort((a, b) => a.category.localeCompare(b.category))"
@@ -276,8 +248,6 @@
                     <h5 class="card-title">{{ item.name }} <span
                         v-html="(item.category === 'main') ? '<i class=\'fas fa-check text-success\'></i>' : '<i class=\'fas fa-hourglass-start text-warning\'></i>'"></span>
                     </h5>
-
-
                     <button v-if="item.category === 'inclusion'" type="button" class="btn btn-sm btn-close"
                       aria-label="Close" @click="cancelItem(item)"></button>
                   </div>
@@ -286,13 +256,9 @@
                     <p class="card-text">Price Rate: {{ item.priceRate }}</p>
                     <p class="card-text">Purchase Qty.:{{ item.purqty }}</p>
                     <p class="card-text">Total Price: {{ item.totalCartPrice }}</p>
-
-
                   </div>
                 </div>
               </div>
-
-
             </div>
             <!-- <div class="col-md-3">
               <div class="d-flex align-items-center">
@@ -322,15 +288,11 @@
                     <p class="card-text">{{ (item.itemOption === 'room') ? `No. of Days: ${item.purqty}` : `Purchase Qty.:
                       ${item.purqty}` }}</p>
                     <p class="card-text">Total Price: {{ item.totalCartPrice }}</p>
-
-
                   </div>
                 </div>
               </div>
-
             </div> -->
             <div class="col-md-6">
-
               <div class="d-flex align-items-center">
                 <h2 class="position-relative">
                   Billing Statement (preview)
@@ -466,12 +428,10 @@
                     </div>
                   </div>
                 </div>
-
               </div>
-
             </div>
             <div class="col-md-3" :style="`height:${calcMeasure.height4}!important;overflow-y: auto;overflow-x: hidden;`">
-              <div class="d-flex align-items-center">
+              <div class="d-flex align-items-center" style="padding:10px">
                 <h2 class="position-relative">
                   Payment
                 </h2>
@@ -482,17 +442,12 @@
                     <i class="fas fa-money-bill"></i>
                     <span style="font-size: 8px;">[Enter]</span>
                   </button>
-
                 </div>
-
-
               </div>
-
               <div class="container">
                 <div class="row">
                   <div class="col-12">
                     <form>
-
                       <!-- <div class="form-group">
                     <label for="paymentMethod">Payment method:</label>
                     <select class="form-control" id="paymentMethod" v-model="paymentMethod">
@@ -500,7 +455,6 @@
                       <option value="non-cash">Non-cash</option>
                     </select>
                   </div> -->
-
                       <!-- <div v-if="paymentMethod === 'non-cash'" class="form-group">
                     <label for="nonCashReference">Reference No.:</label>
                     <div class="input-group">
@@ -532,11 +486,17 @@
                       <input type="number" class="form-control" id="discountValue" v-model="discountValue">
                     </div>
                   </div> -->
-
+                      <div class="form-group mb-2 mt-0">
+                        <div class="input-group">
+                          <input type="text" class="form-control" :value="this.billing.clientName" readonly>
+                          <button type="button" class="btn btn-primary" @click="toggleAddAccountModal">
+                            <i :class="(this.billing.clientName === '') ? 'fa fa-user-plus' : 'fas fa-user-edit'"></i>
+                          </button>
+                        </div>
+                      </div>
                       <div class="form-group mb-2">
                         <div class="form-control p-3">
-
-                          <div class="row mb-2">
+                          <div class="row mb-2 mb-0">
                             <div class="col-6">
                               <a href="#" @click="setTax">
                                 <i class="fas fa-pencil-alt"></i>
@@ -545,8 +505,7 @@
                             </div>
                             <div class="col-6 text-right">{{ taxValue }}</div>
                           </div>
-
-                          <div class="row mb-2">
+                          <div class="row mt-0">
                             <div class="col-6">
                               <a href="#" @click="setDiscount">
                                 <i class="fas fa-pencil-alt"></i>
@@ -557,18 +516,16 @@
                               'off'
                             }}</div>
                           </div>
-
-                          <hr class="my-2">
+                     
                           <div class="row mb-2">
                             <div class="col-6"><strong>Reservation:</strong></div>
                             <div class="col-6 text-right" v-html="subroom.original + ' ' + subroom.discounted"></div>
                           </div>
-
                           <div class="row mb-2">
                             <div class="col-6"><strong>Add-ons:</strong></div>
                             <div class="col-6 text-right">{{ subaddons }}</div>
                           </div>
-                          <hr class="my-2">
+                          
                           <div class="row mb-2" v-if="paymentMethod === 'non-cash'">
                             <div class="col-6"><strong>Reference No.:</strong></div>
                             <div class="col-6 text-right">{{ nonCashPayPlatform }} - {{ nonCashReference }}</div>
@@ -582,9 +539,9 @@
                             <div class="col-6 text-right">{{ partialPayment }}</div>
                           </div>
                           <div class="row mb-0">
-                            <div class="col-6"><strong class="text-primary" style="font-size: x-large;">Total:</strong>
+                            <div class="col-6"><strong class="text-primary">Total:</strong>
                             </div>
-                            <div class="col-6 text-right"><strong style="font-size: x-large;">{{ total }}</strong></div>
+                            <div class="col-6 text-right"><strong>{{ total }}</strong></div>
                           </div>
                           <!-- <div class="row">
                         <div class="col-6"><strong style="font-size: 18px;">Change:</strong></div>
@@ -592,22 +549,20 @@
                       </div> -->
                         </div>
                       </div>
-
                       <div class="form-group">
                         <div class="input-group">
                           <select id="payment-method" v-model="paymentMethod" class="form-control"
-                            style="font-weight: bolder; font-size: larger;" @change="setNonCash">
+                            style="font-weight: bolder; " @change="setNonCash">
                             <option value="cash">Cash</option>
                             <option value="non-cash">Non-cash</option>
                           </select>
                           <span class="input-group-text">₱</span>
-                          <input type="number" class="form-control form-control-lg" id="cashAmount"
+                          <input type="number" class="form-control" id="cashAmount"
                             v-model.number="cashAmount" step="0.01" @keyup="updateTotalCash" @keydown="updateTotalCash">
                           <span class="input-group-text">{{ (cashAmount - Math.floor(cashAmount)).toFixed(2).substr(1)
                           }}</span>
                         </div>
                       </div>
-
                       <div class="row mt-2 mb-2">
                         <div class="col-md-12">
                           <div class="row row-cols-1 row-cols-md-4">
@@ -620,15 +575,12 @@
                           </div>
                         </div>
                       </div>
-
                       <div class="form-group">
                         <div class="input-group">
                           <span class="input-group-text">Remarks</span>
                           <input type="text" class="form-control" v-model="cashRemarks">
                         </div>
-
                       </div>
-
                       <div class="row mt-2 mb-2 bg-light">
                         <div class="col-md-6">
                           <dt v-if="change >= 0">Change: </dt>
@@ -637,28 +589,20 @@
                           <dd class="text-right h4 b"> ₱{{ change }} </dd>
                         </div>
                       </div>
-
                       <!-- 
                   <button v-show="this.isItNew" v-if="!this.walkinStatus" type="button" class="btn btn-primary"
                     @click="generateBillingStatement">Generate
                     BS</button>&nbsp; -->
-
-
-
-
                     </form>
                   </div>
                 </div>
               </div>
             </div>
-
-
           </div>
         </div>
       </div>
       <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
         <div class="container-fluid">
-
           <div class="row">
             <div class="row">
               <div class="col-sm-1">
@@ -674,8 +618,6 @@
               <div class="col-sm-11">
                 <div class="tab-content">
                   <div id="reservations" class="tab-pane active">
-
-
                     <div class="row">
                       <div class="col-md-3">
                         <div>
@@ -689,7 +631,6 @@
                               </div>
                               <input type="text" class="form-control" placeholder="Search reservation"
                                 v-model="searchTerm2">
-
                             </div>
                           </div> -->
                           <div class="form-group">
@@ -738,13 +679,10 @@
                           <table-component :mainHeaders=reservationsOptions :mainItems="filteredReservationsHistory"
                             :editable="false" :toggleable="false" />
                         </div>
-
-
                       </div>
                     </div>
                   </div>
                   <div id="transactions" class="tab-pane">
-
                     <div class="row">
                       <div class="col-md-2">
                         <div>
@@ -758,7 +696,6 @@
                               </div>
                               <input type="text" class="form-control" placeholder="Search transaction"
                                 v-model="searchTerm" id="search">
-
                             </div>
                           </div> -->
                           <div class="form-group">
@@ -805,35 +742,24 @@
                             :subHeaders2="transactionhistory" :subHeaders="transactionitem"
                             @delete-action="deleteTransaction" :deletable="true" :editable="false" :toggleable="true" />
                         </div>
-
                       </div>
                     </div>
-
                   </div>
                 </div>
               </div>
             </div>
             <div class="row">
               <div class="card" style="height: 60px!important;">
-
               </div>
             </div>
-
           </div>
-
-
-
           <!-- <div class="row">
-
             <div class="col-md-6">
               <h2>Reservations Chart</h2>
               <div style="height:350px">
                 <Line :data="linedata" :options="lineoptions" />
               </div>
-
-
             </div>
-
             <div class="col-md-6">
               <h2>Sales Chart</h2>
               <div style="height:350px">
@@ -841,12 +767,9 @@
               </div>
             </div>
           </div> -->
-
-
         </div>
       </div>
     </div>
-
     <div id="billing-details" class="container-fluid billing" style="font-size: 100%;">
       <div class="container">
         <div class="row">
@@ -1013,7 +936,6 @@
                 <p>12. No one is allowed to operate the WATER SPORTS if the person is under the influence of liquor/drugs.
                 </p>
                 <p>13. Upon signing hereof, the lessee/s hereby agree/s to all the above terms and conditions.</p>
-
               </div>
             </div>
             <div class="row">
@@ -1057,26 +979,19 @@
           </div>
         </div>
       </div>
-
     </div>
-
-
   </div>
-
   <!-- Modals -->
   <div class="modal fade show" id="showall-modal" tabindex="-1" role="dialog" aria-labelledby="showall-modalLabel"
     style="display: none; padding-right: 17px;" aria-modal="true">
     <div class="modal-dialog modal-xl" style="max-width: 1200px!important;" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
-
-
           <h4 class="modal-title" id="showall-modalLabel">Room Status</h4>
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-
           <ul class="nav nav-tabs" id="roomTab" role="tablist">
             <li class="nav-item" role="presentation">
               <button class="nav-link" id="cancelled-tab" data-bs-toggle="tab" data-bs-target="#cancelled" type="button"
@@ -1102,7 +1017,6 @@
                 role="tab" aria-controls="all" aria-selected="false" @click="activeTab = 'all'">All</button>
             </li>
           </ul>
-
           <div class="tab-content mt-3" id="roomTabContent">
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cancelled' }" id="cancelled"
               role="tabpanel" aria-labelledby="cancelled-tab">
@@ -1220,7 +1134,6 @@
                 </table> -->
               </div>
             </div>
-
             <div class="tab-pane fade" :class="{ 'show active': activeTab === 'all' }" id="all" role="tabpanel"
               aria-labelledby="all-tab">
               <div class="container-fluid">
@@ -1233,7 +1146,6 @@
               </div>
             </div>
           </div>
-
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -1241,20 +1153,16 @@
       </div>
     </div>
   </div>
-
   <div class="modal fade show" id="addAccountModal" tabindex="-1" role="dialog" aria-labelledby="addAccountModalLabel"
     style="display: none; padding-right: 17px;" aria-modal="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
-
-
           <h4 class="modal-title" id="addAccountModalLabel">Add Account</h4>
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-
           <form @submit.prevent="addWalkInGuest">
             <!-- Client Information -->
             <div class="form-group row">
@@ -1281,11 +1189,9 @@
                   autocomplete="off">
               </div>
             </div>
-
             <div class="form-group row">
               <label for="nationality" class="col-sm-2 col-form-label">Nationality:*</label>
               <div class="col-sm-4">
-
                 <select class="form-control" id="nationality" v-model="walkinreservation.clientNationality" required>
                   <option value="">-- Please select --</option>
                   <option value="Filipino">Filipino</option>
@@ -1307,25 +1213,20 @@
               </div>
             </div>
           </form>
-
         </div>
       </div>
     </div>
   </div>
-
   <div class="modal fade show" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modalLabel"
     style="display: none; padding-right: 17px;" aria-modal="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
-
-
           <h4 class="modal-title" id="settings-modalLabel">Settings</h4>
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
@@ -1338,7 +1239,6 @@
                   </select>
                 </div>
               </div>
-
               <div class="form-group">
                 <label class="form-label">Period Count</label>
                 <div class="input-group">
@@ -1349,7 +1249,6 @@
                   </select>
                 </div>
               </div>
-
               <div class="form-group">
                 <label class="form-label">Starting day of the week</label>
                 <div class="input-group">
@@ -1360,37 +1259,30 @@
                   </select>
                 </div>
               </div>
-
               <div class="form-group form-check">
                 <input class="form-check-input" type="checkbox" v-model="useTodayIcons" />
                 <label class="form-check-label">Use icon for today's period</label>
               </div>
-
               <div class="form-group form-check">
                 <input class="form-check-input" type="checkbox" v-model="displayWeekNumbers" />
                 <label class="form-check-label">Show week number</label>
               </div>
-
               <div class="form-group form-check">
                 <input class="form-check-input" type="checkbox" v-model="showTimes" />
                 <label class="form-check-label">Show times</label>
               </div>
-
               <div class="form-group">
                 <label class="form-label">Themes</label>
               </div>
-
               <div class="form-group form-check">
                 <input class="form-check-input" type="checkbox" v-model="useDefaultTheme" />
                 <label class="form-check-label">Default</label>
               </div>
-
               <div class="form-group form-check">
                 <input class="form-check-input" type="checkbox" v-model="useHolidayTheme" />
                 <label class="form-check-label">Holidays</label>
               </div>
             </div>
-
             <div class="col-md-6">
               <div class="form-group">
                 <table class="table" style="table-layout: fixed;word-wrap: break-word;">
@@ -1434,8 +1326,6 @@
               </div>
             </div>
           </div>
-
-
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -1443,9 +1333,6 @@
       </div>
     </div>
   </div>
-
-
-
   <div class="modal fade come-from-modal left" id="shopModal" tabindex="-1" aria-labelledby="shopModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -1458,7 +1345,7 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-md-12">
-              <h2>Add-ons</h2>
+
               <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3">
               <div class="wrapper-content">
                 <table class="table" style="table-layout: fixed;word-wrap: break-word;">
@@ -1491,7 +1378,6 @@
       </div>
     </div>
   </div>
-
   <div class="modal fade" id="dayMenuModal" tabindex="-1" aria-labelledby="dayMenuModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered">
       <div class="modal-content">
@@ -1519,27 +1405,22 @@
       </div>
     </div>
   </div>
-
-
   <div class="modal fade show" id="BookDayModal" tabindex="-1" role="dialog" aria-labelledby="BookDayModalLabel"
     style="display: none; padding-right: 17px;" aria-modal="true" ref="modal">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 id="BookDayModalLabel" class="text-primary">Reservation Info</h4>
-
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
               aria-hidden="true">&times;</span></button>
         </div>
         <div class="modal-body">
-
           <div v-if="!movetocartFlag || !bookNowFlag" class="loading-spinner">
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden"></span>
             </div>
             <p class="loading-text h5">Loading...(Do not click anywhere!)</p>
           </div>
-
           <form v-else>
             <!-- Client Information -->
             <h5>Booking Details<span class="text-muted" style="font-size: 12px;">*Field required</span></h5>
@@ -1565,7 +1446,6 @@
                 <input type="tel" class="form-control" id="phone" v-model="reservation.clientPhone" autocomplete="off">
               </div>
             </div>
-
             <div class="form-group row mt-2">
               <label for="nationality" class="col-sm-2 col-form-label">Nationality:*</label>
               <div class="col-sm-4">
@@ -1620,9 +1500,7 @@
                 <input type="text" class="form-control" v-model="reservation.remarks" autocomplete="off">
               </div>
             </div>
-
             <div class="form-group row mt-2">
-
               <div class="mt-3 mb-3 d-flex justify-content-end">
                 <div v-if="reservation.status == 'reserved'">
                   <button v-if="reservation.isPaid === 'no'" v-show="!toggleselect" type="button"
@@ -1653,7 +1531,6 @@
                     </button>
                   </span>
                 </div>
-
                 <div v-else-if="reservation.status == 'checkedin'">
                   <span v-if="userdata.role !== 'reservationist'">
                     <div v-if="reservation.isPaid === '' || reservation.isPaid === 'no'">
@@ -1688,7 +1565,6 @@
                     </div>
                   </span>
                 </div>
-
                 <button :disabled="disablebutton" @click="clickTestAddItem(); disablebutton = true"
                   v-else-if="reservation.status == 'vacant'" type="button"
                   class="btn btn-primary btn-sm btn-margin rounded">
@@ -1710,19 +1586,12 @@
                   <i class="fas fa-times"></i> Close
                 </button>
               </div>
-
-
             </div>
           </form>
-
-
-
         </div>
-
       </div>
     </div>
   </div>
-
   <vue-simple-context-menu element-id="myFirstMenu" :options="optionsArray1" ref="vueSimpleContextMenu1"
     @option-clicked="optionClicked1">
   </vue-simple-context-menu>
@@ -1754,7 +1623,6 @@ import {
 } from 'chart.js'
 import { Line } from 'vue-chartjs'
 import { CalendarView, CalendarViewHeader, CalendarMath } from "vue-simple-calendar" // published version
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -1764,26 +1632,20 @@ ChartJS.register(
   Tooltip,
   Legend
 )
-
-
-
 //helper functions
 function parseDate(dateString) {
   const [day, month, year] = dateString.split('/');
   return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
 }
-
 function parseDate2(dateString) {
   const index = dateString.indexOf('T');
   const result = dateString.substring(0, index);
   const [year, month, day] = result.split('-');
   return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
 }
-
 function padTo2Digits(num) {
   return num.toString().padStart(2, '0');
 }
-
 function formatDate(date = new Date()) {
   return [
     date.getFullYear(),
@@ -1791,7 +1653,6 @@ function formatDate(date = new Date()) {
     padTo2Digits(date.getDate()),
   ].join('-');
 }
-
 function formatDate2(date = new Date()) {
   let inputDate = date;
   let dateObj = new Date(inputDate);
@@ -1801,7 +1662,6 @@ function formatDate2(date = new Date()) {
   let outputDate = `${day}/${month}/${year}`;
   return outputDate;
 }
-
 export default {
   components: {
     Line,
@@ -2061,13 +1921,11 @@ export default {
       restoDate: null,
       respaymentStatusFilter: '',
       resstatusFilter: '',
-
       dateFilter: 'any',
       fromDate: null,
       toDate: null,
       paymentMethodFilter: '',
       statusFilter: '',
-
       convDate: "",
       optionsArray1: [
         {
@@ -2172,7 +2030,6 @@ export default {
         responsive: true,
         maintainAspectRatio: false
       },
-
       paymentMethod: 'cash',
       cashAmount: 0,
       nonCashPayPlatform: '',
@@ -2183,7 +2040,6 @@ export default {
       partialPayment: 0,
       cashHistory: [],
       cashRemarks: '',
-
       activeTab: 'all',
       clientName: "",
       clientEmail: "",
@@ -2261,7 +2117,6 @@ export default {
       const countdownMessage = `This app is for evaluation and not the full version. Please wait for <span id="countdowntimer">${this.EVALUATION_TIME}</span> seconds to load.`;
       let countdownResult;
       let timeoutExpired = false; // New variable for tracking timeout
-
       countdownResult = await this.$swal.fire({
         title: 'Please wait',
         html: countdownMessage,
@@ -2283,16 +2138,13 @@ export default {
           }, 1000);
         }
       });
-
       if (!countdownResult.isConfirmed && timeoutExpired) {
         countdownResult.isConfirmed = true; // Set isConfirmed to true if timeout expired
       }
-
       if (!countdownResult.isConfirmed) {
         return;
       }
     }
-
     this.loadAlldata();
   }
   ,
@@ -2377,7 +2229,6 @@ export default {
         }
         return true;
       });
-
       return filtered.map(item => {
         const searchCode = Object.values(item).join("~");
         return {
@@ -2394,28 +2245,24 @@ export default {
     },
     filteredTransactions() {
       let filtered = this.transactions;
-
       // Filter by date
       if (this.dateFilter === 'range' && this.fromDate && this.toDate) {
         filtered = filtered.filter(transaction => {
           return parseDate2(transaction.transaction_date) >= parseDate(this.fromDate) && parseDate2(transaction.transaction_date) <= parseDate(this.toDate);
         });
       }
-
       // Filter by payment method
       if (this.paymentMethodFilter) {
         filtered = filtered.filter(transaction => {
           return transaction.paymentMethod === this.paymentMethodFilter;
         });
       }
-
       // Filter by status
       if (this.statusFilter) {
         filtered = filtered.filter(transaction => {
           return transaction.payStatus === this.statusFilter;
         });
       }
-
       return filtered.map(item => {
         const searchCode = Object.values(item).join("~") + (item.items ? JSON.stringify(item.items) : []) + (item.props ? JSON.stringify(item.props) : []);
         return {
@@ -2423,7 +2270,6 @@ export default {
           searchCode
         };
       }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchTerm.toLowerCase()));
-
     },
     roomsjoinbookings() {
       return this.rooms.filter(item => item.type === this.activeMainTab).filter(item => item.type === this.activeMainTab.toString()).map(room => {
@@ -2457,7 +2303,6 @@ export default {
       const isOccupied = this.activeTab === 'occupied';
       const isCheckedout = this.activeTab === 'checkedout';
       const selectedDate = parseDate(this.convDate);
-
       return this.bookings.filter(booking => {
         const bookingCheckinDate = parseDate(booking.checkinDate);
         const bookingCheckoutDate = parseDate(booking.checkoutDate);
@@ -2466,7 +2311,6 @@ export default {
         const isOccupiedMatch = !isOccupied || booking.status === 'checkedin';
         const isCancelledMatch = !isCancelled || booking.status === 'cancelled';
         const isCheckedoutMatch = !isCheckedout || booking.status === 'checkedout';
-
         return dateInRange && isCancelledMatch && isReservedMatch && isOccupiedMatch && isCheckedoutMatch;
       }).map(o => {
         const balance = parseFloat(o.totalPrice) - parseFloat(o.partialPayment);
@@ -2484,11 +2328,9 @@ export default {
           const checkOutDate = parseDate(booking.checkoutDate);
           const startDate = parseDate(this.reservation.checkinDate);
           const endDate = parseDate(this.reservation.checkoutDate);
-
           return booking.room_name === room.name &&
             startDate <= checkOutDate && endDate >= checkInDate;
         });
-
         // Return true if there are no overlapping bookings
         return overlappingBookings.length === 0;
       });
@@ -2627,7 +2469,6 @@ export default {
       }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchText3.toLowerCase()));
     },
   },
-
   methods: {
     handleKeyPress(event) {
       if (this.currentRouteName !== "booking") {
@@ -2636,23 +2477,24 @@ export default {
       if (!this.activeAccountFlag) {
         return;
       }
-
       switch (event.key) {
         case 'Enter':
           event.preventDefault()
+          if(this.total > 0){
             this.placeOrder();
+          }
           break;
         case 'F1':
           event.preventDefault()
-            this.showShoppingModal();
+          this.showShoppingModal();
           break;
         case 'F2':
           event.preventDefault()
-            this.moveInclusionCartToMain();
+          this.moveInclusionCartToMain();
           break;
         case 'F10':
           event.preventDefault()
-            this.generateBillingStatement();
+          this.generateBillingStatement();
           break;
       }
     },
@@ -2660,13 +2502,10 @@ export default {
       this.cashAmount = isNaN(parseFloat(this.cashAmount)) ? 0 : parseFloat(this.cashAmount) + d;
     },
     updateTotalCash() {
-
       if (this.cashAmount === 0 || this.cashAmount.toString() === "" || this.cashAmount === NaN) {
         this.cashAmount = 0;
       } else {
         this.cashAmount = this.cashAmount.toString();
-
-
       }
       //alert(this.totalCash)
     },
@@ -2710,7 +2549,6 @@ export default {
     },
     setNonCash() {
       if (this.paymentMethod === 'non-cash') {
-
         this.$swal.fire({
           title: 'Choose non-cash type',
           html: `
@@ -2758,7 +2596,6 @@ export default {
         this.nonCashPayPlatform = "";
         this.nonCashReference = "";
       }
-
     },
     async deleteTransaction(id) {
       axios.get(this.API_URL + `transaction/${id}/`).then(async response => {
@@ -2823,11 +2660,9 @@ export default {
                     }, 1000);
                   }
                 });
-
                 if (!countdownResult.isConfirmed) {
                   return;
                 }
-
                 if (type === "f") {
                   this.voidAction(null, null, itemID, gkey, cname, false);
                 } else if (type === "e") {
@@ -2840,9 +2675,7 @@ export default {
                   const keyID = request.data[0].id;
                   this.voidAction(bID, keyID, itemID, gkey, cname, true);
                 }
-
               }
-
             } else {
               // Code is incorrect, show an error message or take appropriate action
               this.$swal.fire({
@@ -2854,7 +2687,6 @@ export default {
             }
           }
         });
-
       })
         .catch(error => {
           console.log(error);
@@ -2924,15 +2756,11 @@ export default {
                   }, 1000);
                 }
               });
-
               if (!countdownResult.isConfirmed) {
                 return;
               }
-
               this.voidAction(this.itemIndex, null, null, null, null, true);
-
             }
-
           } else {
             // Code is incorrect, show an error message or take appropriate action
             this.$swal.fire({
@@ -2968,9 +2796,7 @@ export default {
         cname = name;
         kid = keyID;
       }
-
       if (groupkey) {
-
         try {
           const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
             columnName: 'groupkey',
@@ -2978,47 +2804,35 @@ export default {
           });
           transdata_ID = existingTransaction.data[0].id;
         } catch (error) {
-
         }
-
         try {
           const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
             columnName: 'groupkey',
             columnKey: groupkey
           });
-
           for (const item of existingTransaction_ITEM.data) {
             axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
           }
         } catch (error) {
-
         }
-
         try {
           if (transdata_ID) {
             const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
               columnName: 'transaction',
               columnKey: transdata_ID
             });
-
             for (const item of existingTransaction_RECORD.data) {
               axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
             }
           }
-
         } catch (error) {
-
         }
-
         try {
           if (transdata_ID) {
             axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
           }
-
         } catch (error) {
-
         }
-
         if (brute) {
           try {
             const existingBooking = await axios.post(`${this.API_URL}bookings/filter/`, {
@@ -3029,13 +2843,9 @@ export default {
               axios.get(this.API_URL + `bookings/delete/${item.id}/`);
             }
           } catch (error) {
-
           }
         }
-
-
       } else {
-
         try {
           const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
             columnName: 'bookingID',
@@ -3043,55 +2853,41 @@ export default {
           });
           transdata_ID = existingTransaction.data[0].id;
         } catch (error) {
-
         }
-
         try {
           const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
             columnName: 'bookingID',
             columnKey: bookKey
           });
-
           for (const item of existingTransaction_ITEM.data) {
             axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
           }
         } catch (error) {
-
         }
-
         try {
           if (transdata_ID) {
             const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
               columnName: 'transaction',
               columnKey: transdata_ID
             });
-
             for (const item of existingTransaction_RECORD.data) {
               axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
             }
           }
-
         } catch (error) {
-
         }
-
         try {
           if (transdata_ID) {
             axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
           }
-
         } catch (error) {
-
         }
-
         if (brute) {
           try {
             await axios.get(this.API_URL + `bookings/delete/${kid}/`)
           } catch (error) {
-
           }
         }
-
       }
       this.taskRecord(`action:/void/client:/${cname}`);
       await this.$swal.fire({
@@ -3112,7 +2908,6 @@ export default {
           task: msg,
         })
       } catch (error) {
-
       }
     },
     handleChange() {
@@ -3140,7 +2935,6 @@ export default {
         this.reservation.checkoutDate = formatDate(new Date());
         this.toggleItemModal();
       }
-
     },
     sendMessage() {
       console.log("Hello")
@@ -3193,7 +2987,6 @@ export default {
           const response2 = await axios.post(`${this.API_URL}transaction/item/filter/`, [
             { "columnName": "bookingID", "columnKey": bookingID },
           ])
-
           //     return filtered.map(item => {
           //   const searchCode = Object.values(item).join("~");
           //   return {
@@ -3201,20 +2994,16 @@ export default {
           //     searchCode
           //   };
           // }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchTerm.toLowerCase()));
-
           const history = response.data;
           const itemprops = response2.data;
           this.transactions = this.transactions.map(t => {
-
             if (t.id === transactionID) {
               t.items = history;
               t.props = itemprops;
             }
-
             return t;
           });
         } catch (error) {
-
         }
       }
     },
@@ -3231,9 +3020,7 @@ export default {
         const response = await axios.get(this.API_URL + 'transaction/');
         this.billing.bookingID = response.data[response.data.length - 1].id + 1;
       } catch {
-
       }
-
       this.toggleAddAccountModal();
     },
     showShoppingModal() {
@@ -3254,20 +3041,16 @@ export default {
           confirmButtonText: 'Yes, do it!',
           cancelButtonText: 'Cancel'
         });
-
         if (result.isConfirmed) {
           try {
             bId = this.bookings[this.itemIndex].itemID
           } catch {
             bId = "walkin"
           }
-
           try {
             gkey = this.bookings[this.itemIndex].groupkey
           } catch {
-
           }
-
           try {
             const updatedItems = [];
             let isFind = false;
@@ -3284,11 +3067,9 @@ export default {
                 category: 'main',
                 itemOption: 'addons',
               };
-
               const numBookedRooms = this.cart.filter(o => (o.type.toLowerCase() === 'beach room' || o.type.toLowerCase() === 'pool room' || o.type.toLowerCase() === 'leisures') && o.category === 'main').length;
               const numGuestsCard = this.cart.filter(o => o.name.toLowerCase() === 'general entrance' && o.category === 'main').length;
               const entranceFee = parseFloat(this.items.filter(o => o.item.toLowerCase() === 'general entrance')[0].priceRate);
-
               if (numGuestsCard === 0 && numBookedRooms > 0 && item.name.toLowerCase() === 'general entrance' && isFind === false) {
                 const totalGuests = this.cart.filter(o => o.name.toLowerCase() === 'general entrance').reduce((acc, item) => acc + parseFloat(item.purqty), 0);
                 if (totalGuests === 1) {
@@ -3299,7 +3080,6 @@ export default {
                 item.totalCartPrice = data.totalCost;
                 isFind = true;
               }
-
               try {
                 data.bookingID = bId;
                 data.groupkey = gkey;
@@ -3312,36 +3092,29 @@ export default {
                 updatedItems.push(data);
               }
             });
-
             // Wait for all PUT requests to finish before updating the local cart
             await Promise.all(this.cart.filter(item => item.category === 'inclusion').map(async (item) => {
               // Update the category of each inclusion item to 'main'
               item.category = 'main';
-
               // Find the updated version of the item in the list of updated items
               const updatedItem = updatedItems.find(updatedItem => updatedItem.id === item.id);
-
               // If the item was successfully updated, update the local cart with the new data
               if (updatedItem) {
                 Object.assign(item, updatedItem);
               }
             }));
-
             if (bId !== "walkin") {
               const resId = this.bookings[this.itemIndex].id;
               this.bookings[this.itemIndex].isPaid = "partial";
               this.updateBookings(resId);
               this.populateCalendarItems();
             }
-
-
           } catch (error) {
             console.error(error);
           }
         }
       }
     },
-
     resetSummary(no) {
       this.cart = [];
       this.billing = {
@@ -3440,12 +3213,9 @@ export default {
       let existingTransaction = null;
       let transaction = null;
       let gkey = "";
-
       let groupbookings = [];
-
       item.remarks = this.reservation.remarks;
       this.updateBookings(item.id)
-
       try {
         gkey = (this.bookings[this.itemIndex].groupkey || "x");
         try {
@@ -3454,15 +3224,10 @@ export default {
           ])
           groupbookings = o.data;
         } catch (error) {
-
         }
-
       } catch (error) {
-
       }
-
       if (groupbookings.length > 0) {
-
         existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
           columnName: 'groupkey',
           columnKey: gkey
@@ -3472,11 +3237,7 @@ export default {
           columnName: 'bookingID',
           columnKey: bookingID
         });
-
       }
-
-
-
       try {
         if (existingTransaction.length !== 0) {
           transaction = existingTransaction.data[0];
@@ -3488,19 +3249,15 @@ export default {
           }
         }
       } catch (error) {
-
       }
-
       const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
         { "columnName": "bookingID", "columnKey": bookingID },
         { "columnName": "itemName", "columnKey": item.room_name }
       ])
-
       if (response.data.length > 0) {
         //show instead
         //update this.cart
         this.cart = [];
-
         if (groupbookings.length > 0) {
           const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
             { "columnName": "groupkey", "columnKey": gkey },
@@ -3518,7 +3275,6 @@ export default {
             };
             this.cart.push(newItem);
           });
-
         } else {
           const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
             { "columnName": "bookingID", "columnKey": bookingID },
@@ -3543,9 +3299,7 @@ export default {
             }
           }
         }
-
       }
-
       this.billing.clientName = item.name;
       this.billing.clientAddress = item.clientaddress;
       this.billing.clientPhone = item.contactNumber;
@@ -3558,7 +3312,6 @@ export default {
       } else {
         this.billing.bookingID = "";
       }
-
       try {
         this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
         const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
@@ -3566,14 +3319,11 @@ export default {
         ]);
         this.cashHistory = response.data;
       } catch (error) {
-
       }
-
-
       this.toggleItemModal();
       $("#others-tab").tab('show');
       this.movetocartFlag = true;
-
+      this.activeAccountFlag = true;
       this.itemCart = {
         id: 0,
         name: "",
@@ -3585,42 +3335,31 @@ export default {
         category: "",
         groupkey: "",
       }
-
-
     },
-
     removeDuplicates(groupBookings) {
       if (!groupBookings) {
         return [];
       }
-
       const uniqueBookings = [];
       const roomNames = new Set();
-
       groupBookings.forEach((booking) => {
         if (!roomNames.has(booking.room_name)) {
           roomNames.add(booking.room_name);
           uniqueBookings.push(booking);
         }
       });
-
       return uniqueBookings;
     },
-
     async moveToCart() {
       this.movetocartFlag = false;
-
       const item = this.bookings[this.itemIndex];
       const bookingID = item.itemID;
       let existingTransaction = null;
       let transaction = null;
       let gkey = "";
-
       let groupbookings = [];
-
       item.remarks = this.reservation.remarks;
       this.updateBookings(item.id)
-
       try {
         gkey = (this.bookings[this.itemIndex].groupkey || "x");
         try {
@@ -3629,15 +3368,10 @@ export default {
           ])
           groupbookings = o.data;
         } catch (error) {
-
         }
-
       } catch (error) {
-
       }
-
       if (groupbookings.length > 0) {
-
         existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
           columnName: 'groupkey',
           columnKey: gkey
@@ -3648,10 +3382,8 @@ export default {
           columnKey: bookingID
         });
       }
-
       try {
         if (existingTransaction.length !== 0) {
-
           transaction = existingTransaction.data[0];
           this.discountMode = transaction.discountMode;
           this.discountValue = transaction.discountValue;
@@ -3661,18 +3393,13 @@ export default {
           }
         }
       } catch (error) {
-
       }
-
       const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
         { "columnName": "bookingID", "columnKey": bookingID },
         { "columnName": "itemName", "columnKey": item.room_name }
       ])
-
       if (response.data.length === 0) {
-
         if (groupbookings.length > 0) {
-
           groupbookings.forEach(async res => {
             const numDays = Math.ceil((new Date(res.checkoutDate.split('/')[2] + "-" + res.checkoutDate.split('/')[1] + "-" + res.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) - new Date(res.checkinDate.split('/')[2] + "-" + res.checkinDate.split('/')[1] + "-" + res.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
             this.itemCart.id = this.cart.length + 1;
@@ -3683,7 +3410,6 @@ export default {
             this.itemCart.totalCartPrice = parseFloat(res.room_price) * (numDays + 1);
             this.itemCart.category = "main";
             this.itemCart.itemOption = "room";
-
             const data = {
               bookingID: res.itemID,
               itemName: this.itemCart.name,
@@ -3696,7 +3422,6 @@ export default {
               dateCreated: new Date(), // Set the dateCreated field to the current date and time
               groupkey: gkey,
             };
-
             // Make a POST request to the API to save the data
             await axios.post(this.API_URL + 'transaction/item/', data)
               .then(response => {
@@ -3718,10 +3443,8 @@ export default {
                 console.error('Error saving data:', error);
               });
           })
-
         } else {
           const numDays = Math.ceil((new Date(item.checkoutDate.split('/')[2] + "-" + item.checkoutDate.split('/')[1] + "-" + item.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) - new Date(item.checkinDate.split('/')[2] + "-" + item.checkinDate.split('/')[1] + "-" + item.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
-
           this.itemCart.id = this.cart.length + 1;
           this.itemCart.name = item.room_name;
           this.itemCart.type = item.room_type;
@@ -3730,7 +3453,6 @@ export default {
           this.itemCart.totalCartPrice = parseFloat(item.room_price) * (numDays + 1);
           this.itemCart.category = "main";
           this.itemCart.itemOption = "room";
-
           const data = {
             bookingID: this.bookings[this.itemIndex].itemID,
             itemName: this.itemCart.name,
@@ -3742,9 +3464,7 @@ export default {
             itemOption: this.itemCart.itemOption,
             dateCreated: new Date(), // Set the dateCreated field to the current date and time
           };
-
           // Make a POST request to the API to save the data
-
           await axios.post(this.API_URL + 'transaction/item/', data)
             .then(response => {
               // Log a success message to the console
@@ -3756,13 +3476,10 @@ export default {
             });
           this.cart.push(this.itemCart);
         }
-
       } else {
         //show instead
         //update this.cart
-
         this.cart = [];
-
         if (groupbookings.length > 0) {
           const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
             { "columnName": "groupkey", "columnKey": gkey },
@@ -3780,7 +3497,6 @@ export default {
             };
             this.cart.push(newItem);
           });
-
         } else {
           const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
             { "columnName": "bookingID", "columnKey": bookingID },
@@ -3805,9 +3521,7 @@ export default {
             }
           }
         }
-
       }
-
       this.billing.clientName = item.name;
       this.billing.clientAddress = item.clientaddress;
       this.billing.clientPhone = item.contactNumber;
@@ -3820,7 +3534,6 @@ export default {
       } else {
         this.billing.bookingID = "";
       }
-
       try {
         this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
         const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
@@ -3828,16 +3541,11 @@ export default {
         ]);
         this.cashHistory = response.data;
       } catch (error) {
-
       }
-
-
       this.toggleItemModal();
-
       $("#others-tab").tab('show');
       this.movetocartFlag = true;
-
-
+      this.activeAccountFlag = true;
       this.itemCart = {
         id: 0,
         name: "",
@@ -3849,8 +3557,6 @@ export default {
         category: "",
         groupkey: "",
       }
-
-
     },
     cancelReservation() {
       this.$swal.fire({
@@ -3879,38 +3585,30 @@ export default {
           }).then(response => {
             document.location.reload();
           })
-
         }
       })
     },
     async transferRoom() {
-
       if (this.toggleselect === false) {
         this.reservation.roomName = "";
         this.toggleselect = true;
         this.roomSelect = "ok";
-
       } else {
-
         const item = this.bookings[this.itemIndex];
         const room = this.reservation.roomName;
-
         if (room.name === undefined) {
           return;
         }
-
         const oldroom = {
           name: this.bookings[this.itemIndex].room_name,
           type: this.bookings[this.itemIndex].room_type,
           price: this.bookings[this.itemIndex].room_price
         }
-
         const newroom = {
           name: room.name,
           type: room.type,
           price: room.price
         }
-
         const result = await this.$swal.fire({
           icon: 'warning',
           title: 'Are you sure?',
@@ -3919,11 +3617,9 @@ export default {
           cancelButtonText: 'No',
           showCancelButton: true
         })
-
         if (!result.isConfirmed) {
           return;
         }
-
         if (oldroom.type !== newroom.type && (oldroom.type !== 'BEACH COTTAGE' && newroom.type !== 'BEACH COTTAGE')) {
           this.$swal({
             title: "Transfer Error",
@@ -3941,7 +3637,6 @@ export default {
           });
           return;
         }
-
         if (oldroom.price !== newroom.price) {
           this.$swal({
             title: "Transfer Error",
@@ -3959,18 +3654,15 @@ export default {
           });
           return;
         }
-
         item.room_name = newroom.name;
         item.room_price = newroom.price;
         item.room_type = newroom.type;
         item.remarks = "transferred from: " + oldroom.name + " on " + formatDate();
         this.updateBookings(item.id);
-
         const existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
           columnName: 'bookingID',
           columnKey: item.itemID
         });
-
         try {
           await axios.put(`${this.API_URL}transaction/item/${existingTransactionItems.data[0].id}/`, {
             bookingID: existingTransactionItems.data[0].bookingID,
@@ -3982,11 +3674,8 @@ export default {
             category: existingTransactionItems.data[0].category,
             itemOption: existingTransactionItems.data[0].itemOption,
           });
-
         } catch (error) {
-
         }
-
         this.taskRecord(`action:/transfer guest/client:/${item.name}`)
         this.$swal.fire({
           icon: 'success',
@@ -3996,7 +3685,6 @@ export default {
         }).then(response => {
           document.location.reload();
         })
-
       }
     },
     async extendBooking() {
@@ -4008,11 +3696,9 @@ export default {
         cancelButtonText: 'No',
         showCancelButton: true
       })
-
       if (!result.isConfirmed) {
         return;
       }
-
       const item = this.bookings[this.itemIndex];
       const bId = item.id;
       const bookingID = item.itemID;
@@ -4020,7 +3706,6 @@ export default {
       const roomPrice = parseFloat(item.room_price);
       let groupbookings = [];
       let existingTransactionItems = [];
-
       // if (groupkey.length > 0) {
       //   try {
       //     const o = await axios.post(`${this.API_URL}bookings/filter/`, [
@@ -4028,10 +3713,8 @@ export default {
       //     ])
       //     groupbookings = o.data;
       //   } catch (error) {
-
       //   }
       // }
-
       // if (groupbookings.length > 0) {
       //   existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
       //     columnName: 'groupkey',
@@ -4043,12 +3726,10 @@ export default {
       //     columnKey: bookingID
       //   });
       // }
-
       existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
         columnName: 'bookingID',
         columnKey: bookingID
       });
-
       // if (groupbookings.length > 0) {
       //   groupbookings.forEach(async item => {
       //     let itemIndex = this.bookings.findIndex(
@@ -4058,7 +3739,6 @@ export default {
       //     const itemCheckout = new Date(parseDate(item.checkoutDate));
       //     const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
       //     const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
-
       //     const newTotalPrice = parseFloat(this.bookings[itemIndex].totalPrice) + parseFloat(this.bookings[itemIndex].room_price);
       //     try {
       //       bookingData = {
@@ -4099,7 +3779,6 @@ export default {
       //   this.bookings[this.itemIndex].totalPrice = newTotalPrice;
       //   this.updateBookings(bId);
       // }
-
       const itemCheckout = new Date(parseDate(this.bookings[this.itemIndex].checkoutDate));
       const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
       const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
@@ -4108,7 +3787,6 @@ export default {
       this.bookings[this.itemIndex].isPaid = "partial";
       this.bookings[this.itemIndex].totalPrice = newTotalPrice;
       this.updateBookings(bId);
-
       existingTransactionItems.data.filter(o => o.itemOption === 'room').forEach(async item => {
         try {
           await axios.put(`${this.API_URL}transaction/item/${item.id}/`, {
@@ -4121,9 +3799,7 @@ export default {
             category: item.category,
             itemOption: item.itemOption,
           });
-
         } catch (error) {
-
         }
       });
       this.taskRecord(`action:/extend guest/client:/${this.bookings[this.itemIndex].name}`)
@@ -4148,7 +3824,6 @@ export default {
         showCancelButton: true
       }).then((result) => {
         if (result.isConfirmed) {
-
           const item = this.bookings[this.itemIndex];
           item.remarks = this.reservation.remarks;
           // const numguest = this.reservation.numguests;
@@ -4157,7 +3832,6 @@ export default {
           // // const room_type = item.room_type;
           // // const room_price = item.room_price;
           // // const status = item.status;
-
           // if(numguest < 1) {
           //   this.$swal({
           //     title: "Error!",
@@ -4166,7 +3840,6 @@ export default {
           //   });
           //   return false;
           // }
-
           // const data = {
           //     bookingID: item.itemID,
           //     itemName: this.itemCart.name,
@@ -4179,7 +3852,6 @@ export default {
           //     dateCreated: new Date(), // Set the dateCreated field to the current date and time
           //     groupkey: gkey,
           //   };
-
           // await axios.post(this.API_URL + 'transaction/item/', data)
           //     .then(response => {
           //       // Log a success message to the console
@@ -4198,7 +3870,6 @@ export default {
           //       // Log an error message to the console
           //       console.error('Error saving data:', error);
           //     });
-
           item.status = "checkedin";
           this.updateBookings(item.id);
           this.populateCalendarItems();
@@ -4215,7 +3886,6 @@ export default {
           })
         }
       })
-
     },
     checkOutGuest() {
       this.$swal.fire({
@@ -4229,7 +3899,6 @@ export default {
         // Check if user confirmed the cancellation
         if (result.isConfirmed) {
           // Perform reservation cancellation logic here
-
           axios.post(`${this.API_URL}restoorders/filter/`, [
             { columnName: 'customer_name', columnKey: this.bookings[this.itemIndex].room_name },
             { columnName: 'status', columnKey: 'closed' },
@@ -4245,7 +3914,6 @@ export default {
                 checkTable = this.bookings[this.itemIndex].room_name;
                 restoStatus = "closed";
               }
-
               if (checkTable === this.bookings[this.itemIndex].room_name) {
                 if (restoStatus !== "closed") {
                   this.$swal.fire({
@@ -4278,7 +3946,6 @@ export default {
             })
         }
       });
-
     },
     //methods for calendar items
     periodChanged() {
@@ -4312,7 +3979,6 @@ export default {
         this.reservation.clientPhone = "";
         this.reservation.checkinDate = this.dayreserve.toLocaleDateString('en-GB');
         this.reservation.checkoutDate = formatDate(this.dayreserve);
-
         this.reservation.status = "vacant";
       }
     },
@@ -4402,62 +4068,45 @@ export default {
       this.toggleItemModal();
       this.reservation.checkinDate = this.selectionStart.toLocaleDateString('en-GB');
       this.reservation.checkoutDate = formatDate(new Date(parseDate(this.selectionEnd.toLocaleDateString('en-GB'))));
-
-
     },
     onDrop(item, date) {
-
       const currentDate = new Date(); // get current date
       if (date.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) { // check if start date is before current date
         // prompt user to select a valid start date
         return;
       }
-
       this.itemIndex = this.bookings.findIndex(
         o => o.itemID === item.id
       );
       //issue in reloading
-
       const itemStatus = this.bookings[this.itemIndex].status;
-
       if (itemStatus === "reserved") {
-
         const eLength = CalendarMath.dayDiff(item.startDate, date)
-
         let landingDateCheckin = CalendarMath.addDays(item.startDate, eLength);
         let landingDateCheckout = CalendarMath.addDays(item.endDate, eLength);
-
         let filteredBookings = this.bookings.filter(booking => booking.status === 'reserved' && booking.itemID !== this.bookings[this.itemIndex].itemID && booking.room_name === this.bookings[this.itemIndex].room_name && new Date(booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0]).setHours(0, 0, 0, 0) <= landingDateCheckout.setHours(0, 0, 0, 0)
           && new Date(booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0));
-
         if (filteredBookings.length === 0) {
           if (event.ctrlKey) {
             let sd = CalendarMath.addDays(item.startDate, 0)
             let ed = CalendarMath.addDays(item.endDate, eLength - CalendarMath.dayDiff(item.startDate, item.endDate))
-
             if (ed >= sd) {
               item.originalItem.startDate = sd
               item.originalItem.endDate = ed
-
             } else {
               item.originalItem.endDate = item.endDate
               item.originalItem.startDate = ed
             }
-
           } else {
             item.originalItem.startDate = CalendarMath.addDays(item.startDate, eLength)
             item.originalItem.endDate = CalendarMath.addDays(item.endDate, eLength)
           }
-
-
           this.bookings[this.itemIndex].checkinDate = item.originalItem.startDate.toLocaleDateString('en-GB');
           this.bookings[this.itemIndex].checkoutDate = item.originalItem.endDate.toLocaleDateString('en-GB');
           this.updateBookings(this.bookings[this.itemIndex].id);
           //this.reloadData();
           this.populateCalendarItems();
-
           this.taskRecord(`action:/adjust date reservation/client:/${this.bookings[this.itemIndex].name}`)
-
         } else {
           this.$swal.fire({
             icon: 'error',
@@ -4493,10 +4142,8 @@ export default {
           processedBy: this.userdata.fName + " " + this.userdata.lName,
           groupkey: this.bookings[this.itemIndex].groupkey,
         });
-
       } catch (error) {
         console.log(error);
-
       }
     },
     populateCalendarItems() {
@@ -4507,14 +4154,12 @@ export default {
         const id = booking.itemID;
         const tooltip = `${booking.room_name}-${booking.name}\n*${booking.status}-${(booking.isPaid === 'yes') ? 'fully paid' : (booking.isPaid === 'no') ? 'not paid' : 'partial'}`;
         let classes = '';
-
         if (booking.status === 'reserved') {
           if (booking.isPaid === 'partial' || booking.isPaid === 'yes') {
             classes = ['hotel-reserved'];
           } else {
             classes = ['hotel-reserved-unpaid'];
           }
-
         } else if (booking.status === 'checkedin') {
           if (booking.isPaid === 'no' || booking.isPaid === '') {
             classes = ['hotel-checkedin-unpaid'];
@@ -4523,27 +4168,21 @@ export default {
           } else {
             classes = ['hotel-checkedin-paid'];
           }
-
         } else if (booking.status === 'cancelled') {
           classes = ['hotel-cancelled'];
         } else if (booking.status === 'checkedout') {
           classes = ['hotel-checkedout'];
         }
-
         return { startDate, endDate, title, id, classes, tooltip };
       });
-
       let suggestionsArray = this.rooms.map(room => room.name);
       const roomStatus = ["cancelled", "reserved", "checkedin", "checkedout"];
       suggestionsArray = roomStatus.concat(suggestionsArray);
-
       // Filter the suggestions based on the search text
       this.autosuggestions = suggestionsArray.filter(suggestion =>
         suggestion.toLowerCase().includes(this.booksearchtext.toLowerCase())
       );
-
       this.autosuggestions = this.autosuggestions.slice(0, 15);
-
       // this.showAutosuggestions = true;
     },
     selectSuggestion(suggestion) {
@@ -4559,7 +4198,6 @@ export default {
     },
     generateUniqueString() {
       let randomString = '';
-
       while (randomString.length < 64) {
         randomString += Math.random().toString(36).substr(2, 36);
       }
@@ -4578,7 +4216,6 @@ export default {
         });
         return false;
       }
-
       for (const res of this.reservation.roomName) {
         const hasExistingBooking = this.bookings.filter(item => item.status !== 'checkedout').filter(item => item.status !== 'cancelled').filter(booking =>
           booking.room_name === res.name && booking.checkinDate === this.reservation.checkinDate
@@ -4593,31 +4230,25 @@ export default {
           return;
         }
       }
-
       try {
         let gkey = null;
         let roomBooked = this.reservation.roomName;
-
         if (roomBooked.length > 1) {
           gkey = "group-" + this.generateUniqueString();
         }
-
         roomBooked.forEach(async res => {
           //change id format
           let id = "e" + new Date().getTime().toString() + this.generateUniqueString();
           let startDate = this.reservation.checkinDate.split('/')[2] + "-" + this.reservation.checkinDate.split('/')[1] + "-" + this.reservation.checkinDate.split('/')[0];
           let endDate = this.reservation.checkoutDate.split('/')[2] + "-" + this.reservation.checkoutDate.split('/')[1] + "-" + this.reservation.checkoutDate.split('/')[0];
           let title = res.name + "-" + this.reservation.clientName;
-
           const numDays = Math.ceil((
             new Date(this.reservation.checkoutDate.split('/')[2] + "-" + this.reservation.checkoutDate.split('/')[1] + "-" + this.reservation.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0)
             -
             new Date(this.reservation.checkinDate.split('/')[2] + "-" + this.reservation.checkinDate.split('/')[1] + "-" + this.reservation.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)
           ) / (1000 * 60 * 60 * 24));
-
           const roomPrice = (this.rooms.findIndex(o => o.name === res.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === res.name)].price : 0;
           const roomType = (this.rooms.findIndex(o => o.name === res.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === res.name)].type : '';
-
           const response = await axios.post(this.API_URL + "bookings/", {
             itemID: id,
             status: "reserved",
@@ -4641,7 +4272,6 @@ export default {
             processedBy: this.userdata.fName + " " + this.userdata.lName,
             groupkey: gkey,
           });
-
           this.bookings.push({
             itemID: id,
             status: "reserved",
@@ -4662,9 +4292,7 @@ export default {
             groupkey: gkey,
           })
         });
-
         this.reloadData();
-
         this.populateCalendarItems();
         this.taskRecord(`action:/added reservation/client:/${this.reservation.clientName}`)
         this.toggleItemModal();
@@ -4690,10 +4318,6 @@ export default {
         }).then(response => {
           document.location.reload();
         })
-
-
-
-
       } catch (error) {
         console.log(error);
         this.$swal.fire({
@@ -4733,14 +4357,12 @@ export default {
         //       }
         //     } catch (error) {
         //     }
-
         //     const b = await axios.post(`${this.API_URL}transaction/record/filter/`, [
         //       { "columnName": "transaction", "columnKey": item.id },
         //     ])
         //     this.transactions[index].items = a.data;
         //     this.transactions[index].items2 = b.data;
         //   } catch (error) {
-
         //   }
         // });
       } catch (error) {
@@ -4749,9 +4371,7 @@ export default {
       }
     },
     async placeOrder() {
-
       if (parseFloat(this.cashAmount) > 0) {
-
         let bookid = null;
         let groupid = null;
         const item = this.bookings[this.itemIndex];
@@ -4763,11 +4383,8 @@ export default {
         } catch (error) {
           bookid = "f";
         }
-
         let gkey = "";
-
         let groupbookings = [];
-
         try {
           gkey = (this.bookings[this.itemIndex].groupkey || "x");
           try {
@@ -4776,14 +4393,9 @@ export default {
             ])
             groupbookings = o.data;
           } catch (error) {
-
           }
-
         } catch (error) {
-
         }
-
-
         if (this.walkinStatus && parseFloat(this.cashAmount) < parseFloat(this.total)) {
           await this.$swal.fire({
             title: 'Error',
@@ -4792,9 +4404,7 @@ export default {
           });
           return false;
         }
-
         const numGuests = this.cart.filter(o => o.type.toLowerCase() === 'entrance').length;
-
         if (bookid === "f") {
           if (numGuests === 0) {
             await this.$swal.fire({
@@ -4814,7 +4424,6 @@ export default {
             return false;
           }
         }
-
         // if (reserveStatus === "reserved" && parseFloat(this.cashAmount) > parseFloat(this.total) * 0.50) {
         //   await this.$swal.fire({
         //     title: 'Error',
@@ -4823,7 +4432,6 @@ export default {
         //   });
         //   return false;
         // }
-
         const confirmMessage = 'Are you sure you want to save this transaction?';
         const result = await this.$swal.fire({
           title: 'Confirmation',
@@ -4835,9 +4443,7 @@ export default {
           confirmButtonText: 'Yes, save it!',
           cancelButtonText: 'Cancel'
         });
-
         if (result.isConfirmed) {
-
           const countdownMessage = 'Transaction will be saved in <span id="countdown">5</span> seconds. Do you want to cancel?';
           let countdownResult;
           countdownResult = await this.$swal.fire({
@@ -4862,11 +4468,9 @@ export default {
               }, 1000);
             }
           });
-
           if (!countdownResult.isConfirmed) {
             return;
           }
-
           try {
             let existingTransaction = {
               data: []
@@ -4885,12 +4489,10 @@ export default {
                   columnKey: bookid
                 });
               }
-
             }
             let payStatus = null;
             if (existingTransaction.data.length === 0) {
               // Create a new transaction if it doesn't exist yet
-
               if (bookid.charAt(0) === "f") {
                 bookid = "f" + existingTransaction.data.length + this.generateUniqueString();
               }
@@ -4916,7 +4518,6 @@ export default {
                 groupkey: groupid,
                 cashRemarks: this.cashRemarks,
               };
-
               let doneTransaction = await axios.post(`${this.API_URL}transaction/`, transactionData);
               let transactionRecordData = {
                 transaction: doneTransaction.data.id,
@@ -4931,9 +4532,7 @@ export default {
                 processedBy: this.userdata.fName + " " + this.userdata.lName,
                 payStatus: doneTransaction.data.payStatus
               }
-
               await axios.post(`${this.API_URL}transaction/record/`, transactionRecordData);
-
               if (bookid.charAt(0) === "f") {
                 this.cart.forEach(async (item, index) => {
                   // Define the API endpoint and data for the PUT request
@@ -4948,17 +4547,13 @@ export default {
                     itemOption: 'addons',
                     bookingID: bookid
                   };
-
                   try {
                     await axios.post(api, data);
                   } catch (error) {
-
                   }
                 });
               }
-
               if (bookid.charAt(0) !== "f") {
-
                 if (groupbookings.length > 0) {
                   groupbookings.forEach(async item => {
                     let itemIndex = this.bookings.findIndex(
@@ -4995,7 +4590,6 @@ export default {
                         processedBy: this.userdata.fName + " " + this.userdata.lName,
                         groupkey: this.bookings[itemIndex].groupkey,
                       });
-
                     } catch (error) {
                       console.log(error);
                     }
@@ -5010,9 +4604,7 @@ export default {
                   }
                   this.updateBookings(this.bookings[this.itemIndex].id);
                 }
-
               }
-
               try {
                 this.partialPayment = doneTransaction.data.cashAmountPay;
                 const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
@@ -5020,11 +4612,8 @@ export default {
                 ]);
                 this.cashHistory = response.data;
               } catch (error) {
-
               }
-
               this.billing.bookingID = doneTransaction.data.id;
-
             } else {
               // Update the transaction if it already exists
               payStatus = (parseFloat(this.total) - parseFloat(this.cashAmount)) <= 0 ? 'full' : 'partial';
@@ -5057,7 +4646,6 @@ export default {
                 groupkey: groupid,
                 cashRemarks: this.cashRemarks,
               };
-
               let doneTransaction = await axios.put(`${this.API_URL}transaction/${existingTransaction.data[0].id}/`, transactionData);
               let transactionRecordData = {
                 transaction: doneTransaction.data.id,
@@ -5072,9 +4660,7 @@ export default {
                 processedBy: this.userdata.fName + " " + this.userdata.lName,
                 payStatus: doneTransaction.data.payStatus
               }
-
               await axios.post(`${this.API_URL}transaction/record/`, transactionRecordData);
-
               if (groupbookings.length > 0) {
                 groupbookings.forEach(async item => {
                   let itemIndex = this.bookings.findIndex(
@@ -5111,7 +4697,6 @@ export default {
                       processedBy: this.userdata.fName + " " + this.userdata.lName,
                       groupkey: this.bookings[itemIndex].groupkey,
                     });
-
                   } catch (error) {
                     console.log(error);
                   }
@@ -5133,7 +4718,6 @@ export default {
                 ]);
                 this.cashHistory = response.data;
               } catch (error) {
-
               }
             }
             this.taskRecord(`action:/transaction added/client:/${this.billing.clientName}`)
@@ -5165,7 +4749,6 @@ export default {
           icon: 'error'
         });
       }
-
     },
     async printSection(idstring, pLength, pWidth, ft) {
       const section = document.getElementById(idstring);
@@ -5177,14 +4760,11 @@ export default {
       const bootstrapJS = '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">';
       const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${printBtn}${sectionHTML}${footerSummary}${bootstrapJS}<script>setTimeout('alert()',1000)<\/script></body></html>`;
       // Create a new jsPDF instance
-
-
       function printAndDetect() {
         const options = 'height=500,width=800,scrollbars=no,status=no,toolbar=no,location=no';
         const printWindow = window.open('', options);
         printWindow.document.write(html);
         printWindow.document.close();
-
         printWindow.addEventListener('load', function () {
           printWindow.focus();
           printWindow.print();
@@ -5192,7 +4772,6 @@ export default {
           document.location.reload();
         });
       }
-
       printAndDetect();
     },
     async generateBillingStatement() {
@@ -5221,11 +4800,9 @@ export default {
       try {
         const roomsResponse = await axios.get(this.API_URL + "rooms/");
         this.rooms = roomsResponse.data.filter(item => item.isAvailable === true);
-
         /*
 this.bookings.filter(booking => booking.room_name === this.bookings[this.itemIndex].room_name );
         */
-
         const reservationsResponse = await axios.get(this.API_URL + "bookings/");
         this.origbookings = reservationsResponse.data;
         this.populateCalendarItems()
@@ -5248,7 +4825,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
           o.name === item
       );
       return itemIndex === -1;
-
     },
     isRoomAvailable(room, checkinDate, checkoutDate) {
       // Get all reservations for the given room
@@ -5274,7 +4850,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
         } catch (error) {
           reserveStatus = "n/a";
         }
-
         if (reserveStatus === "reserved") {
           await this.$swal.fire({
             title: 'Error',
@@ -5283,7 +4858,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
           });
           return false;
         }
-
         if (this.howMany[index] > 0) {
           this.itemCart.name = item.item;
           this.itemCart.type = item.type;
@@ -5301,7 +4875,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
           });
           // Define the data to be sent to the API
           const data = {
-
             itemName: this.itemCart.name,
             itemType: this.itemCart.type,
             itemPriceRate: this.itemCart.priceRate,
@@ -5311,7 +4884,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
             itemOption: this.itemCart.itemOption,
             dateCreated: new Date(), // Set the dateCreated field to the current date and time
           };
-
           try {
             // Access property here
             data.bookingID = this.bookings[this.itemIndex].itemID;
@@ -5350,7 +4922,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
             icon: "error",
           });
         }
-
         // } else {
         //   this.$swal.fire({
         //     title: "Error!",
@@ -5402,14 +4973,11 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
                 )
               })
           } {
-
           }
         }
       })
-
     },
     async bookRoom(room) {
-
       const checkinDate = new Date(this.reservation.checkinDate);
       const checkoutDate = new Date(this.reservation.checkoutDate);
       const numDays = Math.ceil((checkoutDate - checkinDate) / (1000 * 60 * 60 * 24));
@@ -5421,7 +4989,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
         this.reservation.room_type = this.choice_room.type;
         this.reservation.totalPrice = this.reservation.room_price * numDays;
         try {
-
           const response = await axios.post(this.API_URL + "bookings/", {
             name: this.reservation.name,
             checkinDate: this.reservation.checkinDate,
@@ -5433,7 +5000,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
             contactNumber: this.reservation.contactNumber,
             totalPrice: this.reservation.totalPrice
           });
-
           this.reservations.push(this.reservation);
           this.reloadData();
           this.reservation = {
@@ -5444,32 +5010,25 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
             contactNumber: "",
             totalPrice: 0
           };
-
           this.$swal.fire({
             title: "Success!",
             text: "Booking successful!",
             icon: "success",
           });
-
-
         } catch (error) {
           console.error(error);
-
           this.$swal.fire({
             title: "Error!",
             text: "An error occurred while booking the room.",
             icon: "error",
           });
-
         }
       } else {
-
         this.$swal.fire({
           title: "Error!",
           text: "Sorry, the room is already occupied.",
           icon: "error",
         });
-
       }
     },
     printReservation(reservation) {
@@ -5498,7 +5057,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
         // const convDate = strDateDay + "/" + strDateMos + "/" + strDateYer
         // this.convDate = convDate;
         // this.toggleShowAllModal();
-
       }
     },
     handleModalClosed() {
@@ -5512,28 +5070,21 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     //       "message": "hi micaroz!",
     //     }));
     // },
-
   },
-
   async mounted() {
     this.$refs.searchQuery.focus();
     this.$refs.searchQuery.blur();
     $('.currentPeriod').click();
     $('#suglist').hide();
-
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {
       document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
-
     document.addEventListener('keydown', this.handleKeyPress);
-
     const modal = this.$refs.modal;
-
     // Attach event listener for modal hidden event
     modal.addEventListener("hidden.bs.modal", this.handleModalClosed);
-
     this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
     //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
     const vm = this;
@@ -5544,7 +5095,6 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       vm.loadAlldata();
       vm.componentKey += 1;
     };
-
   }
 };
 </script>
@@ -5557,7 +5107,6 @@ body {
 }
 
 #app {
-
   font-family: Calibri, sans-serif;
   width: 95vw;
   min-width: 30rem;
@@ -5568,7 +5117,6 @@ body {
 }
 
 .calendar-parent {
-
   overflow-x: hidden;
   overflow-y: hidden;
   height: 800px;
@@ -5584,7 +5132,6 @@ body {
 }
 
 /* These styles are optional, to illustrate the flexbility of styling the calendar purely with CSS. */
-
 /* Add some styling for items tagged with the "birthday" class */
 .theme-default .cv-item.birthday {
   background-color: #e0f0e0;
@@ -5874,6 +5421,4 @@ img {
 .wiggle-animation {
   animation: wiggle 1.5s infinite;
   /* Adjust animation duration as needed */
-}
-</style>
-
+}</style>
