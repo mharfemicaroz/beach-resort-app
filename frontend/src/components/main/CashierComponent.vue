@@ -497,6 +497,12 @@
               </li>
 
               <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category11"
+                  @click="setActiveTab('nav-tab-category11')">
+                  <i class="fa fa-tags "></i>Buffet</a>
+              </li>
+
+              <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category10"
                   @click="setActiveTab('nav-tab-category10')">
                   <i class="fa fa-tags "></i>Miscellaneous</a>
@@ -599,6 +605,16 @@
                   <div class="row">
                     <div class="col-md-12">
                       <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Rice')"
+                        @click-action="addItemToCart" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="nav-tab-category11" role="tabpanel" aria-labelledby="nav-tab-category11">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Buffet')"
                         @click-action="addItemToCart" />
                     </div>
                   </div>
@@ -964,6 +980,7 @@
                   <option value="Pizza, Pasta, Sandwich">Pizza, Pasta, Sandwich</option>
                   <option value="Breakfast">Breakfast</option>
                   <option value="Rice">Rice</option>
+                  <option value="Buffet">Buffet</option>
                   <option value="Miscellaneous">Miscellaneous</option>
                 </select>
               </div>

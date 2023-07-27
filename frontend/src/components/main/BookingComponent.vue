@@ -298,7 +298,7 @@
                   Billing Statement (preview)
                 </h2>
                 <div class="ms-auto d-flex align-items-center"> <!-- Wrap the buttons in a flex container -->
-                  <button type="button" class="btn btn-primary" v-show="this.isItNew" v-if="!this.walkinStatus"
+                  <button type="button" class="btn btn-primary" v-show="this.isItNew" v-if="!this.walkinStatus && !this.justDiscounted"
                     @click="generateBillingStatement()">
                     <i class="fas fa-print"><br>
                       <span style="font-size: 8px;">[F10]</span></i>
@@ -365,7 +365,7 @@
                                 <td v-if="item.itemOption !== 'room'">{{ item.totalCartPrice }}</td>
                                 <td v-else>
                                   <span v-if="!isNaN(subroom.discountValue)"
-                                    v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode === 'percentage') ? subroom.discountValue.toFixed(2) + '%' : (subroom.discountValue / 3).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${(subroom.discountMode === 'percentage') ? item.totalCartPrice * (1 - parseFloat(subroom.discountValue / 100)) : item.totalCartPrice - (subroom.discountValue / 3).toFixed(2)}</span>`"></span>
+                                    v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode === 'percentage') ? (subroom.discountValue) + '%' : (subroom.discountValue / gbookingscount).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${(subroom.discountMode === 'percentage') ? item.totalCartPrice * (1 - parseFloat(subroom.discountValue / 100)) : item.totalCartPrice - (subroom.discountValue / gbookingscount).toFixed(2)}</span>`"></span>
                                   <span v-else v-html="`${item.totalCartPrice}`"></span>
                                 </td>
                               </tr>
@@ -507,16 +507,16 @@
                           </div>
                           <div class="row mt-0">
                             <div class="col-6">
-                              <a href="#" @click="setDiscount">
+                              <a href="#" @click="setDiscount" v-if="!alreadyDiscounted">
                                 <i class="fas fa-pencil-alt"></i>
                               </a>
                               <strong>Discount:</strong>
                             </div>
                             <div class="col-6 text-right">{{ discountValue }}{{ (discountMode === 'percentage') ? '%' :
-                              'off'
+                              ' off'
                             }}</div>
                           </div>
-                     
+
                           <div class="row mb-2">
                             <div class="col-6"><strong>Reservation:</strong></div>
                             <div class="col-6 text-right" v-html="subroom.original + ' ' + subroom.discounted"></div>
@@ -525,7 +525,7 @@
                             <div class="col-6"><strong>Add-ons:</strong></div>
                             <div class="col-6 text-right">{{ subaddons }}</div>
                           </div>
-                          
+
                           <div class="row mb-2" v-if="paymentMethod === 'non-cash'">
                             <div class="col-6"><strong>Reference No.:</strong></div>
                             <div class="col-6 text-right">{{ nonCashPayPlatform }} - {{ nonCashReference }}</div>
@@ -557,8 +557,8 @@
                             <option value="non-cash">Non-cash</option>
                           </select>
                           <span class="input-group-text">₱</span>
-                          <input type="number" class="form-control" id="cashAmount"
-                            v-model.number="cashAmount" step="0.01" @keyup="updateTotalCash" @keydown="updateTotalCash">
+                          <input type="number" class="form-control" id="cashAmount" v-model.number="cashAmount"
+                            step="0.01" @keyup="updateTotalCash" @keydown="updateTotalCash">
                           <span class="input-group-text">{{ (cashAmount - Math.floor(cashAmount)).toFixed(2).substr(1)
                           }}</span>
                         </div>
@@ -820,7 +820,7 @@
                       <td v-if="item.itemOption !== 'room'">{{ item.totalCartPrice }}</td>
                       <td v-else>
                         <span v-if="!isNaN(subroom.discountValue)"
-                          v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode === 'percentage') ? subroom.discountValue.toFixed(2) + '%' : (subroom.discountValue / 3).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${(subroom.discountMode === 'percentage') ? item.totalCartPrice * (1 - parseFloat(subroom.discountValue / 100)) : item.totalCartPrice - (subroom.discountValue / 3).toFixed(2)}</span>`"></span>
+                          v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode === 'percentage') ? (subroom.discountValue) + '%' : (subroom.discountValue / gbookingscount).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${(subroom.discountMode === 'percentage') ? item.totalCartPrice * (1 - parseFloat(subroom.discountValue / 100)) : item.totalCartPrice - (subroom.discountValue / gbookingscount).toFixed(2)}</span>`"></span>
                         <span v-else v-html="`${item.totalCartPrice}`"></span>
                       </td>
                     </tr>
@@ -1675,6 +1675,8 @@ export default {
   },
   data() {
     return {
+      justDiscounted: false,
+      gbookingscount: 0,
       activeAccountFlag: false,
       movetocartFlag: true,
       bookNowFlag: true,
@@ -2480,7 +2482,7 @@ export default {
       switch (event.key) {
         case 'Enter':
           event.preventDefault()
-          if(this.total > 0){
+          if (this.total > 0) {
             this.placeOrder();
           }
           break;
@@ -2519,7 +2521,7 @@ export default {
         <input type="radio" class="form-check-input" id="percentageDiscount" name="discountType" value="percentage">
         <label for="percentageDiscount" class="form-check-label">Percentage</label>
         <br><br>
-        <input type="number" class="form-control" id="discountValue" v-model="discount" placeholder="Enter discount value" min="0" step="any">
+        <input type="number" class="form-control" id="discountValue" placeholder="Enter discount value" min="0" step="any">
       </div>
     `,
         showCancelButton: true,
@@ -2535,14 +2537,9 @@ export default {
         if (result.isConfirmed) {
           const { discountType, discountValue } = result.value;
           if (discountValue !== "") {
-            if (discountType === "fixed") {
-              // Apply fixed discount
-              this.discountMode = "fixed";
-            } else {
-              // Apply percentage discount
-              this.discountMode = "percentage";
-            }
+            this.discountMode = discountType;
             this.discountValue = parseFloat(discountValue).toFixed(2);
+            this.justDiscounted = true;
           }
         }
       });
@@ -3154,6 +3151,7 @@ export default {
         totalCartPrice: "",
         category: ""
       }
+      this.justDiscounted = false;
       this.alreadyDiscounted = false;
       this.itemIndex = -1;
       this.walkinStatus = false;
@@ -3318,6 +3316,7 @@ export default {
           { "columnName": "transaction", "columnKey": transaction.id },
         ]);
         this.cashHistory = response.data;
+        this.gbookingscount = (groupbookings.length === 0) ? 1 : groupbookings.length;
       } catch (error) {
       }
       this.toggleItemModal();
@@ -3540,6 +3539,7 @@ export default {
           { "columnName": "transaction", "columnKey": transaction.id },
         ]);
         this.cashHistory = response.data;
+        this.gbookingscount = (groupbookings.length === 0) ? 1 : groupbookings.length;
       } catch (error) {
       }
       this.toggleItemModal();
@@ -4611,6 +4611,8 @@ export default {
                   { "columnName": "transaction", "columnKey": doneTransaction.data.id },
                 ]);
                 this.cashHistory = response.data;
+                this.gbookingscount = (groupbookings.length === 0) ? 1 : groupbookings.length;
+
               } catch (error) {
               }
               this.billing.bookingID = doneTransaction.data.id;
@@ -4717,6 +4719,7 @@ export default {
                   { "columnName": "transaction", "columnKey": transactionRecordData.transaction },
                 ]);
                 this.cashHistory = response.data;
+                this.gbookingscount = (groupbookings.length === 0) ? 1 : groupbookings.length;
               } catch (error) {
               }
             }
@@ -5421,4 +5424,5 @@ img {
 .wiggle-animation {
   animation: wiggle 1.5s infinite;
   /* Adjust animation duration as needed */
-}</style>
+}
+</style>
