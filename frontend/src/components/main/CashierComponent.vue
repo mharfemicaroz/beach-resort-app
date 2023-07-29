@@ -20,7 +20,7 @@
           }}</button>
       </li>
       <li class="nav-item" role="presentation"
-        v-if="userdata.role !== 'cashier' && userdata.role === 'foodserver' || userdata.role === 'superuser'">
+        v-if="userdata.role !== 'cashier' && userdata.role === 'foodserver' || userdata.role === 'superuser' || userdata.role === 'waiter'">
         <button :class="(userdata.role === 'foodserver') ? 'nav-link active' : 'nav-link'" id="orders-tab"
           data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders"
           aria-selected="true">Orders</button>
@@ -884,7 +884,7 @@
           </div>
         </div>
       </div>
-      <div :class="(userdata.role !== 'foodserver') ? 'tab-pane fade' : 'tab-pane fade show active'" id="orders"
+      <div :class="(userdata.role !== 'foodserver' || userdata.role !== 'waiter') ? 'tab-pane fade' : 'tab-pane fade show active'" id="orders"
         role="tabpanel" aria-labelledby="orders-tab">
         <div class="row mt-2">
           <div class="col-md-12">
@@ -908,7 +908,7 @@
                               v-for="orderItem in item.order_items.map(o => { const checked = false; return { ...o, checked }; }).filter(o => o.category.toLowerCase() !== 'drinks' && o.category.toLowerCase() !== 'miscellaneous')"
                               :key="orderItem.id" class="order-item">
                               <div class="form-check">
-                                <input v-if="item.isRunning" type="checkbox" class="form-check-input"
+                                <input v-if="item.isRunning && userdata.role === 'superuser' && userdata.role !== 'foodserver'" type="checkbox" class="form-check-input"
                                   :id='"cb" + orderItem.id'>
                                 <label class="form-check-label" for="checkbox-{{ orderItem.id }}">
                                   {{ orderItem.qty }} &times; {{ orderItem.name }}
@@ -917,7 +917,7 @@
                             </li>
                           </ul>
                         </div>
-                        <div class="card-footer d-flex justify-content-between" v-if="item.status === 'progress'">
+                        <div class="card-footer d-flex justify-content-between" v-if="item.status === 'progress' && userdata.role === 'superuser' && userdata.role !== 'foodserver'">
                           <span>
                             <button class="btn btn-sm btn-outline-primary" @click="doneServe(item)">Done</button>
                             &NonBreakingSpace;

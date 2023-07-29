@@ -2323,20 +2323,39 @@ export default {
       });
     },
     updatedRooms() {
-      return this.rooms.filter(room => {
-        // Check if there are any bookings for this room that overlap with the specified date range
-        const overlappingBookings = this.bookings.filter(booking => booking.status !== 'cancelled').filter(booking => booking.status !== 'checkedout').filter(booking => {
-          const checkInDate = parseDate(booking.checkinDate);
-          const checkOutDate = parseDate(booking.checkoutDate);
-          const startDate = parseDate(this.reservation.checkinDate);
-          const endDate = parseDate(this.reservation.checkoutDate);
-          return booking.room_name === room.name &&
-            startDate <= checkOutDate && endDate >= checkInDate;
-        });
-        // Return true if there are no overlapping bookings
-        return overlappingBookings.length === 0;
-      });
-    },
+  return this.rooms.filter(room => {
+    // Check if there are any bookings for this room that overlap with the specified date range
+    const overlappingBookings = this.bookings.filter(booking => {
+      // Check if the booking is not cancelled and not checked out
+      if (booking.status === 'cancelled' || booking.status === 'checkedout') {
+        return false;
+      }
+
+      // Check if the booking's room_name matches the current room and the date range overlaps with the reservation
+      const checkInDate = parseDate(booking.checkinDate);
+      const checkOutDate = parseDate(booking.checkoutDate);
+      const startDate = parseDate(this.reservation.checkinDate);
+      const endDate = parseDate(this.reservation.checkoutDate);
+      const isOverlap = booking.room_name === room.name &&
+                        startDate <= checkOutDate && endDate >= checkInDate;
+
+      return isOverlap;
+    });
+
+    // Check if there exists a booking with the same room_name in yesterday that has not been checked out
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayBooking = this.bookings.find(prevBooking => {
+      const prevCheckOutDate = parseDate(prevBooking.checkoutDate);
+      return prevBooking.room_name === room.name &&
+             new Date(prevCheckOutDate).toDateString() === new Date(yesterday).toDateString() &&
+             prevBooking.status === 'checkedin';
+    });
+
+    // Return true if there are no overlapping bookings and no booking in yesterday that has not been checked out
+    return overlappingBookings.length === 0 && !yesterdayBooking;
+  });
+},
     userLocale() {
       return CalendarMath.getDefaultBrowserLocale
     },
@@ -5082,7 +5101,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
     this.$nextTick(() => {
-      document.body.addEventListener('contextmenu', this.handleContextMenu);
+      // document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
     document.addEventListener('keydown', this.handleKeyPress);
     const modal = this.$refs.modal;
