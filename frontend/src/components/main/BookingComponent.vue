@@ -8,11 +8,15 @@
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking" type="button"
-          role="tab" aria-controls="booking" aria-selected="true" @click="resetSummary(1)">Reservation</button>
+          role="tab" aria-controls="booking" aria-selected="true" @click="resetSummary(1)">Calendar</button>
       </li>
       <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
         <button class="nav-link" id="monitor-tab" data-bs-toggle="tab" data-bs-target="#monitor" type="button" role="tab"
-          aria-controls="monitor" aria-selected="false" @click="resetSummary(4)">Reception</button>
+          aria-controls="monitor" aria-selected="false" @click="resetSummary(4)">Room Reservations</button>
+      </li>
+      <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
+        <button class="nav-link" id="reception-tab" data-bs-toggle="tab" data-bs-target="#reception" type="button"
+          role="tab" aria-controls="reception" aria-selected="false" @click="resetSummary(5)">Reception</button>
       </li>
       <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
         <button class="nav-link" id="others-tab" data-bs-toggle="tab" data-bs-target="#others" type="button" role="tab"
@@ -179,6 +183,14 @@
           </div>
         </div>
       </div>
+      <div class="tab-pane fade" id="reception" role="tabpanel" aria-labelledby="others-tab">
+        <div class="container-fluid">
+          <div class="row">
+            <ReceptionHotel :bookingsdata="bookings" :roomsdata="rooms" @clickItem-action="handleReceptionItemAction"
+              @clickDay-action="handleReceptionDayAction" @clickRoom-action="handleReceptionRoomAction" />
+          </div>
+        </div>
+      </div>
       <div class="tab-pane fade" id="others" role="tabpanel" aria-labelledby="others-tab">
         <div class="container-fluid">
           <div class="row">
@@ -298,8 +310,8 @@
                   Billing Statement (preview)
                 </h2>
                 <div class="ms-auto d-flex align-items-center"> <!-- Wrap the buttons in a flex container -->
-                  <button type="button" class="btn btn-primary" v-show="this.isItNew" v-if="!this.walkinStatus && !this.justDiscounted"
-                    @click="generateBillingStatement()">
+                  <button type="button" class="btn btn-primary" v-show="this.isItNew"
+                    v-if="!this.walkinStatus && !this.justDiscounted" @click="generateBillingStatement()">
                     <i class="fas fa-print"><br>
                       <span style="font-size: 8px;">[F10]</span></i>
                   </button>
@@ -1604,6 +1616,7 @@ import FooterComponent from "../common/FooterComponent.vue";
 import TableComponent from "@/components/common/GenericTable.vue";
 import BookingDashboard from "@/components/common/BookingDashboard.vue";
 import CardBookingsVue from "../common/CardBookings.vue";
+import ReceptionHotel from "../common/ReceptionHotel.vue";
 import "/node_modules/vue-simple-calendar/dist/style.css"
 import "/node_modules/vue-simple-calendar/dist/css/default.css"
 import "/node_modules/vue-simple-calendar/dist/css/holidays-us.css"
@@ -1672,6 +1685,7 @@ export default {
     TableComponent,
     BookingDashboard,
     CardBookingsVue,
+    ReceptionHotel,
   },
   data() {
     return {
@@ -2323,39 +2337,39 @@ export default {
       });
     },
     updatedRooms() {
-  return this.rooms.filter(room => {
-    // Check if there are any bookings for this room that overlap with the specified date range
-    const overlappingBookings = this.bookings.filter(booking => {
-      // Check if the booking is not cancelled and not checked out
-      if (booking.status === 'cancelled' || booking.status === 'checkedout') {
-        return false;
-      }
+      return this.rooms.filter(room => {
+        // Check if there are any bookings for this room that overlap with the specified date range
+        const overlappingBookings = this.bookings.filter(booking => {
+          // Check if the booking is not cancelled and not checked out
+          if (booking.status === 'cancelled' || booking.status === 'checkedout') {
+            return false;
+          }
 
-      // Check if the booking's room_name matches the current room and the date range overlaps with the reservation
-      const checkInDate = parseDate(booking.checkinDate);
-      const checkOutDate = parseDate(booking.checkoutDate);
-      const startDate = parseDate(this.reservation.checkinDate);
-      const endDate = parseDate(this.reservation.checkoutDate);
-      const isOverlap = booking.room_name === room.name &&
-                        startDate <= checkOutDate && endDate >= checkInDate;
+          // Check if the booking's room_name matches the current room and the date range overlaps with the reservation
+          const checkInDate = parseDate(booking.checkinDate);
+          const checkOutDate = parseDate(booking.checkoutDate);
+          const startDate = parseDate(this.reservation.checkinDate);
+          const endDate = parseDate(this.reservation.checkoutDate);
+          const isOverlap = booking.room_name === room.name &&
+            startDate <= checkOutDate && endDate >= checkInDate;
 
-      return isOverlap;
-    });
+          return isOverlap;
+        });
 
-    // Check if there exists a booking with the same room_name in yesterday that has not been checked out
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayBooking = this.bookings.find(prevBooking => {
-      const prevCheckOutDate = parseDate(prevBooking.checkoutDate);
-      return prevBooking.room_name === room.name &&
-             new Date(prevCheckOutDate).toDateString() === new Date(yesterday).toDateString() &&
-             prevBooking.status === 'checkedin';
-    });
+        // Check if there exists a booking with the same room_name in yesterday that has not been checked out
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayBooking = this.bookings.find(prevBooking => {
+          const prevCheckOutDate = parseDate(prevBooking.checkoutDate);
+          return prevBooking.room_name === room.name &&
+            new Date(prevCheckOutDate).toDateString() === new Date(yesterday).toDateString() &&
+            prevBooking.status === 'checkedin';
+        });
 
-    // Return true if there are no overlapping bookings and no booking in yesterday that has not been checked out
-    return overlappingBookings.length === 0 && !yesterdayBooking;
-  });
-},
+        // Return true if there are no overlapping bookings and no booking in yesterday that has not been checked out
+        return overlappingBookings.length === 0 && !yesterdayBooking;
+      });
+    },
     userLocale() {
       return CalendarMath.getDefaultBrowserLocale
     },
@@ -2491,6 +2505,80 @@ export default {
     },
   },
   methods: {
+    handleReceptionRoomAction(room) {
+      this.$swal.fire({
+        icon: 'warning',
+        title: 'Room Housekeeping',
+        text: 'Are you certain that this room has already been inspected?',
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        showCancelButton: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios.post(`${this.API_URL}rooms/filter/`, [
+            { columnName: 'name', columnKey: room.name },
+          ]).then(response => {
+            axios.put(`${this.API_URL}rooms/${room.id}/`, {
+              name: response.data[0].name,
+              type: response.data[0].type,
+              price: response.data[0].price,
+              isAvailable: response.data[0].isAvailable,
+              status: (response.data[0].status === 'clean') ? 'dirty' : 'clean'
+            }).then(response => {
+              document.location.reload();
+            })
+          })
+        }
+
+      })
+    },
+    handleReceptionDayAction(d, room) {
+      if (this.booksearchtext !== "") {
+        this.$swal.fire({
+          icon: 'error',
+          title: 'Calendar Day Selection Restricted',
+          text: 'Unable to select a day on the calendar when the search query is not empty.',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+      this.reservation.status = 'vacant';
+      this.reservation.clientName = "";
+      this.reservation.clientEmail = "";
+      this.reservation.clientAddress = "";
+      this.reservation.clientNationality = "Filipino";
+      this.reservation.clientType = "in-house";
+      this.reservation.remarks = "";
+      this.reservation.clientPhone = "";
+      this.reservation.roomName = [{ name: room.name, type: room.type, price: room.price }];
+      this.roomSelect = 'no';
+      this.reservation.checkinDate = d.toLocaleDateString('en-GB');
+      this.reservation.checkoutDate = formatDate(d);
+      this.toggleItemModal();
+    },
+    handleReceptionItemAction(book, room) {
+      this.itemIndex = this.bookings.findIndex(
+        o => o.itemID === book.itemID
+      );
+      if (this.itemIndex !== -1) {
+        this.showReservation();
+      } else {
+        this.reservation.status = 'vacant';
+        this.reservation.clientName = "";
+        this.reservation.clientEmail = "";
+        this.reservation.clientAddress = "";
+        this.reservation.clientNationality = "Filipino";
+        this.reservation.clientType = "in-house";
+        this.reservation.remarks = "";
+        // this.reservation.numguests = "";
+        this.reservation.clientPhone = "";
+        this.reservation.roomName = [{ name: room.name, type: room.type, price: room.price }];
+        this.roomSelect = 'no';
+        this.reservation.checkinDate = new Date().toLocaleDateString('en-GB');
+        this.reservation.checkoutDate = formatDate(new Date());
+        this.toggleItemModal();
+      }
+    },
     handleKeyPress(event) {
       if (this.currentRouteName !== "booking") {
         return;
@@ -3843,66 +3931,41 @@ export default {
         showCancelButton: true
       }).then((result) => {
         if (result.isConfirmed) {
-          const item = this.bookings[this.itemIndex];
-          item.remarks = this.reservation.remarks;
-          // const numguest = this.reservation.numguests;
-          // item.numguests = numguest;
-          // // const room_name = item.room_name;
-          // // const room_type = item.room_type;
-          // // const room_price = item.room_price;
-          // // const status = item.status;
-          // if(numguest < 1) {
-          //   this.$swal({
-          //     title: "Error!",
-          //     text: "Number of guests must be at least 1.",
-          //     icon: "error",
-          //   });
-          //   return false;
-          // }
-          // const data = {
-          //     bookingID: item.itemID,
-          //     itemName: this.itemCart.name,
-          //     itemType: this.itemCart.type,
-          //     itemPriceRate: this.itemCart.priceRate,
-          //     purchaseQty: this.itemCart.purqty,
-          //     totalCost: this.itemCart.totalCartPrice,
-          //     category: this.itemCart.category,
-          //     itemOption: this.itemCart.itemOption,
-          //     dateCreated: new Date(), // Set the dateCreated field to the current date and time
-          //     groupkey: gkey,
-          //   };
-          // await axios.post(this.API_URL + 'transaction/item/', data)
-          //     .then(response => {
-          //       // Log a success message to the console
-          //       this.itemCart = {}
-          //       this.itemCart.name = response.data.itemName;
-          //       this.itemCart.type = response.data.itemType;
-          //       this.itemCart.priceRate = response.data.itemPriceRate;
-          //       this.itemCart.purqty = response.data.purchaseQty;
-          //       this.itemCart.totalCartPrice = response.data.totalCost;
-          //       this.itemCart.category = response.data.category;
-          //       this.itemCart.itemOption = response.data.itemOption;
-          //       this.itemCart.groupkey = response.data.groupkey;
-          //       this.cart.push(this.itemCart)
-          //     })
-          //     .catch(error => {
-          //       // Log an error message to the console
-          //       console.error('Error saving data:', error);
-          //     });
-          item.status = "checkedin";
-          this.updateBookings(item.id);
-          this.populateCalendarItems();
-          //this.changeItemColor("checkedin");
-          this.toggleItemModal();
-          this.taskRecord(`action:/checked-in guest/client:/${item.name}`)
-          this.$swal.fire({
-            icon: 'success',
-            title: 'Guest Checked In!',
-            text: 'Thank you for checking in the guest.',
-            confirmButtonText: 'OK'
-          }).then(response => {
-            document.location.reload();
+
+          axios.post(`${this.API_URL}rooms/filter/`, [
+            { columnName: 'name', columnKey: this.bookings[this.itemIndex].room_name },
+          ]).then(response => {
+            const status = response.data[0].status;
+            const category = response.data[0].type;
+            if (status === 'dirty' && (category === 'BEACH ROOM' || category === 'POOL ROOM')) {
+              this.$swal({
+                title: "Error!",
+                text: "Uncleaned room, not ready for check-in. Contact housekeeping first.",
+                icon: "error",
+              }).then((result) => {
+                this.toggleItemModal();
+                return;
+              })
+            } else {
+              const item = this.bookings[this.itemIndex];
+              item.remarks = this.reservation.remarks;
+              item.status = "checkedin";
+              this.updateBookings(item.id);
+              this.populateCalendarItems();
+              //this.changeItemColor("checkedin");
+              this.toggleItemModal();
+              this.taskRecord(`action:/checked-in guest/client:/${item.name}`)
+              this.$swal.fire({
+                icon: 'success',
+                title: 'Guest Checked In!',
+                text: 'Thank you for checking in the guest.',
+                confirmButtonText: 'OK'
+              }).then(response => {
+                document.location.reload();
+              })
+            }
           })
+
         }
       })
     },
@@ -3943,23 +4006,38 @@ export default {
                   });
                   return
                 } else {
-                  this.bookings[this.itemIndex].status = "checkedout";
-                  this.bookings[this.itemIndex].actualCheckoutDate = new Date();
-                  this.reservation.status = "vacant";
-                  this.updateBookings(this.bookings[this.itemIndex].id);
-                  this.populateCalendarItems();
-                  //this.changeItemColor("checkedout");
-                  this.toggleItemModal();
-                  this.taskRecord(`action:/checked-out guest/client:/${this.bookings[this.itemIndex].name}`)
-                  // Display success message using SweetAlert
-                  this.$swal.fire({
-                    icon: 'success',
-                    title: 'Guest Checked Out!',
-                    text: 'The guest has been checked out.',
-                    confirmButtonText: 'OK'
-                  }).then(response => {
-                    document.location.reload();
+                  let roomId = -1;
+                  axios.post(`${this.API_URL}rooms/filter/`, [
+                    { columnName: 'name', columnKey: this.bookings[this.itemIndex].room_name },
+                  ]).then(response => {
+                    roomId = response.data[0].id;
+                    axios.put(`${this.API_URL}rooms/${roomId}/`, {
+                      name: response.data[0].name,
+                      type: response.data[0].type,
+                      price: response.data[0].price,
+                      isAvailable: response.data[0].isAvailable,
+                      status: 'dirty'
+                    }).then(response => {
+                      this.bookings[this.itemIndex].status = "checkedout";
+                      this.bookings[this.itemIndex].actualCheckoutDate = new Date();
+                      this.reservation.status = "vacant";
+                      this.updateBookings(this.bookings[this.itemIndex].id);
+                      this.populateCalendarItems();
+                      //this.changeItemColor("checkedout");
+                      this.toggleItemModal();
+                      this.taskRecord(`action:/checked-out guest/client:/${this.bookings[this.itemIndex].name}`)
+                      // Display success message using SweetAlert
+                      this.$swal.fire({
+                        icon: 'success',
+                        title: 'Guest Checked Out!',
+                        text: 'The guest has been checked out.',
+                        confirmButtonText: 'OK'
+                      }).then(response => {
+                        document.location.reload();
+                      })
+                    })
                   })
+
                 }
               }
             })
