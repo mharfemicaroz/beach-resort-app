@@ -31,7 +31,7 @@
         </div>
 
 
-        <table class="table table-bordered">
+        <table class="table table-bordered" ref="table">
             <thead>
                 <tr>
                     <th style="width: 80px;">Room</th>
@@ -45,28 +45,40 @@
             <tbody>
                 <tr v-for="(room, roomIndex) in filteredRooms" :key="roomIndex">
                     <td>{{ room.name }}</td>
-                    <td><span style="height: 40px; max-height: 40px;"  class="d-flex justify-content-center align-items-center btn-item text-white" :class="(room.status === 'clean'?'bg-success':'bg-danger')" @click="$emit('clickRoom-action',room)">{{ room.status }}</span></td>
-                    <td v-for="(day, dayIndex) in daysWithColspan[roomIndex]" :key="dayIndex" :colspan="day.colspan">
-                        <template v-if="day.bookings.length > 0">
+                    <td><span style="height: 40px; max-height: 40px;"
+                            class="d-flex justify-content-center align-items-center btn-item text-white"
+                            :class="(room.status === 'clean' ? 'bg-success' : 'bg-danger')"
+                            @click="$emit('clickRoom-action', room)">{{ room.status }}</span></td>
+
+                    <template v-for="(day, dayIndex) in daysWithColspan[roomIndex]" :key="dayIndex">
+                        <td v-if="day.bookings.length > 0" :colspan="day.colspan">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span style="height: 40px; max-height: 40px;" v-for="(booking, bookingIndex) in day.bookings" :key="bookingIndex"
+                                <span style="height: 40px; max-height: 40px;"
+                                    v-for="(booking, bookingIndex) in day.bookings" :key="bookingIndex"
                                     class="d-flex justify-content-center align-items-center"
                                     :class="['btn-item', getBookingStatusClass(booking)]" draggable="true"
-                                    @dragstart="dragStart($event, booking, roomIndex, booking.id)" @dragend="dragEnd($event, booking)"
-                                    :style="{ width: (day.colspan * 75) + 'px' }"
+                                    @dragstart="this.dayDragging = false; $emit('dragstart-action', $event, room, booking)"
+                                    @dragend="$emit('dragend-action', $event)" :style="{ width: (day.colspan * 75) + 'px' }"
                                     @click="$emit('clickItem-action', booking, room)">
                                     <i v-if="booking.colspan < booking.bookingDurationDays" style="font-size: xx-small;"
                                         class="fas fa-arrow-right text-light"></i>
                                     {{ booking.name }}
                                 </span>
                             </div>
-                        </template>
-                        <template v-else>
-                            <span style="height: 40px; max-height: 40px;"  class="dropzone" @dragover.prevent="dragOver($event, roomIndex, dayIndex)" @drop="drop($event, roomIndex, dayIndex)"
-                                @click="$emit('clickDay-action', day.day, room)">
-                            </span>
-                        </template>
-                    </td>
+                        </td>
+                        <td v-else draggable="true"
+                            @dragstart="this.dayDragging = true; dragstart($event); $emit('dragstartday-action', $event, day.day, room)"
+                            @dragend="dragend($event)" @dragenter="dragenter($event)"
+                            @dragover.prevent="$emit('dragover-action', $event)"
+                            @drop="$emit('dragdrop-action', $event, day.day, room)"
+                            @click="$emit('clickDay-action', day.day, room)">
+                            
+                        </td>
+
+
+                    </template>
+
+
                 </tr>
             </tbody>
 
@@ -94,6 +106,8 @@ export default {
     },
     data() {
         return {
+            dayDragging: false,
+            activeCells: [],
             booking: [],
             startDay: new Date().getDate(),
             monthIndex: new Date().getMonth(),
@@ -107,88 +121,30 @@ export default {
         };
     },
     methods: {
-        dragStart(event, booking, roomIndex, bookingIndex) {
-            this.draggedBooking = booking;
-            this.draggedRoomIndex = roomIndex;
-            this.draggedBookingIndex = bookingIndex;
-            event.dataTransfer.effectAllowed = "move";
-            event.dataTransfer.setData("text/plain", "");
-            event.target.classList.add("dragging");
-            
-            // Temporarily disappear the dragging item
-            //this.daysWithColspan[roomIndex][bookingIndex].bookings = [];
-            //this.daysWithColspan[roomIndex].filter(item => {return item.bookings.some(booking => booking.id === bookingIndex)})[0].bookings = [];
-            // alert(JSON.stringify(
-            //     this.daysWithColspan[roomIndex].filter(item => {return item.bookings.some(booking => booking.id === bookingIndex)})[0].bookings[0].id
-            // ))
-            // alert( JSON.stringify(
-            //     this.daysWithColspan[roomIndex].filter(item => {return item.bookings.some(booking => booking.id === bookingIndex)})
-            //         ))
-            
-            // Unmerge the cells and add dropzone class
-            //this.unmergeCells(roomIndex, bookingIndex);
+        dragstart(event) {
+            //event.target.style.opacity = 0;
+            event.target.style.backgroundColor = '#fff3cd';
+            this.activeCells.push(event.target);
         },
-
-        dragEnd(event, booking) {
-            if (this.draggedBooking) {
-                this.draggedBooking = null;
-                this.dropTarget = null;
-                this.draggedRoomIndex = null;
-                this.draggedBookingIndex = null;
-                event.target.classList.remove("dragging");
-                
-                // Remove the dropzone class from all cells
-                this.removeDropzoneClassFromCells();
-            }
+        dragend(event) {
+            //event.target.style.opacity = 1;
+            this.activeCells.forEach(cell => cell.style.backgroundColor = '');
+            this.activeCells = [];
+            this.dayDragging = false;
         },
-
-        dragOver(event, roomIndex, dayIndex) {
-            event.preventDefault(); // Allow drop event
-            this.dropTarget = roomIndex;
-            
-            // If the cell is empty, add the dropzone class
-            if (this.daysWithColspan[roomIndex][dayIndex].bookings.length === 0) {
-                event.target.classList.add("dropzone");
-            }
-        },
-
-        drop(event, roomIndex) {
-            event.preventDefault(); // Prevent the default action of dropping outside the drop zone
-            if (this.draggedBooking && this.dropTarget !== null) {
-                // Update the room name of the dragged booking
-                this.draggedBooking.room_name = this.filteredRooms[this.dropTarget].name;
-
-                // Optional: Implement logic for updating check-in date and checkout date if needed
-                // ...
-                // Refresh the data after the drag and drop
-
-            }
-        },
-        unmergeCells(roomIndex, bookingIndex) {
-            const booking = this.daysWithColspan[roomIndex][bookingIndex];
-            const colspan = booking.colspan;
-            
-            for (let i = 0; i < colspan; i++) {
-                this.daysWithColspan[roomIndex].splice(bookingIndex, 0, { bookings: [], colspan: 1 });
-            }
-            
-            this.daysWithColspan[roomIndex].splice(bookingIndex + colspan, 1);
-        },
-        
-        removeDropzoneClassFromCells() {
-            for (let room of this.daysWithColspan) {
-                for (let day of room) {
-                    if (day.bookings.length === 0) {
-                        day.dropzone = false;
-                    }
-                }
+        dragenter(event) {
+            if (this.dayDragging) {
+                // Change background color of the cell
+                event.target.style.backgroundColor = '#fff3cd';
+                // Add the cell to the active cells
+                this.activeCells.push(event.target);
             }
         },
         getBookingStatusClass(booking) {
             if (booking.status === "reserved") {
                 return booking.isPaid === 'partial' ? "cv-item hotel-reserved" : "cv-item hotel-reserved-unpaid";
             } else if (booking.status === "checkedin") {
-                return booking.isPaid === 'yes' ? "cv-item hotel-checkedin-paid" : booking.isPaid === 'partial'? "cv-item hotel-checkedin-partial":"cv-item hotel-checkedin-unpaid";
+                return booking.isPaid === 'yes' ? "cv-item hotel-checkedin-paid" : booking.isPaid === 'partial' ? "cv-item hotel-checkedin-partial" : "cv-item hotel-checkedin-unpaid";
             } else if (booking.status === "checkedout") {
                 return "cv-item hotel-checkedout";
             } else if (booking.status === "cancelled") {
@@ -206,20 +162,20 @@ export default {
             );
         },
         prevYear() {
-            this.currentYear--; // Decrease the current year by 1
+            this.startDay -= 16; // Decrease the current year by 1
             this.adjustMonth(); // Adjust the month based on the new year
         },
 
         nextYear() {
-            this.currentYear++; // Increase the current year by 1
+            this.startDay += 16; // Increase the current year by 1
             this.adjustMonth(); // Adjust the month based on the new year
         },
         prevPeriod() {
-            this.startDay -= 16;
+            this.startDay -= 1;
             this.adjustMonth();
         },
         nextPeriod() {
-            this.startDay += 16;
+            this.startDay += 1;
             this.adjustMonth();
         },
         adjustMonth() {
@@ -346,11 +302,10 @@ export default {
                 return daysWithColspan;
             })
         }
-
-
-
-
     },
+    mounted() {
+
+    }
 };
 </script>
 <style scoped>
@@ -423,8 +378,7 @@ table {
     height: 100%;
     text-align: center;
     padding: 10px;
-    border: 2px dashed #ccc;
-    background-color: #f0f0f0;
+
     cursor: pointer;
 }
 </style>

@@ -187,7 +187,9 @@
         <div class="container-fluid">
           <div class="row">
             <ReceptionHotel :bookingsdata="bookings" :roomsdata="rooms" @clickItem-action="handleReceptionItemAction"
-              @clickDay-action="handleReceptionDayAction" @clickRoom-action="handleReceptionRoomAction" />
+              @clickDay-action="handleReceptionDayAction" @clickRoom-action="handleReceptionRoomAction"
+              @dragstart-action="handledragstart" @dragend-action="handledragend" @dragover-action="handleDragOver"
+              @dragdrop-action="handleDragDrop" @dragstartday-action="handledragstartday" />
           </div>
         </div>
       </div>
@@ -1646,6 +1648,10 @@ ChartJS.register(
   Legend
 )
 //helper functions
+function parseDateOrig(dateString) {
+  const [day, month, year] = dateString.split('/');
+  return `${year}-${month}-${day}`;
+}
 function parseDate(dateString) {
   const [day, month, year] = dateString.split('/');
   return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
@@ -1689,6 +1695,9 @@ export default {
   },
   data() {
     return {
+      dragDayIsSelected: false,
+      draggedItem: null,
+      draggedRoom: null,
       justDiscounted: false,
       gbookingscount: 0,
       activeAccountFlag: false,
@@ -1929,6 +1938,7 @@ export default {
         'label': 'Date',
         'field': 'dateCreated'
       },],
+      hoveredDay: null,
       dayreserve: new Date(),
       showTable: {},
       toggleAll: true,
@@ -2505,6 +2515,152 @@ export default {
     },
   },
   methods: {
+    handledragstart(e, room, book) {
+      this.draggedItem = this.origbookings.filter(
+        o => o.itemID === book.itemID
+      );
+      this.draggedRoom = room;
+    },
+    handledragstartday(e, d, r) {
+      this.selectionStart = d;
+      this.dragDayIsSelected = true;
+    },
+    handleDragOver(e) {
+
+    },
+    handledragend(e) {
+
+    },
+    handleDragDrop(e, d, r) {
+      if (this.dragDayIsSelected) {
+
+        const eLength = CalendarMath.dayDiff(o.startDate, d)
+        let landingDateCheckin = CalendarMath.addDays(o.startDate, eLength);
+        let landingDateCheckout = CalendarMath.addDays(o.endDate, eLength);
+        let filteredBookings = this.bookings.filter(booking => booking.status === 'reserved' && booking.itemID !== o.id && booking.room_name === r.name && new Date(booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0]).setHours(0, 0, 0, 0) <= landingDateCheckout.setHours(0, 0, 0, 0)
+          && new Date(booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0));
+        if (filteredBookings.length > 0) {
+          this.$swal.fire({
+            icon: 'error',
+            title: 'Cannot Adjust Reservation',
+            text: 'Dates conflict with an existing room reservationx.',
+            confirmButtonText: 'OK'
+          });
+          return false;
+        }
+
+        this.selectionEnd = d;
+        this.finishSelection([this.selectionStart,this.selectionEnd]);
+        this.dragDayIsSelected = false;
+        this.toggleselect = false;
+        this.roomSelect = "no";
+        this.reservation.roomName = [r];
+      } else {
+        const id = this.draggedItem[0].itemID;
+        const startDate = parseDateOrig(this.draggedItem[0].checkinDate);
+        const endDate = parseDateOrig(this.draggedItem[0].checkoutDate);
+        const roomOrig = this.draggedRoom.name;
+        const roomNew = r.name;
+        let item = {
+          "originalItem": {
+            "startDate": startDate,
+            "endDate": endDate,
+          },
+          "id": id,
+          "startDate": new Date(startDate),
+          "endDate": new Date(endDate),
+        }
+        if (roomOrig !== roomNew) {
+          this.moveRoom(this.draggedItem[0], r, d, item);
+        } else {
+          this.onDrop(item, d)
+          this.draggedItem = null;
+          this.draggedRoom = null;
+        }
+      }
+    },
+    async moveRoom(book, r, d, o) {
+      const item = book;
+      const room = r;
+      const day = d;
+      this.itemIndex = this.bookings.findIndex(
+        o => o.itemID === item.itemID
+      );
+      const oldroom = {
+        name: this.bookings[this.itemIndex].room_name,
+        type: this.bookings[this.itemIndex].room_type,
+        price: this.bookings[this.itemIndex].room_price
+      }
+      const newroom = {
+        name: room.name,
+        type: room.type,
+        price: room.price
+      }
+      if (oldroom.price !== newroom.price) {
+        this.$swal({
+          title: "Transfer Error",
+          text: "Room prices do not match. Unable to transfer room.",
+          icon: "error",
+          buttons: {
+            confirm: {
+              text: "OK",
+              value: true,
+              visible: true,
+              className: "confirm-button",
+              closeModal: true
+            }
+          }
+        });
+        return;
+      }
+      //fix error here
+      const itemStatus = this.bookings[this.itemIndex].status;
+      if (itemStatus === "reserved") {
+        const eLength = CalendarMath.dayDiff(o.startDate, d)
+        let landingDateCheckin = CalendarMath.addDays(o.startDate, eLength);
+        let landingDateCheckout = CalendarMath.addDays(o.endDate, eLength);
+        let filteredBookings = this.bookings.filter(booking => booking.status === 'reserved' && booking.itemID !== o.id && booking.room_name === r.name && new Date(booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0]).setHours(0, 0, 0, 0) <= landingDateCheckout.setHours(0, 0, 0, 0)
+          && new Date(booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0));
+        if (filteredBookings.length > 0) {
+          this.$swal.fire({
+            icon: 'error',
+            title: 'Cannot Adjust Reservation',
+            text: 'Dates conflict with an existing room reservation.',
+            confirmButtonText: 'OK'
+          });
+          return false;
+        }
+      }
+
+      axios.post(`${this.API_URL}transaction/item/filter/`, {
+        columnName: 'bookingID',
+        columnKey: item.itemID
+      }).then(response => {
+        try {
+          axios.put(`${this.API_URL}transaction/item/${existingTransactionItems.data[0].id}/`, {
+            bookingID: existingTransactionItems.data[0].bookingID,
+            itemName: newroom.name,
+            itemType: existingTransactionItems.data[0].itemType,
+            itemPriceRate: existingTransactionItems.data[0].itemPriceRate,
+            purchaseQty: existingTransactionItems.data[0].purchaseQty,
+            totalCost: existingTransactionItems.data[0].totalCost,
+            category: existingTransactionItems.data[0].category,
+            itemOption: existingTransactionItems.data[0].itemOption,
+          });
+        } catch (error) {
+        }
+        //this.taskRecord(`action:/transfer guest/client:/${item.name}`)
+        this.onDrop(o, d)
+        item.room_name = newroom.name;
+        item.room_price = newroom.price;
+        item.room_type = newroom.type;
+        item.remarks = "transferred from: " + oldroom.name + " on " + formatDate();
+        this.draggedItem = null;
+        this.draggedRoom = null;
+      })
+
+
+    },
     handleReceptionRoomAction(room) {
       this.$swal.fire({
         icon: 'warning',
@@ -3702,6 +3858,8 @@ export default {
         this.roomSelect = "ok";
       } else {
         const item = this.bookings[this.itemIndex];
+        alert(JSON.stringify(item))
+        return
         const room = this.reservation.roomName;
         if (room.name === undefined) {
           return;
@@ -4198,12 +4356,19 @@ export default {
             item.originalItem.startDate = CalendarMath.addDays(item.startDate, eLength)
             item.originalItem.endDate = CalendarMath.addDays(item.endDate, eLength)
           }
-          this.bookings[this.itemIndex].checkinDate = item.originalItem.startDate.toLocaleDateString('en-GB');
-          this.bookings[this.itemIndex].checkoutDate = item.originalItem.endDate.toLocaleDateString('en-GB');
+          if (this.draggedItem) {
+            this.draggedItem[0].checkinDate = item.originalItem.startDate.toLocaleDateString('en-GB');
+            this.draggedItem[0].checkoutDate = item.originalItem.endDate.toLocaleDateString('en-GB');
+          } else {
+
+            this.bookings[this.itemIndex].checkinDate = item.originalItem.startDate.toLocaleDateString('en-GB');
+            this.bookings[this.itemIndex].checkoutDate = item.originalItem.endDate.toLocaleDateString('en-GB');
+          }
+
           this.updateBookings(this.bookings[this.itemIndex].id);
-          //this.reloadData();
-          this.populateCalendarItems();
-          this.taskRecord(`action:/adjust date reservation/client:/${this.bookings[this.itemIndex].name}`)
+          // //this.reloadData();
+          // this.populateCalendarItems();
+          // this.taskRecord(`action:/adjust date reservation/client:/${this.bookings[this.itemIndex].name}`)
         } else {
           this.$swal.fire({
             icon: 'error',
@@ -4413,7 +4578,7 @@ export default {
           text: "Booking successful!",
           icon: "success",
         }).then(response => {
-          document.location.reload();
+          //document.location.reload();
         })
       } catch (error) {
         console.log(error);
