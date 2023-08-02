@@ -55,8 +55,8 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <span style="height: 40px; max-height: 40px;"
                                     v-for="(booking, bookingIndex) in day.bookings" :key="bookingIndex"
-                                    class="d-flex justify-content-center align-items-center"
-                                    :class="['btn-item', getBookingStatusClass(booking)]" draggable="true"
+                                    class="d-flex justify-content-center align-items-center pen-border"
+                                    :class="['btn-item', 'draggable', getBookingStatusClass(booking)]" draggable="true"
                                     @dragstart="this.dayDragging = false; $emit('dragstart-action', $event, room, booking)"
                                     @dragend="$emit('dragend-action', $event)" :style="{ width: (day.colspan * 75) + 'px' }"
                                     @click="$emit('clickItem-action', booking, room)">
@@ -125,6 +125,8 @@ export default {
             //event.target.style.opacity = 0;
             event.target.style.backgroundColor = '#fff3cd';
             this.activeCells.push(event.target);
+            const img = new Image();
+            event.dataTransfer.setDragImage(img, 0, 0);
         },
         dragend(event) {
             //event.target.style.opacity = 1;
@@ -275,7 +277,7 @@ export default {
                         // Check if the booking duration exceeds the remaining days in the period
                         const remainingDays = this.days.length - dayIndex;
                         const daysFromCheckin = Math.ceil((day - checkinDay) / (1000 * 60 * 60 * 24)); // Add this line
-                        const effectiveBookingDays = Math.min(bookingDurationDays - daysFromCheckin, remainingDays); // Change this line
+                        const effectiveBookingDays = Math.min(bookingDurationDays - daysFromCheckin + 1, remainingDays); // Change this line
 
                         // Store the bookings in the cell for the day
                         daysWithColspan.push({
@@ -315,23 +317,10 @@ table {
     word-wrap: break-word;
 }
 
-.btn-item {
-    position: relative;
-    white-space: nowrap;
-    overflow: hidden;
-    border-width: 1px;
-    direction: initial;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    border: 1px solid #dee2e6;
-    border-radius: 1rem;
-    transition: all 0.2s ease-in-out;
-    text-align: center;
-}
 
-.btn-item:hover {
-    cursor: pointer;
-    transform: translateY(-5px);
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+
+.draggable{
+    cursor: grab;
 }
 
 .bg-def {
@@ -381,5 +370,39 @@ table {
 
     cursor: pointer;
 }
+.btn-item {
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    border-width: 1px;
+    direction: initial;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid #f7fcff;
+    border-radius: 1rem;
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+}
+.btn-item:hover {
+    cursor: pointer;
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+.pen-border {
+    position: relative;
+    padding-right: 20px; 
+}
+
+.pen-border:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -15px;
+    width: 50px;
+    background: #f7fcff;
+    transform: skewX(-45deg);
+}
+
+
 </style>
 

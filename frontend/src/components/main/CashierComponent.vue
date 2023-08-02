@@ -884,7 +884,7 @@
           </div>
         </div>
       </div>
-      <div :class="(userdata.role !== 'foodserver' || userdata.role !== 'waiter') ? 'tab-pane fade' : 'tab-pane fade show active'" id="orders"
+      <div :class="(userdata.role !== 'foodserver' && userdata.role !== 'waiter') ? 'tab-pane fade' : 'tab-pane fade show active'" id="orders"
         role="tabpanel" aria-labelledby="orders-tab">
         <div class="row mt-2">
           <div class="col-md-12">
@@ -912,7 +912,7 @@
                                   :id='"cb" + orderItem.id'>
                                 <label class="form-check-label" for="checkbox-{{ orderItem.id }}">
                                   {{ orderItem.qty }} &times; {{ orderItem.name }}
-                                </label>
+                                </label> 
                               </div>
                             </li>
                           </ul>

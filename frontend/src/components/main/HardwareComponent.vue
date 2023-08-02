@@ -1,0 +1,3529 @@
+<template>
+    <div class="container-fluid main">
+        <TopNavBarComponent />
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser'">
+                <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button"
+                    role="tab" aria-controls="dashboard" aria-selected="true" @click="resetCounter">Dashboard</button>
+            </li>
+            <li class="nav-item" role="presentation"
+                v-if="userdata.role !== 'foodserver' && userdata.role !== 'restoinventory'">
+                <button
+                    :class="(userdata.role !== 'foodserver' || userdata.role !== 'restoinventory') ? 'nav-link active' : 'nav-link'"
+                    id="tables-tab" data-bs-toggle="tab" data-bs-target="#tables" type="button" role="tab"
+                    aria-controls="tables" aria-selected="true" @click="resetCounter">Customers</button>
+            </li>
+            <li class="nav-item" role="presentation"
+                v-if="userdata.role !== 'foodserver' && userdata.role !== 'restoinventory'">
+                <button class="nav-link" id="pos-tab" data-bs-toggle="tab" data-bs-target="#pos" type="button" role="tab"
+                    aria-controls="pos" aria-selected="true" @click="activatePOS">{{ (userdata.role !== 'waiter') ? 'POS' :
+                        'Menu'
+                    }}</button>
+            </li>
+            <li class="nav-item" role="presentation"
+                v-if="userdata.role !== 'cashier' && userdata.role === 'foodserver' || userdata.role === 'superuser' || userdata.role === 'waiter'">
+                <button :class="(userdata.role === 'foodserver') ? 'nav-link active' : 'nav-link'" id="orders-tab"
+                    data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab" aria-controls="orders"
+                    aria-selected="true">Orders</button>
+            </li>
+            <li class="nav-item" role="presentation"
+                v-if="userdata.role === 'superuser' || userdata.role === 'restoinventory'">
+                <button :class="(userdata.role === 'restoinventory') ? 'nav-link active' : 'nav-link'" id="inventory-tab"
+                    data-bs-toggle="tab" data-bs-target="#inventory" type="button" role="tab" aria-controls="inventory"
+                    aria-selected="true" @click="resetCounter">Inventory</button>
+            </li>
+            <li class="nav-item" role="presentation" v-if="userdata.role === 'superuser'">
+                <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button"
+                    role="tab" aria-controls="reports" aria-selected="false" @click="resetCounter">Reports</button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3" id="myTabContent">
+            <div class="tab-pane fade" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
+                <div class="row mt-2" id="dashboard">
+                    <RestoDashboard />
+                </div>
+            </div>
+            <div :class="(userdata.role === 'foodserver' || userdata.role === 'restoinventory') ? 'tab-pane fade' : 'tab-pane fade show active'"
+                id="tables" role="tabpanel" aria-labelledby="tables-tab">
+                <div class="row mt-2">
+                    <div class="col-md-3">
+                        <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
+                            <!-- <li class="nav-item">
+                                <a class="nav-link active show" data-bs-toggle="tab" @click="resetCounter" role="tab"
+                                    href="#dineintab">
+                                    <i class="fa fa-tags"></i>Dine-in</a>
+                            </li> -->
+                            <li class="nav-item">
+                                <a class="nav-link active show" data-bs-toggle="tab" role="tab" @click="resetCounter"
+                                    href="#takeouttab">
+                                    <i class="fa fa-tags"></i>Paid Customer</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" @click="resetCounter" href="#onholdtab">
+                                    <i class="fa fa-tags"></i>Credit Customer</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="tab-content" id="myTabContent" style="height: 550px; overflow-y: auto;">
+                        <!-- <div class="tab-pane fade show active" id="dineintab" role="tabpanel" aria-labelledby="dinein-tab">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-sm-1">
+                                        <ul class="nav nav-tabs flex-column">
+                                            <li class="nav-item">
+                                                <a class="nav-link rotated-text active" data-bs-toggle="tab"
+                                                    href="#byresto">Restaurant</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link rotated-text" data-bs-toggle="tab"
+                                                    href="#byrooms">Rooms</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-sm-11">
+                                        <div class="tab-content">
+                                            <div id="byresto" class="tab-pane active">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row row-cols-1 row-cols-md-6">
+                                                            <div class="col mb-6"
+                                                                v-for="(item, index) in filteredresto_tables"
+                                                                :key="item.id">
+                                                                <div class="card"
+                                                                    style="transition: transform 0.2s ease-in-out;"
+                                                                    @click="dineInAction(item)">
+                                                                    <div class="card-header d-flex justify-content-between align-items-center"
+                                                                        :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                                                        <h5 class="card-title"><i class="fas fa-table"></i>
+                                                                            {{ item.name }}</h5>
+                                                                    </div>
+                                                                    <div class="card-body">
+                                                                        <h6 class="text-dark">
+                                                                            <i class="fas fa-info-circle"></i> {{
+                                                                                ('order_id' in item) ? 'occupied' : 'no order'
+                                                                            }}
+                                                                        </h6>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="byrooms" class="tab-pane">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+
+                                                        <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3"
+                                                            role="tablist">
+                                                            <li class="nav-item">
+                                                                <a class="nav-link active show" data-bs-toggle="tab"
+                                                                    @click="activeroomtable = 'BEACH ROOM'" role="tab"
+                                                                    href="#cat1">
+                                                                    <i class="fa fa-tags"></i>Beach Rooms</a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    @click="activeroomtable = 'POOL ROOM'" role="tab"
+                                                                    href="#cat2">
+                                                                    <i class="fa fa-tags"></i>Pool Rooms</a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    @click="activeroomtable = 'POOL COTTAGE'" role="tab"
+                                                                    href="#cat3">
+                                                                    <i class="fa fa-tags"></i>Pool Cottages</a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    @click="activeroomtable = 'GAZEBO COTTAGE'" role="tab"
+                                                                    href="#cat4">
+                                                                    <i class="fa fa-tags"></i>Native Gazebo Cottages</a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    @click="activeroomtable = 'BEACH COTTAGE'" role="tab"
+                                                                    href="#cat5">
+                                                                    <i class="fa fa-tags"></i>Beach Cottages (Day)</a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    @click="activeroomtable = 'N-BEACH COTTAGE'" role="tab"
+                                                                    href="#cat6">
+                                                                    <i class="fa fa-tags"></i>Beach Cottages (Night)</a>
+                                                            </li>
+                                                            <li class="nav-item">
+                                                                <a class="nav-link" data-bs-toggle="tab"
+                                                                    @click="activeroomtable = 'HALL'" role="tab"
+                                                                    href="#cat7">
+                                                                    <i class="fa fa-tags"></i>Halls</a>
+                                                            </li>
+                                                        </ul>
+
+                                                        <div class="tab-content">
+                                                            <div class="tab-pane fade show active" id="cat1" role="tabpanel"
+                                                                aria-labelledby="cat1">
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        <div class="row row-cols-1 row-cols-md-6">
+                                                                            <template
+                                                                                v-for="(item, index) in filteredroom_tables"
+                                                                                :key="item.id">
+                                                                                <div class="col mb-6"
+                                                                                    v-show="item.b_status">
+                                                                                    <div class="card"
+                                                                                        style="transition: transform 0.2s ease-in-out;"
+                                                                                        @click="dineInAction(item)">
+                                                                                        <div class="card-header d-flex justify-content-between align-items-center"
+                                                                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                                                                            <h5 class="card-title"><i
+                                                                                                    class="fas fa-table"></i>
+                                                                                                {{ item.name }}</h5>
+                                                                                        </div>
+                                                                                        <div class="card-body">
+                                                                                            <h6 class="text-dark">
+                                                                                                <i
+                                                                                                    class="fas fa-info-circle"></i>
+                                                                                                {{ ('order_id' in item) ?
+                                                                                                    'w/ order' :
+                                                                                                    'no order' }}
+                                                                                            </h6>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </template>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="cat2" role="tabpanel"
+                                                                aria-labelledby="cat2">
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        <div class="row row-cols-1 row-cols-md-6">
+                                                                            <template
+                                                                                v-for="(item, index) in filteredroom_tables"
+                                                                                :key="item.id">
+                                                                                <div class="col mb-6"
+                                                                                    v-show="item.b_status">
+                                                                                    <div class="card"
+                                                                                        style="transition: transform 0.2s ease-in-out;"
+                                                                                        @click="dineInAction(item)">
+                                                                                        <div class="card-header d-flex justify-content-between align-items-center"
+                                                                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                                                                            <h5 class="card-title"><i
+                                                                                                    class="fas fa-table"></i>
+                                                                                                {{ item.name }}</h5>
+                                                                                        </div>
+                                                                                        <div class="card-body">
+                                                                                            <h6 class="text-dark">
+                                                                                                <i
+                                                                                                    class="fas fa-info-circle"></i>
+                                                                                                {{ ('order_id' in item) ?
+                                                                                                    'w/ order' :
+                                                                                                    'no order' }}
+                                                                                            </h6>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </template>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="cat3" role="tabpanel"
+                                                                aria-labelledby="cat3">
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        <div class="row row-cols-1 row-cols-md-6">
+                                                                            <template
+                                                                                v-for="(item, index) in filteredroom_tables"
+                                                                                :key="item.id">
+                                                                                <div class="col mb-6"
+                                                                                    v-show="item.b_status">
+                                                                                    <div class="card"
+                                                                                        style="transition: transform 0.2s ease-in-out;"
+                                                                                        @click="dineInAction(item)">
+                                                                                        <div class="card-header d-flex justify-content-between align-items-center"
+                                                                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                                                                            <h5 class="card-title"><i
+                                                                                                    class="fas fa-table"></i>
+                                                                                                {{ item.name }}</h5>
+                                                                                        </div>
+                                                                                        <div class="card-body">
+                                                                                            <h6 class="text-dark">
+                                                                                                <i
+                                                                                                    class="fas fa-info-circle"></i>
+                                                                                                {{ ('order_id' in item) ?
+                                                                                                    'w/ order' :
+                                                                                                    'no order' }}
+                                                                                            </h6>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </template>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="cat4" role="tabpanel"
+                                                                aria-labelledby="cat4">
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        <div class="row row-cols-1 row-cols-md-6">
+                                                                            <template
+                                                                                v-for="(item, index) in filteredroom_tables"
+                                                                                :key="item.id">
+                                                                                <div class="col mb-6"
+                                                                                    v-show="item.b_status">
+                                                                                    <div class="card"
+                                                                                        style="transition: transform 0.2s ease-in-out;"
+                                                                                        @click="dineInAction(item)">
+                                                                                        <div class="card-header d-flex justify-content-between align-items-center"
+                                                                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                                                                            <h5 class="card-title"><i
+                                                                                                    class="fas fa-table"></i>
+                                                                                                {{ item.name }}</h5>
+                                                                                        </div>
+                                                                                        <div class="card-body">
+                                                                                            <h6 class="text-dark">
+                                                                                                <i
+                                                                                                    class="fas fa-info-circle"></i>
+                                                                                                {{ ('order_id' in item) ?
+                                                                                                    'w/ order' :
+                                                                                                    'no order' }}
+                                                                                            </h6>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </template>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="cat5" role="tabpanel"
+                                                                aria-labelledby="cat5">
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        <div class="row row-cols-1 row-cols-md-6">
+                                                                            <template
+                                                                                v-for="(item, index) in filteredroom_tables"
+                                                                                :key="item.id">
+                                                                                <div class="col mb-6"
+                                                                                    v-show="item.b_status">
+                                                                                    <div class="card"
+                                                                                        style="transition: transform 0.2s ease-in-out;"
+                                                                                        @click="dineInAction(item)">
+                                                                                        <div class="card-header d-flex justify-content-between align-items-center"
+                                                                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                                                                            <h5 class="card-title"><i
+                                                                                                    class="fas fa-table"></i>
+                                                                                                {{ item.name }}</h5>
+                                                                                        </div>
+                                                                                        <div class="card-body">
+                                                                                            <h6 class="text-dark">
+                                                                                                <i
+                                                                                                    class="fas fa-info-circle"></i>
+                                                                                                {{ ('order_id' in item) ?
+                                                                                                    'w/ order' :
+                                                                                                    'no order' }}
+                                                                                            </h6>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </template>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="cat6" role="tabpanel"
+                                                                aria-labelledby="cat6">
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        <div class="row row-cols-1 row-cols-md-6">
+                                                                            <template
+                                                                                v-for="(item, index) in filteredroom_tables"
+                                                                                :key="item.id">
+                                                                                <div class="col mb-6"
+                                                                                    v-show="item.b_status">
+                                                                                    <div class="card"
+                                                                                        style="transition: transform 0.2s ease-in-out;"
+                                                                                        @click="dineInAction(item)">
+                                                                                        <div class="card-header d-flex justify-content-between align-items-center"
+                                                                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                                                                            <h5 class="card-title"><i
+                                                                                                    class="fas fa-table"></i>
+                                                                                                {{ item.name }}</h5>
+                                                                                        </div>
+                                                                                        <div class="card-body">
+                                                                                            <h6 class="text-dark">
+                                                                                                <i
+                                                                                                    class="fas fa-info-circle"></i>
+                                                                                                {{ ('order_id' in item) ?
+                                                                                                    'w/ order' :
+                                                                                                    'no order' }}
+                                                                                            </h6>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </template>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="cat7" role="tabpanel"
+                                                                aria-labelledby="cat7">
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        <div class="row row-cols-1 row-cols-md-6">
+                                                                            <template
+                                                                                v-for="(item, index) in filteredroom_tables"
+                                                                                :key="item.id">
+                                                                                <div class="col mb-6"
+                                                                                    v-show="item.b_status">
+                                                                                    <div class="card"
+                                                                                        style="transition: transform 0.2s ease-in-out;"
+                                                                                        @click="dineInAction(item)">
+                                                                                        <div class="card-header d-flex justify-content-between align-items-center"
+                                                                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                                                                            <h5 class="card-title"><i
+                                                                                                    class="fas fa-table"></i>
+                                                                                                {{ item.name }}</h5>
+                                                                                        </div>
+                                                                                        <div class="card-body">
+                                                                                            <h6 class="text-dark">
+                                                                                                <i
+                                                                                                    class="fas fa-info-circle"></i>
+                                                                                                {{ ('order_id' in item) ?
+                                                                                                    'w/ order' :
+                                                                                                    'no order' }}
+                                                                                            </h6>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                </div>
+                                                                            </template>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="tab-pane fade show active" id="takeouttab" role="tabpanel" aria-labelledby="takeout-tab">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row row-cols-1 row-cols-md-6">
+                                            <div class="col mb-6">
+                                                <div class="card"
+                                                    style="transition: transform 0.2s ease-in-out;border-color: #ffecb5;background-color: #fff3cd; color: #664d03;"
+                                                    @click="addnewTakeout">
+                                                    <div
+                                                        class="card-header d-flex justify-content-between align-items-center">
+                                                        <h5 class="card-title"><i class="fas fa-plus"></i> Add</h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <h6>
+                                                            <i class="fas fa-info-circle"></i> Add new
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <template v-for="(item, index) in filteredresto_takeouts" :key="item.id">
+                                                <div class="col mb-6">
+                                                    <div class="card" style="transition: transform 0.2s ease-in-out;">
+                                                        <div class="card-header d-flex justify-content-between align-items-center"
+                                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                                            <h5 class="card-title"><i class="fa fa-shopping-cart"></i> {{
+                                                                item.name }}</h5>
+                                                            <button type="button" class="btn btn-sm btn-close"
+                                                                aria-label="Close" @click="cancelTakeOut(item.id)"></button>
+                                                        </div>
+                                                        <div class="card-body" @click="takeoutAction(item)">
+                                                            <h6 class="text-dark">
+                                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ?
+                                                                    'on progress' : 'on hold' }}
+                                                            </h6>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="onholdtab" role="tabpanel" aria-labelledby="onhold-tab">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row row-cols-1 row-cols-md-6">
+                                            <template v-for="(item, index) in filteredresto_onholds" :key="item.id">
+                                                <div class="col mb-6" v-if="'order_id' in item">
+                                                    <div class="card" style="transition: transform 0.2s ease-in-out;">
+                                                        <div class="card-header d-flex justify-content-between align-items-center"
+                                                            :style="{ 'background-color': ('order_id' in item) ? '#66bb6a' : '' }">
+                                                            <h5 class="card-title"><i class="fa fa-dollars"></i> {{
+                                                                item.name }}</h5>
+                                                        </div>
+                                                        <div class="card-body" @click="onholdAction(item)">
+                                                            <h6 class="text-dark">
+                                                                <i class="fas fa-info-circle"></i> {{ ('order_id' in item) ?
+                                                                    'on progress' : 'on hold' }}
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pos" role="tabpanel" aria-labelledby="pos-tab">
+                <div class="row mt-2" id="posTab">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-6">
+                                <h4>{{ (userdata.role !== 'waiter') ? 'Point of Sales' : 'Menu' }}
+                                    <span v-if="customer.reference_id !== null">
+                                        >>>&NonBreakingSpace; <span class="blink_me text-danger"
+                                            style="font-style: italic;">Now serving: {{
+                                                customer.identifier }} for {{ customer.type }}</span>
+                                    </span>
+                                </h4>
+                            </div>
+                            <div class="col-lg-6 col-sm-6">
+                                <form class="search-wrap" @submit.prevent="">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Search" ref="myInput"
+                                            v-model="searchText">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-primary" type="submit">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#alltab" role="tab"
+                                    href="#alltab" @click="setActiveTab('alltab')">
+                                    <i class="fa fa-tags"></i> All</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category1"
+                                    @click="setActiveTab('nav-tab-category1')">
+                                    <i class="fa fa-tags "></i>Adhesive & Sealants</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category2"
+                                    @click="setActiveTab('nav-tab-category2')">
+                                    <i class="fa fa-tags "></i>Bathroom Fixtures & Accessories</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category3"
+                                    @click="setActiveTab('nav-tab-category3')">
+                                    <i class="fa fa-tags "></i>Building Materials</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category4"
+                                    @click="setActiveTab('nav-tab-category4')">
+                                    <i class="fa fa-tags "></i>Doors & Windows</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category5"
+                                    @click="setActiveTab('nav-tab-category5')">
+                                    <i class="fa fa-tags "></i>Electrical</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category6"
+                                    @click="setActiveTab('nav-tab-category6')">
+                                    <i class="fa fa-tags "></i>Outdoor & Living</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category7"
+                                    @click="setActiveTab('nav-tab-category7')">
+                                    <i class="fa fa-tags "></i>Paints & Accessories</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category8"
+                                    @click="setActiveTab('nav-tab-category8')">
+                                    <i class="fa fa-tags "></i>Power Tools</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category9"
+                                    @click="setActiveTab('nav-tab-category9')">
+                                    <i class="fa fa-tags "></i>Plumbing</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category11"
+                                    @click="setActiveTab('nav-tab-category11')">
+                                    <i class="fa fa-tags "></i>Storage & Organizers</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category10"
+                                    @click="setActiveTab('nav-tab-category10')">
+                                    <i class="fa fa-tags "></i>Wall & Floor Covering</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" role="tab" href="#nav-tab-category12"
+                                    @click="setActiveTab('nav-tab-category10')">
+                                    <i class="fa fa-tags "></i>Miscellaneous</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="myTabContent"
+                            :style="`height: ${(userdata.role === 'waiter') ? 330 : 330}px; overflow-y: auto;`">
+                            <div class="tab-pane fade show active" id="alltab" role="tabpanel" aria-labelledby="all-tab">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems :itemData="filtereditemarray" @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category1" role="tabpanel"
+                                aria-labelledby="nav-tab-category1">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems
+                                                :itemData="filtereditemarray.filter(i => i.category === 'Adhesive & Sealants')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category2" role="tabpanel"
+                                aria-labelledby="nav-tab-category2">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems
+                                                :itemData="filtereditemarray.filter(i => i.category === 'Bathroom Fixtures & Accessories')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category3" role="tabpanel"
+                                aria-labelledby="nav-tab-category3">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems
+                                                :itemData="filtereditemarray.filter(i => i.category === 'Building Materials')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category4" role="tabpanel"
+                                aria-labelledby="nav-tab-category4">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems
+                                                :itemData="filtereditemarray.filter(i => i.category === 'Doors & Windows')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category5" role="tabpanel"
+                                aria-labelledby="nav-tab-category5">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems
+                                                :itemData="filtereditemarray.filter(i => i.category === 'Electrical')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category6" role="tabpanel"
+                                aria-labelledby="nav-tab-category6">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems
+                                                :itemData="filtereditemarray.filter(i => i.category === 'Outdoor & Living')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category7" role="tabpanel"
+                                aria-labelledby="nav-tab-category7">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems
+                                                :itemData="filtereditemarray.filter(i => i.category === 'Paints & Accessories')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category8" role="tabpanel"
+                                aria-labelledby="nav-tab-category8">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems
+                                                :itemData="filtereditemarray.filter(i => i.category === 'Power Tools')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category9" role="tabpanel"
+                                aria-labelledby="nav-tab-category9">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems :itemData="filtereditemarray.filter(i => i.category === 'Plumbing')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category11" role="tabpanel"
+                                aria-labelledby="nav-tab-category11">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems
+                                                :itemData="filtereditemarray.filter(i => i.category === 'Storage & Organizers')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category10" role="tabpanel"
+                                aria-labelledby="nav-tab-category10">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems
+                                                :itemData="filtereditemarray.filter(i => i.category === 'Wall & Floor Covering')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-tab-category12" role="tabpanel"
+                                aria-labelledby="nav-tab-category12">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <CardItems
+                                                :itemData="filtereditemarray.filter(i => i.category === 'Miscellaneous')"
+                                                @click-action="addItemToCart" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row mt-3">
+
+                            <button :disabled="(cartItems.length < 1)"
+                                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="placeOrder">
+                                <span class="text-medium">[F1]</span><br>
+                                Save
+                            </button>
+
+                            <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
+                                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="payOrder">
+                                <span class="text-medium">[F2]</span><br>
+                                Charge
+                            </button>
+
+                            <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
+                                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="setQty">
+                                <span class="text-medium">[F3]</span><br>
+                                Qty
+                            </button>
+
+                            <button class="btn btn-outline-primary btn-block btn-box btn-gap"
+                                v-if="userdata.role !== 'waiter'" @click="setDiscount">
+                                <span class="text-medium">[F4]</span><br>
+                                Discount
+                            </button>
+
+                            <button class="btn btn-outline-primary btn-block btn-box btn-gap"
+                                v-if="userdata.role !== 'waiter'" @click="setTax">
+                                <span class="text-medium">[F5]</span><br>
+                                Tax
+                            </button>
+
+                            <button :disabled="(cartItems.length < 1 || customer.reference_id !== null)"
+                                v-if="userdata.role !== 'waiter'" class="btn btn-outline-primary btn-block btn-box btn-gap"
+                                @click="holdCustomer">
+                                <span class="text-medium">[F6]</span><br>
+                                Hold
+                            </button>
+
+                            <button disabled v-if="userdata.role !== 'waiter'"
+                                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="">
+                                <span class="text-medium">[F7]</span><br>
+                                Toggle
+                            </button>
+
+                            <button class="btn btn-outline-primary btn-block btn-box btn-gap" @click="findItem">
+                                <span class="text-medium">[F8]</span><br>
+                                {{ (inquiretoggle) ? 'Clear' : 'Find' }}
+                            </button>
+
+                            <button class="btn btn-outline-primary btn-block btn-box btn-gap" @click="toggleInquire">
+                                <span class="text-medium">[F9]</span><br>
+                                {{ (inquiretoggle) ? 'Punch' : 'Inquire' }}
+                            </button>
+
+                            <button :disabled="(cartItems.length < 1)" v-if="userdata.role !== 'waiter'"
+                                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="voidAction">
+                                <span class="text-medium">[F10]</span><br>
+                                Void
+                            </button>
+
+                            <button :disabled="(cartItems.length < 1 || customer.order_id !== undefined)"
+                                class="btn btn-outline-primary btn-block btn-box btn-gap" @click="clearAll">
+                                <span class="text-medium">[F11]</span><br>
+                                Clear
+                            </button>
+
+                            <button class="btn btn-outline-primary btn-block btn-box btn-gap" @click="logout">
+                                <span class="text-medium">[F12]</span><br>
+                                Log Out
+                            </button>
+                        </div>
+
+
+                    </div>
+                    <div class="col-md-4">
+
+                        <div ref="itemCart" class="card"
+                            :style="`height: ${(userdata.role !== 'waiter') ? 260: 555}px; overflow-y: auto;`">
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" style="width: 180px;">Item <span v-if="cartItems.length > 0"
+                                                        class="badge-pill badge-danger">{{ cartItems.length }}</span></th>
+                                                <th scope="col">Qty</th>
+                                                <th scope="col">Price</th>
+                                                <th scope="col">
+                                                    <button v-if="cartItems.length > 0 && customer.order_id === undefined"
+                                                        type="button" @click="clearAll" class="btn btn-sm  btn-danger">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(item, index) in cartItems" :key="index">
+
+                                                <td>
+                                                    <div class="row d-flex flex-row">
+                                                        <div class="col-sm-4 text-left">
+                                                            <img :src="this.API_URL + 'Photos/' + item.image" class="img-thumbnail img-xs">
+                                                        </div>
+                                                        <div class="col-sm-8 text-left m-0 p-0 ">
+                                                            <h6 class="text-left" style="font-weight: bold;">{{ item.name }}
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group mr-2" role="group" aria-label="...">
+                                                        <button type="button" class="m-btn btn-light btn btn-default"
+                                                            style="font-size: small; width: 20px;"
+                                                            @click="decreaseQty(item)">
+                                                            <i class="fa fa-minus"></i>
+                                                        </button>
+                                                        <button type="button" class="m-btn btn-light btn btn-default"
+                                                            style="font-size: medium;width: 20px;" disabled>
+                                                            {{ item.qty }}
+                                                        </button>
+                                                        <button type="button" class="m-btn btn-light btn btn-default"
+                                                            style="font-size: small;width: 20px;"
+                                                            @click="increaseQty(item, 1)">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td class="text-right">
+                                                    <strong>₱{{ item.totalPrice.toFixed(2) }}</strong>
+                                                </td>
+                                                <td>
+                                                    <button v-if="item.justadded" class="btn btn-outline-danger btn-sm"
+                                                        type="button" @click="removeFromCart(item)">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box p-2" v-if="userdata.role !== 'waiter'">
+                            <div class="row p-0 m-0">
+                                <div class="col-md-6">
+                                    <dt>Tax: </dt>
+                                </div>
+                                <div class="col-md-6 d-flex flex-row-reverse">
+                                    <dd class="text-right">{{ taxValue }}%</dd>
+                                </div>
+                            </div>
+                            <div class="row p-0 m-0">
+                                <div class="col-md-6">
+                                    <dt>Discount:</dt>
+                                </div>
+                                <div class="col-md-6 d-flex flex-row-reverse">
+                                    <dd class="text-right"><a href="#">{{ discountValue }}{{ (discountType === 'percentage')
+                                        ? '%' : ' off'
+                                    }}</a></dd>
+                                </div>
+                            </div>
+                            <div class="row p-0 m-0">
+                                <div class="col-md-6">
+                                    <dt>Sub Total:</dt>
+                                </div>
+                                <div class="col-md-6 d-flex flex-row-reverse">
+                                    <dd class="text-right">₱{{ subTotal }}</dd>
+                                </div>
+                            </div>
+                            <div class="row p-0 m-0">
+                                <div class="col-md-6">
+                                    <dt>Total: </dt>
+                                </div>
+                                <div class="col-md-6 d-flex flex-row-reverse">
+                                    <dd class="text-right h4 b"> ₱{{ totalCost }} </dd>
+                                </div>
+                            </div>
+                            <div class="row p-0 m-0" v-if="payMethod === 'noncash'">
+                                <div class="col-md-6">
+                                    <dt>Reference no.: </dt>
+                                </div>
+                                <div class="col-md-6 d-flex flex-row-reverse">
+                                    <dd class="text-right"> {{ noncashType }} - {{ referenceno }} </dd>
+                                </div>
+                            </div>
+                        </div> <!-- box.// -->
+                        <div class="box mt-2" v-if="userdata.role !== 'waiter'">
+                            <div class="row bg-primary text-white d-flex flex-row-reverse align-items-center">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-primary text-white "
+                                            style="vertical-align: middle;font-weight: bold;border: none; font-size: x-large;">₱</span>
+                                        <input :disabled="(cartItems.length < 1)" type="number" min="0" ref="tenderedCash"
+                                            class="form-control bg-primary text-white rounded-lg px-2 outline-none"
+                                            @keyup="updateTotalCash" @keydown="updateTotalCash"
+                                            style="text-align:right; font-weight: bold; font-size: x-large; border: none;"
+                                            v-model="totalCash">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <select id="payment-method" v-model="payMethod"
+                                        class="form-control bg-primary text-white"
+                                        style="font-weight: bolder; font-size: larger;" @change="setNonCash">
+                                        <option value="cash">Cash</option>
+                                        <option value="noncash">Non-cash</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-2" v-if="userdata.role !== 'waiter'">
+                                <div class="col-md-12">
+                                    <div class="row row-cols-1 row-cols-md-4">
+                                        <div class="col mb-1" v-for="item in cashDenominations" :key="item.id">
+                                            <button :disabled="(cartItems.length < 1)"
+                                                class="btn bg-white rounded-lg shadow hover:shadow-xs focus:outline-none inline-block px-2 py-0 text-sm"
+                                                @click="addToCash(item.value)"><span>{{
+                                                    item.label }}</span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div :class="(totalChange < 0 ? 'row mt-2 mb-2 bg-danger text-white' : 'row mt-2 mb-2 bg-success text-white')"
+                                v-if="userdata.role !== 'waiter'">
+                                <div class="col-md-6">
+                                    <dt v-if="totalChange >= 0">Change: </dt>
+                                </div>
+                                <div class="col-md-6 d-flex flex-row-reverse">
+                                    <dd class="text-right h4 b"> ₱{{ totalChange }} </dd>
+                                </div>
+                            </div>
+                            <!-- <div class="row">
+                  <div class="col-md-4">
+                    <button :disabled="(cartItems.length < 1)" class="btn btn-light btn-default btn-sm btn-block"
+                      @click="printBill" style="width: 125px;">
+                      <i class="fa fa-print"></i> Print Bill [F1]
+                    </button>
+                  </div>
+                  <div class="col-md-4">
+                    <button :disabled="(cartItems.length < 1)" class="btn btn-danger btn-default btn-sm btn-block"
+                      style="width: 125px;" @click="placeOrder">
+                      <i class="fa fa-bookmark"></i> Place Order [F2]
+                    </button>
+                  </div>
+                  <div class="col-md-4 d-flex flex-row-reverse" v-if="userdata.role !== 'waiter'">
+                    <button :disabled="(cartItems.length < 1)" class="btn btn-primary btn-sm btn-block" @click="payOrder"
+                      style="width: 125px;">
+                      <i class="fa fa-shopping-bag"></i> Charge [F3]
+                    </button>
+                  </div>
+                </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div :class="(userdata.role !== 'foodserver' || userdata.role !== 'waiter') ? 'tab-pane fade' : 'tab-pane fade show active'"
+                id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row row-cols-1 row-cols-md-4">
+                                    <template v-for="(item, index) in filteredResto_allorders" :key="item.id">
+                                        <div class="col mb-4" v-if="item.order_items.length > 0">
+                                            <div class="card" style="transition: transform 0.2s ease-in-out;">
+                                                <div
+                                                    :class="`card-header d-flex justify-content-between align-items-center text-white ${(item.status === 'closed') ? 'bg-danger' : (item.status === 'void' ? 'bg-warning' : (item.status === 'served' ? 'bg-info' : 'bg-success'))}`">
+                                                    <h5 class="card-title">#{{ Number(item.id).toString().padStart(5, "0")
+                                                    }}</h5>
+                                                    <p class="card-subtitle" style="font-size: 12px;">{{ item.datestarted }}
+                                                    </p>
+                                                </div>
+                                                <div class="card-body">
+                                                    <ul style="list-style-type: none; padding-left: 20px;">
+                                                        {{ item.order_type.toString().toUpperCase() }}/{{ item.customer_name
+                                                        }} <span style="font-style: italic;">({{ item.status }})</span>
+                                                        <li v-for="orderItem in item.order_items.map(o => { const checked = false; return { ...o, checked }; })"
+                                                            :key="orderItem.id" class="order-item">
+                                                            <div class="form-check">
+                                                                <input
+                                                                    v-if="item.isRunning && userdata.role === 'superuser' && userdata.role !== 'foodserver'"
+                                                                    type="checkbox" class="form-check-input"
+                                                                    :id='"cb" + orderItem.id'>
+                                                                <label class="form-check-label"
+                                                                    for="checkbox-{{ orderItem.id }}">
+                                                                    {{ orderItem.qty }} &times; {{ orderItem.name }}
+                                                                </label>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="card-footer d-flex justify-content-between"
+                                                    v-if="item.status === 'progress' && userdata.role === 'superuser' && userdata.role !== 'foodserver'">
+                                                    <span>
+                                                        <button class="btn btn-sm btn-outline-primary"
+                                                            @click="doneServe(item)">Done</button>
+                                                        &NonBreakingSpace;
+                                                        <button class="btn btn-sm btn-outline-danger"
+                                                            @click="toggleTimer(item)">
+                                                            {{ item.isRunning ? 'Hold' : 'Resume' }}
+                                                        </button>
+                                                    </span>
+
+                                                    <span>{{ item.timePassed }}</span>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card" style="height: 60px!important;">
+
+                    </div>
+                </div>
+            </div>
+            <div :class="(userdata.role !== 'restoinventory') ? 'tab-pane fade' : 'tab-pane fade show active'"
+                id="inventory" role="tabpanel" aria-labelledby="inventory-tab">
+                <div class="row">
+                    <div class="col-md-3">
+                        <form @submit.prevent="saveInventory" class="no-print">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" v-model="stock.name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <input type="text" class="form-control" id="description" v-model="stock.description">
+                            </div>
+                            <div class="mb-3">
+                                <label for="sku" class="form-label">SKU</label>
+                                <input type="text" class="form-control" id="SKU" v-model="stock.sku" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="image" class="form-label">Image</label>
+                                <input type="file" class="form-control" id="image" @change="handleImageUpload">
+                                <a v-if="stock.imageFileName !== ''" :href="this.API_URL + 'Photos/' + stock.imageFileName"
+                                    target="_blank" class="text-info">{{ stock.imageFileName }}</a>
+                            </div>
+                            <div class="mb-3">
+                                <label for="is-available" class="form-label">Category</label>
+                                <select class="form-select" id="is-available" v-model="stock.category" required>
+                                    <option value="">-- Select --</option>
+                                    <option value="Adhesive & Sealants">Adhesive & Sealants</option>
+                                    <option value="Bathroom Fixtures & Accessories">Bathroom Fixtures & Accessories</option>
+                                    <option value="Building Materials">Building Materials</option>
+                                    <option value="Doors & Windows">Doors & Windows</option>
+                                    <option value="Electrical">Electrical</option>
+                                    <option value="Outdoor & Living">Outdoor & Living</option>
+                                    <option value="Paints & Accessories">Paints & Accessories</option>
+                                    <option value="Power Tools">Power Tools</option>
+                                    <option value="Plumbing">Plumbing</option>
+                                    <option value="Storage & Organizers">Storage & Organizers</option>
+                                    <option value="Wall & Floor Covering">Wall & Floor Covering</option>
+                                    <option value="Miscellaneous">Miscellaneous</option>
+                                </select>
+
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="qty" class="form-label">Qty</label>
+                                <input type="number" min="0" class="form-control" id="qty" v-model="stock.stocks" required>
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label for="price" class="form-label">Price</label>
+                                <input type="number" min="0" step="0.1" class="form-control" id="price"
+                                    v-model="stock.price" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="is-available" class="form-label">Availability</label>
+                                <select class="form-select" id="is-available" v-model="stock.isAvailable" required>
+                                    <option value="">-- Select --</option>
+                                    <option value=true>Yes</option>
+                                    <option value=false>No</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">{{ isUpdatingInventory ? 'Update'
+                                :
+                                'Save'
+                            }}</button>
+                        </form>
+                    </div>
+                    <div class="col-md-9">
+                        <div>
+                            <table-component :mainHeaders=stocksOptions :mainItems="filtereditemarray"
+                                :subHeaders="inventorysubitem" @edit-action="editInventory" :editable="true"
+                                @custombtn-action="viewStock" :custombtn="true" :toggleable="true" :slotsub="true">
+                                <template #subcontent="{ data }">
+                                    <table-component :mainHeaders="inventorysubitem" :mainItems="data" />
+                                </template>
+                                <template #content="{ data }">
+                                    <template v-if="data.h === 'isAvailable'">
+                                        <span v-if="data.dt.isAvailable">Yes</span>
+                                        <span v-else>No</span>
+                                    </template>
+                                    <template v-else="data.h==='imageUrl'">
+                                        <img v-if="data.dt.imageFileName === null" :src="data.dt.imageUrl"
+                                            class="img-thumbnail" style="height: 80px;width: 80px;" />
+                                        <img v-else :src="this.API_URL + 'Photos/' + data.dt.imageFileName"
+                                            class="img-thumbnail" style="height: 80px;width: 80px;" />
+                                    </template>
+                                </template>
+                            </table-component>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card" style="height: 60px!important;">
+
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+                <div class="row">
+                    <div class="col-sm-1">
+                        <ul class="nav nav-tabs flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link rotated-text active" data-bs-toggle="tab"
+                                    href="#bytransaction">Transactions</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link rotated-text" data-bs-toggle="tab" href="#byitems">Orders</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-11">
+                        <div class="tab-content">
+                            <div id="bytransaction" class="tab-pane active">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label for="date-filter">Date Filter:</label>
+                                            <select class="form-control" id="date-filter" v-model="resdateFilter">
+                                                <option value="any">Any</option>
+                                                <option value="range">Date Range</option>
+                                            </select>
+                                            <div v-if="resdateFilter === 'range'">
+                                                <div class="form-group">
+                                                    <input type="date" class="form-control" v-model="resfromDate">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="date" class="form-control" v-model="restoDate">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <table-component :mainHeaders=transactionsOptions
+                                            :mainItems="superfilteredTransactions" :subHeaders="transactionitem"
+                                            :toggleable="true" :deletable="true" @delete-action="voidItem" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="byitems" class="tab-pane">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <label for="date-filter">Date Filter:</label>
+                                            <select class="form-control" id="date-filter" v-model="resitemdateFilter">
+                                                <option value="any">Any</option>
+                                                <option value="range">Date Range</option>
+                                            </select>
+                                            <div v-if="resitemdateFilter === 'range'">
+                                                <div class="form-group">
+                                                    <input type="date" class="form-control" v-model="resitemfromDate">
+                                                </div>
+                                                <div class="form-group">
+                                                    <input type="date" class="form-control" v-model="resitemtoDate">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <table-component :mainHeaders=transactionordersoptions
+                                            :mainItems="filteredtransactionorders" :subHeaders="transactionitem"
+                                            :toggleable="true" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card" style="height: 60px!important;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div style="display:none;">
+        <div class="receipt" id="billing-statement">
+            <div style="text-align: center;">
+                <span style="font-size: 18px; font-weight: bold;">DUMALUAN HARDWARE</span><br>
+                <span>8809 MAGNAGA, PANTUKAN</span><br>
+                <span>+63917 102 5273</span>
+            </div>
+            <h2 style="text-align: center;font-size: 14px;">***COPY RECEIPT***</h2>
+            <hr style="border: none; border-top: 1px dashed #000; margin-top: 10px; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                <div>{{ new Date().toLocaleDateString() }}</div>
+                <div>{{ getTime() }}</div>
+            </div>
+            <hr style="margin-top: 5px; margin-bottom: 5px;">
+            <div style="display: flex; justify-content: space-between;">
+                <div>TRANS#: {{ transactionno }}</div>
+                <div>CUST#: {{ customerno }}</div>
+            </div>
+            <table style="width: 100%; margin-top: 10px; font-size: smaller;">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Item</th>
+                        <td>Qty</td>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in cartItems" :key="index">
+                        <td>{{ index + 1 }}</td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.qty }}</td>
+                        <td>{{ parseFloat(item.price).toFixed(2) }}</td>
+                        <td>{{ (parseFloat(item.qty) * parseFloat(item.price)).toFixed(2) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 10px;">
+                <table style="width: 100%; margin-top: 10px;">
+                    <tr>
+                        <td> </td>
+                        <td>CASHIER:</td>
+                        <td>{{ userdata.username }}</td>
+                    </tr>
+                    <tr>
+                        <td> </td>
+                        <td>ORDER ID:</td>
+                        <td>{{ (this.customer.order_id === undefined) ? 'N/A' : this.customer.order_type + '/' +
+                            this.customer.order_id
+                        }}</td>
+                    </tr>
+                    <tr v-if="this.payMethod === 'noncash'">
+                        <td> </td>
+                        <td>RN:</td>
+                        <td>{{ this.noncashType }} - {{ this.referenceno }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="height: 10px;"></td>
+                    </tr>
+                    <tr>
+                        <td> </td>
+                        <td>SUBTOTAL:</td>
+                        <td>₱{{ subTotal }}</td>
+                    </tr>
+                    <tr>
+                        <td> </td>
+                        <td>TAX:</td>
+                        <td>₱{{ (parseFloat(taxValue) / 100 * parseFloat(subTotal)).toFixed(2) }}</td>
+                    </tr>
+                    <tr>
+                        <td> </td>
+                        <td>DISCOUNT:</td>
+                        <td>₱{{ (discountType === 'percentage') ? (parseFloat(discountValue) / 100 *
+                            parseFloat(subTotal)).toFixed(2) : parseFloat(discountValue) }}</td>
+                    </tr>
+                    <tr>
+                        <td> </td>
+                        <td>TOTAL:</td>
+                        <td>₱{{ parseFloat(totalCost).toFixed(2) }}</td>
+                    </tr>
+                    <tr>
+                        <td> </td>
+                        <td>Change:</td>
+                        <td>₱{{ parseFloat(totalChange).toFixed(2) }}</td>
+                    </tr>
+                </table>
+                <div style="text-align: center;">
+                    X:_____________________________________
+                    <br>
+                    SIGNATURE
+                </div>
+            </div>
+            <h2 style="text-align: center;font-size: 14px;">***COPY RECEIPT***</h2>
+            <p style="text-align: center;">THANK YOU</p>
+            <!-- <img src="@/assets/barcode.png"> -->
+        </div>
+    </div>
+    <FooterComponent />
+    <div class="modal fade show" id="stockModal" tabindex="-1" role="dialog" aria-labelledby="stockModalLabel"
+        style="display: none; padding-right: 17px;" aria-modal="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="addAccountModalLabel">View Stock</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" @click="closeModal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div v-if="stock">
+                                <img :src="stock.imageUrl" alt="Stock Image" class="img-fluid mb-2 w-75 h-75"
+                                    v-if="stock.imageUrl" />
+                                <h5>{{ stock.name }}</h5>
+                                <p>Description: {{ stock.description }}</p>
+                            </div>
+                            <div v-else>
+                                <p>No stock information available.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div v-if="stock">
+                                <p>Category: {{ stock.category }}</p>
+                                <p>Price: ₱{{ stock.price }}</p>
+                                <div class="btn-group mr-2" role="group" aria-label="...">
+                                    <button type="button" class="m-btn btn-light btn btn-default"
+                                        style="font-size: small; width: 20px;" @click="this.stock.stocks--">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                    <button type="button" class="m-btn btn-light btn btn-default"
+                                        style="font-size: medium;width: 20px;" disabled>
+                                        {{ stock.stocks }}
+                                    </button>
+                                    <button type="button" class="m-btn btn-light btn btn-default"
+                                        style="font-size: small;width: 20px;" @click="this.stock.stocks++">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @click="updateInventory">Save</button> &nbsp;
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+import { useAuthStore } from "@/stores/authStore";
+import TopNavBarComponent from "@/components/common/TopNavBar2.vue";
+import TableComponent from "@/components/common/GenericTable.vue";
+import FooterComponent from "../common/FooterComponent2.vue";
+import CardItems from "../common/CardItems.vue";
+import RestoDashboard from "../common/HardwareDashboard.vue";
+import axios from 'axios';
+
+//helper functions
+function parseDate(dateString) {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
+}
+
+function parseDate2(dateString) {
+    const index = dateString.indexOf('T');
+    const result = dateString.substring(0, index);
+    const [year, month, day] = result.split('-');
+    return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
+}
+
+function formatDate(date) {
+    const options = {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric'
+    };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+}
+
+export default {
+    components: {
+        TopNavBarComponent,
+        FooterComponent,
+        TableComponent,
+        CardItems,
+        RestoDashboard,
+    },
+    data() {
+        return {
+            payMethod: "cash",
+            noncashType: "",
+            referenceno: "",
+            activeroomtable: "BEACH ROOM",
+            currentItem: null,
+            inquiretoggle: false,
+            restypeFilter: "0",
+            resdateFilter: "any",
+            resfromDate: null,
+            restoDate: null,
+            customer: {
+                reference_id: null,
+                type: '',
+                identifier: '',
+                order_type: '',
+                items: [],
+            },
+            orderStaus: false,
+            barcodeText: "",
+            searchText: "",
+            isUpdatingInventory: false,
+            stock: {
+                name: "",
+                imageUrl: "",
+                imageFileName: "",
+                description: "",
+                sku: "",
+                category: "",
+                stocks: 0,
+                price: 0,
+                inventory: "",
+                isAvailable: "",
+            },
+            transactionitem: [{
+                'label': 'Name',
+                'field': 'name',
+            }, {
+                'label': 'Category',
+                'field': 'category',
+            }, {
+                'label': 'Qty',
+                'field': 'qty',
+            }, {
+                'label': 'Price',
+                'field': 'price',
+            }, {
+                'label': 'Total',
+                'field': 'totalPrice',
+            }],
+            transactionsOptions: [{
+                'label': '',
+                'field': 'toggle',
+                'sortable': false,
+            }, {
+                'label': 'Transaction ID',
+                'field': 'id',
+                'sortable': true,
+            }, {
+                'label': 'Type',
+                'field': 'payMethod',
+                'sortable': true,
+            }, {
+                'label': 'Ref. No.',
+                'field': 'nonCashref',
+                'sortable': true,
+            }, {
+                'label': 'Sub-Total',
+                'field': 'subTotal',
+                'sortable': true,
+                'reducible': true
+            }, {
+                'label': 'Tax Value',
+                'field': 'taxValue',
+                'sortable': true,
+            }, {
+                'label': 'Discount Type',
+                'field': 'discountType',
+                'sortable': true,
+            }, {
+                'label': 'Discount Value',
+                'field': 'discountValue',
+                'sortable': true,
+            }, {
+                'label': 'Total',
+                'field': 'totalCharge',
+                'sortable': true,
+                'reducible': true
+            }, {
+                'label': 'Date',
+                'field': 'date_created',
+                'sortable': true,
+            }, {
+                'label': 'Processed By',
+                'field': 'processedBy',
+                'sortable': true,
+            }, {
+                'label': '',
+                'field': 'action',
+                'sortable': false,
+            }],
+            transactionordersoptions: [{
+                'label': '',
+                'field': 'toggle',
+                'sortable': false,
+            }, {
+                'label': 'Order ID',
+                'field': 'id',
+                'sortable': true,
+            }, {
+                'label': 'Type',
+                'field': 'order_type',
+                'sortable': true,
+            }, {
+                'label': 'Reference #',
+                'field': 'table_id',
+                'sortable': true,
+            }, {
+                'label': 'Reference Name',
+                'field': 'customer_name',
+                'sortable': true,
+            }, {
+                'label': 'Date',
+                'field': 'date_created',
+                'sortable': true,
+            }, {
+                'label': 'Processed By',
+                'field': 'processedBy',
+                'sortable': true,
+            }, {
+                'label': 'Status',
+                'field': 'status',
+                'sortable': true,
+            }],
+            stocksOptions: [{
+                'label': '',
+                'field': 'toggle',
+                'sortable': false,
+            }, {
+                'label': 'Image',
+                'field': 'imageUrl',
+                'slot': true,
+            }, {
+                'label': 'Name',
+                'field': 'name',
+                'sortable': true
+            }, {
+                'label': 'Description',
+                'field': 'description',
+                'sortable': true
+            }, {
+                'label': 'SKU',
+                'field': 'sku',
+                'sortable': true
+            }, {
+                'label': 'Category',
+                'field': 'category',
+                'sortable': true
+            }, {
+                'label': 'Qty',
+                'field': 'stocks',
+                'sortable': true
+            }, {
+                'label': 'Price',
+                'field': 'price',
+                'sortable': true
+            }, {
+                'label': 'Is Available?',
+                'field': 'isAvailable',
+                'sortable': true,
+                'slot': true,
+            }, {
+                'label': '',
+                'field': 'action',
+                'sortable': false
+            }],
+            inventorysubitem: [{
+                'label': 'Type',
+                'field': 'type',
+            }, {
+                'label': 'Qty',
+                'field': 'qty',
+            }, {
+                'label': 'Stocks',
+                'field': 'stocks',
+            }, {
+                'label': 'processedBy',
+                'field': 'processedBy',
+            }, {
+                'label': 'Date',
+                'field': 'date_created',
+            },],
+            activeTab: 'alltab',
+            totalCash: 0,
+            taxValue: 12,
+            discountType: 'percentage',
+            discountValue: 0,
+            imageFile: null,
+            imageFileName: null,
+            resto_order: [
+
+            ],
+            resto_orders: [
+
+            ],
+            resto_allorders: [
+
+            ],
+            room_tables: [
+
+            ],
+            bookings: [
+
+            ],
+            resto_tables: [
+
+            ],
+            resto_takeouts: [
+
+            ],
+            resto_onholds: [
+
+            ],
+            itemarray: [
+
+            ],
+            cartItems: [
+
+            ],
+            transactions: [
+
+            ],
+            cashDenominations: [{
+                'label': '+1.00',
+                'value': 1,
+            }, {
+                'label': '+5.00',
+                'value': 5,
+            }, {
+                'label': '+10.00',
+                'value': 10,
+            }, {
+                'label': '+20.00',
+                'value': 20,
+            }, {
+                'label': '+50.00',
+                'value': 50,
+            }, {
+                'label': '+100.00',
+                'value': 100,
+            }, {
+                'label': '+500.00',
+                'value': 500,
+            }, {
+                'label': '+1000.00',
+                'value': 1000,
+            },],
+        }
+    },
+    async created() {
+
+        if (this.EVALUATION_STAGE) {
+            const countdownMessage = `This app is for evaluation and not the full version. Please wait for <span id="countdowntimer">${this.EVALUATION_TIME}</span> seconds to load.`;
+            let countdownResult;
+            let timeoutExpired = false; // New variable for tracking timeout
+
+            countdownResult = await this.$swal.fire({
+                title: 'Please wait',
+                html: countdownMessage,
+                icon: 'info',
+                showCancelButton: false,
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    const countdownEl = document.querySelector('#countdowntimer');
+                    let count = this.EVALUATION_TIME - 1;
+                    const timerId = setInterval(() => {
+                        countdownEl.textContent = count;
+                        count--;
+                        if (count < 0) {
+                            clearInterval(timerId);
+                            timeoutExpired = true; // Update timeoutExpired to true
+                            this.$swal.close();
+                        }
+                    }, 1000);
+                }
+            });
+
+            if (!countdownResult.isConfirmed && timeoutExpired) {
+                countdownResult.isConfirmed = true; // Set isConfirmed to true if timeout expired
+            }
+
+            if (!countdownResult.isConfirmed) {
+                return;
+            }
+        }
+
+        this.loadAlldata();
+        this.loadCookiedata();
+    },
+    computed: {
+        currentRouteName() {
+            return this.$route.name;
+        },
+        userdata() {
+            const authStore = useAuthStore();
+            const user = authStore.user;
+            return user;
+        },
+        filteredResto_allorders() {
+            return this.resto_allorders.filter(item => new Date(item.date_created).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0));
+        },
+        getTimePassed() {
+            return function (datestarted) {
+                const startedTime = new Date(datestarted).getTime();
+                const currentTime = new Date().getTime();
+                const timeDiff = currentTime - startedTime;
+                const minutes = Math.floor(timeDiff / (1000 * 60));
+                const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+                return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            };
+        },
+        subTotal() {
+            return this.cartItems.reduce((acc, item) => acc + parseFloat(item.totalPrice), 0).toFixed(2);
+        },
+        totalCost() {
+            return ((this.discountType === 'percentage') ? this.subTotal * (1 + this.taxValue / 100) * (1 - this.discountValue / 100) : this.subTotal * (1 + this.taxValue / 100) - this.discountValue).toFixed(2);
+        },
+        totalChange() {
+            return (this.totalCash - this.totalCost).toFixed(2);
+        },
+        filteredresto_takeouts() {
+            return this.resto_takeouts.map(item => {
+                const order = this.resto_order.filter(o => o.table_id === item.id && o.order_type === "take-out");
+                if (order.length > 0) {
+                    const order_data = order[0];
+                    const order_id = order_data.id;
+                    const order_type = order_data.order_type;
+                    const order_cname = order_data.customer_name;
+                    const order_status = order_data.status;
+                    const order_items = JSON.parse(order_data.items);
+                    return {
+                        ...item,
+                        order_id,
+                        order_type,
+                        order_cname,
+                        order_status,
+                        order_items,
+                    };
+                } else {
+                    return {
+                        ...item,
+                    };
+                }
+            }).filter(item => item.status !== 'done')
+        },
+        filteredroom_tables() {
+            return this.room_tables.filter(o => o.type === this.activeroomtable).map(item => {
+                const order = this.resto_order.filter(o => o.table_id === item.id && o.customer_name === item.name && o.order_type === "dine-in");
+                const today = parseDate(new Date().toLocaleDateString('en-GB'));
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const formattedYesterday = parseDate(yesterday.toLocaleDateString('en-GB'));
+                const booking = this.bookings.filter(o =>
+                    o.status === "checkedin" &&
+                    o.room_name === item.name &&
+                    (parseDate(o.checkinDate) === today || parseDate(o.checkinDate) === formattedYesterday || parseDate(o.checkoutDate) >= today)
+                );
+                const b_status = (booking.length > 0) ? true : false;
+                if (order.length > 0) {
+                    const order_data = order[0];
+                    const order_id = order_data.id;
+                    const order_type = order_data.order_type;
+                    const order_cname = order_data.customer_name;
+                    const order_status = order_data.status;
+                    const order_items = JSON.parse(order_data.items);
+                    return {
+                        ...item,
+                        order_id,
+                        order_type,
+                        order_cname,
+                        order_status,
+                        order_items,
+                        b_status,
+                    };
+                } else {
+                    return {
+                        ...item,
+                        b_status,
+                    };
+                }
+            })
+        },
+        filteredresto_tables() {
+            return this.resto_tables.map(item => {
+                const order = this.resto_order.filter(o => o.table_id === item.id && o.customer_name === item.name && o.order_type === "dine-in");
+                if (order.length > 0) {
+                    const order_data = order[0];
+                    const order_id = order_data.id;
+                    const order_type = order_data.order_type;
+                    const order_cname = order_data.customer_name;
+                    const order_status = order_data.status;
+                    const order_items = JSON.parse(order_data.items);
+                    return {
+                        ...item,
+                        order_id,
+                        order_type,
+                        order_cname,
+                        order_status,
+                        order_items,
+                    };
+                } else {
+                    return {
+                        ...item,
+                    };
+                }
+            })
+        },
+        filteredtransactionorders() {
+            return this.resto_allorders.map(item => {
+                const timePassed = this.getTimePassed(item.datestarted);;
+                const isRunning = (item.status === 'progress') ? true : false;
+                return {
+                    ...item,
+                    timePassed,
+                    isRunning,
+                }
+            });
+        },
+        filteredresto_onholds() {
+            return this.resto_onholds.map(item => {
+                const order = this.resto_order.filter(o => o.table_id === item.id && o.order_type === "on-hold");
+                if (order.length > 0) {
+                    const order_data = order[0];
+                    const order_id = order_data.id;
+                    const order_type = order_data.order_type;
+                    const order_cname = order_data.customer_name;
+                    const order_status = order_data.status;
+                    const order_items = JSON.parse(order_data.items);
+                    return {
+                        ...item,
+                        order_id,
+                        order_type,
+                        order_cname,
+                        order_status,
+                        order_items,
+                    };
+                } else {
+                    return {
+                        ...item,
+                    };
+                }
+            }).filter(item => item.status !== 'done')
+        },
+        filtereditemarray() {
+            return this.itemarray.map(item => {
+                const searchCode = item.name + "~" + item.description + "~" + item.sku;
+                const items = JSON.parse(item.inventory);
+                return {
+                    ...item,
+                    items,
+                    searchCode
+                };
+            }).filter(item => item.isAvailable && item.searchCode.toString().toLowerCase().includes(this.searchText.toLowerCase()));
+        },
+        superfilteredTransactions() {
+
+            let filtered = this.filteredTransactions;
+            if (this.resdateFilter === 'range' && this.resfromDate && this.restoDate) {
+                filtered = filtered.filter(transaction => {
+                    return parseDate2(transaction.date_created) >= parseDate(this.resfromDate) && parseDate2(transaction.date_created) <= parseDate(this.restoDate);
+                });
+            }
+
+            return filtered;
+        },
+        itemfilteredTransactions() {
+            let itemsArray = [];
+            let filtered = this.transactions.map(item => {
+                const items = JSON.parse(item.items);
+                return {
+                    ...item,
+                    items
+                };
+            })
+            for (let obj of filtered) {
+                for (let key in obj) {
+                    if (key === "items") {
+                        itemsArray.push(...obj[key]);
+                    }
+                }
+            }
+            return itemsArray
+        },
+        transactionno() {
+            return parseFloat(this.transactions[this.transactions.length - 1].id) + 1;
+        },
+        customerno() {
+            const today = new Date().toLocaleDateString();
+            return this.transactions.filter(transaction => {
+                const transactionDate = new Date(transaction.date_created).toLocaleDateString();
+                return transactionDate === today;
+            }).length + 1;
+        },
+        filteredTransactions() {
+            return this.transactions.map(item => {
+                const items = JSON.parse(item.items);
+                return {
+                    ...item,
+                    items
+                };
+            })
+        },
+    },
+    methods: {
+        loadAlldata() {
+            this.getInventory();
+            this.getTransaction();
+            this.getRoomTables();
+            this.getRoomBookings();
+            this.getRestoTables();
+            this.getRestoTakeout();
+            this.getRestoOnholds();
+            this.getAllOrders();
+            this.getCurrentOrders();
+        },
+        viewStock(id) {
+            const stock = this.itemarray.find(item => item.id === id)
+            this.stock = stock;
+            $("#stockModal").modal("toggle");
+        },
+        async saveImageFile() {
+            try {
+
+                const formData = new FormData();
+                formData.append('file', this.imageFile, this.imageFileName);
+
+                const response = await axios.post(this.API_URL + 'restoitem/savefile', formData);
+
+                // Handle the response as needed
+                console.log('Image file saved successfully!', response.data);
+            } catch (error) {
+                // Handle any errors that occur during the request
+                console.error('Error saving image file:', error);
+            }
+        },
+        handleImageUpload(event) {
+            const file = event.target.files[0];
+
+            // Check if a file was selected
+            if (!file) {
+                // Handle error when no file is selected
+                this.$swal({
+                    title: "Error",
+                    text: "No file selected.",
+                    icon: "error",
+                });
+                return;
+            }
+
+            // Check if the file is an image
+            if (!file.type.startsWith("image/")) {
+                // Handle error when selected file is not an image
+                this.$swal({
+                    title: "Error",
+                    text: "Selected file is not an image.",
+                    icon: "error",
+                });
+                return;
+            }
+
+            // Check if the file size is within the limit (2MB)
+            const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+            if (file.size > maxSizeInBytes) {
+                // Handle error when file size exceeds the limit
+                this.$swal({
+                    title: "Error",
+                    text: "Selected file exceeds the size limit (2MB).",
+                    icon: "error",
+                });
+                return;
+            }
+
+            // File passed all the validation checks, proceed with setting properties
+            this.imageFile = file;
+
+            const currentDate = new Date().toISOString().slice(0, 10).replace(/-/g, '_');
+            const uniqueID = Math.floor(100000 + Math.random() * 900000);
+            const fileExtension = file.name.split(".").pop(); // Get the actual file extension
+            const fileName = `restoitem_${currentDate}_${uniqueID}.${fileExtension}`;
+            this.imageFileName = fileName;
+            this.stock.imageFileName = fileName;
+        },
+
+        loadCookiedata() {
+            const cookies = document.cookie.split(';'); // Split cookies into an array
+
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim(); // Remove whitespace from the cookie string
+                if (cookie.startsWith('taxValue=')) {
+                    const taxValue = cookie.substring('taxValue='.length); // Extract the value
+                    this.taxValue = parseFloat(taxValue).toFixed(2);
+                    break;
+                }
+            }
+        },
+        updateTotalCash() {
+
+            if (this.totalCash === 0 || this.totalCash.toString() === "" || this.totalCash === NaN) {
+                this.totalCash = 0;
+            } else {
+                this.totalCash = this.totalCash.toString();
+            }
+            //alert(this.totalCash)
+        },
+        getTime() {
+            const date = new Date();
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        },
+        toggleTimer(item) {
+            item.isRunning = !item.isRunning;
+        },
+        async doneServe(item) {
+            const customer_id = item.table_id;
+            const customer_type = item.order_type;
+            const customer_name = item.customer_name;
+            const customer_orderId = item.id || -1;
+            if (customer_id !== null) {
+                const res = await axios.post(`${this.API_URL}restoorders/filter/`, { columnName: 'id', columnKey: customer_orderId });
+                const existingOrder = res.data;
+                axios
+                    .put(`${this.API_URL}restoorders/${existingOrder[0].id}/`, {
+                        order_type: customer_type,
+                        table_id: customer_id,
+                        customer_name: customer_name,
+                        status: 'served',
+                        items: JSON.stringify(item.items),
+                        processedBy: this.userdata.fName + " " + this.userdata.lName,
+                    })
+                document.location.reload();
+            }
+        },
+        activatePOS() {
+            this.$nextTick(() => {
+                this.setFocus();
+                this.resetCounter();
+            });
+        },
+        setFocus() {
+            $("#posTab").focus();
+            this.$refs.tenderedCash.focus();
+        },
+        setActiveTab(tab) {
+            this.activeTab = tab
+        },
+        holdCustomer() {
+            if (this.cartItems.length >= 1 && this.customer.reference_id === null) {
+                this.$swal.fire({
+                    title: 'Enter customer\'s name',
+                    input: 'text',
+                    inputPlaceholder: 'Enter customer\'s name',
+                    inputAttributes: {
+                        minlength: 3, // Minimum length of 3 characters
+                        maxlength: 24, // Maximum length of 24 characters
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                    cancelButtonText: 'Cancel',
+                    allowOutsideClick: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const inputValue = result.value;
+                        axios.post(`${this.API_URL}restoonholds/`, {
+                            name: inputValue,
+                            status: "on hold",
+                        }).then(response => {
+                            const item = response.data;
+                            this.getRestoOnholds();
+                            this.customer = {
+                                reference_id: item.id,
+                                type: "on-hold",
+                                identifier: item.name,
+                            }
+                            this.placeOrder();
+                        })
+                    }
+                });
+            }
+        },
+        onholdAction(item) {
+            this.customer = {
+                reference_id: item.id,
+                type: "on-hold",
+                identifier: item.name,
+            }
+            if ('order_id' in item) {
+                this.cartItems = item.order_items;
+                this.customer.order_id = item.order_id;
+                this.customer.order_type = item.order_type;
+            }
+            this.customer.items = (item.order_items || []);
+            $("#pos-tab").tab('show');
+        },
+        setDiscount() {
+            this.$swal.fire({
+                title: 'Set discount value',
+                html: `
+        <div>
+          <input type="radio" class="form-check-input" id="fixedDiscount" name="discountType" value="fixed" checked>
+          <label for="fixedDiscount" class="form-check-label">Fixed</label> &nbsp;
+          <input type="radio" class="form-check-input" id="percentageDiscount" name="discountType" value="percentage">
+          <label for="percentageDiscount" class="form-check-label">Percentage</label>
+          <br><br>
+          <input type="number" class="form-control" id="discountValue" v-model="discount" placeholder="Enter discount value" min="0" step="any">
+        </div>
+      `,
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                cancelButtonText: 'Cancel',
+                allowOutsideClick: false,
+                preConfirm: () => {
+                    const discountType = document.querySelector('input[name="discountType"]:checked').value;
+                    const discountValue = document.getElementById('discountValue').value;
+                    return { discountType, discountValue };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const { discountType, discountValue } = result.value;
+                    if (discountValue !== "") {
+                        if (discountType === "fixed") {
+                            // Apply fixed discount
+                            this.discountType = "fixed";
+                            this.discountValue = parseFloat(discountValue).toFixed(2);
+                        } else {
+                            // Apply percentage discount
+                            this.discountType = "percentage";
+                            this.discountValue = parseFloat(discountValue).toFixed(2);
+                        }
+                        this.$refs.tenderedCash.focus();
+                    }
+                }
+            });
+        },
+
+        // setDiscount() {
+        //   this.$swal.fire({
+        //     title: 'Set discount value',
+        //     input: 'number',
+        //     inputPlaceholder: 'Enter discount value',
+        //     inputAttributes: {
+        //       min: 0, // Minimum value
+        //       max: 100,
+        //       step: 'any',
+        //     },
+        //     showCancelButton: true,
+        //     confirmButtonText: 'Submit',
+        //     cancelButtonText: 'Cancel',
+        //     allowOutsideClick: false,
+        //   }).then((result) => {
+        //     if (result.isConfirmed) {
+        //       const inputValue = result.value;
+        //       if (inputValue !== "") {
+        //         this.discountValue = parseFloat(inputValue).toFixed(2);
+        //         this.$refs.tenderedCash.focus();
+        //       }
+        //     }
+        //   });
+        // },
+
+        setTax() {
+            this.$swal.fire({
+                title: 'Set tax value',
+                input: 'number',
+                inputPlaceholder: 'Enter added tax percentage',
+                inputAttributes: {
+                    min: 0, // Minimum value
+                    max: 100,
+                    step: 'any',
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                cancelButtonText: 'Cancel',
+                allowOutsideClick: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const inputValue = result.value;
+                    if (inputValue !== "") {
+                        this.taxValue = parseFloat(inputValue).toFixed(2);
+
+                        const expirationDate = new Date();
+                        expirationDate.setFullYear(expirationDate.getFullYear() + 30);
+                        document.cookie = `taxValue=${this.taxValue}; expires=${expirationDate.toUTCString()}; path=/`;
+                        this.$refs.tenderedCash.focus();
+                    }
+                }
+            });
+        },
+        setQty() {
+            if (this.cartItems.length < 1) {
+                return;
+            }
+            this.$swal.fire({
+                title: 'Set quantity value',
+                input: 'number',
+                inputPlaceholder: 'Enter quantity',
+                inputAttributes: {
+                    min: 0, // Minimum value
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                cancelButtonText: 'Cancel',
+                allowOutsideClick: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const inputValue = result.value;
+                    if (inputValue !== "") {
+                        this.increaseQty(this.currentItem, inputValue)
+                        this.$refs.tenderedCash.focus();
+                    }
+                }
+            });
+        },
+        increaseQty(item, plus) {
+            this.plusQty(item, plus);
+        },
+        plusQty(item, add) {
+            if (parseFloat(item.qty) + parseFloat(add) <= item.stocks) {
+                item.qty = parseFloat(item.qty) + parseFloat(add);
+            } else {
+                this.$swal({
+                    title: "Out of Stock",
+                    text: `Item unavailable. Maximum quantity added.`,
+                    icon: "warning",
+                    buttons: {
+                        confirm: "OK",
+                    },
+                });
+                item.qty = item.stocks;
+            }
+            this.updatePrice(item)
+        },
+        decreaseQty(item) {
+            if (item.qty > 1) {
+                item.qty--
+                this.updatePrice(item)
+            }
+        },
+        cancelTakeOut(id) {
+            this.$swal.fire({
+                title: 'Delete Takeout Order',
+                text: 'Are you sure you want to delete this takeout order?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Delete',
+                cancelButtonText: 'Cancel',
+                allowOutsideClick: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Perform deletion logic here
+                    axios.get(this.API_URL + `restotakeouts/delete/${id}/`).then(response => {
+                        this.getRestoTakeout();
+                        this.$swal.fire(
+                            'Deleted!',
+                            'The takeout order has been successfully deleted.',
+                            'success'
+                        );
+                    })
+
+                }
+            });
+        },
+        addnewTakeout() {
+            this.$swal.fire({
+                title: 'Enter customer\'s name',
+                input: 'text',
+                inputPlaceholder: 'Enter customer\'s name',
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                cancelButtonText: 'Cancel',
+                allowOutsideClick: false,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const inputValue = result.value;
+                    axios.post(`${this.API_URL}restotakeouts/`, {
+                        name: inputValue,
+                        status: "on process",
+                    }).then(response => {
+                        this.getRestoTakeout();
+                    })
+                }
+            });
+        },
+        voidItem(id) {
+            this.$swal.fire({
+                title: 'Authorization Required',
+                input: 'text',
+                showCancelButton: true,
+                allowOutsideClick: false,
+                inputAttributes: {
+                    minlength: 6, // Minimum length of 3 characters
+                    maxlength: 24, // Maximum length of 24 characters
+                    autocomplete: "off",
+                    style: "text-security:disc; -webkit-text-security:disc;"
+                },
+                confirmButtonText: 'Submit',
+                cancelButtonText: 'Cancel',
+                inputPlaceholder: 'Enter authorization code',
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const authorizationCode = result.value;
+                    // Validate the authorization code and perform necessary actions
+                    if (authorizationCode.toLowerCase() === this.AUTHORIZATION_KEY.toLowerCase()) {
+                        // Code is correct, proceed with the desired action
+                        const confirmMessage = ' If you proceed with voiding, all associated items and transaction records will be permanently deleted, and this action cannot be reversed.';
+                        const result = await this.$swal.fire({
+                            title: 'Are you sure you want to void this?',
+                            text: confirmMessage,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, void it!',
+                            cancelButtonText: 'Cancel'
+                        });
+                        if (result.isConfirmed) {
+                            const countdownMessage = 'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
+                            let countdownResult;
+                            countdownResult = await this.$swal.fire({
+                                title: 'Please wait',
+                                html: countdownMessage,
+                                icon: 'info',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Confirm now',
+                                cancelButtonText: 'Cancel',
+                                didOpen: () => {
+                                    const countdownEl = document.querySelector('#countdown');
+                                    let count = 5;
+                                    const timerId = setInterval(() => {
+                                        countdownEl.textContent = count;
+                                        count--;
+                                        if (count < 0) {
+                                            clearInterval(timerId);
+                                            this.$swal.close();
+                                        }
+                                    }, 1000);
+                                }
+                            });
+
+                            if (!countdownResult.isConfirmed) {
+                                return;
+                            }
+
+                            try {
+                                axios.get(this.API_URL + `restotransaction/delete/${id}/`);
+                                this.taskRecord(`action:/void/transaction:/${id}`);
+                                await this.$swal.fire({
+                                    title: 'Success',
+                                    text: 'Item was voided successfully!',
+                                    icon: 'success'
+                                }).then(response => {
+                                    document.location.reload();
+                                })
+                            } catch (error) {
+
+                            }
+
+                        }
+
+                    } else {
+                        // Code is incorrect, show an error message or take appropriate action
+                        this.$swal.fire({
+                            icon: 'error',
+                            title: 'Incorrect Passcode',
+                            text: 'The entered passcode is incorrect. Please try again.',
+                            allowOutsideClick: false,
+                        });
+                    }
+                }
+            });
+        },
+        voidAction() {
+            if (this.cartItems.length < 1) {
+                return;
+            }
+            this.$swal.fire({
+                title: 'Void',
+                text: 'Are you sure you want to void this order?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Void',
+                cancelButtonText: 'Cancel',
+                allowOutsideClick: false,
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const customer = this.customer;
+                    const customer_id = customer.reference_id;
+                    const customer_type = customer.type;
+                    const customer_name = customer.identifier;
+                    const customer_orderId = customer.order_id || -1;
+                    if (customer_id !== null) {
+                        const res = await axios.post(`${this.API_URL}restoorders/filter/`, { columnName: 'id', columnKey: customer_orderId });
+                        const existingOrder = res.data;
+                        axios
+                            .put(`${this.API_URL}restoorders/${existingOrder[0].id}/`, {
+                                order_type: customer_type,
+                                table_id: customer_id,
+                                customer_name: customer_name,
+                                status: 'void',
+                                items: JSON.stringify(this.cartItems),
+                                processedBy: this.userdata.fName + " " + this.userdata.lName,
+                            })
+                        for (const item of this.cartItems) {
+                            const items = item.inventory;
+                            items.push({ "type": "stockin", "qty": parseFloat(item.qty), "stocks": parseFloat(item.stocks), "date_created": formatDate(new Date()), "processedBy": (this.userdata.fName + " " + this.userdata.lName).toString() });
+                            const inventory = JSON.stringify(items);
+                            axios
+                                .put(`${this.API_URL}restoitem/${item.id}/`, {
+                                    sku: item.sku,
+                                    name: item.name,
+                                    description: item.description,
+                                    imageUrl: item.image,
+                                    category: item.category,
+                                    price: item.price,
+                                    inventory: inventory,
+                                    isAvailable: item.isAvailable,
+                                    stocks: parseFloat(item.stocks),
+                                });
+                        }
+                        this.taskRecord(`action:/voidorder/${customer_orderId}`);
+                        this.$swal({
+                            title: 'Success',
+                            icon: "success",
+                            title: "Order voided successfully!"
+                        }).then((result) => {
+                            document.location.reload();
+                        });
+                    }
+                }
+            });
+        },
+        takeoutAction(item) {
+            this.customer = {
+                reference_id: item.id,
+                type: "take-out",
+                identifier: item.name,
+            }
+            if ('order_id' in item) {
+                this.cartItems = item.order_items;
+                this.customer.order_id = item.order_id;
+                this.customer.order_type = item.order_type;
+            }
+            this.customer.items = (item.order_items || []);
+            $("#pos-tab").tab('show');
+        },
+        dineInAction(item) {
+            this.customer = {
+                reference_id: item.id,
+                type: "dine-in",
+                identifier: item.name,
+            }
+            if ('order_id' in item) {
+                this.cartItems = item.order_items;
+                this.customer.order_id = item.order_id;
+                this.customer.order_type = item.order_type;
+            }
+            this.customer.items = (item.order_items || []);
+            $("#pos-tab").tab('show');
+        },
+        async placeOrder() {
+
+            if (this.cartItems.length < 1) {
+                return;
+            }
+
+            if (this.customer.reference_id === null) {
+                $("#tables-tab").tab('show');
+                return;
+            }
+
+            const confirmMessage = 'Are you sure you want to place this order?';
+            const result = await this.$swal.fire({
+                title: 'Confirmation',
+                text: confirmMessage,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, place it!',
+                cancelButtonText: 'Cancel',
+                allowOutsideClick: false,
+            });
+
+            if (result.isConfirmed) {
+                const countdownMessage = 'Order will be saved in <span id="countdown">5</span> seconds. Do you want to cancel?';
+                let countdownResult;
+                countdownResult = await this.$swal.fire({
+                    title: 'Please wait',
+                    html: countdownMessage,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm now',
+                    cancelButtonText: 'Cancel',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        const countdownEl = document.querySelector('#countdown');
+                        let count = 5;
+                        const timerId = setInterval(() => {
+                            countdownEl.textContent = count;
+                            count--;
+                            if (count < 0) {
+                                clearInterval(timerId);
+                                this.$swal.close();
+                            }
+                        }, 1000);
+                    }
+                });
+
+                if (!countdownResult.isConfirmed) {
+                    return;
+                }
+
+                const customer = this.customer;
+                const customer_id = customer.reference_id;
+                const customer_type = customer.type;
+                const customer_name = customer.identifier;
+                const customer_orderId = customer.order_id || -1;
+                if (customer_id !== null) {
+                    if (customer_type === "dine-in" || customer_type === "take-out" || customer_type === "on-hold") {
+
+                        const res = await axios.post(`${this.API_URL}restoorders/filter/`, { columnName: 'id', columnKey: customer_orderId });
+                        const existingOrder = res.data;
+                        if (existingOrder.length > 0) {
+
+                            for (const item of (this.cartItems || this.cartItems.filter(item => !this.customer.items.includes(item)))) {
+                                const items = item.inventory;
+                                const curstock = parseFloat(item.stocks) - parseFloat(item.qty);
+                                const prevstock = parseFloat(items[items.length - 1].stocks);
+                                if (prevstock - curstock > 0) {
+                                    items.push({ "type": "stockout", "qty": prevstock - curstock, "stocks": curstock, "date_created": formatDate(new Date()), "processedBy": (this.userdata.fName + " " + this.userdata.lName).toString() });
+                                }
+                                const inventory = JSON.stringify(items);
+                                axios
+                                    .put(`${this.API_URL}restoitem/${item.id}/`, {
+                                        sku: item.sku,
+                                        name: item.name,
+                                        description: item.description,
+                                        imageUrl: item.image,
+                                        category: item.category,
+                                        price: item.price,
+                                        discount: this.discountValue,
+                                        inventory: inventory,
+                                        isAvailable: item.isAvailable,
+                                        stocks: parseFloat(item.stocks) - parseFloat(item.qty),
+                                    });
+                            }
+
+                            axios
+                                .put(`${this.API_URL}restoorders/${existingOrder[0].id}/`, {
+                                    order_type: customer_type,
+                                    table_id: customer_id,
+                                    customer_name: customer_name,
+                                    status: 'progress',
+                                    items: JSON.stringify(this.cartItems),
+                                    processedBy: this.userdata.fName + " " + this.userdata.lName,
+                                })
+                            this.taskRecord(`action:/placeorder/update/${customer_name}`);
+                            this.$swal({
+                                title: 'Success',
+                                icon: "success",
+                                title: "Order updated successfully!"
+                            }).then((result) => {
+                                document.location.reload();
+                            });
+
+                        } else {
+
+                            for (const item of this.cartItems) {
+                                const items = item.inventory;
+                                const curstock = parseFloat(item.stocks) - parseFloat(item.qty);
+                                const prevstock = parseFloat(items[items.length - 1].stocks);
+                                if (prevstock - curstock > 0) {
+                                    items.push({ "type": "stockout", "qty": prevstock - curstock, "stocks": curstock, "date_created": formatDate(new Date()), "processedBy": (this.userdata.fName + " " + this.userdata.lName).toString() });
+                                }
+                                const inventory = JSON.stringify(items);
+                                axios
+                                    .put(`${this.API_URL}restoitem/${item.id}/`, {
+                                        sku: item.sku,
+                                        name: item.name,
+                                        description: item.description,
+                                        imageUrl: item.image,
+                                        price: item.price,
+                                        category: item.category,
+                                        discount: this.discountValue,
+                                        inventory: inventory,
+                                        isAvailable: item.isAvailable,
+                                        stocks: parseFloat(item.stocks) - parseFloat(item.qty),
+                                    });
+                            }
+
+                            axios
+                                .post(`${this.API_URL}restoorders/`, {
+                                    order_type: customer_type,
+                                    table_id: customer_id,
+                                    customer_name: customer_name,
+                                    status: 'progress',
+                                    items: JSON.stringify(this.cartItems),
+                                    processedBy: this.userdata.fName + " " + this.userdata.lName,
+                                })
+                            this.taskRecord(`action:/placeorder/posted/${customer_name}`);
+                            this.$swal({
+                                title: 'Success',
+                                icon: "success",
+                                title: "Order placed successfully!"
+                            }).then((result) => {
+                                document.location.reload();
+                            });
+
+                        }
+
+                    } else {
+                        //take-out
+                    }
+                }
+
+            }
+
+        },
+        addToCash(d) {
+            this.totalCash = isNaN(parseFloat(this.totalCash)) ? 0 : parseFloat(this.totalCash) + d;
+        },
+        clearAll() {
+            if (this.cartItems.length > 0) {
+                this.customer = {
+                    reference_id: null,
+                    customer_id: null,
+                    type: '',
+                    identifier: '',
+                    order_type: '',
+                    items: [],
+                },
+                    this.cartItems = [];
+                this.totalCash = 0;
+            }
+        },
+        setNonCash() {
+            if (this.payMethod === 'noncash') {
+
+                this.$swal.fire({
+                    title: 'Choose non-cash type',
+                    html: `
+        <div>
+          <input type="radio" class="form-check-input" id="cat1" name="noncashType" value="gcash" checked>
+          <label for="cat1" class="form-check-label">GCash</label> &nbsp;
+          <input type="radio" class="form-check-input" id="cat2" name="noncashType" value="paymaya">
+          <label for="cat2" class="form-check-label">PayMaya</label> &nbsp;
+          <input type="radio" class="form-check-input" id="cat3" name="noncashType" value="debitcard">
+          <label for="cat3" class="form-check-label">Debit Card</label> &nbsp;
+          <input type="radio" class="form-check-input" id="cat4" name="noncashType" value="creditcard">
+          <label for="cat4" class="form-check-label">Credit Card</label> &nbsp;
+          <input type="radio" class="form-check-input" id="cat5" name="noncashType" value="bank">
+          <label for="cat5" class="form-check-label">Bank</label> &nbsp;
+          <br><br>
+          <input type="text" class="form-control" maxlength=32 id="referenceno" placeholder="Enter reference/transaction no. here after non-cash payment.">
+        </div>
+      `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                    cancelButtonText: 'Cancel',
+                    allowOutsideClick: false,
+                    preConfirm: () => {
+                        const noncashType = document.querySelector('input[name="noncashType"]:checked').value;
+                        const referenceno = document.getElementById('referenceno').value;
+                        return { noncashType, referenceno };
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const { noncashType, referenceno } = result.value;
+                        if (noncashType !== "" || referenceno !== "") {
+                            this.noncashType = noncashType;
+                            this.referenceno = referenceno;
+                        } else {
+                            this.$swal({
+                                title: 'Warning',
+                                text: 'Please provide both the non-cash type and the reference number.',
+                                icon: 'warning',
+                            });
+                            return;
+                        }
+                    }
+                });
+            } else {
+                this.noncashType = "";
+                this.referenceno = "";
+            }
+
+        },
+        resetCounter() {
+            this.clearAll();
+            this.customer = {
+                reference_id: null,
+            }
+        },
+        async payOrder() {
+
+            if (this.cartItems.length < 1) {
+                return;
+            }
+
+            if (parseFloat(this.totalCash) < parseFloat(this.totalCost)) {
+                this.$swal({
+                    title: 'Warning',
+                    text: 'The tendered amount is less than the total cost.',
+                    icon: 'warning',
+                });
+                return;
+            }
+
+            if (this.payMethod === 'noncash' && this.referenceno === '') {
+                this.$swal({
+                    title: 'Warning',
+                    text: 'Provide the reference no. for non-cash payment.',
+                    icon: 'warning',
+                });
+                return;
+            }
+
+            const confirmMessage = 'Are you sure you want to save this transaction?';
+            const result = await this.$swal.fire({
+                title: 'Confirmation',
+                text: confirmMessage,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, save it!',
+                cancelButtonText: 'Cancel',
+                allowOutsideClick: false,
+            });
+            if (result.isConfirmed) {
+                const countdownMessage = 'Transaction will be saved in <span id="countdown">5</span> seconds. Do you want to cancel?';
+                let countdownResult;
+                countdownResult = await this.$swal.fire({
+                    title: 'Please wait',
+                    html: countdownMessage,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Confirm now',
+                    cancelButtonText: 'Cancel',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        const countdownEl = document.querySelector('#countdown');
+                        let count = 5;
+                        const timerId = setInterval(() => {
+                            countdownEl.textContent = count;
+                            count--;
+                            if (count < 0) {
+                                clearInterval(timerId);
+                                this.$swal.close();
+                            }
+                        }, 1000);
+                    }
+                });
+
+                if (!countdownResult.isConfirmed) {
+                    return;
+                }
+
+                for (const item of (this.cartItems || this.cartItems.filter(item => !this.customer.items.includes(item)))) {
+                    const items = item.inventory;
+                    const curstock = parseFloat(item.stocks) - parseFloat(item.qty);
+                    const prevstock = parseFloat(items[items.length - 1].stocks);
+                    if (prevstock - curstock > 0) {
+                        items.push({ "type": "stockout", "qty": prevstock - curstock, "stocks": curstock, "date_created": formatDate(new Date()), "processedBy": (this.userdata.fName + " " + this.userdata.lName).toString() });
+                    }
+                    const inventory = JSON.stringify(items);
+                    axios
+                        .put(`${this.API_URL}restoitem/${item.id}/`, {
+                            sku: item.sku,
+                            name: item.name,
+                            description: item.description,
+                            imageUrl: item.image,
+                            category: item.category,
+                            price: item.price,
+                            inventory: inventory,
+                            isAvailable: item.isAvailable,
+                            stocks: parseFloat(item.stocks) - parseFloat(item.qty),
+                        });
+
+                }
+
+                if (this.customer.reference_id !== null) {
+                    axios
+                        .put(`${this.API_URL}restoorders/${this.customer.order_id}/`, {
+                            order_type: this.customer.order_type,
+                            table_id: this.customer.reference_id,
+                            customer_name: this.customer.order_cname,
+                            items: JSON.stringify(this.customer.order_items),
+                            processedBy: this.userdata.fName + " " + this.userdata.lName,
+                            status: 'closed',
+                        })
+                    if (this.customer.type === 'take-out') {
+                        axios
+                            .put(`${this.API_URL}restotakeouts/${this.customer.reference_id}/`, {
+                                name: this.customer.identifier,
+                                status: 'done',
+                            })
+                    } else if (this.customer.type === 'on-hold') {
+                        axios
+                            .put(`${this.API_URL}restoonholds/${this.customer.reference_id}/`, {
+                                name: this.customer.identifier,
+                                status: 'done',
+                            })
+                    }
+                }
+
+                axios
+                    .post(`${this.API_URL}restotransaction/`, {
+                        taxValue: this.taxValue,
+                        discountType: this.discountType,
+                        discountValue: this.discountValue,
+                        subTotal: this.subTotal,
+                        totalCharge: this.totalCost,
+                        totalPay: this.totalCost,
+                        payMethod: this.payMethod,
+                        nonCashref: this.noncashType + "-" + this.referenceno,
+                        items: JSON.stringify(this.cartItems),
+                        processedBy: this.userdata.fName + " " + this.userdata.lName,
+                    })
+                    .then(response => {
+                        this.taskRecord(`action:/payorder/posted`);
+                        this.printBill();
+                        this.$swal({
+                            title: 'Success',
+                            icon: "success",
+                            title: "Transaction saved successfully!"
+                        }).then((result) => {
+                            document.location.reload();
+                        });
+
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
+        },
+        printBill() {
+            if (this.cartItems.length >= 1) {
+                this.printSection();
+            }
+        },
+        getInventory() {
+            axios
+                .get(`${this.API_URL}restoitem/`)
+                .then(response => {
+                    this.itemarray = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        getRestoTables() {
+            axios
+                .get(`${this.API_URL}restotables/`)
+                .then(response => {
+                    this.resto_tables = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        getRoomTables() {
+            axios
+                .get(`${this.API_URL}rooms/`)
+                .then(response => {
+                    this.room_tables = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        getRoomBookings() {
+            axios
+                .get(`${this.API_URL}bookings/`)
+                .then(response => {
+                    this.bookings = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        getRestoTakeout() {
+            axios
+                .get(`${this.API_URL}restotakeouts/`)
+                .then(response => {
+                    this.resto_takeouts = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        getRestoOnholds() {
+            axios
+                .get(`${this.API_URL}restoonholds/`)
+                .then(response => {
+                    this.resto_onholds = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        getTransaction() {
+            axios
+                .get(`${this.API_URL}restotransaction/`)
+                .then(response => {
+                    this.transactions = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        getAllOrders() {
+            axios
+                .get(`${this.API_URL}restoorders/`)
+                .then(response => {
+                    this.resto_allorders = response.data.map(item => {
+                        const timePassed = this.getTimePassed(item.datestarted);;
+                        const isRunning = (item.status === 'progress') ? true : false;
+                        const order_items = JSON.parse(item.items);
+                        const items = JSON.parse(item.items);
+                        const datestarted = formatDate(new Date(item.date_modified));
+                        return {
+                            ...item,
+                            items,
+                            datestarted,
+                            order_items,
+                            timePassed,
+                            isRunning,
+                        };
+                    }).sort((a, b) => {
+                        const dateA = new Date(a.date_created);
+                        const dateB = new Date(b.date_created);
+                        return dateB - dateA;
+                    }).sort((a, b) => {
+                        const aStatus = a.status;
+                        const bStatus = b.status;
+                        if (aStatus === 'closed' && bStatus === 'progress') {
+                            return 1;
+                        } else if (bStatus === 'closed' && aStatus === 'progress') {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+
+        },
+        getCurrentOrders() {
+            axios
+                .post(`${this.API_URL}restoorders/filter/`, { columnName: 'status', columnKey: 'progress' })
+                .then(response => {
+                    this.resto_order = response.data;
+                    axios
+                        .post(`${this.API_URL}restoorders/filter/`, { columnName: 'status', columnKey: 'served' })
+                        .then(response2 => {
+                            // Combine response and response2
+                            this.resto_order = [...this.resto_order, ...response2.data];
+                        })
+                        .catch(error2 => {
+                            console.log(error2);
+                        });
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        updateInventory() {
+            this.isUpdatingInventory = true;
+            this.saveInventory();
+        },
+        saveInventory() {
+            if (this.isUpdatingInventory) {
+                axios.get(`${this.API_URL}restoitem/${this.stock.id}/`)
+                    .then(response => {
+                        const items = JSON.parse(response.data.inventory);
+                        const curstock = this.stock.stocks;
+                        const prevstock = items[items.length - 1].stocks;
+                        if (curstock < prevstock) {
+                            items.push({ "type": "stockout", "qty": prevstock - curstock, "stocks": curstock, "date_created": formatDate(new Date()), "processedBy": (this.userdata.fName + " " + this.userdata.lName).toString() });
+                        } else {
+                            items.push({ "type": "stockin", "qty": curstock - prevstock, "stocks": curstock, "date_created": formatDate(new Date()), "processedBy": (this.userdata.fName + " " + this.userdata.lName).toString() });
+                        }
+                        this.stock.inventory = JSON.stringify(items);
+                        axios
+                            .put(`${this.API_URL}restoitem/${this.stock.id}/`, {
+                                ...this.stock,
+                                imageFileName: this.imageFileName
+                            })
+                            .then(response => {
+                                this.$swal({
+                                    icon: "success",
+                                    title: "Item updated successfully"
+                                }).then(async (result) => {
+                                    await this.saveImageFile().then(response => {
+                                        document.location.reload();
+                                    });
+                                });
+                                // this.getInventory();
+                                // this.stock = {
+                                //   id: null,
+                                //   name: "",
+                                //   imageUrl: "",
+                                //   description: "",
+                                //   sku: "",
+                                //   category: "",
+                                //   stocks: 0,
+                                //   price: 0,
+                                //   isAvailable: "",
+                                // };
+                                // this.isUpdatingInventory = false;
+
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    })
+            } else {
+                axios
+                    .post(`${this.API_URL}restoitem/filter/`, { columnName: 'name', columnKey: this.stock.name })
+                    .then(response => {
+                        if (response.data.length > 0) {
+                            this.$swal({
+                                icon: "error",
+                                title: "Item already exists"
+                            });
+                        } else {
+                            this.stock.inventory = `[{"type":"stockin","qty":${this.stock.stocks},"stocks":${this.stock.stocks},"date_created":"${formatDate(new Date())}", "processedBy": "${this.userdata.fName + " " + this.userdata.lName}"}]`;
+                            axios
+                                .post(`${this.API_URL}restoitem/`, {
+                                    ...this.stock,
+                                    imageFileName: this.imageFileName
+                                })
+                                .then(response => {
+                                    this.$swal({
+                                        icon: "success",
+                                        title: "Item saved successfully"
+                                    }).then(async (result) => {
+                                        await this.saveImageFile().then(response => {
+                                            document.location.reload();
+                                        });
+                                    });
+                                    // this.getInventory();
+                                    // this.stock = {
+                                    //   id: null,
+                                    //   name: "",
+                                    //   imageUrl: "",
+                                    //   description: "",
+                                    //   sku: "",
+                                    //   category: "",
+                                    //   stocks: 0,
+                                    //   price: 0,
+                                    //   isAvailable: "",
+                                    // };
+
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
+        },
+        editInventory(id) {
+            axios
+                .get(`${this.API_URL}restoitem/${id}/`)
+                .then(response => {
+                    this.stock = response.data;
+                    this.isUpdatingInventory = true;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        addItemToCart(item) {
+            const isItemExist = (this.cartItems.filter(o => o.id === item.id).length > 0);
+            const cart = {
+                id: item.id,
+                justadded: true,
+                sku: item.sku,
+                name: item.name,
+                description: item.description,
+                category: item.category,
+                isAvailable: item.isAvailable,
+                image: item.imageFileName,
+                qty: 1,
+                inventory: JSON.parse(item.inventory),
+                price: parseFloat(item.price),
+                totalPrice: parseFloat(item.price),
+                stocks: parseFloat(item.stocks),
+            }
+
+            if (item.stocks > 0) {
+                if (!isItemExist) {
+                    this.cartItems.unshift(cart);
+                    this.currentItem = cart;
+                } else {
+                    const obj = this.cartItems.find(item => item.id === cart.id);
+                    obj.qty += (obj.qty < obj.stocks) ? 1 : 0;
+                    obj.totalPrice = obj.price * obj.qty;
+                }
+            } else {
+                this.$swal({
+                    title: "Out of Stock",
+                    text: "The item you are trying to add is currently out of stock.",
+                    icon: "warning",
+                    buttons: {
+                        confirm: "OK",
+                    },
+                });
+            }
+            this.$refs.tenderedCash.disabled = false;
+            this.$refs.tenderedCash.focus();
+        },
+        removeFromCart(item) {
+            const index = this.cartItems.indexOf(item)
+            this.cartItems.splice(index, 1)
+        },
+        updatePrice(item) {
+            item.totalPrice = item.qty * item.price
+        },
+        printSection() {
+            // Add Bootstrap stylesheet to the head
+            const bootstrapLink = document.createElement('link');
+            bootstrapLink.rel = 'stylesheet';
+            bootstrapLink.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css';
+            document.head.appendChild(bootstrapLink);
+
+            // Create the overlay element
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = 0;
+            overlay.style.left = 0;
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            overlay.style.zIndex = 1056;
+            overlay.classList.add('overlay');
+            document.body.appendChild(overlay);
+
+            // Get the dataTable section and create the print window
+            const dataTable = document.getElementById('billing-statement');
+            const printElement = document.createElement('div');
+            printElement.appendChild(dataTable.cloneNode(true));
+
+            // Open a new window and write the printElement to it
+            const printWindow = window.open('', 'Print Window');
+            printWindow.document.write('<html><head>');
+            // printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">');
+            printWindow.document.write('<style>@media print { body { font-size: 10pt; padding:0; margin: 0cm; padding: 0; width: 58mm; transform: scale(0.97); transform-origin: 0 0; } tr { page-break-inside: auto; } .no-print { display: none; } }</style>');
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(printElement.innerHTML);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+
+            // Print the window and close it after printing
+            printWindow.onload = function () {
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close();
+
+                // Remove the Bootstrap stylesheet from the head
+                document.head.removeChild(bootstrapLink);
+                document.body.removeChild(overlay);
+            };
+        },
+
+
+        handleKeyPress(event) {
+            if (this.currentRouteName !== "cashier") {
+                return;
+            }
+            switch (event.key) {
+                case 'F1':
+                    event.preventDefault()
+                    if (this.cartItems.length >= 1)
+                        this.placeOrder();
+                    break;
+                case 'F2':
+                    event.preventDefault()
+                    if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
+                        this.payOrder();
+                    break;
+                case 'F3':
+                    event.preventDefault()
+                    if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
+                        this.setQty();
+                    this.$refs.tenderedCash.focus();
+                    break;
+                case 'F4':
+                    event.preventDefault()
+                    if (this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
+                        this.setDiscount();
+                    this.$refs.tenderedCash.focus();
+                    break;
+                case 'F5':
+                    event.preventDefault()
+                    if (this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
+                        this.setTax();
+                    this.$refs.tenderedCash.focus();
+                    break;
+                case 'F6':
+                    event.preventDefault()
+                    if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver' && this.customer.reference_id === null)
+                        this.holdCustomer();
+                    break;
+                case 'F7':
+                    event.preventDefault()
+                    if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
+                        //toggle drawer
+                        break;
+                case 'F8':
+                    event.preventDefault()
+                    this.findItem();
+                    break;
+                case 'F9':
+                    event.preventDefault()
+                    if (this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
+                        this.toggleInquire();
+                    break;
+                case 'F10':
+                    event.preventDefault()
+                    if (this.cartItems.length >= 1 && this.userdata.role !== 'waiter' && this.userdata.role !== 'foodserver')
+                        this.voidAction();
+                    break;
+                case 'F11':
+                    event.preventDefault()
+                    if (this.cartItems.length > 0 && this.customer.order_id === undefined)
+                        this.clearAll();
+                    this.$refs.tenderedCash.focus();
+                    break;
+                case 'F12':
+                    event.preventDefault()
+                    this.logout();
+                    break;
+                default:
+                    break;
+            }
+        },
+        toggleInquire() {
+            this.barcodeText = "";
+            this.searchText = "";
+            this.inquiretoggle = !this.inquiretoggle;
+        },
+        async taskRecord(msg) {
+            this.socket.send(JSON.stringify({
+                'message': msg
+            }));
+            try {
+                await axios.post(`${this.API_URL}task/record/`, {
+                    actor: this.userdata.fName + " " + this.userdata.lName,
+                    task: msg,
+                })
+            } catch (error) {
+
+            }
+        },
+        findItem() {
+            this.$refs.myInput.focus();
+            this.searchText = "";
+            this.inquiretoggle = false;
+        },
+        async logout() {
+            const authStore = useAuthStore();
+            const user = {
+                username: authStore.user.username,
+                FirstName: authStore.user.fName,
+                LastName: authStore.user.lName,
+                role: authStore.user.role,
+                route: authStore.user.route,
+            }
+            const response = await axios.put(`${this.API_URL}users/${authStore.user.id}/`, { ...user, isActive: false })
+            if (response.data !== undefined) {
+                authStore.logout();
+                this.$router.push('/');
+            } else {
+                this.$swal({
+                    icon: "error",
+                    title: "Logout error. Please contact your admin for assistance!"
+                });
+            }
+        }
+    },
+    mounted() {
+
+        let barcode = "";
+        let reading = false;
+
+        document.addEventListener('keypress', e => {
+            //usually barcode scanners throw an 'Enter' key at the end of read
+            if (e.keyCode === 13) {
+                if (barcode.length > 10) {
+                    if (!this.inquiretoggle) {
+                        this.barcodeText = barcode;
+                        const itemlist = this.filtereditemarray.filter(item => item.sku.toString().toLowerCase().includes(this.barcodeText));
+                        if (itemlist.length === 1) {
+                            const item = itemlist[0];
+                            this.addItemToCart(item);
+                            $("#pos-tab").tab('show');
+                            this.$refs.tenderedCash.focus();
+                            this.totalCash = 0;
+                            if (this.userdata.role === 'restoinventory') {
+                                const stock = this.itemarray.find(item => item.id === itemlist[0].id)
+                                this.stock = stock;
+                                $("#stockModal").modal("toggle");
+                            }
+                        }
+                    } else {
+                        this.searchText = barcode;
+                    }
+                    /// code ready to use                
+                    barcode = "";
+                }
+            } else {
+                barcode += e.key; //while this is not an 'enter' it stores the every key            
+            }
+
+            //run a timeout of 200ms at the first read and clear everything
+            if (!reading) {
+                reading = true;
+                setTimeout(() => {
+                    barcode = "";
+                    reading = false;
+                    this.barcodeText = "";
+                }, 200);  //200 works fine for me but you can adjust it
+            }
+        });
+
+        setInterval(() => {
+            this.resto_allorders.forEach(item => {
+
+                if (item.status === 'progress' && item.isRunning) {
+                    item.timePassed = this.getTimePassed(item.datestarted);
+                }
+            });
+        }, 1000);
+
+        document.addEventListener('keydown', this.handleKeyPress);
+        this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
+        //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
+        const vm = this;
+        this.socket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            console.log(data.message)
+            // $("#BookDayModal").modal("hide");
+            vm.loadAlldata();
+            vm.componentKey += 1;
+        };
+    },
+}
+</script>
+<style scoped>.title {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.media-body {
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+dt,
+dd {
+    font-size: medium;
+}
+
+.badge-pill {
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    font-size: 75%;
+    font-weight: 700;
+    vertical-align: top;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 10rem;
+    position: relative;
+    top: -0.75em;
+    left: -0.25em;
+}
+
+.blink_me {
+    animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-error {
+    color: #ef5f5f;
+}
+
+.btn-box {
+    border-radius: 5%;
+    width: 75px;
+    height: 75px;
+    font-size: small;
+}
+
+.btn-gap {
+    margin-right: 5px;
+    /* Adjust the value to increase or decrease the gap between buttons */
+}
+
+.text-medium {
+    font-size: 16px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.order-item {
+    font-weight: bold;
+    font-size: 16px;
+    padding-left: 30px;
+}</style>

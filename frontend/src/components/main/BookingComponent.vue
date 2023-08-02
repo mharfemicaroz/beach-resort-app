@@ -2533,22 +2533,6 @@ export default {
     },
     handleDragDrop(e, d, r) {
       if (this.dragDayIsSelected) {
-
-        const eLength = CalendarMath.dayDiff(o.startDate, d)
-        let landingDateCheckin = CalendarMath.addDays(o.startDate, eLength);
-        let landingDateCheckout = CalendarMath.addDays(o.endDate, eLength);
-        let filteredBookings = this.bookings.filter(booking => booking.status === 'reserved' && booking.itemID !== o.id && booking.room_name === r.name && new Date(booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0]).setHours(0, 0, 0, 0) <= landingDateCheckout.setHours(0, 0, 0, 0)
-          && new Date(booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0));
-        if (filteredBookings.length > 0) {
-          this.$swal.fire({
-            icon: 'error',
-            title: 'Cannot Adjust Reservation',
-            text: 'Dates conflict with an existing room reservationx.',
-            confirmButtonText: 'OK'
-          });
-          return false;
-        }
-
         this.selectionEnd = d;
         this.finishSelection([this.selectionStart,this.selectionEnd]);
         this.dragDayIsSelected = false;
