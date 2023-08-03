@@ -3842,8 +3842,6 @@ export default {
         this.roomSelect = "ok";
       } else {
         const item = this.bookings[this.itemIndex];
-        alert(JSON.stringify(item))
-        return
         const room = this.reservation.roomName;
         if (room.name === undefined) {
           return;

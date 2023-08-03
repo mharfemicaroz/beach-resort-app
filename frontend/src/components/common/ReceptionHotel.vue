@@ -277,7 +277,7 @@ export default {
                         // Check if the booking duration exceeds the remaining days in the period
                         const remainingDays = this.days.length - dayIndex;
                         const daysFromCheckin = Math.ceil((day - checkinDay) / (1000 * 60 * 60 * 24)); // Add this line
-                        const effectiveBookingDays = Math.min(bookingDurationDays - daysFromCheckin + 1, remainingDays); // Change this line
+                        const effectiveBookingDays = Math.min(bookingDurationDays - daysFromCheckin, remainingDays); // Change this line
 
                         // Store the bookings in the cell for the day
                         daysWithColspan.push({
@@ -387,7 +387,7 @@ table {
     transform: translateY(-5px);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
-.pen-border {
+/* .pen-border {
     position: relative;
     padding-right: 20px; 
 }
@@ -401,7 +401,7 @@ table {
     width: 50px;
     background: #f7fcff;
     transform: skewX(-45deg);
-}
+} */
 
 
 </style>

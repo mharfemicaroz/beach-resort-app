@@ -3351,8 +3351,8 @@ dd {
 
 .btn-box {
   border-radius: 5%;
-  width: 75px;
-  height: 75px;
+  width: 70px;
+  height: 70px;
   font-size: small;
 }
 
