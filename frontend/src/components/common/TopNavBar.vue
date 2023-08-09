@@ -25,8 +25,8 @@
 
             <!-- Navigation Links -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                <span class="navbar-text ms-auto me-3 text-white" id="clock">
-                    <small>Current Date and Time:</small>
+                <span class="navbar-text ms-auto me-3 text-white">
+                    <small>Current Date and Time: {{ formattedTime }}</small>
                 </span>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
@@ -55,17 +55,12 @@
 
 <script>
 
-setInterval(() => {
-    const clock = document.querySelector('#clock');
-    const now = new Date();
-    clock.innerHTML = `<small>Current Date and Time: ${now.toLocaleString()}</small>`;
-}, 1000);
-
 import { useAuthStore } from "@/stores/authStore";
 import axios from 'axios';
 export default {
     data() {
         return {
+            currentTime: new Date(),
             backgroundIndex: 0,
             backgrounds: [
                 "src/assets/headerbg1.png",
@@ -84,8 +79,14 @@ export default {
     created() {
         this.startBackgroundSlideshow();
         //this.enterFullscreen();
+        setInterval(() => {
+            this.currentTime = new Date();
+        }, 1000);
     },
     computed: {
+        formattedTime() {
+            return `Current Date and Time: ${this.currentTime.toLocaleString()}`;
+        },
         userdata() {
             const authStore = useAuthStore();
             const user = authStore.user;

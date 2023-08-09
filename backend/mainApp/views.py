@@ -192,6 +192,17 @@ def get_transactions_with_items(request, prevday=0):
 
     return JsonResponse(transaction_data, safe=False)
 
+@csrf_exempt    
+def task_list(request, pk=None):
+    return generic_list(request, Task, TaskSerializer, pk)
+
+@csrf_exempt    
+def task_filter(request):
+    return filter_model(request, Task)
+
+@csrf_exempt
+def task_delete(request, pk=None):
+    return generic_delete(request, Task, pk)
 
 @csrf_exempt
 def SaveFile(request):
@@ -247,7 +258,7 @@ def restotables_list(request, pk=None):
 def restotransaction_delete(request, pk=None):
     return generic_delete(request, RestoTransaction, pk)
 
-@csrf_exempt    
+@csrf_exempt     
 def restotransaction_list(request, pk=None):
     return generic_list(request, RestoTransaction, RestoTransactionSerializer, pk)
 

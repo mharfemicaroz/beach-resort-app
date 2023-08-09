@@ -1,36 +1,70 @@
 <template>
-  <div class="container-fluid login-background"
-    :style="{ 'background-image': currentBackground, 'background-repeat': 'no-repeat', 'background-position': 'center center', 'background-attachment': 'fixed' }">
+  <div
+    class="container-fluid login-background"
+    :style="{
+      'background-image': currentBackground,
+      'background-repeat': 'no-repeat',
+      'background-position': 'center center',
+      'background-attachment': 'fixed',
+    }"
+  >
     <div class="row justify-content-center align-items-center vh-100">
       <div class="col-md-3">
         <form @submit.prevent="login" class="animated-form login-form">
-          <div class="card-body p-4 rounded shadow-sm" style="background-color: rgba(255, 255, 255, 0.4);">
+          <div
+            class="card-body p-4 rounded shadow-sm"
+            style="background-color: rgba(255, 255, 255, 0.4)"
+          >
             <div class="text-center">
-              <img src="@/assets/pantukan-waterworld-logo.png" alt="Pantukan Waterworld Logo"
-                class="img-fluid mx-auto d-block" style="max-width: 200px;">
+              <img
+                src="@/assets/pantukan-waterworld-logo.png"
+                alt="Pantukan Waterworld Logo"
+                class="img-fluid mx-auto d-block"
+                style="max-width: 200px"
+              />
             </div>
 
             <div class="form-group">
               <div class="input-group">
                 <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fas fa-user" style="font-size: 24px;"></i></span>
+                  <span class="input-group-text"
+                    ><i class="fas fa-user" style="font-size: 24px"></i
+                  ></span>
                 </div>
-                <input type="text" v-model="username" class="form-control" id="username" placeholder="Enter username">
+                <input
+                  type="text"
+                  v-model="username"
+                  class="form-control"
+                  id="username"
+                  placeholder="Enter username"
+                />
               </div>
             </div>
             <div class="form-group mt-2">
               <div class="input-group">
                 <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="fas fa-lock" style="font-size: 24px;"></i></span>
+                  <span class="input-group-text"
+                    ><i class="fas fa-lock" style="font-size: 24px"></i
+                  ></span>
                 </div>
-                <input type="password" v-model="password" class="form-control" id="password" placeholder="Password">
+                <input
+                  type="password"
+                  v-model="password"
+                  class="form-control"
+                  id="password"
+                  placeholder="Password"
+                />
               </div>
             </div>
             <div class="form-check mb-3">
-              <input type="checkbox" class="form-check-input" id="rememberMe">
-              <label class="form-check-label" for="rememberMe">Remember me</label>
+              <input type="checkbox" class="form-check-input" id="rememberMe" />
+              <label class="form-check-label" for="rememberMe"
+                >Remember me</label
+              >
             </div>
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <button type="submit" class="btn btn-primary btn-block">
+              Sign In
+            </button>
           </div>
         </form>
       </div>
@@ -39,11 +73,10 @@
 </template>
 <script>
 import { useAuthStore } from "@/stores/authStore"; // Import the authStore
-import axios from 'axios';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import Swal from "sweetalert2";
 
 export default {
-
   name: "Login",
   data() {
     return {
@@ -68,10 +101,11 @@ export default {
       const authStore = useAuthStore(); // Access the authStore
       // API call for login authentication
       const apiLink = this.API_URL + "login/"; // replace with your actual API link
-      axios.post(apiLink, {
-        username: this.username,
-        password: this.password
-      })
+      axios
+        .post(apiLink, {
+          username: this.username,
+          password: this.password,
+        })
         .then((response) => {
           if (response.data.isActive && response.data.role !== "superuser") {
             Swal.fire({
@@ -79,7 +113,6 @@ export default {
               text: "User is already logged in.",
               icon: "error",
             });
-
           } else {
             // Set user as active using API call
             const user = {
@@ -87,9 +120,13 @@ export default {
               FirstName: response.data.fName,
               LastName: response.data.lName,
               role: response.data.role,
-              route: response.data.route
-            }
-            axios.put(`${this.API_URL}users/${response.data.id}/`, { ...user, isActive: true })
+              route: response.data.route,
+            };
+            axios
+              .put(`${this.API_URL}users/${response.data.id}/`, {
+                ...user,
+                isActive: true,
+              })
               .then(() => {
                 const role = response.data.role;
                 let route = null;
@@ -98,28 +135,31 @@ export default {
                     route = "main";
                     break;
                   case "reservationist":
-                    route = "booking"
+                    route = "booking";
                     break;
                   case "frontdesk":
-                    route = "booking"
+                    route = "booking";
                     break;
                   case "inventorymanager":
-                    route = "inventory"
+                    route = "inventory";
                     break;
                   case "cashier":
-                    route = "cashier"
+                    route = "cashier";
                     break;
                   case "waiter":
-                    route = "cashier"
+                    route = "cashier";
                     break;
                   case "foodserver":
-                    route = "cashier"
+                    route = "cashier";
                     break;
                   case "restoinventory":
-                    route = "cashier"
+                    route = "cashier";
                     break;
                   case "guard":
-                    route = "counter"
+                    route = "counter";
+                    break;
+                  case "supervisor":
+                    route = "taskmgr";
                     break;
                   default:
                     // This shouldn't happen, but just in case
@@ -159,7 +199,8 @@ export default {
 
     startBackgroundSlideshow() {
       setInterval(() => {
-        this.backgroundIndex = (this.backgroundIndex + 1) % this.backgrounds.length;
+        this.backgroundIndex =
+          (this.backgroundIndex + 1) % this.backgrounds.length;
       }, 5000);
     },
 
@@ -175,14 +216,13 @@ export default {
         element.msRequestFullscreen();
       }
     },
-
   },
   mounted() {
     let barcode = "";
     let reading = false;
     this.enterFullscreen();
     this.startBackgroundSlideshow();
-    document.addEventListener('keypress', e => {
+    document.addEventListener("keypress", (e) => {
       //usually barcode scanners throw an 'Enter' key at the end of read
       if (e.keyCode === 13) {
         if (barcode.length > 10) {
@@ -192,11 +232,11 @@ export default {
             this.password = "0";
             this.login();
           }
-          /// code ready to use                
+          /// code ready to use
           barcode = "";
         }
       } else {
-        barcode += e.key; //while this is not an 'enter' it stores the every key            
+        barcode += e.key; //while this is not an 'enter' it stores the every key
       }
 
       //run a timeout of 200ms at the first read and clear everything
@@ -205,16 +245,14 @@ export default {
         setTimeout(() => {
           barcode = "";
           reading = false;
-        }, 200);  //200 works fine for me but you can adjust it
+        }, 200); //200 works fine for me but you can adjust it
       }
     });
-
-  }
+  },
 };
 </script>
 
 <style>
-
 div.container-fluid.main {
   margin-top: 75px;
 }
@@ -237,9 +275,9 @@ div.container-fluid.main {
 
 .container-fluid.login-background {
   background-image: url(src/assets/beach-resort-background1.jpg);
-  background-repeat: 'no-repeat';
-  background-position: 'center center';
-  background-attachment: 'fixed';
+  background-repeat: "no-repeat";
+  background-position: "center center";
+  background-attachment: "fixed";
 }
 
 .animated-form {

@@ -4,6 +4,10 @@ from django.conf import settings
 from .views import *
 
 urlpatterns = [ 
+    re_path(r'^task/$', task_list, name='task-list'),
+    re_path(r'^task/(?P<pk>\d+)/$', task_list, name='task-detail'), 
+    re_path(r'^task/filter/$',task_filter, name='task-filter'),
+    re_path(r'^task/delete/(?P<pk>\d+)/$', task_delete, name='task-delete'), 
     re_path(r'^bugreports/savefile', SaveFile),
     re_path(r'^restoitem/savefile', SaveFile),
     re_path(r'^bugreports/$',bugreports_list , name='bugreports-list'),

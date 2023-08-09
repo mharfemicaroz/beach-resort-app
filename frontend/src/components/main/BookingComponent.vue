@@ -54,7 +54,7 @@
                   </ul>
                 </div>
               </div>
-              <div class="calendar-parent">
+              <div class="calendar-parent c-p">
                 <calendar-view :items="calendarItems" :show-date="showDate"
                   :time-format-options="{ hour: 'numeric', minute: '2-digit' }" :enable-drag-drop="true"
                   :disable-past="disablePast" :disable-future="disableFuture" :show-times="showTimes"
@@ -2534,7 +2534,7 @@ export default {
     handleDragDrop(e, d, r) {
       if (this.dragDayIsSelected) {
         this.selectionEnd = d;
-        this.finishSelection([this.selectionStart,this.selectionEnd]);
+        this.finishSelection([this.selectionStart, this.selectionEnd]);
         this.dragDayIsSelected = false;
         this.toggleselect = false;
         this.roomSelect = "no";
@@ -5355,12 +5355,7 @@ body {
 
 #app {
   font-family: Calibri, sans-serif;
-  width: 95vw;
-  min-width: 30rem;
-  max-width: 100rem;
-  min-height: 40rem;
-  margin-left: auto;
-  margin-right: auto;
+
 }
 
 .calendar-parent {
@@ -5539,6 +5534,34 @@ img {
 
 .cv-item.hotel-checkedout {
   background-color: #ff7043;
+  /* adjust the color as needed */
+}
+
+.cv-item.task-progress {
+  background-color: rgb(0, 170, 255);
+  color: white;
+  font-family: Avenir, Avenir Next, Segoe UI, Helvetica, Arial, sans-serif;
+  /* adjust the color as needed */
+}
+
+.cv-item.task-inspected {
+  background-color: rgb(46, 215, 216);
+  color: white;
+  font-family: Avenir, Avenir Next, Segoe UI, Helvetica, Arial, sans-serif;
+  /* adjust the color as needed */
+}
+
+.cv-item.task-open {
+  background-color: rgb(208, 31, 46);
+  color: white;
+  font-family: Avenir, Avenir Next, Segoe UI, Helvetica, Arial, sans-serif;
+  /* adjust the color as needed */
+}
+
+.cv-item.task-completed {
+  background-color: rgb(255, 170, 0);
+  color: white;
+  font-family: Avenir, Avenir Next, Segoe UI, Helvetica, Arial, sans-serif;
   /* adjust the color as needed */
 }
 

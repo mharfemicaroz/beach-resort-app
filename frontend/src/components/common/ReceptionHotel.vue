@@ -118,7 +118,7 @@ export default {
             currentRoomType: "BEACH ROOM",
             draggedBookingIndex: null,
             draggedRoomIndex: null,
-        };
+        }; 
     },
     methods: {
         dragstart(event) {
