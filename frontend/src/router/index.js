@@ -48,7 +48,7 @@ const router = createRouter({
       component: TaskManager,
       meta: { 
         requiresAuth: true,
-        roles: ["superuser","supervisor"]
+        roles: ["superuser","supervisor","supervisor-aide"]
       },
     },
     {

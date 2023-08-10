@@ -607,7 +607,7 @@
             </div> -->
             <div class="col-md-6">
               <div class="d-flex align-items-center">
-                <h2 class="position-relative">Billing Statement (preview)</h2>
+                <h2 class="position-relative">Registration Form (preview)</h2>
                 <div class="ms-auto d-flex align-items-center">
                   <!-- Wrap the buttons in a flex container -->
                   <button

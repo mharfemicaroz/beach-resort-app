@@ -59,6 +59,7 @@ class Task(models.Model):
     groupkey = models.CharField(max_length=128, null=True, blank=True)
     states = models.TextField(null=True, blank=True)
     isCompleted = models.BooleanField(default=False)
+    isNotify = models.BooleanField(default=False)
     completionDate = models.CharField(max_length=50, blank=True, null=True)
 
 

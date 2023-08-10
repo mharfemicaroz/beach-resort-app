@@ -120,6 +120,9 @@
                             Restaurant Inventory Manager
                           </option>
                           <option value="supervisor">Supervisor</option>
+                          <option value="supervisor-aide">
+                            Supervisor Aide
+                          </option>
                           <option value="guard">Guest Counter</option>
                           <option value="errand">Errand</option>
                         </select>
@@ -756,6 +759,8 @@ export default {
       } else if (this.user.role === "guard") {
         this.user.route = "counter";
       } else if (this.user.role === "supervisor") {
+        this.user.route = "taskmgr";
+      } else if (this.user.role === "supervisor-aide") {
         this.user.route = "taskmgr";
       } else {
         this.user.route = "errand";

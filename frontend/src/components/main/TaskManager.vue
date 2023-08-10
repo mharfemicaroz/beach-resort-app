@@ -20,6 +20,7 @@
                 <span class="h4">Task Manager v 1.0 </span>
                 <a
                   href="#"
+                  v-if="userdata.role === 'supervisor'"
                   class="btn btn-link text-decoration-none text-white"
                   @click="toggleModal('settings-modal')"
                   data-bs-toggle="tooltip"
@@ -36,6 +37,7 @@
             <div class="icon-wrapper">
               <a
                 href="#"
+                v-if="userdata.role === 'supervisor'"
                 class="btn btn-link text-decoration-none text-white"
                 @click="addNewTask"
               >
@@ -43,7 +45,7 @@
               </a>
               <a
                 href="#"
-                v-if="countBackLogTasks > 0"
+                v-if="countBackLogTasks > 0 && userdata.role === 'supervisor'"
                 class="btn btn-link text-decoration-none text-white"
                 @click="moveTasktoNewday"
               >
@@ -79,7 +81,13 @@
                 ></i>
               </a>
             </div>
-            <div v-if="isToggleTimeline">
+            <div
+              v-if="isToggleTimeline"
+              style="
+                border-left: 1px solid whitesmoke;
+                border-right: 1px solid whitesmoke;
+              "
+            >
               <a
                 href="#"
                 class="btn btn-link text-white text-decoration-none"
@@ -93,6 +101,13 @@
                 @click="toggleTaskBox"
               >
                 <i class="fas fa-list-check" style="font-size: 24px"></i>
+              </a>
+              <a
+                href="#"
+                class="btn btn-link text-white text-decoration-none"
+                @click="toggleStatusBox"
+              >
+                <i class="fas fa-check-circle" style="font-size: 24px"></i>
               </a>
             </div>
             <div class="icon-wrapper">
@@ -171,73 +186,6 @@
       </div>
     </div>
     <div
-      class="row person-box"
-      :style="`width:${calcMeasure.innerWidth}; overflow-y: hidden; overflow-x: auto`"
-    >
-      <div class="col-md-12">
-        <div class="d-flex flex-row bd-highlight mb-3">
-          <div
-            class="p-2 bd-highlight"
-            v-for="(item, index) in aggregateByPerson"
-            :key="index"
-          >
-            <div class="card c-h" style="width: 350px; height: 335px">
-              <div
-                class="card-header bg-light text-dark d-flex justify-content-between"
-              >
-                <h3>
-                  <i class="fa-solid fa-user mr-3 p-0"></i>&nbsp;{{
-                    item.person_name
-                  }}
-                </h3>
-
-                <button class="btn text-white bg-danger">
-                  {{ item.data.length }}
-                </button>
-              </div>
-              <div
-                class="card-body c-h"
-                @dragover="handleDragover($event)"
-                @drop="handleDragdrop($event, item, 'person')"
-                style="
-                  width: 350px;
-                  height: 335px;
-                  overflow-y: auto;
-                  overflow-x: hidden;
-                "
-              >
-                <ul class="list-group">
-                  <li
-                    class="list-group-item mb-1 list-item"
-                    draggable="true"
-                    @dragstart="handleDragstart($event, itemData, 'person')"
-                    :class="[
-                      `${
-                        itemData.isCompleted
-                          ? 'task-completed'
-                          : itemData.status === 'Open'
-                          ? 'task-open'
-                          : itemData.status === 'In progress'
-                          ? 'task-progress'
-                          : itemData.status === 'Inspected'
-                          ? 'task-inspected'
-                          : ''
-                      }`,
-                    ]"
-                    v-for="(itemData, index2) in item.data"
-                    @click="onBoxItemClick(itemData)"
-                    :key="index2"
-                  >
-                    <span>{{ itemData.taskname }}-{{ itemData.dept }}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
       class="row task-box"
       :style="`width:${calcMeasure.innerWidth}; overflow-y: hidden; overflow-x: auto;`"
     >
@@ -309,9 +257,165 @@
                     :key="index2"
                     @click="onBoxItemClick(itemData)"
                   >
-                    <span
-                      >{{ itemData.person_name }}-{{ itemData.taskname }}</span
-                    >
+                    <div class="d-flex justify-content-between">
+                      <span
+                        >{{ itemData.person_name }}-{{ itemData.taskname }}
+                      </span>
+                      <span v-if="itemData.isNotify" class="p-0 m-0">
+                        <i
+                          class="fa-solid fa-bell text-white wiggle-animation"
+                          style="font-size: 24px"
+                        ></i>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="row person-box"
+      :style="`width:${calcMeasure.innerWidth}; overflow-y: hidden; overflow-x: auto`"
+    >
+      <div class="col-md-12">
+        <div class="d-flex flex-row bd-highlight mb-3">
+          <div
+            class="p-2 bd-highlight"
+            v-for="(item, index) in aggregateByPerson"
+            :key="index"
+          >
+            <div class="card c-h" style="width: 350px; height: 335px">
+              <div
+                class="card-header bg-light text-dark d-flex justify-content-between"
+              >
+                <h3>
+                  <i class="fa-solid fa-user mr-3 p-0"></i>&nbsp;{{
+                    item.person_name
+                  }}
+                </h3>
+
+                <button class="btn text-white bg-danger">
+                  {{ item.data.length }}
+                </button>
+              </div>
+              <div
+                class="card-body c-h"
+                @dragover="handleDragover($event)"
+                @drop="handleDragdrop($event, item, 'person')"
+                style="
+                  width: 350px;
+                  height: 335px;
+                  overflow-y: auto;
+                  overflow-x: hidden;
+                "
+              >
+                <ul class="list-group">
+                  <li
+                    class="list-group-item mb-1 list-item"
+                    draggable="true"
+                    @dragstart="handleDragstart($event, itemData, 'person')"
+                    :class="[
+                      `${
+                        itemData.isCompleted
+                          ? 'task-completed'
+                          : itemData.status === 'Open'
+                          ? 'task-open'
+                          : itemData.status === 'In progress'
+                          ? 'task-progress'
+                          : itemData.status === 'Inspected'
+                          ? 'task-inspected'
+                          : ''
+                      }`,
+                    ]"
+                    v-for="(itemData, index2) in item.data"
+                    @click="onBoxItemClick(itemData)"
+                    :key="index2"
+                  >
+                    <div class="d-flex justify-content-between">
+                      <span>{{ itemData.taskname }}-{{ itemData.dept }}</span>
+                      <span v-if="itemData.isNotify" class="p-0 m-0">
+                        <i
+                          class="fa-solid fa-bell text-white wiggle-animation"
+                          style="font-size: 24px"
+                        ></i>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="row status-box"
+      :style="`width:${calcMeasure.innerWidth}; overflow-y: hidden; overflow-x: auto`"
+    >
+      <div class="col-md-12">
+        <div class="d-flex flex-row bd-highlight mb-3">
+          <div
+            class="p-2 bd-highlight"
+            v-for="(item, index) in aggregateByStatus"
+            :key="index"
+          >
+            <div class="card c-h" style="width: 350px; height: 335px">
+              <div
+                class="card-header bg-light text-dark d-flex justify-content-between"
+              >
+                <h3>
+                  <i class="fa-solid fa-info-circle mr-3 p-0"></i>&nbsp;{{
+                    item.status
+                  }}
+                </h3>
+
+                <button class="btn text-white bg-danger">
+                  {{ item.data.length }}
+                </button>
+              </div>
+              <div
+                class="card-body c-h"
+                @dragover="handleDragover($event)"
+                @drop="handleDragdrop($event, item, 'status')"
+                style="
+                  width: 350px;
+                  height: 335px;
+                  overflow-y: auto;
+                  overflow-x: hidden;
+                "
+              >
+                <ul class="list-group">
+                  <li
+                    class="list-group-item mb-1 list-item"
+                    draggable="true"
+                    @dragstart="handleDragstart($event, itemData, 'status')"
+                    :class="[
+                      `${
+                        itemData.isCompleted
+                          ? 'task-completed'
+                          : 'task-incomplete'
+                      }`,
+                    ]"
+                    v-for="(itemData, index2) in item.data"
+                    @click="onBoxItemClick(itemData)"
+                    :key="index2"
+                  >
+                    <div class="d-flex justify-content-between">
+                      <span
+                        >{{ itemData.person_name }}-{{ itemData.taskname }}-{{
+                          itemData.dept
+                        }}</span
+                      >
+                      <span v-if="itemData.isNotify" class="p-0 m-0">
+                        <i
+                          class="fa-solid fa-bell text-dark wiggle-animation"
+                          style="font-size: 24px"
+                        ></i>
+                      </span>
+                    </div>
                   </li>
                 </ul>
               </div>
@@ -482,14 +586,38 @@
               <button
                 type="button"
                 @click="completeTask"
+                v-if="userdata.role === 'supervisor'"
                 class="btn btn-primary"
+                style="margin-right: 10px !important"
+              >
+                <i
+                  v-if="!task.isCompleted"
+                  class="fa-solid fa-check"
+                  style="font-size: large"
+                ></i>
+                <i
+                  v-else
+                  class="fa-solid fa-arrow-rotate-left"
+                  style="font-size: large"
+                ></i>
+              </button>
+              <button
+                type="button"
+                @click="toggleNotify"
+                :class="!isNotify ? 'btn btn-primary' : 'btn btn-danger'"
                 style="margin-right: 60px !important"
               >
-                {{ task.isCompleted ? "Restore" : "Complete" }}
+                <i
+                  v-if="task.isNotify"
+                  class="fa-solid fa-bell-slash wiggle-animation"
+                  style="font-size: large"
+                ></i>
+                <i v-else class="fa-solid fa-bell" style="font-size: large"></i>
               </button>
+
               <select
                 v-if="!task.isCompleted"
-                :disabled="task.isCompleted"
+                :disabled="task.isCompleted || userdata.role !== 'supervisor'"
                 v-model="task.assign.person.name"
                 class="form-select"
                 @change="
@@ -528,6 +656,7 @@
               <!-- Button that triggers the dropdown -->
               <button
                 type="button"
+                v-if="userdata.role === 'supervisor'"
                 class="btn btn-circle bg-light text-dark btn-dropdown"
                 style="font-size: small"
                 @click="toggleDropdown"
@@ -631,6 +760,7 @@
                 <div class="col-sm-12">
                   <input
                     :disabled="task.isCompleted"
+                    :readonly="userdata.role !== 'supervisor'"
                     type="text"
                     placeholder="Add task name"
                     class="form-control"
@@ -646,6 +776,7 @@
                 <div class="col-sm-12">
                   <input
                     :disabled="task.isCompleted"
+                    :readonly="userdata.role !== 'supervisor'"
                     type="text"
                     placeholder="Add task description"
                     class="form-control"
@@ -671,6 +802,30 @@
                 ></textarea>
               </div>
               <div class="form-group mt-2 d-flex justify-content-end">
+                <button
+                  style="margin-right: 10px"
+                  :disabled="task.isCompleted"
+                  v-if="userdata.role !== 'supervisor'"
+                  class="btn btn-circle"
+                  @click="
+                    updateTasks(`said “${task.assign.person.name} is done!”`)
+                  "
+                >
+                  <i class="fas fa-check"></i>
+                </button>
+                <button
+                  style="margin-right: 10px"
+                  :disabled="task.isCompleted"
+                  v-if="userdata.role !== 'supervisor'"
+                  class="btn btn-circle"
+                  @click="
+                    updateTasks(
+                      `said “${task.assign.person.name} is following up!”`
+                    )
+                  "
+                >
+                  <i class="fas fa-reply"></i>
+                </button>
                 <button
                   :disabled="task.isCompleted"
                   class="btn btn-circle"
@@ -740,6 +895,7 @@
                         <div class="col-sm-8">
                           <input
                             type="date"
+                            :readonly="userdata.role !== 'supervisor'"
                             :disabled="task.isCompleted"
                             id="startdate"
                             class="form-control"
@@ -759,6 +915,7 @@
                         <div class="col-sm-8">
                           <input
                             type="date"
+                            :readonly="userdata.role !== 'supervisor'"
                             :disabled="task.isCompleted"
                             id="enddate"
                             class="form-control"
@@ -806,7 +963,10 @@
                             </select>
                           </div>
 
-                          <div class="col-md-2">
+                          <div
+                            class="col-md-2"
+                            v-if="userdata.role === 'supervisor'"
+                          >
                             <i
                               v-if="!task.dept.isEditing"
                               @click="task.dept.isEditing = true"
@@ -853,7 +1013,10 @@
                             </select>
                           </div>
 
-                          <div class="col-md-2">
+                          <div
+                            class="col-md-2"
+                            v-if="userdata.role === 'supervisor'"
+                          >
                             <i
                               v-if="!task.status.isEditing"
                               @click="task.status.isEditing = true"
@@ -1071,6 +1234,7 @@ export default {
             role: "",
           },
         },
+        isNotify: false,
         isCompleted: false,
         completionDate: "",
         states: [],
@@ -1101,36 +1265,77 @@ export default {
     calcMeasure() {
       return {
         w1: parseFloat(window.innerWidth) - 300 + "px",
+        h1: parseFloat(window.innerHeight) - 143 + "px",
       };
     },
+    todayTasks() {
+      const currentDate = new Date().setHours(0, 0, 0, 0);
+      return this.tasks
+        .filter((task) => {
+          return (
+            currentDate >= new Date(task.startDate).setHours(0, 0, 0, 0) &&
+            currentDate <= new Date(task.endDate).setHours(0, 0, 0, 0)
+          );
+        })
+        .sort((a, b) => {
+          if (a.person_name.toLowerCase() < b.person_name.toLowerCase())
+            return -1;
+          if (a.person_name.toLowerCase() > b.person_name.toLowerCase())
+            return 1;
+        })
+        .sort((a, b) => {
+          return b.isNotify - a.isNotify;
+        });
+    },
     aggregateByPerson() {
-      const result = this.tasks.reduce((acc, task) => {
-        const person = acc.find((p) => p.person_name === task.person_name);
-        const data = { ...task };
-        delete data.person_name;
-        if (person) {
-          person.data.push(data);
-        } else {
-          acc.push({ person_name: task.person_name, data: [data] });
-        }
+      const result = this.todayTasks
+        .filter((o) => !o.isCompleted)
+        .reduce((acc, task) => {
+          const o = acc.find((p) => p.person_name === task.person_name);
+          const data = { ...task };
+          delete data.person_name;
+          if (o) {
+            o.data.push(data);
+          } else {
+            acc.push({ person_name: task.person_name, data: [data] });
+          }
 
-        return acc;
-      }, []);
+          return acc;
+        }, []);
       return result;
     },
     aggregateByDept() {
-      const result = this.tasks.reduce((acc, task) => {
-        const person = acc.find((p) => p.dept === task.dept);
-        const data = { ...task };
-        delete data.dept;
-        if (person) {
-          person.data.push(data);
-        } else {
-          acc.push({ dept: task.dept, data: [data] });
-        }
+      const result = this.todayTasks
+        .filter((o) => !o.isCompleted)
+        .reduce((acc, task) => {
+          const o = acc.find((p) => p.dept === task.dept);
+          const data = { ...task };
+          delete data.dept;
+          if (o) {
+            o.data.push(data);
+          } else {
+            acc.push({ dept: task.dept, data: [data] });
+          }
 
-        return acc;
-      }, []);
+          return acc;
+        }, []);
+      return result;
+    },
+    aggregateByStatus() {
+      const result = this.todayTasks
+        .filter((o) => !o.isCompleted)
+        .reduce((acc, task) => {
+          const o = acc.find((p) => p.status === task.status);
+          const data = { ...task };
+          delete data.status;
+          if (o) {
+            o.data.push(data);
+          } else {
+            acc.push({ status: task.status, data: [data] });
+          }
+
+          return acc;
+        }, []);
       return result;
     },
     sortedStates() {
@@ -1212,6 +1417,17 @@ export default {
       );
       this.populateCalendarItems();
     },
+    toggleNotify() {
+      this.task.isNotify = !this.task.isNotify;
+      this.addComment(
+        this.currentItemID,
+        this.task.isNotify ? this.task.assign.person.name : this.userdata.role,
+        `${
+          this.task.isNotify ? "notified supervisor" : "saw your notification"
+        }`
+      );
+      this.saveAction();
+    },
     moveTasktoNewday() {
       if (this.countBackLogTasks === 0) {
         return;
@@ -1289,6 +1505,9 @@ export default {
     handleDragdrop(e, prop, source) {
       e.preventDefault();
       const data = this.itemDragged;
+      if (data.isCompleted) {
+        return;
+      }
       this.task = {
         itemID: data.itemID,
         name: data.taskname,
@@ -1300,7 +1519,10 @@ export default {
           isEditing: false,
         },
         status: {
-          name: data.status,
+          name:
+            this.dragSource === source && source === "status"
+              ? prop.status
+              : data.status,
           isEditing: false,
         },
         assign: {
@@ -1330,7 +1552,7 @@ export default {
       this.isToggleTimeline = !this.isToggleTimeline;
       if (this.isToggleTimeline) {
         $(".calendar-parent").hide(1000);
-        $(".c-h").animate({ height: "740" });
+        $(".c-h").animate({ height: this.calcMeasure.h1 });
       } else {
         $(".c-h").animate({ height: "335" });
         $(".calendar-parent").show(1000);
@@ -1341,22 +1563,31 @@ export default {
     toggleBox() {
       this.isToggleBox = !this.isToggleBox;
       if (this.isToggleBox) {
-        $(".c-p").animate({ height: "740" });
+        $(".c-p").animate({ height: this.calcMeasure.h1 });
         $(".task-box").hide(1000);
         $(".person-box").hide(1000);
+        $(".status-box").hide(1000);
       } else {
         $(".c-p").animate({ height: "400" });
         $(".task-box").show(1000);
         $(".person-box").show(1000);
+        $(".status-box").show(1000);
       }
     },
     togglePersonBox() {
       $(".person-box").show(1000);
       $(".task-box").hide(1000);
+      $(".status-box").hide(1000);
     },
     toggleTaskBox() {
       $(".person-box").hide(1000);
       $(".task-box").show(1000);
+      $(".status-box").hide(1000);
+    },
+    toggleStatusBox() {
+      $(".status-box").show(1000);
+      $(".person-box").hide(1000);
+      $(".task-box").hide(1000);
     },
     timeDiff(after, before) {
       const diffInSeconds = Math.floor(
@@ -1439,7 +1670,7 @@ export default {
       this.saveAction();
     },
     updateTasks(remarks) {
-      this.addComment(this.currentItemID, "MHARFE", remarks);
+      this.addComment(this.currentItemID, this.userdata.role, remarks);
       this.saveAction();
     },
     saveTaskChanges() {
@@ -1501,6 +1732,7 @@ export default {
         taskdesc: this.task.desc,
         status: this.task.status.name,
         itemID: this.task.itemID,
+        isNotify: this.task.isNotify,
         isCompleted: this.task.isCompleted,
         completionDate: this.task.completionDate,
         processedBy: "su",
@@ -1538,6 +1770,7 @@ export default {
           item.taskdesc = data.taskdesc;
           item.status = data.status;
           item.states = data.states;
+          item.isNotify = data.isNotify;
           item.isCompleted = data.isCompleted;
           item.completionDate = data.completionDate;
 
@@ -1581,6 +1814,7 @@ export default {
             role: data.person_role,
           },
         },
+        isNotify: data.isNotify,
         isCompleted: data.isCompleted,
         completionDate: data.completionDate,
         states: JSON.parse(data.states),
@@ -1624,6 +1858,7 @@ export default {
             role: "",
           },
         },
+        isNotify: false,
         isCompleted: false,
         completionDate: "",
         states: [],
@@ -1646,7 +1881,7 @@ export default {
       this.task.states = [
         {
           created_at: new Date(),
-          actor: "MHARFE",
+          actor: this.userdata.role,
           comment: "created the task on " + new Date().toLocaleString(),
         },
       ];
@@ -1683,6 +1918,10 @@ export default {
     },
     onDrop(item, date) {
       this.setInitialData(item);
+      const data = this.tasks[this.itemIndex];
+      if (data.isCompleted) {
+        return;
+      }
       const eLength = CalendarMath.dayDiff(item.startDate, date);
       if (event.ctrlKey) {
         let sd = CalendarMath.addDays(item.startDate, 0);
@@ -1869,6 +2108,12 @@ export default {
   /* adjust the color as needed */
 }
 
+.task-incomplete {
+  background-color: aliceblue;
+  color: #3d474d;
+  /* adjust the color as needed */
+}
+
 .btn-item {
   position: relative;
   white-space: nowrap;
@@ -1914,5 +2159,34 @@ export default {
 .icon-wrapper:last-child {
   border-right: none;
   /* Removes border for the last icon */
+}
+
+/* CSS for the continuous wiggle animation */
+@keyframes wiggle {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(5deg);
+  }
+
+  50% {
+    transform: rotate(-5deg);
+  }
+
+  75% {
+    transform: rotate(5deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Apply the animation to the button */
+.wiggle-animation {
+  animation: wiggle 0.75s infinite;
+  /* Adjust animation duration as needed */
 }
 </style>

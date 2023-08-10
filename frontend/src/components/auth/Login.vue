@@ -161,6 +161,9 @@ export default {
                   case "supervisor":
                     route = "taskmgr";
                     break;
+                  case "supervisor-aide":
+                    route = "taskmgr";
+                    break;
                   default:
                     // This shouldn't happen, but just in case
                     Swal.fire({
