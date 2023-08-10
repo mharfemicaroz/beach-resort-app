@@ -170,7 +170,10 @@
         </div>
       </div>
     </div>
-    <div class="row person-box">
+    <div
+      class="row person-box"
+      :style="`width:${calcMeasure.innerWidth}; overflow-y: hidden; overflow-x: auto`"
+    >
       <div class="col-md-12">
         <div class="d-flex flex-row bd-highlight mb-3">
           <div
@@ -194,8 +197,8 @@
               </div>
               <div
                 class="card-body c-h"
-                @dragover=""
-                @drop=""
+                @dragover="handleDragover($event)"
+                @drop="handleDragdrop($event, item, 'person')"
                 style="
                   width: 350px;
                   height: 335px;
@@ -207,7 +210,7 @@
                   <li
                     class="list-group-item mb-1 list-item"
                     draggable="true"
-                    @dragstart=""
+                    @dragstart="handleDragstart($event, itemData, 'person')"
                     :class="[
                       `${
                         itemData.isCompleted
@@ -222,7 +225,7 @@
                       }`,
                     ]"
                     v-for="(itemData, index2) in item.data"
-                    @click=""
+                    @click="onBoxItemClick(itemData)"
                     :key="index2"
                   >
                     <span>{{ itemData.taskname }}-{{ itemData.dept }}</span>
@@ -234,24 +237,49 @@
         </div>
       </div>
     </div>
-    <div class="row task-box">
+    <div
+      class="row task-box"
+      :style="`width:${calcMeasure.innerWidth}; overflow-y: hidden; overflow-x: auto;`"
+    >
       <div class="col-md-12">
         <div class="d-flex flex-row bd-highlight mb-3">
-          <div class="p-2 bd-highlight">
+          <div
+            class="p-2 bd-highlight"
+            v-for="(item, index) in aggregateByDept"
+            :key="index"
+          >
             <div class="card c-h" style="width: 350px; height: 335px">
               <div
                 class="card-header bg-light text-dark d-flex justify-content-between"
               >
-                <h3><i class="fa fa-umbrella-beach mr-3 p-0"></i> Beach</h3>
+                <h3>
+                  <i
+                    v-if="item.dept === 'Beach'"
+                    class="fa fa-umbrella-beach mr-3 p-0"
+                  ></i>
+                  <i
+                    v-else-if="item.dept === 'Rooms'"
+                    class="fa fa-bed mr-3 p-0"
+                  ></i>
+                  <i
+                    v-else-if="item.dept === 'Resto'"
+                    class="fas fa-pizza-slice mr-3 p-0"
+                  ></i>
+                  <i
+                    v-else-if="item.dept === 'Pool'"
+                    class="fas fa-swimming-pool mr-3 p-0"
+                  ></i>
+                  {{ item.dept }}
+                </h3>
 
                 <button class="btn text-white bg-danger">
-                  {{ tasks.filter((item) => item.dept === "Beach").length }}
+                  {{ item.data.length }}
                 </button>
               </div>
               <div
                 class="card-body c-h"
                 @dragover="handleDragover($event)"
-                @drop="handleDragdrop($event, 'Beach')"
+                @drop="handleDragdrop($event, item, 'task')"
                 style="
                   width: 350px;
                   height: 335px;
@@ -263,183 +291,27 @@
                   <li
                     class="list-group-item mb-1 list-item"
                     draggable="true"
-                    @dragstart="handleDragstart($event, item)"
+                    @dragstart="handleDragstart($event, itemData, 'task')"
                     :class="[
                       `${
-                        item.isCompleted
+                        itemData.isCompleted
                           ? 'task-completed'
-                          : item.status === 'Open'
+                          : itemData.status === 'Open'
                           ? 'task-open'
-                          : item.status === 'In progress'
+                          : itemData.status === 'In progress'
                           ? 'task-progress'
-                          : item.status === 'Inspected'
+                          : itemData.status === 'Inspected'
                           ? 'task-inspected'
                           : ''
                       }`,
                     ]"
-                    v-for="(item, index) in tasks.filter(
-                      (item) => item.dept === 'Beach'
-                    )"
-                    @click="onBoxItemClick(item)"
-                    :key="index"
+                    v-for="(itemData, index2) in item.data"
+                    :key="index2"
+                    @click="onBoxItemClick(itemData)"
                   >
-                    <span>{{ item.person_name }}-{{ item.taskname }}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="p-2 bd-highlight">
-            <div class="card c-h" style="width: 350px; height: 335px">
-              <div
-                class="card-header bg-light text-dark d-flex justify-content-between"
-              >
-                <h3><i class="fa fa-bed mr-3 p-0"></i> Rooms</h3>
-
-                <button class="btn text-white bg-danger">
-                  {{ tasks.filter((item) => item.dept === "Rooms").length }}
-                </button>
-              </div>
-              <div
-                class="card-body c-h"
-                @dragover="handleDragover($event)"
-                @drop="handleDragdrop($event, 'Rooms')"
-                style="
-                  width: 350px;
-                  height: 335px;
-                  overflow-y: auto;
-                  overflow-x: hidden;
-                "
-              >
-                <ul class="list-group">
-                  <li
-                    class="list-group-item mb-1 list-item"
-                    draggable="true"
-                    @dragstart="handleDragstart($event, item)"
-                    :class="[
-                      `${
-                        item.isCompleted
-                          ? 'task-completed'
-                          : item.status === 'Open'
-                          ? 'task-open'
-                          : item.status === 'In progress'
-                          ? 'task-progress'
-                          : item.status === 'Inspected'
-                          ? 'task-inspected'
-                          : ''
-                      }`,
-                    ]"
-                    v-for="(item, index) in tasks.filter(
-                      (item) => item.dept === 'Rooms'
-                    )"
-                    @click="onBoxItemClick(item)"
-                    :key="index"
-                  >
-                    <span>{{ item.person_name }}-{{ item.taskname }}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="p-2 bd-highlight">
-            <div class="card c-h" style="width: 350px; height: 335px">
-              <div
-                class="card-header bg-light text-dark d-flex justify-content-between"
-              >
-                <h3><i class="fas fa-pizza-slice mr-3 p-0"></i> Resto</h3>
-
-                <button class="btn text-white bg-danger">
-                  {{ tasks.filter((item) => item.dept === "Resto").length }}
-                </button>
-              </div>
-              <div
-                class="card-body c-h"
-                @dragover="handleDragover($event)"
-                @drop="handleDragdrop($event, 'Resto')"
-                style="
-                  width: 350px;
-                  height: 335px;
-                  overflow-y: auto;
-                  overflow-x: hidden;
-                "
-              >
-                <ul class="list-group">
-                  <li
-                    class="list-group-item mb-1 list-item"
-                    draggable="true"
-                    @dragstart="handleDragstart($event, item)"
-                    :class="[
-                      `${
-                        item.isCompleted
-                          ? 'task-completed'
-                          : item.status === 'Open'
-                          ? 'task-open'
-                          : item.status === 'In progress'
-                          ? 'task-progress'
-                          : item.status === 'Inspected'
-                          ? 'task-inspected'
-                          : ''
-                      }`,
-                    ]"
-                    v-for="(item, index) in tasks.filter(
-                      (item) => item.dept === 'Resto'
-                    )"
-                    @click="onBoxItemClick(item)"
-                    :key="index"
-                  >
-                    <span>{{ item.person_name }}-{{ item.taskname }}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="p-2 bd-highlight">
-            <div class="card c-h" style="width: 350px; height: 335px">
-              <div
-                class="card-header bg-light text-dark d-flex justify-content-between"
-              >
-                <h3><i class="fas fa-swimming-pool mr-3 p-0"></i> Pool</h3>
-
-                <button class="btn text-white bg-danger">
-                  {{ tasks.filter((item) => item.dept === "Pools").length }}
-                </button>
-              </div>
-              <div
-                class="card-body c-h"
-                @dragover="handleDragover($event)"
-                @drop="handleDragdrop($event, 'Pools')"
-                style="
-                  width: 350px;
-                  height: 335px;
-                  overflow-y: auto;
-                  overflow-x: hidden;
-                "
-              >
-                <ul class="list-group">
-                  <li
-                    class="list-group-item mb-1 list-item"
-                    draggable="true"
-                    @dragstart="handleDragstart($event, item)"
-                    :class="[
-                      `${
-                        item.isCompleted
-                          ? 'task-completed'
-                          : item.status === 'Open'
-                          ? 'task-open'
-                          : item.status === 'In progress'
-                          ? 'task-progress'
-                          : item.status === 'Inspected'
-                          ? 'task-inspected'
-                          : ''
-                      }`,
-                    ]"
-                    v-for="(item, index) in tasks.filter(
-                      (item) => item.dept === 'Pools'
-                    )"
-                    @click="onBoxItemClick(item)"
-                    :key="index"
-                  >
-                    <span>{{ item.person_name }}-{{ item.taskname }}</span>
+                    <span
+                      >{{ itemData.person_name }}-{{ itemData.taskname }}</span
+                    >
                   </li>
                 </ul>
               </div>
@@ -1217,6 +1089,7 @@ export default {
       isToggleTimeline: false,
       isToggleBox: false,
       itemDragged: null,
+      dragSource: "",
     };
   },
   computed: {
@@ -1225,21 +1098,35 @@ export default {
       const user = authStore.user;
       return user;
     },
+    calcMeasure() {
+      return {
+        w1: parseFloat(window.innerWidth) - 300 + "px",
+      };
+    },
     aggregateByPerson() {
       const result = this.tasks.reduce((acc, task) => {
-        // Find the person object in accumulator
         const person = acc.find((p) => p.person_name === task.person_name);
-
-        // Clone the task and remove the person_name key to get only the data
         const data = { ...task };
         delete data.person_name;
-
-        // If person already exists in accumulator, just push the new data
         if (person) {
           person.data.push(data);
         } else {
-          // If person does not exist in accumulator, create a new entry
           acc.push({ person_name: task.person_name, data: [data] });
+        }
+
+        return acc;
+      }, []);
+      return result;
+    },
+    aggregateByDept() {
+      const result = this.tasks.reduce((acc, task) => {
+        const person = acc.find((p) => p.dept === task.dept);
+        const data = { ...task };
+        delete data.dept;
+        if (person) {
+          person.data.push(data);
+        } else {
+          acc.push({ dept: task.dept, data: [data] });
         }
 
         return acc;
@@ -1395,17 +1282,21 @@ export default {
       }
       this.temptasks = [];
     },
-    handleDragstart(e, o) {
+    handleDragstart(e, o, source) {
       this.itemDragged = o;
+      this.dragSource = source;
     },
-    handleDragdrop(e, prop) {
+    handleDragdrop(e, prop, source) {
       e.preventDefault();
       const data = this.itemDragged;
       this.task = {
         itemID: data.itemID,
         name: data.taskname,
         dept: {
-          name: prop,
+          name:
+            this.dragSource === source && source === "task"
+              ? prop.dept
+              : data.dept,
           isEditing: false,
         },
         status: {
@@ -1414,7 +1305,10 @@ export default {
         },
         assign: {
           person: {
-            name: data.person_name,
+            name:
+              this.dragSource === source && source === "person"
+                ? prop.person_name
+                : data.person_name,
             role: data.person_role,
           },
         },
@@ -1441,6 +1335,7 @@ export default {
         $(".c-h").animate({ height: "335" });
         $(".calendar-parent").show(1000);
         $(".task-box").show(1000);
+        $(".person-box").show(1000);
       }
     },
     toggleBox() {
@@ -1448,9 +1343,11 @@ export default {
       if (this.isToggleBox) {
         $(".c-p").animate({ height: "740" });
         $(".task-box").hide(1000);
+        $(".person-box").hide(1000);
       } else {
         $(".c-p").animate({ height: "400" });
         $(".task-box").show(1000);
+        $(".person-box").show(1000);
       }
     },
     togglePersonBox() {

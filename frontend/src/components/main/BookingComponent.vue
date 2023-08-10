@@ -2,34 +2,125 @@
   <TopNavBarComponent />
   <div class="container-fluid main">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li v-if="userdata.role === 'superuser'" class="nav-item" role="presentation">
-        <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button"
-          role="tab" aria-controls="dashboard" aria-selected="true" @click="resetSummary(0)">Dashboard</button>
+      <li
+        v-if="userdata.role === 'superuser'"
+        class="nav-item"
+        role="presentation"
+      >
+        <button
+          class="nav-link"
+          id="dashboard-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#dashboard"
+          type="button"
+          role="tab"
+          aria-controls="dashboard"
+          aria-selected="true"
+          @click="resetSummary(0)"
+        >
+          Dashboard
+        </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking" type="button"
-          role="tab" aria-controls="booking" aria-selected="true" @click="resetSummary(1)">Calendar</button>
+        <button
+          class="nav-link active"
+          id="booking-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#booking"
+          type="button"
+          role="tab"
+          aria-controls="booking"
+          aria-selected="true"
+          @click="resetSummary(1)"
+        >
+          Calendar
+        </button>
       </li>
-      <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
-        <button class="nav-link" id="monitor-tab" data-bs-toggle="tab" data-bs-target="#monitor" type="button" role="tab"
-          aria-controls="monitor" aria-selected="false" @click="resetSummary(4)">Room Reservations</button>
+      <li
+        v-if="userdata.role !== 'reservationist'"
+        class="nav-item"
+        role="presentation"
+      >
+        <button
+          class="nav-link"
+          id="monitor-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#monitor"
+          type="button"
+          role="tab"
+          aria-controls="monitor"
+          aria-selected="false"
+          @click="resetSummary(4)"
+        >
+          Room Reservations
+        </button>
       </li>
-      <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
-        <button class="nav-link" id="reception-tab" data-bs-toggle="tab" data-bs-target="#reception" type="button"
-          role="tab" aria-controls="reception" aria-selected="false" @click="resetSummary(5)">Reception</button>
+      <li
+        v-if="userdata.role !== 'reservationist'"
+        class="nav-item"
+        role="presentation"
+      >
+        <button
+          class="nav-link"
+          id="reception-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#reception"
+          type="button"
+          role="tab"
+          aria-controls="reception"
+          aria-selected="false"
+          @click="resetSummary(5)"
+        >
+          Reception
+        </button>
       </li>
-      <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
-        <button class="nav-link" id="others-tab" data-bs-toggle="tab" data-bs-target="#others" type="button" role="tab"
-          aria-controls="others" aria-selected="false" @click="resetSummary(2)">Account</button>
+      <li
+        v-if="userdata.role !== 'reservationist'"
+        class="nav-item"
+        role="presentation"
+      >
+        <button
+          class="nav-link"
+          id="others-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#others"
+          type="button"
+          role="tab"
+          aria-controls="others"
+          aria-selected="false"
+          @click="resetSummary(2)"
+        >
+          Account
+        </button>
       </li>
-      <li v-if="userdata.role === 'superuser'" class="nav-item" role="presentation">
-        <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab"
-          aria-controls="reports" aria-selected="false" @click="resetSummary(3)">Reports</button>
+      <li
+        v-if="userdata.role === 'superuser'"
+        class="nav-item"
+        role="presentation"
+      >
+        <button
+          class="nav-link"
+          id="reports-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#reports"
+          type="button"
+          role="tab"
+          aria-controls="reports"
+          aria-selected="false"
+          @click="resetSummary(3)"
+        >
+          Reports
+        </button>
       </li>
     </ul>
     <div class="tab-content mt-3" id="myTabContent">
-      <div v-if="userdata.role === 'superuser'" class="tab-pane fade" id="dashboard" role="tabpanel"
-        aria-labelledby="dashboard-tab">
+      <div
+        v-if="userdata.role === 'superuser'"
+        class="tab-pane fade"
+        id="dashboard"
+        role="tabpanel"
+        aria-labelledby="dashboard-tab"
+      >
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
@@ -38,142 +129,293 @@
           </div>
         </div>
       </div>
-      <div class="tab-pane fade show active" id="booking" role="tabpanel" aria-labelledby="booking-tab">
+      <div
+        class="tab-pane fade show active"
+        id="booking"
+        role="tabpanel"
+        aria-labelledby="booking-tab"
+      >
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
               <div class="d-flex justify-content-between">
-                <h2>Calendar <a href="#" class="btn btn-link text-decoration-none" @click="toggleSettingsModal()"><i
-                      class="fa fa-bars" style="font-size: 1.25em;"></i></a></h2>
+                <h2>
+                  Calendar
+                  <a
+                    href="#"
+                    class="btn btn-link text-decoration-none"
+                    @click="toggleSettingsModal()"
+                    ><i class="fa fa-bars" style="font-size: 1.25em"></i
+                  ></a>
+                </h2>
                 <div class="form-outline col-md-3">
-                  <input type="search" id="form1" class="form-control" placeholder="Type query" v-model="booksearchtext"
-                    @input="populateCalendarItems" @click="showAutosuggestions = false" @blur="hideAutosuggestions"
-                    aria-label="Search" ref="searchQuery" autocomplete="off" aria-autocomplete="off" />
-                  <ul id="suglist" class="autosuggestions" v-if="!showAutosuggestions">
-                    <li v-for="suggestion in autosuggestions" @click="selectSuggestion(suggestion)">{{ suggestion }}</li>
+                  <input
+                    type="search"
+                    id="form1"
+                    class="form-control"
+                    placeholder="Type query"
+                    v-model="booksearchtext"
+                    @input="populateCalendarItems"
+                    @click="showAutosuggestions = false"
+                    @blur="hideAutosuggestions"
+                    aria-label="Search"
+                    ref="searchQuery"
+                    autocomplete="off"
+                    aria-autocomplete="off"
+                  />
+                  <ul
+                    id="suglist"
+                    class="autosuggestions"
+                    v-if="!showAutosuggestions"
+                  >
+                    <li
+                      v-for="suggestion in autosuggestions"
+                      @click="selectSuggestion(suggestion)"
+                    >
+                      {{ suggestion }}
+                    </li>
                   </ul>
                 </div>
               </div>
               <div class="calendar-parent c-p">
-                <calendar-view :items="calendarItems" :show-date="showDate"
-                  :time-format-options="{ hour: 'numeric', minute: '2-digit' }" :enable-drag-drop="true"
-                  :disable-past="disablePast" :disable-future="disableFuture" :show-times="showTimes"
-                  :date-classes="myDateClasses" :display-period-uom="displayPeriodUom"
-                  :display-period-count="displayPeriodCount" :starting-day-of-week="startingDayOfWeek"
-                  :class="themeClasses" :period-changed-callback="periodChanged"
-                  :current-period-label="useTodayIcons ? 'icons' : ''" :displayWeekNumbers="displayWeekNumbers"
-                  :enable-date-selection="true" :selection-start="selectionStart" :selection-end="selectionEnd"
-                  @date-selection-start="setSelection" @date-selection="setSelection"
-                  @date-selection-finish="finishSelection" @drop-on-date="onDrop" @click-date="onClickDay"
-                  @click-item="onClickItem">
+                <calendar-view
+                  :items="calendarItems"
+                  :show-date="showDate"
+                  :time-format-options="{ hour: 'numeric', minute: '2-digit' }"
+                  :enable-drag-drop="true"
+                  :disable-past="disablePast"
+                  :disable-future="disableFuture"
+                  :show-times="showTimes"
+                  :date-classes="myDateClasses"
+                  :display-period-uom="displayPeriodUom"
+                  :display-period-count="displayPeriodCount"
+                  :starting-day-of-week="startingDayOfWeek"
+                  :class="themeClasses"
+                  :period-changed-callback="periodChanged"
+                  :current-period-label="useTodayIcons ? 'icons' : ''"
+                  :displayWeekNumbers="displayWeekNumbers"
+                  :enable-date-selection="true"
+                  :selection-start="selectionStart"
+                  :selection-end="selectionEnd"
+                  @date-selection-start="setSelection"
+                  @date-selection="setSelection"
+                  @date-selection-finish="finishSelection"
+                  @drop-on-date="onDrop"
+                  @click-date="onClickDay"
+                  @click-item="onClickItem"
+                >
                   <template #header="{ headerProps }">
-                    <calendar-view-header slot="header" :header-props="headerProps" @input="setShowDate" />
+                    <calendar-view-header
+                      slot="header"
+                      :header-props="headerProps"
+                      @input="setShowDate"
+                    />
                   </template>
                 </calendar-view>
               </div>
             </div>
           </div>
           <div class="row">
-            <div class="card" style="height: 60px!important;">
-            </div>
+            <div class="card" style="height: 60px !important"></div>
           </div>
         </div>
       </div>
-      <div class="tab-pane fade" id="monitor" role="tabpanel" aria-labelledby="monitor-tab">
+      <div
+        class="tab-pane fade"
+        id="monitor"
+        role="tabpanel"
+        aria-labelledby="monitor-tab"
+      >
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-2">
-              <ul class="nav nav-tabs flex-column" id="propertyTab" role="tablist">
+              <ul
+                class="nav nav-tabs flex-column"
+                id="propertyTab"
+                role="tablist"
+              >
                 <li class="nav-item">
-                  <a class="nav-link active " data-bs-toggle="tab" @click="activeMainTab = 'BEACH ROOM'"
-                    href="#beachroom">Beach Rooms</a>
+                  <a
+                    class="nav-link active"
+                    data-bs-toggle="tab"
+                    @click="activeMainTab = 'BEACH ROOM'"
+                    href="#beachroom"
+                    >Beach Rooms</a
+                  >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'POOL ROOM'" href="#poolrooms">Pool
-                    Rooms</a>
+                  <a
+                    class="nav-link"
+                    data-bs-toggle="tab"
+                    @click="activeMainTab = 'POOL ROOM'"
+                    href="#poolrooms"
+                    >Pool Rooms</a
+                  >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'POOL COTTAGE'"
-                    href="#poolcottages">Pool Cottages</a>
+                  <a
+                    class="nav-link"
+                    data-bs-toggle="tab"
+                    @click="activeMainTab = 'POOL COTTAGE'"
+                    href="#poolcottages"
+                    >Pool Cottages</a
+                  >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" data-bs-toggle="tab" @click="activeMainTab = 'GAZEBO COTTAGE'"
-                    href="#gazebocottages">Native Gazebo Cottages</a>
+                  <a
+                    class="nav-link"
+                    data-bs-toggle="tab"
+                    @click="activeMainTab = 'GAZEBO COTTAGE'"
+                    href="#gazebocottages"
+                    >Native Gazebo Cottages</a
+                  >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'BEACH COTTAGE'"
-                    href="#beachcottages">Beach Cottages (Day)</a>
+                  <a
+                    class="nav-link"
+                    data-bs-toggle="tab"
+                    @click="activeMainTab = 'BEACH COTTAGE'"
+                    href="#beachcottages"
+                    >Beach Cottages (Day)</a
+                  >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'N-BEACH COTTAGE'"
-                    href="#nbeachcottages">Beach Cottages (Night)</a>
+                  <a
+                    class="nav-link"
+                    data-bs-toggle="tab"
+                    @click="activeMainTab = 'N-BEACH COTTAGE'"
+                    href="#nbeachcottages"
+                    >Beach Cottages (Night)</a
+                  >
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link " data-bs-toggle="tab" @click="activeMainTab = 'HALL'" href="#halls">Halls</a>
+                  <a
+                    class="nav-link"
+                    data-bs-toggle="tab"
+                    @click="activeMainTab = 'HALL'"
+                    href="#halls"
+                    >Halls</a
+                  >
                 </li>
               </ul>
             </div>
             <div class="col-sm-10">
               <div class="tab-content mt-3" id="propertyTabContent">
-                <div class="tab-pane fade show active" id="beachroom" role="tabpanel" aria-labelledby="beachroom-tab">
+                <div
+                  class="tab-pane fade show active"
+                  id="beachroom"
+                  role="tabpanel"
+                  aria-labelledby="beachroom-tab"
+                >
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col-md-12">
-                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                        <CardBookingsVue
+                          :roomData="roomsjoinbookings"
+                          v-on:click-action="cardAction"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="poolrooms" role="tabpanel" aria-labelledby="poolroom-tab">
+                <div
+                  class="tab-pane fade"
+                  id="poolrooms"
+                  role="tabpanel"
+                  aria-labelledby="poolroom-tab"
+                >
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col-md-12">
-                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                        <CardBookingsVue
+                          :roomData="roomsjoinbookings"
+                          v-on:click-action="cardAction"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="poolcottages" role="tabpanel" aria-labelledby="poolcottage-tab">
+                <div
+                  class="tab-pane fade"
+                  id="poolcottages"
+                  role="tabpanel"
+                  aria-labelledby="poolcottage-tab"
+                >
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col-md-12">
-                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                        <CardBookingsVue
+                          :roomData="roomsjoinbookings"
+                          v-on:click-action="cardAction"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="gazebocottages" role="tabpanel" aria-labelledby="gazebocottage-tab">
+                <div
+                  class="tab-pane fade"
+                  id="gazebocottages"
+                  role="tabpanel"
+                  aria-labelledby="gazebocottage-tab"
+                >
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col-md-12">
-                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                        <CardBookingsVue
+                          :roomData="roomsjoinbookings"
+                          v-on:click-action="cardAction"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="beachcottages" role="tabpanel" aria-labelledby="beachcottage-tab">
+                <div
+                  class="tab-pane fade"
+                  id="beachcottages"
+                  role="tabpanel"
+                  aria-labelledby="beachcottage-tab"
+                >
                   <div class="container-fluid bg-beachday">
                     <div class="row">
                       <div class="col-md-12">
-                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                        <CardBookingsVue
+                          :roomData="roomsjoinbookings"
+                          v-on:click-action="cardAction"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="nbeachcottages" role="tabpanel" aria-labelledby="nbeachcottage-tab">
+                <div
+                  class="tab-pane fade"
+                  id="nbeachcottages"
+                  role="tabpanel"
+                  aria-labelledby="nbeachcottage-tab"
+                >
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col-md-12">
-                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                        <CardBookingsVue
+                          :roomData="roomsjoinbookings"
+                          v-on:click-action="cardAction"
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane fade" id="halls" role="tabpanel" aria-labelledby="halls-tab">
+                <div
+                  class="tab-pane fade"
+                  id="halls"
+                  role="tabpanel"
+                  aria-labelledby="halls-tab"
+                >
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col-md-12">
-                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
+                        <CardBookingsVue
+                          :roomData="roomsjoinbookings"
+                          v-on:click-action="cardAction"
+                        />
                       </div>
                     </div>
                   </div>
@@ -183,17 +425,35 @@
           </div>
         </div>
       </div>
-      <div class="tab-pane fade" id="reception" role="tabpanel" aria-labelledby="others-tab">
+      <div
+        class="tab-pane fade"
+        id="reception"
+        role="tabpanel"
+        aria-labelledby="others-tab"
+      >
         <div class="container-fluid">
           <div class="row">
-            <ReceptionHotel :bookingsdata="bookings" :roomsdata="rooms" @clickItem-action="handleReceptionItemAction"
-              @clickDay-action="handleReceptionDayAction" @clickRoom-action="handleReceptionRoomAction"
-              @dragstart-action="handledragstart" @dragend-action="handledragend" @dragover-action="handleDragOver"
-              @dragdrop-action="handleDragDrop" @dragstartday-action="handledragstartday" />
+            <ReceptionHotel
+              :bookingsdata="bookings"
+              :roomsdata="rooms"
+              @clickItem-action="handleReceptionItemAction"
+              @clickDay-action="handleReceptionDayAction"
+              @clickRoom-action="handleReceptionRoomAction"
+              @dragstart-action="handledragstart"
+              @dragend-action="handledragend"
+              @dragover-action="handleDragOver"
+              @dragdrop-action="handleDragDrop"
+              @dragstartday-action="handledragstartday"
+            />
           </div>
         </div>
       </div>
-      <div class="tab-pane fade" id="others" role="tabpanel" aria-labelledby="others-tab">
+      <div
+        class="tab-pane fade"
+        id="others"
+        role="tabpanel"
+        aria-labelledby="others-tab"
+      >
         <div class="container-fluid">
           <div class="row">
             <!-- <div class="col-md-3">
@@ -229,24 +489,40 @@
               <div class="d-flex align-items-center">
                 <h2 class="position-relative">
                   Cart
-                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    style="font-size: 0.75rem;">
+                  <span
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    style="font-size: 0.75rem"
+                  >
                     {{ numItemCart }}
                     <span class="visually-hidden">items in cart</span>
                   </span>
                 </h2>
-                <div class="ms-auto d-flex align-items-center"> <!-- Wrap the buttons in a flex container -->
-                  <button type="button" class="btn btn-primary me-2" :class="{ 'wiggle-animation': countInclusion === 0 }"
-                    @click="showShoppingModal()">
-                    <i class="fa fa-shopping-cart"><br>
-                      <span style="font-size: 8px;">[F1]</span></i>
+                <div class="ms-auto d-flex align-items-center">
+                  <!-- Wrap the buttons in a flex container -->
+                  <button
+                    type="button"
+                    class="btn btn-primary me-2"
+                    :class="{ 'wiggle-animation': countInclusion === 0 }"
+                    @click="showShoppingModal()"
+                  >
+                    <i class="fa fa-shopping-cart"
+                      ><br />
+                      <span style="font-size: 8px">[F1]</span></i
+                    >
                   </button>
-                  <button type="button" class="btn btn-primary" :class="{ 'wiggle-animation': countInclusion > 0 }"
-                    @click="moveInclusionCartToMain()">
-                    <i class="fas fa-thumbs-up" style="position: relative;"><br>
-                      <span style="font-size: 8px;">[F2]</span>
-                      <span class="position-absolute start-1000 translate-middle badge rounded-pill bg-danger"
-                        style="font-size: 0.50rem; top: -25%; left: 120%;">
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    :class="{ 'wiggle-animation': countInclusion > 0 }"
+                    @click="moveInclusionCartToMain()"
+                  >
+                    <i class="fas fa-thumbs-up" style="position: relative"
+                      ><br />
+                      <span style="font-size: 8px">[F2]</span>
+                      <span
+                        class="position-absolute start-1000 translate-middle badge rounded-pill bg-danger"
+                        style="font-size: 0.5rem; top: -25%; left: 120%"
+                      >
                         {{ countInclusion }}
                         <span class="visually-hidden">items in cart</span>
                       </span>
@@ -254,22 +530,45 @@
                   </button>
                 </div>
               </div>
-              <div class="card-deck"
-                :style="`height:${calcMeasure.height2};overflow-y: auto;overflow-x: hidden;padding-right: 1px;`">
-                <div class="card" v-for="(item, index) in cart.sort((a, b) => a.category.localeCompare(b.category))"
-                  :key="item.id">
-                  <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">{{ item.name }} <span
-                        v-html="(item.category === 'main') ? '<i class=\'fas fa-check text-success\'></i>' : '<i class=\'fas fa-hourglass-start text-warning\'></i>'"></span>
+              <div
+                class="card-deck"
+                :style="`height:${calcMeasure.height2};overflow-y: auto;overflow-x: hidden;padding-right: 1px;`"
+              >
+                <div
+                  class="card"
+                  v-for="(item, index) in cart.sort((a, b) =>
+                    a.category.localeCompare(b.category)
+                  )"
+                  :key="item.id"
+                >
+                  <div
+                    class="card-header d-flex justify-content-between align-items-center"
+                  >
+                    <h5 class="card-title">
+                      {{ item.name }}
+                      <span
+                        v-html="
+                          item.category === 'main'
+                            ? '<i class=\'fas fa-check text-success\'></i>'
+                            : '<i class=\'fas fa-hourglass-start text-warning\'></i>'
+                        "
+                      ></span>
                     </h5>
-                    <button v-if="item.category === 'inclusion'" type="button" class="btn btn-sm btn-close"
-                      aria-label="Close" @click="cancelItem(item)"></button>
+                    <button
+                      v-if="item.category === 'inclusion'"
+                      type="button"
+                      class="btn btn-sm btn-close"
+                      aria-label="Close"
+                      @click="cancelItem(item)"
+                    ></button>
                   </div>
                   <div class="card-body">
                     <p class="card-text">Type: {{ item.type }}</p>
                     <p class="card-text">Price Rate: {{ item.priceRate }}</p>
                     <p class="card-text">Purchase Qty.:{{ item.purqty }}</p>
-                    <p class="card-text">Total Price: {{ item.totalCartPrice }}</p>
+                    <p class="card-text">
+                      Total Price: {{ item.totalCartPrice }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -308,14 +607,20 @@
             </div> -->
             <div class="col-md-6">
               <div class="d-flex align-items-center">
-                <h2 class="position-relative">
-                  Billing Statement (preview)
-                </h2>
-                <div class="ms-auto d-flex align-items-center"> <!-- Wrap the buttons in a flex container -->
-                  <button type="button" class="btn btn-primary" v-show="this.isItNew"
-                    v-if="!this.walkinStatus && !this.justDiscounted" @click="generateBillingStatement()">
-                    <i class="fas fa-print"><br>
-                      <span style="font-size: 8px;">[F10]</span></i>
+                <h2 class="position-relative">Billing Statement (preview)</h2>
+                <div class="ms-auto d-flex align-items-center">
+                  <!-- Wrap the buttons in a flex container -->
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    v-show="this.isItNew"
+                    v-if="!this.walkinStatus && !this.justDiscounted"
+                    @click="generateBillingStatement()"
+                  >
+                    <i class="fas fa-print"
+                      ><br />
+                      <span style="font-size: 8px">[F10]</span></i
+                    >
                   </button>
                 </div>
               </div>
@@ -327,39 +632,60 @@
                     <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
                   </div>
                 </div> -->
-              <div id="billing-details-preview" class="bg-light"
-                :style="`height:${calcMeasure.height3}!important;overflow-y: auto;overflow-x: hidden;font-size: 100%;padding: 20px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);`">
+              <div
+                id="billing-details-preview"
+                class="bg-light"
+                :style="`height:${calcMeasure.height3}!important;overflow-y: auto;overflow-x: hidden;font-size: 100%;padding: 20px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);`"
+              >
                 <div class="container">
                   <div class="row">
                     <div class="col-12">
                       <div class="row justify-content-between">
                         <div class="col-4">
-                          <img src="@/assets/pantukan-waterworld-logo.jpg" width="60" height="60" alt="Company Logo"
-                            class="logo">
+                          <img
+                            src="@/assets/pantukan-waterworld-logo.jpg"
+                            width="60"
+                            height="60"
+                            alt="Company Logo"
+                            class="logo"
+                          />
                         </div>
-                        <div class="col-4 text-right">
-                          <span style="font-size: small;">Billing Statement</span>
-                          <p>Transaction No.: {{ this.billing.bookingID }}</p>
+                        <div class="col-4 text-center">
+                          <span class="h4">Registration Form</span>
+                        </div>
+                        <div class="col-3 text-right">
+                          <span style="font-size: small"
+                            >Registration No.:
+                            {{ this.billing.bookingID }}</span
+                          >
                         </div>
                       </div>
-                      <hr style="margin-bottom: 0px; margin-top: 0px;">
+                      <hr style="margin-bottom: 0px; margin-top: 0px" />
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-12">
                       <div class="row">
                         <div class="col-6">
-                          <span style="font-size: small;">Client Details:</span>
-                          <p style="margin-bottom: 0px;">Name: {{ this.billing.clientName }}</p>
-                          <p style="margin-bottom: 0px;">Email: {{ this.billing.clientEmail }}</p>
-                          <p style="margin-bottom: 0px;">Contact No.: {{ this.billing.clientPhone }}</p>
-                          <p style="margin-bottom: 0px;">Address: {{ this.billing.clientAddress }}</p>
+                          <span style="font-size: small">Client Details:</span>
+                          <p style="margin-bottom: 0px">
+                            Name: {{ this.billing.clientName }}
+                          </p>
+                          <p style="margin-bottom: 0px">
+                            Email: {{ this.billing.clientEmail }}
+                          </p>
+                          <p style="margin-bottom: 0px">
+                            Contact No.: {{ this.billing.clientPhone }}
+                          </p>
+                          <p style="margin-bottom: 0px">
+                            Address: {{ this.billing.clientAddress }}
+                          </p>
                         </div>
                       </div>
-                      <hr style="margin-bottom: 0px; margin-top: 0px;">
+                      <hr style="margin-bottom: 0px; margin-top: 0px" />
                       <div class="row">
                         <div class="col-12">
-                          <span style="font-size: small;">Order Details:</span>
+                          <span style="font-size: small">Order Details:</span>
                           <table class="table">
                             <thead>
                               <tr>
@@ -376,29 +702,67 @@
                                 <td>{{ item.type }}</td>
                                 <td>{{ item.priceRate }}</td>
                                 <td>{{ item.purqty }}</td>
-                                <td v-if="item.itemOption !== 'room'">{{ item.totalCartPrice }}</td>
+                                <td v-if="item.itemOption !== 'room'">
+                                  {{ item.totalCartPrice }}
+                                </td>
                                 <td v-else>
-                                  <span v-if="!isNaN(subroom.discountValue)"
-                                    v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode === 'percentage') ? (subroom.discountValue) + '%' : (subroom.discountValue / gbookingscount).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${(subroom.discountMode === 'percentage') ? item.totalCartPrice * (1 - parseFloat(subroom.discountValue / 100)) : item.totalCartPrice - (subroom.discountValue / gbookingscount).toFixed(2)}</span>`"></span>
-                                  <span v-else v-html="`${item.totalCartPrice}`"></span>
+                                  <span
+                                    v-if="!isNaN(subroom.discountValue)"
+                                    v-html="
+                                      `${
+                                        item.totalCartPrice
+                                      } <sup class='text-danger font-weight-bold'>${
+                                        subroom.discountMode === 'percentage'
+                                          ? subroom.discountValue + '%'
+                                          : (
+                                              subroom.discountValue /
+                                              gbookingscount
+                                            ).toFixed(2)
+                                      } off</sup> <span class='text-success font-weight-bold'>${
+                                        subroom.discountMode === 'percentage'
+                                          ? item.totalCartPrice *
+                                            (1 -
+                                              parseFloat(
+                                                subroom.discountValue / 100
+                                              ))
+                                          : item.totalCartPrice -
+                                            (
+                                              subroom.discountValue /
+                                              gbookingscount
+                                            ).toFixed(2)
+                                      }</span>`
+                                    "
+                                  ></span>
+                                  <span
+                                    v-else
+                                    v-html="`${item.totalCartPrice}`"
+                                  ></span>
                                 </td>
                               </tr>
                               <tr>
-                                <td colspan="4" class="text-right"><strong>Partial Payment:</strong></td>
-                                <td class="text-danger"><strong>-Php {{ partialPayment }}</strong></td>
+                                <td colspan="4" class="text-right">
+                                  <strong>Partial Payment:</strong>
+                                </td>
+                                <td class="text-danger">
+                                  <strong>-Php {{ partialPayment }}</strong>
+                                </td>
                               </tr>
                               <tr>
-                                <td colspan="4" class="text-right"><strong>Total Due:</strong></td>
-                                <td><strong>Php {{ total }}</strong></td>
+                                <td colspan="4" class="text-right">
+                                  <strong>Total Due:</strong>
+                                </td>
+                                <td>
+                                  <strong>Php {{ total }}</strong>
+                                </td>
                               </tr>
                             </tbody>
                           </table>
                         </div>
                       </div>
-                      <hr style="margin-bottom: 0px; margin-top: 0px;">
+                      <hr style="margin-bottom: 0px; margin-top: 0px" />
                       <div class="row">
                         <div class="col-12">
-                          <span style="font-size: small;">Account History:</span>
+                          <span style="font-size: small">Account History:</span>
                           <table class="table">
                             <thead>
                               <tr>
@@ -411,21 +775,39 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr v-for="(item, index) in cashHistory" :key="item.id">
+                              <tr
+                                v-for="(item, index) in cashHistory"
+                                :key="item.id"
+                              >
                                 <td>
-                                  {{ new Date(item.transaction_date).toLocaleDateString() }}, {{ getTime(new
-                                    Date(item.transaction_date)) }}
+                                  {{
+                                    new Date(
+                                      item.transaction_date
+                                    ).toLocaleDateString()
+                                  }},
+                                  {{ getTime(new Date(item.transaction_date)) }}
                                 </td>
                                 <td>
                                   {{ item.paymentMethod }}
                                 </td>
                                 <td>
-                                  {{ (item.nonCashReference.toString().replace("-", "") ===
-                                    "") ? item.transactionrecord_id : item.transactionrecord_id + "-" +
-                                    item.nonCashReference }}
+                                  {{
+                                    item.nonCashReference
+                                      .toString()
+                                      .replace("-", "") === ""
+                                      ? item.transactionrecord_id
+                                      : item.transactionrecord_id +
+                                        "-" +
+                                        item.nonCashReference
+                                  }}
                                 </td>
                                 <td>
-                                  {{ (index === 0) ? 'Init/DP' : (parseFloat(item.balance) === 0) ? 'Full' : 'Partial'
+                                  {{
+                                    index === 0
+                                      ? "Init/DP"
+                                      : parseFloat(item.balance) === 0
+                                      ? "Full"
+                                      : "Partial"
                                   }}
                                 </td>
                                 <td>
@@ -444,17 +826,27 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-3" :style="`height:${calcMeasure.height4}!important;overflow-y: auto;overflow-x: hidden;`">
-              <div class="d-flex align-items-center" style="padding:10px">
-                <h2 class="position-relative">
-                  Payment
-                </h2>
-                <div class="ms-auto d-flex align-items-center"> <!-- Wrap the buttons in a flex container -->
-                  <button type="button" class="btn btn-primary" @click="placeOrder"
+            <div
+              class="col-md-3"
+              :style="`height:${calcMeasure.height4}!important;overflow-y: auto;overflow-x: hidden;`"
+            >
+              <div class="d-flex align-items-center" style="padding: 10px">
+                <h2 class="position-relative">Payment</h2>
+                <div class="ms-auto d-flex align-items-center">
+                  <!-- Wrap the buttons in a flex container -->
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="placeOrder"
                     :disabled="total <= 0 || countInclusion > 0"
-                    style="display: flex; flex-direction: column; align-items: center;">
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      align-items: center;
+                    "
+                  >
                     <i class="fas fa-money-bill"></i>
-                    <span style="font-size: 8px;">[Enter]</span>
+                    <span style="font-size: 8px">[Enter]</span>
                   </button>
                 </div>
               </div>
@@ -502,9 +894,24 @@
                   </div> -->
                       <div class="form-group mb-2 mt-0">
                         <div class="input-group">
-                          <input type="text" class="form-control" :value="this.billing.clientName" readonly>
-                          <button type="button" class="btn btn-primary" @click="toggleAddAccountModal">
-                            <i :class="(this.billing.clientName === '') ? 'fa fa-user-plus' : 'fas fa-user-edit'"></i>
+                          <input
+                            type="text"
+                            class="form-control"
+                            :value="this.billing.clientName"
+                            readonly
+                          />
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            @click="toggleAddAccountModal"
+                          >
+                            <i
+                              :class="
+                                this.billing.clientName === ''
+                                  ? 'fa fa-user-plus'
+                                  : 'fas fa-user-edit'
+                              "
+                            ></i>
                           </button>
                         </div>
                       </div>
@@ -521,28 +928,49 @@
                           </div>
                           <div class="row mt-0">
                             <div class="col-6">
-                              <a href="#" @click="setDiscount" v-if="!alreadyDiscounted">
+                              <a
+                                href="#"
+                                @click="setDiscount"
+                                v-if="!alreadyDiscounted"
+                              >
                                 <i class="fas fa-pencil-alt"></i>
                               </a>
                               <strong>Discount:</strong>
                             </div>
-                            <div class="col-6 text-right">{{ discountValue }}{{ (discountMode === 'percentage') ? '%' :
-                              ' off'
-                            }}</div>
+                            <div class="col-6 text-right">
+                              {{ discountValue
+                              }}{{
+                                discountMode === "percentage" ? "%" : " off"
+                              }}
+                            </div>
                           </div>
 
                           <div class="row mb-2">
-                            <div class="col-6"><strong>Reservation:</strong></div>
-                            <div class="col-6 text-right" v-html="subroom.original + ' ' + subroom.discounted"></div>
+                            <div class="col-6">
+                              <strong>Reservation:</strong>
+                            </div>
+                            <div
+                              class="col-6 text-right"
+                              v-html="
+                                subroom.original + ' ' + subroom.discounted
+                              "
+                            ></div>
                           </div>
                           <div class="row mb-2">
                             <div class="col-6"><strong>Add-ons:</strong></div>
                             <div class="col-6 text-right">{{ subaddons }}</div>
                           </div>
 
-                          <div class="row mb-2" v-if="paymentMethod === 'non-cash'">
-                            <div class="col-6"><strong>Reference No.:</strong></div>
-                            <div class="col-6 text-right">{{ nonCashPayPlatform }} - {{ nonCashReference }}</div>
+                          <div
+                            class="row mb-2"
+                            v-if="paymentMethod === 'non-cash'"
+                          >
+                            <div class="col-6">
+                              <strong>Reference No.:</strong>
+                            </div>
+                            <div class="col-6 text-right">
+                              {{ nonCashPayPlatform }} - {{ nonCashReference }}
+                            </div>
                           </div>
                           <div class="row mb-2">
                             <div class="col-6"><strong>Subtotal:</strong></div>
@@ -550,12 +978,17 @@
                           </div>
                           <div class="row mb-2">
                             <div class="col-6"><strong>Partial:</strong></div>
-                            <div class="col-6 text-right">{{ partialPayment }}</div>
+                            <div class="col-6 text-right">
+                              {{ partialPayment }}
+                            </div>
                           </div>
                           <div class="row mb-0">
-                            <div class="col-6"><strong class="text-primary">Total:</strong>
+                            <div class="col-6">
+                              <strong class="text-primary">Total:</strong>
                             </div>
-                            <div class="col-6 text-right"><strong>{{ total }}</strong></div>
+                            <div class="col-6 text-right">
+                              <strong>{{ total }}</strong>
+                            </div>
                           </div>
                           <!-- <div class="row">
                         <div class="col-6"><strong style="font-size: 18px;">Change:</strong></div>
@@ -565,26 +998,48 @@
                       </div>
                       <div class="form-group">
                         <div class="input-group">
-                          <select id="payment-method" v-model="paymentMethod" class="form-control"
-                            style="font-weight: bolder; " @change="setNonCash">
+                          <select
+                            id="payment-method"
+                            v-model="paymentMethod"
+                            class="form-control"
+                            style="font-weight: bolder"
+                            @change="setNonCash"
+                          >
                             <option value="cash">Cash</option>
                             <option value="non-cash">Non-cash</option>
                           </select>
                           <span class="input-group-text">₱</span>
-                          <input type="number" class="form-control" id="cashAmount" v-model.number="cashAmount"
-                            step="0.01" @keyup="updateTotalCash" @keydown="updateTotalCash">
-                          <span class="input-group-text">{{ (cashAmount - Math.floor(cashAmount)).toFixed(2).substr(1)
+                          <input
+                            type="number"
+                            class="form-control"
+                            id="cashAmount"
+                            v-model.number="cashAmount"
+                            step="0.01"
+                            @keyup="updateTotalCash"
+                            @keydown="updateTotalCash"
+                          />
+                          <span class="input-group-text">{{
+                            (cashAmount - Math.floor(cashAmount))
+                              .toFixed(2)
+                              .substr(1)
                           }}</span>
                         </div>
                       </div>
                       <div class="row mt-2 mb-2">
                         <div class="col-md-12">
                           <div class="row row-cols-1 row-cols-md-4">
-                            <div class="col mb-1" v-for="item in cashDenominations" :key="item.id">
-                              <button type="button"
+                            <div
+                              class="col mb-1"
+                              v-for="item in cashDenominations"
+                              :key="item.id"
+                            >
+                              <button
+                                type="button"
                                 class="btn bg-white rounded-lg shadow hover:shadow-xs focus:outline-none inline-block px-0 py-0 text-sm"
-                                @click="addToCash(item.value)"><span>{{
-                                  item.label }}</span></button>
+                                @click="addToCash(item.value)"
+                              >
+                                <span>{{ item.label }}</span>
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -592,15 +1047,19 @@
                       <div class="form-group">
                         <div class="input-group">
                           <span class="input-group-text">Remarks</span>
-                          <input type="text" class="form-control" v-model="cashRemarks">
+                          <input
+                            type="text"
+                            class="form-control"
+                            v-model="cashRemarks"
+                          />
                         </div>
                       </div>
                       <div class="row mt-2 mb-2 bg-light">
                         <div class="col-md-6">
-                          <dt v-if="change >= 0">Change: </dt>
+                          <dt v-if="change >= 0">Change:</dt>
                         </div>
                         <div class="col-md-6 d-flex flex-row-reverse">
-                          <dd class="text-right h4 b"> ₱{{ change }} </dd>
+                          <dd class="text-right h4 b">₱{{ change }}</dd>
                         </div>
                       </div>
                       <!-- 
@@ -615,17 +1074,32 @@
           </div>
         </div>
       </div>
-      <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
+      <div
+        class="tab-pane fade"
+        id="reports"
+        role="tabpanel"
+        aria-labelledby="reports-tab"
+      >
         <div class="container-fluid">
           <div class="row">
             <div class="row">
               <div class="col-sm-1">
                 <ul class="nav nav-tabs flex-column">
                   <li class="nav-item">
-                    <a class="nav-link rotated-text active" data-bs-toggle="tab" href="#reservations">Reservations</a>
+                    <a
+                      class="nav-link rotated-text active"
+                      data-bs-toggle="tab"
+                      href="#reservations"
+                      >Reservations</a
+                    >
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link rotated-text" data-bs-toggle="tab" href="#transactions">Transactions</a>
+                    <a
+                      class="nav-link rotated-text"
+                      data-bs-toggle="tab"
+                      href="#transactions"
+                      >Transactions</a
+                    >
                   </li>
                 </ul>
               </div>
@@ -649,22 +1123,40 @@
                           </div> -->
                           <div class="form-group">
                             <label for="date-filter">Date Filter:</label>
-                            <select class="form-control" id="date-filter" v-model="resdateFilter">
+                            <select
+                              class="form-control"
+                              id="date-filter"
+                              v-model="resdateFilter"
+                            >
                               <option value="any">Any</option>
                               <option value="range">Date Range</option>
                             </select>
                             <div v-if="resdateFilter === 'range'">
                               <div class="form-group">
-                                <input type="date" class="form-control" v-model="resfromDate">
+                                <input
+                                  type="date"
+                                  class="form-control"
+                                  v-model="resfromDate"
+                                />
                               </div>
                               <div class="form-group">
-                                <input type="date" class="form-control" v-model="restoDate">
+                                <input
+                                  type="date"
+                                  class="form-control"
+                                  v-model="restoDate"
+                                />
                               </div>
                             </div>
                           </div>
                           <div class="form-group">
-                            <label for="payment-method-filter">Payment Status:</label>
-                            <select class="form-control" id="payment-method-filter" v-model="respaymentStatusFilter">
+                            <label for="payment-method-filter"
+                              >Payment Status:</label
+                            >
+                            <select
+                              class="form-control"
+                              id="payment-method-filter"
+                              v-model="respaymentStatusFilter"
+                            >
                               <option value="">Any</option>
                               <option value="no">No Payment</option>
                               <option value="partial">Partial</option>
@@ -673,7 +1165,11 @@
                           </div>
                           <div class="form-group">
                             <label for="status-filter">Status:</label>
-                            <select class="form-control" id="status-filter" v-model="resstatusFilter">
+                            <select
+                              class="form-control"
+                              id="status-filter"
+                              v-model="resstatusFilter"
+                            >
                               <option value="">Any</option>
                               <option value="cancelled">Cancelled</option>
                               <option value="reserved">Reserved</option>
@@ -690,8 +1186,12 @@
                       <div class="col-md-9">
                         <div id="reservationHistory">
                           <h2>Reservation History</h2>
-                          <table-component :mainHeaders=reservationsOptions :mainItems="filteredReservationsHistory"
-                            :editable="false" :toggleable="false" />
+                          <table-component
+                            :mainHeaders="reservationsOptions"
+                            :mainItems="filteredReservationsHistory"
+                            :editable="false"
+                            :toggleable="false"
+                          />
                         </div>
                       </div>
                     </div>
@@ -714,22 +1214,40 @@
                           </div> -->
                           <div class="form-group">
                             <label for="date-filter">Date Filter:</label>
-                            <select class="form-control" id="date-filter" v-model="dateFilter">
+                            <select
+                              class="form-control"
+                              id="date-filter"
+                              v-model="dateFilter"
+                            >
                               <option value="any">Any</option>
                               <option value="range">Date Range</option>
                             </select>
                             <div v-if="dateFilter === 'range'">
                               <div class="form-group">
-                                <input type="date" class="form-control" v-model="fromDate">
+                                <input
+                                  type="date"
+                                  class="form-control"
+                                  v-model="fromDate"
+                                />
                               </div>
                               <div class="form-group">
-                                <input type="date" class="form-control" v-model="toDate">
+                                <input
+                                  type="date"
+                                  class="form-control"
+                                  v-model="toDate"
+                                />
                               </div>
                             </div>
                           </div>
                           <div class="form-group">
-                            <label for="payment-method-filter">Payment Method:</label>
-                            <select class="form-control" id="payment-method-filter" v-model="paymentMethodFilter">
+                            <label for="payment-method-filter"
+                              >Payment Method:</label
+                            >
+                            <select
+                              class="form-control"
+                              id="payment-method-filter"
+                              v-model="paymentMethodFilter"
+                            >
                               <option value="">Any</option>
                               <option value="cash">Cash</option>
                               <option value="non-cash">Non-cash</option>
@@ -737,7 +1255,11 @@
                           </div>
                           <div class="form-group">
                             <label for="status-filter">Status:</label>
-                            <select class="form-control" id="status-filter" v-model="statusFilter">
+                            <select
+                              class="form-control"
+                              id="status-filter"
+                              v-model="statusFilter"
+                            >
                               <option value="">Any</option>
                               <option value="full">Full</option>
                               <option value="partial">Partial</option>
@@ -752,9 +1274,16 @@
                       <div class="col-md-10">
                         <div id="transactionHistory">
                           <h2>Transaction History</h2>
-                          <table-component :mainHeaders=transactionsOptions :mainItems="filteredTransactions"
-                            :subHeaders2="transactionhistory" :subHeaders="transactionitem"
-                            @delete-action="deleteTransaction" :deletable="true" :editable="false" :toggleable="true" />
+                          <table-component
+                            :mainHeaders="transactionsOptions"
+                            :mainItems="filteredTransactions"
+                            :subHeaders2="transactionhistory"
+                            :subHeaders="transactionitem"
+                            @delete-action="deleteTransaction"
+                            :deletable="true"
+                            :editable="false"
+                            :toggleable="true"
+                          />
                         </div>
                       </div>
                     </div>
@@ -763,8 +1292,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="card" style="height: 60px!important;">
-              </div>
+              <div class="card" style="height: 60px !important"></div>
             </div>
           </div>
           <!-- <div class="row">
@@ -784,37 +1312,57 @@
         </div>
       </div>
     </div>
-    <div id="billing-details" class="container-fluid billing" style="font-size: 100%;">
+    <div
+      id="billing-details"
+      class="container-fluid billing"
+      style="font-size: 100%"
+    >
       <div class="container">
         <div class="row">
           <div class="col-12">
-            <div class="row justify-content-between" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
+            <div
+              class="row justify-content-between"
+              :style="!isThereLeisures ? 'border-right: dotted;' : ''"
+            >
               <div class="col-4">
-                <img src="@/assets/pantukan-waterworld-logo.jpg" width="60" height="60" alt="Company Logo" class="logo">
+                <img
+                  src="@/assets/pantukan-waterworld-logo.jpg"
+                  width="60"
+                  height="60"
+                  alt="Company Logo"
+                  class="logo"
+                />
+              </div>
+              <div class="col-4 text-center">
+                <span class="h2">Registration Form</span>
               </div>
               <div class="col-4 text-right">
-                <span style="font-size: small;">Billing Statement</span>
-                <p>Transaction No.: {{ this.billing.bookingID }}</p>
+                <span style="font-size: small"
+                  >Registration No.: {{ this.billing.bookingID }}</span
+                >
               </div>
             </div>
-            <hr>
+            <hr />
           </div>
         </div>
         <div class="row">
-          <div class="col-12" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
+          <div
+            class="col-12"
+            :style="!isThereLeisures ? 'border-right: dotted;' : ''"
+          >
             <div class="row">
               <div class="col-6">
-                <span style="font-size: small;">Client Details:</span>
+                <span style="font-size: small">Client Details:</span>
                 <p>Name: {{ this.billing.clientName }}</p>
                 <p>Email: {{ this.billing.clientEmail }}</p>
                 <p>Contact No.: {{ this.billing.clientPhone }}</p>
                 <p>Address.: {{ this.billing.clientAddress }}</p>
               </div>
             </div>
-            <hr>
+            <hr />
             <div class="row">
               <div class="col-12">
-                <span style="font-size: small;">Order Details:</span>
+                <span style="font-size: small">Order Details:</span>
                 <table border="1">
                   <thead>
                     <tr>
@@ -831,29 +1379,59 @@
                       <td>{{ item.type }}</td>
                       <td>{{ item.priceRate }}</td>
                       <td>{{ item.purqty }}</td>
-                      <td v-if="item.itemOption !== 'room'">{{ item.totalCartPrice }}</td>
+                      <td v-if="item.itemOption !== 'room'">
+                        {{ item.totalCartPrice }}
+                      </td>
                       <td v-else>
-                        <span v-if="!isNaN(subroom.discountValue)"
-                          v-html="`${item.totalCartPrice} <sup class='text-danger font-weight-bold'>${(subroom.discountMode === 'percentage') ? (subroom.discountValue) + '%' : (subroom.discountValue / gbookingscount).toFixed(2)} off</sup> <span class='text-success font-weight-bold'>${(subroom.discountMode === 'percentage') ? item.totalCartPrice * (1 - parseFloat(subroom.discountValue / 100)) : item.totalCartPrice - (subroom.discountValue / gbookingscount).toFixed(2)}</span>`"></span>
+                        <span
+                          v-if="!isNaN(subroom.discountValue)"
+                          v-html="
+                            `${
+                              item.totalCartPrice
+                            } <sup class='text-danger font-weight-bold'>${
+                              subroom.discountMode === 'percentage'
+                                ? subroom.discountValue + '%'
+                                : (
+                                    subroom.discountValue / gbookingscount
+                                  ).toFixed(2)
+                            } off</sup> <span class='text-success font-weight-bold'>${
+                              subroom.discountMode === 'percentage'
+                                ? item.totalCartPrice *
+                                  (1 - parseFloat(subroom.discountValue / 100))
+                                : item.totalCartPrice -
+                                  (
+                                    subroom.discountValue / gbookingscount
+                                  ).toFixed(2)
+                            }</span>`
+                          "
+                        ></span>
                         <span v-else v-html="`${item.totalCartPrice}`"></span>
                       </td>
                     </tr>
                     <tr>
-                      <td colspan="4" class="text-right"><strong>Partial Payment:</strong></td>
-                      <td class="text-danger"><strong>-Php {{ partialPayment }}</strong></td>
+                      <td colspan="4" class="text-right">
+                        <strong>Partial Payment:</strong>
+                      </td>
+                      <td class="text-danger">
+                        <strong>-Php {{ partialPayment }}</strong>
+                      </td>
                     </tr>
                     <tr>
-                      <td colspan="4" class="text-right"><strong>Total Due:</strong></td>
-                      <td><strong>Php {{ total }}</strong></td>
+                      <td colspan="4" class="text-right">
+                        <strong>Total Due:</strong>
+                      </td>
+                      <td>
+                        <strong>Php {{ total }}</strong>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
-            <hr>
+            <hr />
             <div class="row">
               <div class="col-12">
-                <span style="font-size: small;">Account History:</span>
+                <span style="font-size: small">Account History:</span>
                 <table border="1">
                   <thead>
                     <tr>
@@ -874,11 +1452,23 @@
                         {{ item.paymentMethod }}
                       </td>
                       <td>
-                        {{ (item.nonCashReference.toString().replace("-", "") ===
-                          "") ? item.transactionrecord_id : item.transactionrecord_id + "-" + item.nonCashReference }}
+                        {{
+                          item.nonCashReference.toString().replace("-", "") ===
+                          ""
+                            ? item.transactionrecord_id
+                            : item.transactionrecord_id +
+                              "-" +
+                              item.nonCashReference
+                        }}
                       </td>
                       <td>
-                        {{ (index === 0) ? 'Init/DP' : (parseFloat(item.balance) === 0) ? 'Full' : 'Partial' }}
+                        {{
+                          index === 0
+                            ? "Init/DP"
+                            : parseFloat(item.balance) === 0
+                            ? "Full"
+                            : "Partial"
+                        }}
                       </td>
                       <td>
                         {{ item.cashAmountPay }}
@@ -891,85 +1481,170 @@
                 </table>
               </div>
             </div>
-            <hr>
+            <hr />
             <div class="row">
               <div class="col-12">
-                <span style="font-size: small;">Terms &amp; Conditions:</span>
-                <p>1. Check-in time is at 2:00 PM. Check-out time is at 12:00 PM.</p>
-                <p>2. Late check-out is subject to availability and may be charged an additional fee.</p>
-                <p>3. Smoking is strictly prohibited inside the resort premises.</p>
+                <span style="font-size: small">Terms &amp; Conditions:</span>
+                <p>
+                  1. Check-in time is at 2:00 PM. Check-out time is at 12:00 PM.
+                </p>
+                <p>
+                  2. Late check-out is subject to availability and may be
+                  charged an additional fee.
+                </p>
+                <p>
+                  3. Smoking is strictly prohibited inside the resort premises.
+                </p>
                 <p>4. Pets are not allowed inside the resort.</p>
-                <p>5. Any damage or loss to the resort property will be charged to the guest.</p>
-                <p>6. The resort reserves the right to refuse service to anyone.</p>
+                <p>
+                  5. Any damage or loss to the resort property will be charged
+                  to the guest.
+                </p>
+                <p>
+                  6. The resort reserves the right to refuse service to anyone.
+                </p>
                 <p>7. All rates are inclusive of taxes and service charge.</p>
                 <p>8. Payment must be settled upon check-out.</p>
-                <p>9. The resort is not responsible for any loss or damage to personal belongings.</p>
+                <p>
+                  9. The resort is not responsible for any loss or damage to
+                  personal belongings.
+                </p>
               </div>
             </div>
           </div>
         </div>
         <div class="row">
-          <div v-if="isThereLeisures" :class="isThereLeisures ? 'col-12' : 'col-0'">
-            <span style="font-size: small;">WAIVER AND AGREEMENT TO LEASE WATER SPORTS</span>
-            <p>The undersigned <span style="text-decoration: underline;">{{ this.billing.clientName }}</span> further
-              states and affirms that he/she has been fully advised and thoroughly informed of the dangers of using WATER
-              SPORTS. By fixing his/her signature hereunder, he/she attests and certifies that he/she is fully aware of
-              such basic risks.</p>
-            <p>The UNDERSIGND herein agrees and acknowledge that neither WATERWORLD PANTUKAN BEACH RESORT located at
-              Mendoza,King-king, Pantukan Davao De oro nor any of its officers, employees and staff or representative may
-              not be held responsible or liable in any way what so ever for any incident, mishap or other occurrence in
-              connection with the use of the WATER SPORTS which may result in injury, death illness or other physical or
-              mental damages to the undersigned or company.</p>
-            <p>The UNDERSIGNED finally declares that he/she is of legal age and legally competent to sign this waiver and
-              release: he/she has acquired the consent of his/her parents or guardians and that he/she fully completely
-              agrees without any qualification or reservation having signed and same voluntary and or his/her own
-              freewill.</p>
-            <p>In witness thereof; this Waiver and Release is voluntary signed at <span
-                style="text-decoration: underline;">WATER WORLD PANTUKAN BEACH RESORT</span> on this day of <span
-                style="text-decoration: underline;">{{ currentDate }}</span></p>
-            <hr>
+          <div
+            v-if="isThereLeisures"
+            :class="isThereLeisures ? 'col-12' : 'col-0'"
+          >
+            <span style="font-size: small"
+              >WAIVER AND AGREEMENT TO LEASE WATER SPORTS</span
+            >
+            <p>
+              The undersigned
+              <span style="text-decoration: underline">{{
+                this.billing.clientName
+              }}</span>
+              further states and affirms that he/she has been fully advised and
+              thoroughly informed of the dangers of using WATER SPORTS. By
+              fixing his/her signature hereunder, he/she attests and certifies
+              that he/she is fully aware of such basic risks.
+            </p>
+            <p>
+              The UNDERSIGND herein agrees and acknowledge that neither
+              WATERWORLD PANTUKAN BEACH RESORT located at Mendoza,King-king,
+              Pantukan Davao De oro nor any of its officers, employees and staff
+              or representative may not be held responsible or liable in any way
+              what so ever for any incident, mishap or other occurrence in
+              connection with the use of the WATER SPORTS which may result in
+              injury, death illness or other physical or mental damages to the
+              undersigned or company.
+            </p>
+            <p>
+              The UNDERSIGNED finally declares that he/she is of legal age and
+              legally competent to sign this waiver and release: he/she has
+              acquired the consent of his/her parents or guardians and that
+              he/she fully completely agrees without any qualification or
+              reservation having signed and same voluntary and or his/her own
+              freewill.
+            </p>
+            <p>
+              In witness thereof; this Waiver and Release is voluntary signed at
+              <span style="text-decoration: underline"
+                >WATER WORLD PANTUKAN BEACH RESORT</span
+              >
+              on this day of
+              <span style="text-decoration: underline">{{ currentDate }}</span>
+            </p>
+            <hr />
             <div class="row">
               <div class="col-12">
-                <span style="font-size: small;">Terms &amp; Conditions:</span>
-                <p>1. Since water sport needs the skill and know-how of the operator, the lessee warrants that he/she can
-                  properly operate the water sport.</p>
-                <p>2. In no case shall Water Sport be used by any other person other than the lessee.</p>
-                <p>3. The Water Sports shall be operated only 300 meters radius from the resort.</p>
-                <p>4. In the event of any wrong use, abuse or negligence on the part of the lessee and the Water Sport
-                  suffers any damage, the lessee/s hold himself/herself/themselves personally liable for the cost of
-                  damage, repairs spare parts and loss on income.</p>
-                <p>5. The lessee/s shall abide by all laws, rules and guidelines in the operation of Water Sports.</p>
-                <p>6. Any untoward incident resulting to the Operation of Water Sports</p>
-                <p>7. Never start the engine if you are less than 3 feet deep. Otherwise, pebbles and sands could be
-                  sucked into the jet intake, causing impelled damage.</p>
-                <p>8. Your are advised to slow down if you are still on the shallow area.</p>
-                <p>9. Be careful with the swimmers, boat, people, sharp objects, ropes and floating debris.</p>
-                <p>10. Observed distance to any WATER SPORTS to prevent any collision.</p>
-                <p>11. The lessor has the right to stop the operation of the WATERN SPORT and the amount paid or deposit
-                  shall be forfeited if the rules and regulations are not followed accordingly.</p>
-                <p>12. No one is allowed to operate the WATER SPORTS if the person is under the influence of liquor/drugs.
+                <span style="font-size: small">Terms &amp; Conditions:</span>
+                <p>
+                  1. Since water sport needs the skill and know-how of the
+                  operator, the lessee warrants that he/she can properly operate
+                  the water sport.
                 </p>
-                <p>13. Upon signing hereof, the lessee/s hereby agree/s to all the above terms and conditions.</p>
+                <p>
+                  2. In no case shall Water Sport be used by any other person
+                  other than the lessee.
+                </p>
+                <p>
+                  3. The Water Sports shall be operated only 300 meters radius
+                  from the resort.
+                </p>
+                <p>
+                  4. In the event of any wrong use, abuse or negligence on the
+                  part of the lessee and the Water Sport suffers any damage, the
+                  lessee/s hold himself/herself/themselves personally liable for
+                  the cost of damage, repairs spare parts and loss on income.
+                </p>
+                <p>
+                  5. The lessee/s shall abide by all laws, rules and guidelines
+                  in the operation of Water Sports.
+                </p>
+                <p>
+                  6. Any untoward incident resulting to the Operation of Water
+                  Sports
+                </p>
+                <p>
+                  7. Never start the engine if you are less than 3 feet deep.
+                  Otherwise, pebbles and sands could be sucked into the jet
+                  intake, causing impelled damage.
+                </p>
+                <p>
+                  8. Your are advised to slow down if you are still on the
+                  shallow area.
+                </p>
+                <p>
+                  9. Be careful with the swimmers, boat, people, sharp objects,
+                  ropes and floating debris.
+                </p>
+                <p>
+                  10. Observed distance to any WATER SPORTS to prevent any
+                  collision.
+                </p>
+                <p>
+                  11. The lessor has the right to stop the operation of the
+                  WATERN SPORT and the amount paid or deposit shall be forfeited
+                  if the rules and regulations are not followed accordingly.
+                </p>
+                <p>
+                  12. No one is allowed to operate the WATER SPORTS if the
+                  person is under the influence of liquor/drugs.
+                </p>
+                <p>
+                  13. Upon signing hereof, the lessee/s hereby agree/s to all
+                  the above terms and conditions.
+                </p>
               </div>
             </div>
             <div class="row">
               <div class="col-12">
-                <span style="font-size: small;">List of Participants with Signature:</span>
+                <span style="font-size: small"
+                  >List of Participants with Signature:</span
+                >
                 <table border="0" cellpadding="0" cellspcing="0">
                   <tr>
                     <td>
-                      <p>1. <span style="text-decoration: underline;">{{ this.billing.clientName }}</span> </p>
-                      <p>2._____________________________ </p>
-                      <p>3._____________________________ </p>
-                      <p>4._____________________________ </p>
-                      <p>5._____________________________ </p>
+                      <p>
+                        1.
+                        <span style="text-decoration: underline">{{
+                          this.billing.clientName
+                        }}</span>
+                      </p>
+                      <p>2._____________________________</p>
+                      <p>3._____________________________</p>
+                      <p>4._____________________________</p>
+                      <p>5._____________________________</p>
                     </td>
                     <td>
-                      <p>6._____________________________ </p>
-                      <p>7._____________________________ </p>
-                      <p>8._____________________________ </p>
-                      <p>9._____________________________ </p>
-                      <p>10._____________________________ </p>
+                      <p>6._____________________________</p>
+                      <p>7._____________________________</p>
+                      <p>8._____________________________</p>
+                      <p>9._____________________________</p>
+                      <p>10._____________________________</p>
                     </td>
                   </tr>
                 </table>
@@ -978,65 +1653,146 @@
           </div>
         </div>
         <div class="row mt-2">
-          <div class="col-12" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
-            <hr>
+          <div
+            class="col-12"
+            :style="!isThereLeisures ? 'border-right: dotted;' : ''"
+          >
+            <hr />
             <div class="row">
               <div class="col-6">
-                <span style="font-size: small;">Check-In Staff Signature:</span>
+                <span style="font-size: small">Check-In Staff Signature:</span>
               </div>
               <div class="col-6 text-right">
-                <span style="font-size: small;">Customer Signature:</span>
+                <span style="font-size: small">Customer Signature:</span>
                 <p class="mt-2">Date: {{ currentDate }}</p>
               </div>
             </div>
-            <hr style="border-bottom: dotted;" />
+            <hr style="border-bottom: dotted" />
           </div>
         </div>
       </div>
     </div>
   </div>
   <!-- Modals -->
-  <div class="modal fade show" id="showall-modal" tabindex="-1" role="dialog" aria-labelledby="showall-modalLabel"
-    style="display: none; padding-right: 17px;" aria-modal="true">
-    <div class="modal-dialog modal-xl" style="max-width: 1200px!important;" role="document">
+  <div
+    class="modal fade show"
+    id="showall-modal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="showall-modalLabel"
+    style="display: none; padding-right: 17px"
+    aria-modal="true"
+  >
+    <div
+      class="modal-dialog modal-xl"
+      style="max-width: 1200px !important"
+      role="document"
+    >
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 class="modal-title" id="showall-modalLabel">Room Status</h4>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <ul class="nav nav-tabs" id="roomTab" role="tablist">
             <li class="nav-item" role="presentation">
-              <button class="nav-link" id="cancelled-tab" data-bs-toggle="tab" data-bs-target="#cancelled" type="button"
-                role="tab" aria-controls="cancelled" aria-selected="true"
-                @click="activeTab = 'cancelled'">Cancelled</button>
+              <button
+                class="nav-link"
+                id="cancelled-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#cancelled"
+                type="button"
+                role="tab"
+                aria-controls="cancelled"
+                aria-selected="true"
+                @click="activeTab = 'cancelled'"
+              >
+                Cancelled
+              </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" id="reserved-tab" data-bs-toggle="tab" data-bs-target="#reserved" type="button"
-                role="tab" aria-controls="reserved" aria-selected="true" @click="activeTab = 'reserved'">Reserved</button>
+              <button
+                class="nav-link"
+                id="reserved-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#reserved"
+                type="button"
+                role="tab"
+                aria-controls="reserved"
+                aria-selected="true"
+                @click="activeTab = 'reserved'"
+              >
+                Reserved
+              </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" id="occupied-tab" data-bs-toggle="tab" data-bs-target="#occupied" type="button"
-                role="tab" aria-controls="occupied" aria-selected="false"
-                @click="activeTab = 'occupied'">Occupied</button>
+              <button
+                class="nav-link"
+                id="occupied-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#occupied"
+                type="button"
+                role="tab"
+                aria-controls="occupied"
+                aria-selected="false"
+                @click="activeTab = 'occupied'"
+              >
+                Occupied
+              </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link" id="checkedout-tab" data-bs-toggle="tab" data-bs-target="#checkedout" type="button"
-                role="tab" aria-controls="checkedout" aria-selected="false" @click="activeTab = 'checkedout'">Checked
-                Out</button>
+              <button
+                class="nav-link"
+                id="checkedout-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#checkedout"
+                type="button"
+                role="tab"
+                aria-controls="checkedout"
+                aria-selected="false"
+                @click="activeTab = 'checkedout'"
+              >
+                Checked Out
+              </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button"
-                role="tab" aria-controls="all" aria-selected="false" @click="activeTab = 'all'">All</button>
+              <button
+                class="nav-link active"
+                id="all-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#all"
+                type="button"
+                role="tab"
+                aria-controls="all"
+                aria-selected="false"
+                @click="activeTab = 'all'"
+              >
+                All
+              </button>
             </li>
           </ul>
           <div class="tab-content mt-3" id="roomTabContent">
-            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cancelled' }" id="cancelled"
-              role="tabpanel" aria-labelledby="cancelled-tab">
+            <div
+              class="tab-pane fade"
+              :class="{ 'show active': activeTab === 'cancelled' }"
+              id="cancelled"
+              role="tabpanel"
+              aria-labelledby="cancelled-tab"
+            >
               <div class="container-fluid">
-                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings" :editable="false"
-                  :toggleable="false" />
+                <table-component
+                  :mainHeaders="bookingsOptions"
+                  :mainItems="filteredRoomBookings"
+                  :editable="false"
+                  :toggleable="false"
+                />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -1061,11 +1817,20 @@
                 </table> -->
               </div>
             </div>
-            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'reserved' }" id="reserved" role="tabpanel"
-              aria-labelledby="reserved-tab">
+            <div
+              class="tab-pane fade"
+              :class="{ 'show active': activeTab === 'reserved' }"
+              id="reserved"
+              role="tabpanel"
+              aria-labelledby="reserved-tab"
+            >
               <div class="container-fluid">
-                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings" :editable="false"
-                  :toggleable="false" />
+                <table-component
+                  :mainHeaders="bookingsOptions"
+                  :mainItems="filteredRoomBookings"
+                  :editable="false"
+                  :toggleable="false"
+                />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -1090,11 +1855,20 @@
                 </table> -->
               </div>
             </div>
-            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'occupied' }" id="occupied" role="tabpanel"
-              aria-labelledby="occupied-tab">
+            <div
+              class="tab-pane fade"
+              :class="{ 'show active': activeTab === 'occupied' }"
+              id="occupied"
+              role="tabpanel"
+              aria-labelledby="occupied-tab"
+            >
               <div class="container-fluid">
-                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings" :editable="false"
-                  :toggleable="false" />
+                <table-component
+                  :mainHeaders="bookingsOptions"
+                  :mainItems="filteredRoomBookings"
+                  :editable="false"
+                  :toggleable="false"
+                />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -1119,11 +1893,20 @@
                 </table> -->
               </div>
             </div>
-            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'checkedout' }" id="checkedout"
-              role="tabpanel" aria-labelledby="checkedout-tab">
+            <div
+              class="tab-pane fade"
+              :class="{ 'show active': activeTab === 'checkedout' }"
+              id="checkedout"
+              role="tabpanel"
+              aria-labelledby="checkedout-tab"
+            >
               <div class="container-fluid">
-                <table-component :mainHeaders=bookingsOptions :mainItems="filteredRoomBookings" :editable="false"
-                  :toggleable="false" />
+                <table-component
+                  :mainHeaders="bookingsOptions"
+                  :mainItems="filteredRoomBookings"
+                  :editable="false"
+                  :toggleable="false"
+                />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -1148,11 +1931,20 @@
                 </table> -->
               </div>
             </div>
-            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'all' }" id="all" role="tabpanel"
-              aria-labelledby="all-tab">
+            <div
+              class="tab-pane fade"
+              :class="{ 'show active': activeTab === 'all' }"
+              id="all"
+              role="tabpanel"
+              aria-labelledby="all-tab"
+            >
               <div class="container-fluid">
-                <table-component :mainHeaders=bookingsAllOptions :mainItems="filteredRoomBookings" :editable="false"
-                  :toggleable="false">
+                <table-component
+                  :mainHeaders="bookingsAllOptions"
+                  :mainItems="filteredRoomBookings"
+                  :editable="false"
+                  :toggleable="false"
+                >
                   <template #content="data">
                     <!-- {{ data.data.id  }} -->
                   </template>
@@ -1162,19 +1954,34 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            Close
+          </button>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal fade show" id="addAccountModal" tabindex="-1" role="dialog" aria-labelledby="addAccountModalLabel"
-    style="display: none; padding-right: 17px;" aria-modal="true">
+  <div
+    class="modal fade show"
+    id="addAccountModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="addAccountModalLabel"
+    style="display: none; padding-right: 17px"
+    aria-modal="true"
+  >
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 class="modal-title" id="addAccountModalLabel">Add Account</h4>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <form @submit.prevent="addWalkInGuest">
@@ -1182,39 +1989,76 @@
             <div class="form-group row">
               <label for="name" class="col-sm-2 col-form-label">Name:*</label>
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="name" v-model="walkinreservation.clientName" required
-                  autocomplete="off">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  v-model="walkinreservation.clientName"
+                  required
+                  autocomplete="off"
+                />
               </div>
               <label for="email" class="col-sm-2 col-form-label">Email:</label>
               <div class="col-sm-4">
-                <input type="email" class="form-control" id="email" v-model="walkinreservation.clientEmail"
-                  autocomplete="off">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  v-model="walkinreservation.clientEmail"
+                  autocomplete="off"
+                />
               </div>
             </div>
             <div class="form-group row">
-              <label for="address" class="col-sm-2 col-form-label">Address:</label>
+              <label for="address" class="col-sm-2 col-form-label"
+                >Address:</label
+              >
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="address" v-model="walkinreservation.clientAddress"
-                  autocomplete="off">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="address"
+                  v-model="walkinreservation.clientAddress"
+                  autocomplete="off"
+                />
               </div>
               <label for="phone" class="col-sm-2 col-form-label">Phone:</label>
               <div class="col-sm-4">
-                <input type="tel" class="form-control" id="phone" v-model="walkinreservation.clientPhone"
-                  autocomplete="off">
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="phone"
+                  v-model="walkinreservation.clientPhone"
+                  autocomplete="off"
+                />
               </div>
             </div>
             <div class="form-group row">
-              <label for="nationality" class="col-sm-2 col-form-label">Nationality:*</label>
+              <label for="nationality" class="col-sm-2 col-form-label"
+                >Nationality:*</label
+              >
               <div class="col-sm-4">
-                <select class="form-control" id="nationality" v-model="walkinreservation.clientNationality" required>
+                <select
+                  class="form-control"
+                  id="nationality"
+                  v-model="walkinreservation.clientNationality"
+                  required
+                >
                   <option value="">-- Please select --</option>
                   <option value="Filipino">Filipino</option>
                   <option value="Foreign">Foreign</option>
                 </select>
               </div>
-              <label for="clientType" class="col-sm-2 col-form-label">Type:*</label>
+              <label for="clientType" class="col-sm-2 col-form-label"
+                >Type:*</label
+              >
               <div class="col-sm-4">
-                <select class="form-control" id="clientType" v-model="walkinreservation.clientType" required>
+                <select
+                  class="form-control"
+                  id="clientType"
+                  v-model="walkinreservation.clientType"
+                  required
+                >
                   <option value="">-- Please select --</option>
                   <option value="walkin">Walk-in</option>
                 </select>
@@ -1223,7 +2067,13 @@
             <div class="form-group row">
               <div class="mt-3 mb-3 d-flex flex-row-reverse">
                 <button type="submit" class="btn btn-primary">Add</button>&nbsp;
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
               </div>
             </div>
           </form>
@@ -1231,14 +2081,27 @@
       </div>
     </div>
   </div>
-  <div class="modal fade show" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modalLabel"
-    style="display: none; padding-right: 17px;" aria-modal="true">
+  <div
+    class="modal fade show"
+    id="settings-modal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="settings-modalLabel"
+    style="display: none; padding-right: 17px"
+    aria-modal="true"
+  >
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 class="modal-title" id="settings-modalLabel">Settings</h4>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -1267,39 +2130,68 @@
                 <label class="form-label">Starting day of the week</label>
                 <div class="input-group">
                   <select class="form-select" v-model="startingDayOfWeek">
-                    <option v-for="(d, index) in dayNames" :key="index" :value="index">
+                    <option
+                      v-for="(d, index) in dayNames"
+                      :key="index"
+                      :value="index"
+                    >
                       {{ d }}
                     </option>
                   </select>
                 </div>
               </div>
               <div class="form-group form-check">
-                <input class="form-check-input" type="checkbox" v-model="useTodayIcons" />
-                <label class="form-check-label">Use icon for today's period</label>
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  v-model="useTodayIcons"
+                />
+                <label class="form-check-label"
+                  >Use icon for today's period</label
+                >
               </div>
               <div class="form-group form-check">
-                <input class="form-check-input" type="checkbox" v-model="displayWeekNumbers" />
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  v-model="displayWeekNumbers"
+                />
                 <label class="form-check-label">Show week number</label>
               </div>
               <div class="form-group form-check">
-                <input class="form-check-input" type="checkbox" v-model="showTimes" />
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  v-model="showTimes"
+                />
                 <label class="form-check-label">Show times</label>
               </div>
               <div class="form-group">
                 <label class="form-label">Themes</label>
               </div>
               <div class="form-group form-check">
-                <input class="form-check-input" type="checkbox" v-model="useDefaultTheme" />
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  v-model="useDefaultTheme"
+                />
                 <label class="form-check-label">Default</label>
               </div>
               <div class="form-group form-check">
-                <input class="form-check-input" type="checkbox" v-model="useHolidayTheme" />
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  v-model="useHolidayTheme"
+                />
                 <label class="form-check-label">Holidays</label>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
+                <table
+                  class="table"
+                  style="table-layout: fixed; word-wrap: break-word"
+                >
                   <thead>
                     <tr>
                       <th scope="col">Status</th>
@@ -1309,31 +2201,31 @@
                   <tbody>
                     <tr>
                       <td>Cancelled</td>
-                      <td style="background-color: #bdbdbd; width: 25px;"></td>
+                      <td style="background-color: #bdbdbd; width: 25px"></td>
                     </tr>
                     <tr>
                       <td>Reserved</td>
-                      <td style="background-color: #ef5350; width: 25px;"></td>
+                      <td style="background-color: #ef5350; width: 25px"></td>
                     </tr>
                     <tr>
                       <td>Reserved (partially paid)</td>
-                      <td style="background-color: #5c6bc0; width: 25px;"></td>
+                      <td style="background-color: #5c6bc0; width: 25px"></td>
                     </tr>
                     <tr>
                       <td>Checked In</td>
-                      <td style="background-color: #66bb6a; width: 25px;"></td>
+                      <td style="background-color: #66bb6a; width: 25px"></td>
                     </tr>
                     <tr>
                       <td>Checked In (partially paid)</td>
-                      <td style="background-color: #42a5f5; width: 25px;"></td>
+                      <td style="background-color: #42a5f5; width: 25px"></td>
                     </tr>
                     <tr>
                       <td>Checked In (paid)</td>
-                      <td style="background-color: #ffee58; width: 25px;"></td>
+                      <td style="background-color: #ffee58; width: 25px"></td>
                     </tr>
                     <tr>
                       <td>Checked Out (paid)</td>
-                      <td style="background-color: #ff7043; width: 25px;"></td>
+                      <td style="background-color: #ff7043; width: 25px"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -1342,43 +2234,73 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            Close
+          </button>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal fade come-from-modal left" id="shopModal" tabindex="-1" aria-labelledby="shopModalLabel"
-    aria-hidden="true">
+  <div
+    class="modal fade come-from-modal left"
+    id="shopModal"
+    tabindex="-1"
+    aria-labelledby="shopModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="shopModalLabel">Add-ons
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title" id="shopModalLabel">Add-ons</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-md-12">
-
-              <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3">
+              <input
+                type="text"
+                class="form-control mb-3"
+                placeholder="Search item"
+                v-model="searchText3"
+              />
               <div class="wrapper-content">
-                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
+                <table
+                  class="table"
+                  style="table-layout: fixed; word-wrap: break-word"
+                >
                   <thead>
                     <tr>
-                      <th style="white-space: nowrap;">Item</th>
+                      <th style="white-space: nowrap">Item</th>
                       <th>Qty</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr v-for="(item, index) in filteredItems" :key="index">
-                      <td>{{ item.item }} ({{ item.priceRate }}/{{ item.counter }})</td>
                       <td>
-                        <input style="width:75px!important" class="form-control input-sm" type="number"
-                          v-model.number="howMany[index]">
+                        {{ item.item }} ({{ item.priceRate }}/{{
+                          item.counter
+                        }})
                       </td>
                       <td>
-                        <button class="btn btn-primary" @click="addToCart(item, index)" :disabled="!item.isAvailable">
+                        <input
+                          style="width: 75px !important"
+                          class="form-control input-sm"
+                          type="number"
+                          v-model.number="howMany[index]"
+                        />
+                      </td>
+                      <td>
+                        <button
+                          class="btn btn-primary"
+                          @click="addToCart(item, index)"
+                          :disabled="!item.isAvailable"
+                        >
                           <i class="fa fa-cart-plus"></i>
                         </button>
                       </td>
@@ -1392,24 +2314,44 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="dayMenuModal" tabindex="-1" aria-labelledby="dayMenuModalLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="dayMenuModal"
+    tabindex="-1"
+    aria-labelledby="dayMenuModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog modal-sm modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="dayMenuModalLabel">Room Reservation for {{ dayreserve.toLocaleDateString('en-GB') }}
+          <h5 class="modal-title" id="dayMenuModalLabel">
+            Room Reservation for {{ dayreserve.toLocaleDateString("en-GB") }}
           </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-md-6">
-              <a href="#" @click="clickDay" class="d-flex flex-column align-items-center">
+              <a
+                href="#"
+                @click="clickDay"
+                class="d-flex flex-column align-items-center"
+              >
                 <i class="fa fa-calendar-plus"></i>
                 <span>Create</span>
               </a>
             </div>
             <div class="col-md-6">
-              <a href="#" @click="viewAllReservation" class="d-flex flex-column align-items-center">
+              <a
+                href="#"
+                @click="viewAllReservation"
+                class="d-flex flex-column align-items-center"
+              >
                 <i class="fa fa-calendar-check"></i>
                 <span>View</span>
               </a>
@@ -1419,14 +2361,28 @@
       </div>
     </div>
   </div>
-  <div class="modal fade show" id="BookDayModal" tabindex="-1" role="dialog" aria-labelledby="BookDayModalLabel"
-    style="display: none; padding-right: 17px;" aria-modal="true" ref="modal">
+  <div
+    class="modal fade show"
+    id="BookDayModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="BookDayModalLabel"
+    style="display: none; padding-right: 17px"
+    aria-modal="true"
+    ref="modal"
+  >
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 id="BookDayModalLabel" class="text-primary">Reservation Info</h4>
-          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
-              aria-hidden="true">&times;</span></button>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <div class="modal-body">
           <div v-if="!movetocartFlag || !bookNowFlag" class="loading-spinner">
@@ -1437,166 +2393,395 @@
           </div>
           <form v-else>
             <!-- Client Information -->
-            <h5>Booking Details<span class="text-muted" style="font-size: 12px;">*Field required</span></h5>
+            <h5>
+              Booking Details<span class="text-muted" style="font-size: 12px"
+                >*Field required</span
+              >
+            </h5>
             <div class="form-group row">
               <label for="name" class="col-sm-2 col-form-label">Name:*</label>
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="name" v-model="reservation.clientName" required
-                  autocomplete="off">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  v-model="reservation.clientName"
+                  required
+                  autocomplete="off"
+                />
               </div>
               <label for="email" class="col-sm-2 col-form-label">Email:</label>
               <div class="col-sm-4">
-                <input type="email" class="form-control" id="email" v-model="reservation.clientEmail" autocomplete="off">
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  v-model="reservation.clientEmail"
+                  autocomplete="off"
+                />
               </div>
             </div>
             <div class="form-group row mt-2">
-              <label for="address" class="col-sm-2 col-form-label">Address:</label>
+              <label for="address" class="col-sm-2 col-form-label"
+                >Address:</label
+              >
               <div class="col-sm-4">
-                <input type="text" class="form-control" id="address" v-model="reservation.clientAddress"
-                  autocomplete="off">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="address"
+                  v-model="reservation.clientAddress"
+                  autocomplete="off"
+                />
               </div>
               <label for="phone" class="col-sm-2 col-form-label">Phone:</label>
               <div class="col-sm-4">
-                <input type="tel" class="form-control" id="phone" v-model="reservation.clientPhone" autocomplete="off">
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="phone"
+                  v-model="reservation.clientPhone"
+                  autocomplete="off"
+                />
               </div>
             </div>
             <div class="form-group row mt-2">
-              <label for="nationality" class="col-sm-2 col-form-label">Nationality:*</label>
+              <label for="nationality" class="col-sm-2 col-form-label"
+                >Nationality:*</label
+              >
               <div class="col-sm-4">
-                <select class="form-control" id="nationality" v-model="reservation.clientNationality" required>
+                <select
+                  class="form-control"
+                  id="nationality"
+                  v-model="reservation.clientNationality"
+                  required
+                >
                   <option value="">-- Please select --</option>
                   <option value="Filipino">Filipino</option>
                   <option value="Foreign">Foreign</option>
                 </select>
               </div>
-              <label for="clientType" class="col-sm-2 col-form-label">Type:*</label>
+              <label for="clientType" class="col-sm-2 col-form-label"
+                >Type:*</label
+              >
               <div class="col-sm-4">
-                <select class="form-control" id="clientType" v-model="reservation.clientType" required>
+                <select
+                  class="form-control"
+                  id="clientType"
+                  v-model="reservation.clientType"
+                  required
+                >
                   <option value="">-- Please select --</option>
                   <option value="in-house">In-house</option>
                 </select>
               </div>
             </div>
             <div class="form-group row mt-2">
-              <label for="checkin" class="col-sm-2 col-form-label">Check-in Date:*</label>
+              <label for="checkin" class="col-sm-2 col-form-label"
+                >Check-in Date:*</label
+              >
               <div class="col-sm-4">
-                <input type="text" aria-describedby="inputhelp" class="form-control mb-0" id="checkin"
-                  v-model="reservation.checkinDate" required readonly>
+                <input
+                  type="text"
+                  aria-describedby="inputhelp"
+                  class="form-control mb-0"
+                  id="checkin"
+                  v-model="reservation.checkinDate"
+                  required
+                  readonly
+                />
               </div>
-              <label for="checkout" class="col-sm-2 col-form-label">Check-out Date:*</label>
+              <label for="checkout" class="col-sm-2 col-form-label"
+                >Check-out Date:*</label
+              >
               <div class="col-sm-4">
-                <input v-if="reservation.status == 'vacant'" aria-describedby="inputhelp2" type="date"
-                  class="form-control" id="checkout" v-model="reservation.checkoutDate" required>
-                <input v-else type="text" class="form-control" id="checkout" v-model="reservation.checkoutDate" readonly>
-                <small v-if="reservation.status == 'vacant'" id="inputhelp2" class="form-text text-muted mt-0"
-                  style="font-size: 11px;">Please enter the date in the format: DD/MM/YYYY.</small>
+                <input
+                  v-if="reservation.status == 'vacant'"
+                  aria-describedby="inputhelp2"
+                  type="date"
+                  class="form-control"
+                  id="checkout"
+                  v-model="reservation.checkoutDate"
+                  required
+                />
+                <input
+                  v-else
+                  type="text"
+                  class="form-control"
+                  id="checkout"
+                  v-model="reservation.checkoutDate"
+                  readonly
+                />
+                <small
+                  v-if="reservation.status == 'vacant'"
+                  id="inputhelp2"
+                  class="form-text text-muted mt-0"
+                  style="font-size: 11px"
+                  >Please enter the date in the format: DD/MM/YYYY.</small
+                >
               </div>
             </div>
             <div class="form-group row mt-2">
               <label for="room" class="col-sm-2 col-form-label">Room:*</label>
-              <div v-if="reservation.status === 'vacant' || toggleselect" class="col-sm-4">
-                <v-select :disabled="roomSelect !== 'ok'" aria-describedby="inputhelp3" :multiple="!toggleselect"
-                  :options="updatedRooms" label="name" v-model="reservation.roomName" required>
+              <div
+                v-if="reservation.status === 'vacant' || toggleselect"
+                class="col-sm-4"
+              >
+                <v-select
+                  :disabled="roomSelect !== 'ok'"
+                  aria-describedby="inputhelp3"
+                  :multiple="!toggleselect"
+                  :options="updatedRooms"
+                  label="name"
+                  v-model="reservation.roomName"
+                  required
+                >
                   <template #option="{ name, type, price }">
                     <h6 style="margin: 0">{{ name }}</h6>
-                    <em><small>{{ type }}</small></em>
-                    <em><small> ({{ price }} units)</small></em>
+                    <em
+                      ><small>{{ type }}</small></em
+                    >
+                    <em
+                      ><small> ({{ price }} units)</small></em
+                    >
                   </template>
                 </v-select>
-                <small v-if="toggleselect" id="inputhelp3" class="form-text text-muted mt-0">Please select a new
-                  room.</small>
+                <small
+                  v-if="toggleselect"
+                  id="inputhelp3"
+                  class="form-text text-muted mt-0"
+                  >Please select a new room.</small
+                >
               </div>
               <div v-else class="col-sm-4">
-                <input type="text" class="form-control" v-model="reservation.roomName" readonly>
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="reservation.roomName"
+                  readonly
+                />
               </div>
-              <label for="remarks" class="col-sm-2 col-form-label">Remarks:</label>
+              <label for="remarks" class="col-sm-2 col-form-label"
+                >Remarks:</label
+              >
               <div class="col-sm-4">
-                <input type="text" class="form-control" v-model="reservation.remarks" autocomplete="off">
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="reservation.remarks"
+                  autocomplete="off"
+                />
               </div>
             </div>
             <div class="form-group row mt-2">
               <div class="mt-3 mb-3 d-flex justify-content-end">
                 <div v-if="reservation.status == 'reserved'">
-                  <button v-if="reservation.isPaid === 'no'" v-show="!toggleselect" type="button"
-                    class="btn btn-primary btn-sm btn-margin rounded" @click="cancelReservation()">
+                  <button
+                    v-if="reservation.isPaid === 'no'"
+                    v-show="!toggleselect"
+                    type="button"
+                    class="btn btn-primary btn-sm btn-margin rounded"
+                    @click="cancelReservation()"
+                  >
                     <i class="fas fa-times"></i> Cancel Reservation
                   </button>
                   <span v-if="userdata.role !== 'reservationist'">
-                    <button :disabled="disablebutton" v-show="!toggleselect"
-                      v-if="reservation.isPaid === '' || reservation.isPaid === 'no'"
-                      @click="moveToCart(); disablebutton = true" type="button"
-                      class="btn btn-success btn-sm btn-margin rounded">
+                    <button
+                      :disabled="disablebutton"
+                      v-show="!toggleselect"
+                      v-if="
+                        reservation.isPaid === '' || reservation.isPaid === 'no'
+                      "
+                      @click="
+                        moveToCart();
+                        disablebutton = true;
+                      "
+                      type="button"
+                      class="btn btn-success btn-sm btn-margin rounded"
+                    >
                       <i class="fas fa-check"></i> Down Payment
                     </button>
-                    <button :disabled="disablebutton" v-show="!toggleselect" v-else-if="reservation.isPaid === 'partial'"
-                      @click="moveToCart(); disablebutton = true" type="button"
-                      class="btn btn-warning btn-sm btn-margin rounded">
+                    <button
+                      :disabled="disablebutton"
+                      v-show="!toggleselect"
+                      v-else-if="reservation.isPaid === 'partial'"
+                      @click="
+                        moveToCart();
+                        disablebutton = true;
+                      "
+                      type="button"
+                      class="btn btn-warning btn-sm btn-margin rounded"
+                    >
                       <i class="fas fa-check"></i> Partial Payment
                     </button>
-                    <button :disabled="disablebutton" v-show="!toggleselect" v-else-if="reservation.isPaid === 'yes'"
-                      @click="moveToCart(); disablebutton = true" type="button"
-                      class="btn btn-primary btn-sm btn-margin rounded">
+                    <button
+                      :disabled="disablebutton"
+                      v-show="!toggleselect"
+                      v-else-if="reservation.isPaid === 'yes'"
+                      @click="
+                        moveToCart();
+                        disablebutton = true;
+                      "
+                      type="button"
+                      class="btn btn-primary btn-sm btn-margin rounded"
+                    >
                       <i class="fas fa-eye"></i> View Summary
                     </button>
-                    <button :disabled="disablebutton" v-show="!toggleselect"
-                      v-if="new Date().setHours(0, 0, 0, 0) === parseDate2(reservation.checkinDate)" type="button"
-                      class="btn btn-success btn-sm btn-margin rounded" @click="checkinGuest(); disablebutton = true">
+                    <button
+                      :disabled="disablebutton"
+                      v-show="!toggleselect"
+                      v-if="
+                        new Date().setHours(0, 0, 0, 0) ===
+                        parseDate2(reservation.checkinDate)
+                      "
+                      type="button"
+                      class="btn btn-success btn-sm btn-margin rounded"
+                      @click="
+                        checkinGuest();
+                        disablebutton = true;
+                      "
+                    >
                       <i class="fas fa-sign-in-alt"></i> Check-in
                     </button>
                   </span>
                 </div>
                 <div v-else-if="reservation.status == 'checkedin'">
                   <span v-if="userdata.role !== 'reservationist'">
-                    <div v-if="reservation.isPaid === '' || reservation.isPaid === 'no'">
-                      <button :disabled="disablebutton" v-show="!toggleselect" @click="moveToCart(); disablebutton = true"
-                        type="button" class="btn btn-success btn-sm btn-margin rounded">
+                    <div
+                      v-if="
+                        reservation.isPaid === '' || reservation.isPaid === 'no'
+                      "
+                    >
+                      <button
+                        :disabled="disablebutton"
+                        v-show="!toggleselect"
+                        @click="
+                          moveToCart();
+                          disablebutton = true;
+                        "
+                        type="button"
+                        class="btn btn-success btn-sm btn-margin rounded"
+                      >
                         <i class="fas fa-credit-card"></i> Pay Now
                       </button>
                     </div>
                     <div v-else-if="reservation.isPaid === 'partial'">
-                      <button :disabled="disablebutton" v-show="!toggleselect" @click="moveToCart(); disablebutton = true"
-                        type="button" class="btn btn-success btn-sm btn-margin rounded">
+                      <button
+                        :disabled="disablebutton"
+                        v-show="!toggleselect"
+                        @click="
+                          moveToCart();
+                          disablebutton = true;
+                        "
+                        type="button"
+                        class="btn btn-success btn-sm btn-margin rounded"
+                      >
                         <i class="fas fa-credit-card"></i> Pay Now
                       </button>
-                      <button :disabled="disablebutton" v-show="!toggleselect" type="button"
-                        class="btn btn-primary btn-sm btn-margin rounded" @click="extendBooking(); disablebutton = true">
+                      <button
+                        :disabled="disablebutton"
+                        v-show="!toggleselect"
+                        type="button"
+                        class="btn btn-primary btn-sm btn-margin rounded"
+                        @click="
+                          extendBooking();
+                          disablebutton = true;
+                        "
+                      >
                         <i class="fas fa-calendar-plus"></i> Extend (1 day)
                       </button>
                     </div>
                     <div v-else>
-                      <button :disabled="disablebutton" v-show="!toggleselect" type="button"
-                        class="btn btn-primary btn-sm btn-margin rounded" @click="viewSummary(); disablebutton = true">
+                      <button
+                        :disabled="disablebutton"
+                        v-show="!toggleselect"
+                        type="button"
+                        class="btn btn-primary btn-sm btn-margin rounded"
+                        @click="
+                          viewSummary();
+                          disablebutton = true;
+                        "
+                      >
                         <i class="fas fa-eye"></i> View Summary
                       </button>
-                      <button :disabled="disablebutton" v-show="!toggleselect" type="button"
-                        class="btn btn-primary btn-sm btn-margin rounded" @click="extendBooking(); disablebutton = true">
+                      <button
+                        :disabled="disablebutton"
+                        v-show="!toggleselect"
+                        type="button"
+                        class="btn btn-primary btn-sm btn-margin rounded"
+                        @click="
+                          extendBooking();
+                          disablebutton = true;
+                        "
+                      >
                         <i class="fas fa-calendar-plus"></i> Extend (1 day)
                       </button>
-                      <button :disabled="disablebutton" v-show="!toggleselect" type="button"
-                        class="btn btn-success btn-sm btn-margin rounded" @click="checkOutGuest(); disablebutton = true">
+                      <button
+                        :disabled="disablebutton"
+                        v-show="!toggleselect"
+                        type="button"
+                        class="btn btn-success btn-sm btn-margin rounded"
+                        @click="
+                          checkOutGuest();
+                          disablebutton = true;
+                        "
+                      >
                         <i class="fas fa-sign-out-alt"></i> Check-out
                       </button>
                     </div>
                   </span>
                 </div>
-                <button :disabled="disablebutton" @click="clickTestAddItem(); disablebutton = true"
-                  v-else-if="reservation.status == 'vacant'" type="button"
-                  class="btn btn-primary btn-sm btn-margin rounded">
+                <button
+                  :disabled="disablebutton"
+                  @click="
+                    clickTestAddItem();
+                    disablebutton = true;
+                  "
+                  v-else-if="reservation.status == 'vacant'"
+                  type="button"
+                  class="btn btn-primary btn-sm btn-margin rounded"
+                >
                   <i class="fas fa-book"></i> Book Now
                 </button>
                 <button
-                  v-if="new Date().setHours(0, 0, 0, 0) <= parseDate2(reservation.checkinDate) && userdata.role !== 'reservationist' && (reservation.status !== 'vacant' && reservation.status !== 'checkedout' && reservation.status !== 'cancelled')"
-                  @click="transferRoom()" type="button" class="btn btn-success btn-sm btn-margin rounded">
-                  <i class="fas fa-exchange-alt"></i> {{ toggleselect ? 'Save' : 'Transfer' }}
+                  v-if="
+                    new Date().setHours(0, 0, 0, 0) <=
+                      parseDate2(reservation.checkinDate) &&
+                    userdata.role !== 'reservationist' &&
+                    reservation.status !== 'vacant' &&
+                    reservation.status !== 'checkedout' &&
+                    reservation.status !== 'cancelled'
+                  "
+                  @click="transferRoom()"
+                  type="button"
+                  class="btn btn-success btn-sm btn-margin rounded"
+                >
+                  <i class="fas fa-exchange-alt"></i>
+                  {{ toggleselect ? "Save" : "Transfer" }}
                 </button>
-                <button :disabled="disablebutton"
-                  v-if="userdata.role !== 'reservationist' && reservation.status !== 'vacant'" type="button"
-                  @click="voidBook(); disablebutton = true" class="btn btn-danger btn-sm btn-margin rounded"
-                  v-show="!toggleselect">
+                <button
+                  :disabled="disablebutton"
+                  v-if="
+                    userdata.role !== 'reservationist' &&
+                    reservation.status !== 'vacant'
+                  "
+                  type="button"
+                  @click="
+                    voidBook();
+                    disablebutton = true;
+                  "
+                  class="btn btn-danger btn-sm btn-margin rounded"
+                  v-show="!toggleselect"
+                >
                   <i class="fas fa-trash"></i> Void
                 </button>
-                <button :disabled="disablebutton" @click="disablebutton = true" type="button"
-                  class="btn btn-danger btn-sm btn-margin rounded" data-bs-dismiss="modal">
+                <button
+                  :disabled="disablebutton"
+                  @click="disablebutton = true"
+                  type="button"
+                  class="btn btn-danger btn-sm btn-margin rounded"
+                  data-bs-dismiss="modal"
+                >
                   <i class="fas fa-times"></i> Close
                 </button>
               </div>
@@ -1606,8 +2791,12 @@
       </div>
     </div>
   </div>
-  <vue-simple-context-menu element-id="myFirstMenu" :options="optionsArray1" ref="vueSimpleContextMenu1"
-    @option-clicked="optionClicked1">
+  <vue-simple-context-menu
+    element-id="myFirstMenu"
+    :options="optionsArray1"
+    ref="vueSimpleContextMenu1"
+    @option-clicked="optionClicked1"
+  >
   </vue-simple-context-menu>
   <FooterComponent />
 </template>
@@ -1619,13 +2808,13 @@ import TableComponent from "@/components/common/GenericTable.vue";
 import BookingDashboard from "@/components/common/BookingDashboard.vue";
 import CardBookingsVue from "../common/CardBookings.vue";
 import ReceptionHotel from "../common/ReceptionHotel.vue";
-import "/node_modules/vue-simple-calendar/dist/style.css"
-import "/node_modules/vue-simple-calendar/dist/css/default.css"
-import "/node_modules/vue-simple-calendar/dist/css/holidays-us.css"
-import "/node_modules/vue-final-modal/dist/style.css"
-import moment from 'moment'
+import "/node_modules/vue-simple-calendar/dist/style.css";
+import "/node_modules/vue-simple-calendar/dist/css/default.css";
+import "/node_modules/vue-simple-calendar/dist/css/holidays-us.css";
+import "/node_modules/vue-final-modal/dist/style.css";
+import moment from "moment";
 import jsPDF from "jspdf";
-import axios from 'axios';
+import axios from "axios";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -1634,10 +2823,14 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
-} from 'chart.js'
-import { Line } from 'vue-chartjs'
-import { CalendarView, CalendarViewHeader, CalendarMath } from "vue-simple-calendar" // published version
+  Legend,
+} from "chart.js";
+import { Line } from "vue-chartjs";
+import {
+  CalendarView,
+  CalendarViewHeader,
+  CalendarMath,
+} from "vue-simple-calendar"; // published version
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -1646,31 +2839,31 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend
-)
+);
 //helper functions
 function parseDateOrig(dateString) {
-  const [day, month, year] = dateString.split('/');
+  const [day, month, year] = dateString.split("/");
   return `${year}-${month}-${day}`;
 }
 function parseDate(dateString) {
-  const [day, month, year] = dateString.split('/');
+  const [day, month, year] = dateString.split("/");
   return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
 }
 function parseDate2(dateString) {
-  const index = dateString.indexOf('T');
+  const index = dateString.indexOf("T");
   const result = dateString.substring(0, index);
-  const [year, month, day] = result.split('-');
+  const [year, month, day] = result.split("-");
   return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
 }
 function padTo2Digits(num) {
-  return num.toString().padStart(2, '0');
+  return num.toString().padStart(2, "0");
 }
 function formatDate(date = new Date()) {
   return [
     date.getFullYear(),
     padTo2Digits(date.getMonth() + 1),
     padTo2Digits(date.getDate()),
-  ].join('-');
+  ].join("-");
 }
 function formatDate2(date = new Date()) {
   let inputDate = date;
@@ -1704,297 +2897,360 @@ export default {
       movetocartFlag: true,
       bookNowFlag: true,
       socket: null,
-      test: '',
+      test: "",
       dashboardStatus: true,
       bookingComponentStatus: true,
       componentKey: 0,
-      activeMainTab: 'BEACH ROOM',
+      activeMainTab: "BEACH ROOM",
       roomSelect: "ok",
       toggleselect: false,
       isItNew: false,
       disablebutton: false,
-      bookingsOptions: [{
-        'label': 'Room Name',
-        'field': 'room_name',
-        'sortable': true
-      }, {
-        'label': 'Checkin Date',
-        'field': 'checkinDate',
-        'sortable': true
-      }, {
-        'label': 'Checkout Date',
-        'field': 'checkoutDate',
-        'sortable': true
-      }, {
-        'label': 'Guest',
-        'field': 'name',
-        'sortable': true
-      }, {
-        'label': 'Contact Number',
-        'field': 'contactNumber',
-        'sortable': true
-      }, {
-        'label': 'Email',
-        'field': 'clientemail',
-        'sortable': true
-      },],
-      bookingsAllOptions: [{
-        'label': 'Room Name',
-        'field': 'room_name',
-        'sortable': true
-      }, {
-        'label': 'Checkin Date',
-        'field': 'checkinDate',
-        'sortable': true
-      }, {
-        'label': 'Checkout Date',
-        'field': 'checkoutDate',
-        'sortable': true
-      }, {
-        'label': 'Guest',
-        'field': 'name',
-        'sortable': true
-      }, {
-        'label': 'Contact Number',
-        'field': 'contactNumber',
-        'sortable': true
-      }, {
-        'label': 'Email',
-        'field': 'clientemail',
-        'sortable': true
-      }, {
-        'label': 'Status',
-        'field': 'status',
-        'sortable': true
-      }, {
-        'label': 'Total Price (room+addons)',
-        'field': 'totalPrice',
-        'sortable': true,
-        'reducible': true,
-      }, {
-        'label': 'Partial Payment',
-        'field': 'partialPayment',
-        'sortable': true,
-        'reducible': true,
-      }, {
-        'label': 'Balance',
-        'field': 'balance',
-        'sortable': true,
-        'reducible': true,
-      }, {
-        'label': 'Action',
-        'field': '',
-        'slot': true,
-      }],
-      reservationsOptions: [{
-        'label': '',
-        'field': 'toggle',
-        'sortable': false,
-      }, {
-        'label': 'No.',
-        'field': 'id',
-        'sortable': true
-      }, {
-        'label': 'Name',
-        'field': 'name',
-        'sortable': true
-      }, {
-        'label': 'Contact',
-        'field': 'contactNumber',
-        'sortable': true
-      }, {
-        'label': 'Address',
-        'field': 'clientaddress',
-        'sortable': true
-      }, {
-        'label': 'Checkin Date',
-        'field': 'checkinDate',
-        'sortable': true
-      }, {
-        'label': 'Checkout Date',
-        'field': 'checkoutDate',
-        'sortable': true
-      }, {
-        'label': 'Room',
-        'field': 'room_name',
-        'sortable': true
-      }, {
-        'label': 'Cost (Room+addon)',
-        'field': 'totalPrice',
-        'sortable': true,
-        'reducible': true,
-      }, {
-        'label': 'Status',
-        'field': 'status',
-        'sortable': true
-      }, {
-        'label': 'Payment',
-        'field': 'isPaid',
-        'sortable': true
-      },],
-      transactionsOptions: [{
-        'label': '',
-        'field': 'toggle',
-        'sortable': false,
-      }, {
-        'label': '#',
-        'field': 'id',
-        'sortable': true
-      }, {
-        'label': 'Name',
-        'field': 'clientname',
-        'sortable': true
-      }, {
-        'label': 'Contact',
-        'field': 'clientcontact',
-        'sortable': true
-      }, {
-        'label': 'Total Amount',
-        'field': 'totalAmountToPay',
-        'sortable': true,
-        'reducible': true
-      }, {
-        'label': 'Actual Income',
-        'field': 'actualIncomeOfThisDay',
-        'sortable': true,
-        'reducible': true,
-      }, {
-        'label': 'Total Cash',
-        'field': 'cashAmountPay',
-        'sortable': true,
-        'reducible': true
-      }, {
-        'label': 'New Balance',
-        'field': 'balance',
-        'sortable': true,
-        'reducible': true
-      }, {
-        'label': 'Latest Status',
-        'field': 'payStatus',
-        'sortable': true
-      }, {
-        'label': 'Remarks',
-        'field': 'cashRemarks',
-        'sortable': true
-      }, {
-        'label': 'Latest Transaction Date',
-        'field': 'transaction_date',
-        'sortable': true
-      }, {
-        'label': '',
-        'field': 'action',
-        'sortable': false
-      }],
-      transactionhistory: [{
-        'label': 'Method',
-        'field': 'paymentMethod'
-      }, {
-        'label': 'Ref. No.',
-        'field': 'nonCashReference'
-      }, {
-        'label': 'Total',
-        'field': 'totalAmountToPay'
-      }, {
-        'label': 'Amount Paid',
-        'field': 'cashAmountPay'
-      }, {
-        'label': 'Balance',
-        'field': 'balance'
-      }, {
-        'label': 'Discount Mode',
-        'field': 'discountMode'
-      }, {
-        'label': 'Discount Value',
-        'field': 'discountValue'
-      }, {
-        'label': 'Processed by',
-        'field': 'processedBy'
-      }, {
-        'label': 'Status',
-        'field': 'payStatus'
-      }, {
-        'label': 'Date',
-        'field': 'transaction_date'
-      },],
-      transactionitem: [{
-        'label': 'Name',
-        'field': 'itemName'
-      }, {
-        'label': 'Category',
-        'field': 'itemOption'
-      }, {
-        'label': 'Type',
-        'field': 'itemType'
-      }, {
-        'label': 'Rate',
-        'field': 'itemPriceRate'
-      }, {
-        'label': 'Qty',
-        'field': 'purchaseQty'
-      }, {
-        'label': 'Total',
-        'field': 'totalCost'
-      }, {
-        'label': 'Date',
-        'field': 'dateCreated'
-      },],
+      bookingsOptions: [
+        {
+          label: "Room Name",
+          field: "room_name",
+          sortable: true,
+        },
+        {
+          label: "Checkin Date",
+          field: "checkinDate",
+          sortable: true,
+        },
+        {
+          label: "Checkout Date",
+          field: "checkoutDate",
+          sortable: true,
+        },
+        {
+          label: "Guest",
+          field: "name",
+          sortable: true,
+        },
+        {
+          label: "Contact Number",
+          field: "contactNumber",
+          sortable: true,
+        },
+        {
+          label: "Email",
+          field: "clientemail",
+          sortable: true,
+        },
+      ],
+      bookingsAllOptions: [
+        {
+          label: "Room Name",
+          field: "room_name",
+          sortable: true,
+        },
+        {
+          label: "Checkin Date",
+          field: "checkinDate",
+          sortable: true,
+        },
+        {
+          label: "Checkout Date",
+          field: "checkoutDate",
+          sortable: true,
+        },
+        {
+          label: "Guest",
+          field: "name",
+          sortable: true,
+        },
+        {
+          label: "Contact Number",
+          field: "contactNumber",
+          sortable: true,
+        },
+        {
+          label: "Email",
+          field: "clientemail",
+          sortable: true,
+        },
+        {
+          label: "Status",
+          field: "status",
+          sortable: true,
+        },
+        {
+          label: "Total Price (room+addons)",
+          field: "totalPrice",
+          sortable: true,
+          reducible: true,
+        },
+        {
+          label: "Partial Payment",
+          field: "partialPayment",
+          sortable: true,
+          reducible: true,
+        },
+        {
+          label: "Balance",
+          field: "balance",
+          sortable: true,
+          reducible: true,
+        },
+        {
+          label: "Action",
+          field: "",
+          slot: true,
+        },
+      ],
+      reservationsOptions: [
+        {
+          label: "",
+          field: "toggle",
+          sortable: false,
+        },
+        {
+          label: "No.",
+          field: "id",
+          sortable: true,
+        },
+        {
+          label: "Name",
+          field: "name",
+          sortable: true,
+        },
+        {
+          label: "Contact",
+          field: "contactNumber",
+          sortable: true,
+        },
+        {
+          label: "Address",
+          field: "clientaddress",
+          sortable: true,
+        },
+        {
+          label: "Checkin Date",
+          field: "checkinDate",
+          sortable: true,
+        },
+        {
+          label: "Checkout Date",
+          field: "checkoutDate",
+          sortable: true,
+        },
+        {
+          label: "Room",
+          field: "room_name",
+          sortable: true,
+        },
+        {
+          label: "Cost (Room+addon)",
+          field: "totalPrice",
+          sortable: true,
+          reducible: true,
+        },
+        {
+          label: "Status",
+          field: "status",
+          sortable: true,
+        },
+        {
+          label: "Payment",
+          field: "isPaid",
+          sortable: true,
+        },
+      ],
+      transactionsOptions: [
+        {
+          label: "",
+          field: "toggle",
+          sortable: false,
+        },
+        {
+          label: "#",
+          field: "id",
+          sortable: true,
+        },
+        {
+          label: "Name",
+          field: "clientname",
+          sortable: true,
+        },
+        {
+          label: "Contact",
+          field: "clientcontact",
+          sortable: true,
+        },
+        {
+          label: "Total Amount",
+          field: "totalAmountToPay",
+          sortable: true,
+          reducible: true,
+        },
+        {
+          label: "Actual Income",
+          field: "actualIncomeOfThisDay",
+          sortable: true,
+          reducible: true,
+        },
+        {
+          label: "Total Cash",
+          field: "cashAmountPay",
+          sortable: true,
+          reducible: true,
+        },
+        {
+          label: "New Balance",
+          field: "balance",
+          sortable: true,
+          reducible: true,
+        },
+        {
+          label: "Latest Status",
+          field: "payStatus",
+          sortable: true,
+        },
+        {
+          label: "Remarks",
+          field: "cashRemarks",
+          sortable: true,
+        },
+        {
+          label: "Latest Transaction Date",
+          field: "transaction_date",
+          sortable: true,
+        },
+        {
+          label: "",
+          field: "action",
+          sortable: false,
+        },
+      ],
+      transactionhistory: [
+        {
+          label: "Method",
+          field: "paymentMethod",
+        },
+        {
+          label: "Ref. No.",
+          field: "nonCashReference",
+        },
+        {
+          label: "Total",
+          field: "totalAmountToPay",
+        },
+        {
+          label: "Amount Paid",
+          field: "cashAmountPay",
+        },
+        {
+          label: "Balance",
+          field: "balance",
+        },
+        {
+          label: "Discount Mode",
+          field: "discountMode",
+        },
+        {
+          label: "Discount Value",
+          field: "discountValue",
+        },
+        {
+          label: "Processed by",
+          field: "processedBy",
+        },
+        {
+          label: "Status",
+          field: "payStatus",
+        },
+        {
+          label: "Date",
+          field: "transaction_date",
+        },
+      ],
+      transactionitem: [
+        {
+          label: "Name",
+          field: "itemName",
+        },
+        {
+          label: "Category",
+          field: "itemOption",
+        },
+        {
+          label: "Type",
+          field: "itemType",
+        },
+        {
+          label: "Rate",
+          field: "itemPriceRate",
+        },
+        {
+          label: "Qty",
+          field: "purchaseQty",
+        },
+        {
+          label: "Total",
+          field: "totalCost",
+        },
+        {
+          label: "Date",
+          field: "dateCreated",
+        },
+      ],
       hoveredDay: null,
       dayreserve: new Date(),
       showTable: {},
       toggleAll: true,
-      resdateFilter: 'any',
+      resdateFilter: "any",
       resfromDate: null,
       restoDate: null,
-      respaymentStatusFilter: '',
-      resstatusFilter: '',
-      dateFilter: 'any',
+      respaymentStatusFilter: "",
+      resstatusFilter: "",
+      dateFilter: "any",
       fromDate: null,
       toDate: null,
-      paymentMethodFilter: '',
-      statusFilter: '',
+      paymentMethodFilter: "",
+      statusFilter: "",
       convDate: "",
       optionsArray1: [
         {
-          name: 'Show Account',
-          slug: 'show',
+          name: "Show Account",
+          slug: "show",
         },
         {
-          type: 'divider',
+          type: "divider",
         },
         {
-          name: 'Edit',
-          slug: 'edit',
+          name: "Edit",
+          slug: "edit",
         },
         {
-          name: '<em>Delete</em>',
-          slug: 'delete',
+          name: "<em>Delete</em>",
+          slug: "delete",
         },
       ],
       itemIndex: -1,
       walkinreservation: {
-        clientName: '',
-        clientEmail: '',
-        clientPhone: '',
-        clientAddress: '',
-        clientNationality: 'Filipino',
-        clientType: ''
+        clientName: "",
+        clientEmail: "",
+        clientPhone: "",
+        clientAddress: "",
+        clientNationality: "Filipino",
+        clientType: "",
       },
       reservation: {
-        clientName: '',
-        clientEmail: '',
-        clientPhone: '',
-        clientAddress: '',
-        clientNationality: '',
-        clientType: '',
-        checkinDate: '',
-        checkoutDate: '',
-        roomName: '',
-        roomPrice: '',
-        roomType: '',
-        remarks: '',
-        status: 'vacant',
-        isPaid: 'no',
-        numguests: ''
+        clientName: "",
+        clientEmail: "",
+        clientPhone: "",
+        clientAddress: "",
+        clientNationality: "",
+        clientType: "",
+        checkinDate: "",
+        checkoutDate: "",
+        roomName: "",
+        roomPrice: "",
+        roomType: "",
+        remarks: "",
+        status: "vacant",
+        isPaid: "no",
+        numguests: "",
       },
       showDate: this.thisMonth(1),
       message: "",
@@ -2028,45 +3284,53 @@ export default {
         },*/
       ],
       linedata: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+        ],
         datasets: [
           {
-            label: 'Cancelled',
-            backgroundColor: 'gray',
-            data: [50, 29, 1, 4, 37, 80, 40]
+            label: "Cancelled",
+            backgroundColor: "gray",
+            data: [50, 29, 1, 4, 37, 80, 40],
           },
           {
-            label: 'Reserved',
-            backgroundColor: 'red',
-            data: [40, 39, 10, 40, 39, 80, 40]
+            label: "Reserved",
+            backgroundColor: "red",
+            data: [40, 39, 10, 40, 39, 80, 40],
           },
           {
-            label: 'Check-in',
-            backgroundColor: 'green',
-            data: [40, 39, 10, 40, 39, 80, 40]
+            label: "Check-in",
+            backgroundColor: "green",
+            data: [40, 39, 10, 40, 39, 80, 40],
           },
           {
-            label: 'Check-out',
-            backgroundColor: 'yellow',
-            data: [40, 39, 10, 40, 39, 80, 40]
-          }
-        ]
+            label: "Check-out",
+            backgroundColor: "yellow",
+            data: [40, 39, 10, 40, 39, 80, 40],
+          },
+        ],
       },
       lineoptions: {
         responsive: true,
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
       },
-      paymentMethod: 'cash',
+      paymentMethod: "cash",
       cashAmount: 0,
-      nonCashPayPlatform: '',
-      nonCashReference: '',
-      discountMode: 'percentage',
+      nonCashPayPlatform: "",
+      nonCashReference: "",
+      discountMode: "percentage",
       discountValue: 0,
       taxValue: 0,
       partialPayment: 0,
       cashHistory: [],
-      cashRemarks: '',
-      activeTab: 'all',
+      cashRemarks: "",
+      activeTab: "all",
       clientName: "",
       clientEmail: "",
       clientPhone: "",
@@ -2100,7 +3364,7 @@ export default {
         clientAddress: "",
         clientNationality: "Filipino",
         clientType: "walkin",
-        bookingID: ""
+        bookingID: "",
       },
       reservations: [],
       searchText1: "",
@@ -2111,31 +3375,40 @@ export default {
       searchTerm2: "",
       walkinStatus: false,
       alreadyDiscounted: false,
-      cashDenominations: [{
-        'label': '+1.00',
-        'value': 1,
-      }, {
-        'label': '+5.00',
-        'value': 5,
-      }, {
-        'label': '+10.00',
-        'value': 10,
-      }, {
-        'label': '+20.00',
-        'value': 20,
-      }, {
-        'label': '+50.00',
-        'value': 50,
-      }, {
-        'label': '+100.00',
-        'value': 100,
-      }, {
-        'label': '+500.00',
-        'value': 500,
-      }, {
-        'label': '+1000.00',
-        'value': 1000,
-      },],
+      cashDenominations: [
+        {
+          label: "+1.00",
+          value: 1,
+        },
+        {
+          label: "+5.00",
+          value: 5,
+        },
+        {
+          label: "+10.00",
+          value: 10,
+        },
+        {
+          label: "+20.00",
+          value: 20,
+        },
+        {
+          label: "+50.00",
+          value: 50,
+        },
+        {
+          label: "+100.00",
+          value: 100,
+        },
+        {
+          label: "+500.00",
+          value: 500,
+        },
+        {
+          label: "+1000.00",
+          value: 1000,
+        },
+      ],
     };
   },
   async created() {
@@ -2144,14 +3417,14 @@ export default {
       let countdownResult;
       let timeoutExpired = false; // New variable for tracking timeout
       countdownResult = await this.$swal.fire({
-        title: 'Please wait',
+        title: "Please wait",
         html: countdownMessage,
-        icon: 'info',
+        icon: "info",
         showCancelButton: false,
         showConfirmButton: false,
         allowOutsideClick: false,
         didOpen: () => {
-          const countdownEl = document.querySelector('#countdowntimer');
+          const countdownEl = document.querySelector("#countdowntimer");
           let count = this.EVALUATION_TIME - 1;
           const timerId = setInterval(() => {
             countdownEl.textContent = count;
@@ -2162,7 +3435,7 @@ export default {
               this.$swal.close();
             }
           }, 1000);
-        }
+        },
       });
       if (!countdownResult.isConfirmed && timeoutExpired) {
         countdownResult.isConfirmed = true; // Set isConfirmed to true if timeout expired
@@ -2172,8 +3445,7 @@ export default {
       }
     }
     this.loadAlldata();
-  }
-  ,
+  },
   computed: {
     currentRouteName() {
       return this.$route.name;
@@ -2185,11 +3457,11 @@ export default {
     },
     calcMeasure() {
       return {
-        "height1": parseFloat(window.innerHeight) - 300 + "px",
-        "height2": parseFloat(window.innerHeight) - 230 + "px",
-        "height3": parseFloat(window.innerHeight) - 240 + "px",
-        "height4": parseFloat(window.innerHeight) - 150 + "px",
-      }
+        height1: parseFloat(window.innerHeight) - 300 + "px",
+        height2: parseFloat(window.innerHeight) - 230 + "px",
+        height3: parseFloat(window.innerHeight) - 240 + "px",
+        height4: parseFloat(window.innerHeight) - 150 + "px",
+      };
     },
     combinedcart() {
       // let result = [];
@@ -2222,136 +3494,201 @@ export default {
       //     id: combinedItems[name].id,
       //   });
       // }
-      return this.cart.filter(item => item.category === 'main');
+      return this.cart.filter((item) => item.category === "main");
     },
     filteredInclusionCart() {
-      return this.cart.map(o => {
-        return {
-          ...o
-        };
-      }).filter(item => item.category === 'inclusion');
+      return this.cart
+        .map((o) => {
+          return {
+            ...o,
+          };
+        })
+        .filter((item) => item.category === "inclusion");
     },
     filteredReservationsHistory() {
-      let filtered = this.bookings.filter(reservation => {
-        // Filter by date range
-        if (this.resdateFilter === 'range' && this.resfromDate && this.restoDate) {
-          const checkinDate = parseDate(reservation.checkinDate);
-          const checkoutDate = parseDate(reservation.checkoutDate);
-          const fromDate = parseDate(this.resfromDate);
-          const toDate = parseDate(this.restoDate);
-          return fromDate <= checkoutDate && toDate >= checkinDate;
-        }
-        return true;
-      }).filter(reservation => {
-        // Filter by payment method
-        if (this.respaymentStatusFilter) {
-          return reservation.isPaid === this.respaymentStatusFilter;
-        }
-        return true;
-      }).filter(reservation => {
-        // Filter by status
-        if (this.resstatusFilter) {
-          return reservation.status === this.resstatusFilter;
-        }
-        return true;
-      });
-      return filtered.map(item => {
-        const searchCode = Object.values(item).join("~");
-        return {
-          ...item,
-          searchCode
-        };
-      }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchTerm2.toLowerCase()));
+      let filtered = this.bookings
+        .filter((reservation) => {
+          // Filter by date range
+          if (
+            this.resdateFilter === "range" &&
+            this.resfromDate &&
+            this.restoDate
+          ) {
+            const checkinDate = parseDate(reservation.checkinDate);
+            const checkoutDate = parseDate(reservation.checkoutDate);
+            const fromDate = parseDate(this.resfromDate);
+            const toDate = parseDate(this.restoDate);
+            return fromDate <= checkoutDate && toDate >= checkinDate;
+          }
+          return true;
+        })
+        .filter((reservation) => {
+          // Filter by payment method
+          if (this.respaymentStatusFilter) {
+            return reservation.isPaid === this.respaymentStatusFilter;
+          }
+          return true;
+        })
+        .filter((reservation) => {
+          // Filter by status
+          if (this.resstatusFilter) {
+            return reservation.status === this.resstatusFilter;
+          }
+          return true;
+        });
+      return filtered
+        .map((item) => {
+          const searchCode = Object.values(item).join("~");
+          return {
+            ...item,
+            searchCode,
+          };
+        })
+        .filter((item) =>
+          item.searchCode
+            .toString()
+            .toLowerCase()
+            .includes(this.searchTerm2.toLowerCase())
+        );
     },
     filteredTransactionsTotal() {
-      return this.filteredTransactions.reduce((acc, item) => acc + parseFloat(item.cashAmountPay), 0);
+      return this.filteredTransactions.reduce(
+        (acc, item) => acc + parseFloat(item.cashAmountPay),
+        0
+      );
     },
     filteredTransactionsBalance() {
-      return this.filteredTransactions.reduce((acc, item) => acc + parseFloat(item.balance), 0);
+      return this.filteredTransactions.reduce(
+        (acc, item) => acc + parseFloat(item.balance),
+        0
+      );
     },
     filteredTransactions() {
       let filtered = this.transactions;
       // Filter by date
-      if (this.dateFilter === 'range' && this.fromDate && this.toDate) {
-        filtered = filtered.filter(transaction => {
-          return parseDate2(transaction.transaction_date) >= parseDate(this.fromDate) && parseDate2(transaction.transaction_date) <= parseDate(this.toDate);
+      if (this.dateFilter === "range" && this.fromDate && this.toDate) {
+        filtered = filtered.filter((transaction) => {
+          return (
+            parseDate2(transaction.transaction_date) >=
+              parseDate(this.fromDate) &&
+            parseDate2(transaction.transaction_date) <= parseDate(this.toDate)
+          );
         });
       }
       // Filter by payment method
       if (this.paymentMethodFilter) {
-        filtered = filtered.filter(transaction => {
+        filtered = filtered.filter((transaction) => {
           return transaction.paymentMethod === this.paymentMethodFilter;
         });
       }
       // Filter by status
       if (this.statusFilter) {
-        filtered = filtered.filter(transaction => {
+        filtered = filtered.filter((transaction) => {
           return transaction.payStatus === this.statusFilter;
         });
       }
-      return filtered.map(item => {
-        const searchCode = Object.values(item).join("~") + (item.items ? JSON.stringify(item.items) : []) + (item.props ? JSON.stringify(item.props) : []);
-        return {
-          ...item,
-          searchCode
-        };
-      }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchTerm.toLowerCase()));
+      return filtered
+        .map((item) => {
+          const searchCode =
+            Object.values(item).join("~") +
+            (item.items ? JSON.stringify(item.items) : []) +
+            (item.props ? JSON.stringify(item.props) : []);
+          return {
+            ...item,
+            searchCode,
+          };
+        })
+        .filter((item) =>
+          item.searchCode
+            .toString()
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase())
+        );
     },
     roomsjoinbookings() {
-      return this.rooms.filter(item => item.type === this.activeMainTab).filter(item => item.type === this.activeMainTab.toString()).map(room => {
-        const booking = this.bookings.filter(item => (item.status !== "checkedout")).filter(item => (item.status !== "cancelled") && (parseDate(new Date().toLocaleDateString('en-GB')) >= parseDate(item.checkinDate) && parseDate(item.checkoutDate) >= parseDate(new Date().toLocaleDateString('en-GB')))).find(booking => booking.room_name === room.name);
-        if (booking) {
-          return {
-            ...room,
-            clientName: booking.name,
-            clientEmail: booking.clientemail,
-            clientAddress: booking.clientaddress,
-            contactNumber: booking.contactNumber,
-            checkinDate: booking.checkinDate,
-            checkoutDate: booking.checkoutDate,
-            status: booking.status,
-            itemID: booking.itemID,
-            groupkey: booking.groupkey,
-            totalPrice: booking.totalPrice,
-            partialPayment: booking.partialPayment,
-            status: booking.status,
-            isPaid: booking.isPaid,
-            selected: false,
-          };
-        } else {
-          return room;
-        }
-      });
+      return this.rooms
+        .filter((item) => item.type === this.activeMainTab)
+        .filter((item) => item.type === this.activeMainTab.toString())
+        .map((room) => {
+          const booking = this.bookings
+            .filter((item) => item.status !== "checkedout")
+            .filter(
+              (item) =>
+                item.status !== "cancelled" &&
+                parseDate(new Date().toLocaleDateString("en-GB")) >=
+                  parseDate(item.checkinDate) &&
+                parseDate(item.checkoutDate) >=
+                  parseDate(new Date().toLocaleDateString("en-GB"))
+            )
+            .find((booking) => booking.room_name === room.name);
+          if (booking) {
+            return {
+              ...room,
+              clientName: booking.name,
+              clientEmail: booking.clientemail,
+              clientAddress: booking.clientaddress,
+              contactNumber: booking.contactNumber,
+              checkinDate: booking.checkinDate,
+              checkoutDate: booking.checkoutDate,
+              status: booking.status,
+              itemID: booking.itemID,
+              groupkey: booking.groupkey,
+              totalPrice: booking.totalPrice,
+              partialPayment: booking.partialPayment,
+              status: booking.status,
+              isPaid: booking.isPaid,
+              selected: false,
+            };
+          } else {
+            return room;
+          }
+        });
     },
     filteredRoomBookings() {
-      const isCancelled = this.activeTab === 'cancelled';
-      const isReserved = this.activeTab === 'reserved';
-      const isOccupied = this.activeTab === 'occupied';
-      const isCheckedout = this.activeTab === 'checkedout';
+      const isCancelled = this.activeTab === "cancelled";
+      const isReserved = this.activeTab === "reserved";
+      const isOccupied = this.activeTab === "occupied";
+      const isCheckedout = this.activeTab === "checkedout";
       const selectedDate = parseDate(this.convDate);
-      return this.bookings.filter(booking => {
-        const bookingCheckinDate = parseDate(booking.checkinDate);
-        const bookingCheckoutDate = parseDate(booking.checkoutDate);
-        const dateInRange = (selectedDate >= bookingCheckinDate && selectedDate <= bookingCheckoutDate);
-        const isReservedMatch = !isReserved || booking.status === 'reserved';
-        const isOccupiedMatch = !isOccupied || booking.status === 'checkedin';
-        const isCancelledMatch = !isCancelled || booking.status === 'cancelled';
-        const isCheckedoutMatch = !isCheckedout || booking.status === 'checkedout';
-        return dateInRange && isCancelledMatch && isReservedMatch && isOccupiedMatch && isCheckedoutMatch;
-      }).map(o => {
-        const balance = parseFloat(o.totalPrice) - parseFloat(o.partialPayment);
-        return {
-          ...o,
-          balance
-        };
-      });
+      return this.bookings
+        .filter((booking) => {
+          const bookingCheckinDate = parseDate(booking.checkinDate);
+          const bookingCheckoutDate = parseDate(booking.checkoutDate);
+          const dateInRange =
+            selectedDate >= bookingCheckinDate &&
+            selectedDate <= bookingCheckoutDate;
+          const isReservedMatch = !isReserved || booking.status === "reserved";
+          const isOccupiedMatch = !isOccupied || booking.status === "checkedin";
+          const isCancelledMatch =
+            !isCancelled || booking.status === "cancelled";
+          const isCheckedoutMatch =
+            !isCheckedout || booking.status === "checkedout";
+          return (
+            dateInRange &&
+            isCancelledMatch &&
+            isReservedMatch &&
+            isOccupiedMatch &&
+            isCheckedoutMatch
+          );
+        })
+        .map((o) => {
+          const balance =
+            parseFloat(o.totalPrice) - parseFloat(o.partialPayment);
+          return {
+            ...o,
+            balance,
+          };
+        });
     },
     updatedRooms() {
-      return this.rooms.filter(room => {
+      return this.rooms.filter((room) => {
         // Check if there are any bookings for this room that overlap with the specified date range
-        const overlappingBookings = this.bookings.filter(booking => {
+        const overlappingBookings = this.bookings.filter((booking) => {
           // Check if the booking is not cancelled and not checked out
-          if (booking.status === 'cancelled' || booking.status === 'checkedout') {
+          if (
+            booking.status === "cancelled" ||
+            booking.status === "checkedout"
+          ) {
             return false;
           }
 
@@ -2360,8 +3697,10 @@ export default {
           const checkOutDate = parseDate(booking.checkoutDate);
           const startDate = parseDate(this.reservation.checkinDate);
           const endDate = parseDate(this.reservation.checkoutDate);
-          const isOverlap = booking.room_name === room.name &&
-            startDate <= checkOutDate && endDate >= checkInDate;
+          const isOverlap =
+            booking.room_name === room.name &&
+            startDate <= checkOutDate &&
+            endDate >= checkInDate;
 
           return isOverlap;
         });
@@ -2369,11 +3708,14 @@ export default {
         // Check if there exists a booking with the same room_name in yesterday that has not been checked out
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayBooking = this.bookings.find(prevBooking => {
+        const yesterdayBooking = this.bookings.find((prevBooking) => {
           const prevCheckOutDate = parseDate(prevBooking.checkoutDate);
-          return prevBooking.room_name === room.name &&
-            new Date(prevCheckOutDate).toDateString() === new Date(yesterday).toDateString() &&
-            prevBooking.status === 'checkedin';
+          return (
+            prevBooking.room_name === room.name &&
+            new Date(prevCheckOutDate).toDateString() ===
+              new Date(yesterday).toDateString() &&
+            prevBooking.status === "checkedin"
+          );
         });
 
         // Return true if there are no overlapping bookings and no booking in yesterday that has not been checked out
@@ -2381,17 +3723,17 @@ export default {
       });
     },
     userLocale() {
-      return CalendarMath.getDefaultBrowserLocale
+      return CalendarMath.getDefaultBrowserLocale;
     },
     dayNames() {
-      return CalendarMath.getFormattedWeekdayNames(this.userLocale, "long", 0)
+      return CalendarMath.getFormattedWeekdayNames(this.userLocale, "long", 0);
     },
     themeClasses() {
       return {
         "theme-default": this.useDefaultTheme,
         "holiday-us-traditional": this.useHolidayTheme,
         "holiday-us-official": this.useHolidayTheme,
-      }
+      };
     },
     myDateClasses() {
       // This was added to demonstrate the dateClasses prop. Note in particular that the
@@ -2399,50 +3741,84 @@ export default {
       // for those keys are strings or string arrays. Keep in mind that your CSS to style these
       // may need to be fairly specific to make it override your theme's styles. See the
       // CSS at the bottom of this component to see how these are styled.
-      const o = {}
-      const theFirst = this.thisMonth(1)
-      const ides = [2, 4, 6, 9].includes(theFirst.getMonth()) ? 15 : 13
-      const idesDate = this.thisMonth(ides)
-      o[CalendarMath.isoYearMonthDay(idesDate)] = "ides"
-      o[CalendarMath.isoYearMonthDay(this.thisMonth(21))] = ["do-you-remember", "the-21st"]
-      return o
+      const o = {};
+      const theFirst = this.thisMonth(1);
+      const ides = [2, 4, 6, 9].includes(theFirst.getMonth()) ? 15 : 13;
+      const idesDate = this.thisMonth(ides);
+      o[CalendarMath.isoYearMonthDay(idesDate)] = "ides";
+      o[CalendarMath.isoYearMonthDay(this.thisMonth(21))] = [
+        "do-you-remember",
+        "the-21st",
+      ];
+      return o;
     },
     currentDate() {
       const options = {
-        month: '2-digit',
-        day: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-      }
-      return new Date().toLocaleString('en-US', options)
+        month: "2-digit",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      };
+      return new Date().toLocaleString("en-US", options);
     },
     subroom() {
-      const mainRoomItems = this.cart.filter(item => item.category === 'main' && item.itemOption === 'room');
-      const originalPrice = mainRoomItems.reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
+      const mainRoomItems = this.cart.filter(
+        (item) => item.category === "main" && item.itemOption === "room"
+      );
+      const originalPrice = mainRoomItems.reduce(
+        (acc, item) => acc + parseFloat(item.totalCartPrice),
+        0
+      );
       if (this.discount === 0) {
-        return { original: originalPrice, discounted: '' };
+        return { original: originalPrice, discounted: "" };
       }
       const discountedPrice = originalPrice - this.discount;
-      const discountAmount = this.discountMode === 'percentage' ? `${this.discountValue}%` : `₱${this.discountValue}`;
+      const discountAmount =
+        this.discountMode === "percentage"
+          ? `${this.discountValue}%`
+          : `₱${this.discountValue}`;
       const formattedOriginalPrice = `<del class="text-danger">${originalPrice}</del>`;
       const formattedDiscountedPrice = `<sup class="text-danger font-weight-bold">${discountAmount} off</sup> <span class="text-success font-weight-bold">${discountedPrice}</span>`;
-      return { original: formattedOriginalPrice, discounted: formattedDiscountedPrice, discountMode: this.discountMode, discountValue: this.discountValue };
+      return {
+        original: formattedOriginalPrice,
+        discounted: formattedDiscountedPrice,
+        discountMode: this.discountMode,
+        discountValue: this.discountValue,
+      };
     },
     subaddons() {
-      return this.cart.filter(item => item.category === 'main' && item.itemOption === 'addons').reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
+      return this.cart
+        .filter(
+          (item) => item.category === "main" && item.itemOption === "addons"
+        )
+        .reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
     },
     subtotal() {
-      return this.cart.filter(item => item.category === 'main').reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0) - this.discount;
+      return (
+        this.cart
+          .filter((item) => item.category === "main")
+          .reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0) -
+        this.discount
+      );
     },
     sumInclusion() {
-      return this.cart.filter(item => item.category === 'inclusion').reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
+      return this.cart
+        .filter((item) => item.category === "inclusion")
+        .reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0);
     },
     discount() {
-      if (this.discountMode === 'percentage') {
-        return (this.cart.filter(item => item.category === 'main').reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0) - this.subaddons) * this.discountValue / 100;
+      if (this.discountMode === "percentage") {
+        return (
+          ((this.cart
+            .filter((item) => item.category === "main")
+            .reduce((acc, item) => acc + parseFloat(item.totalCartPrice), 0) -
+            this.subaddons) *
+            this.discountValue) /
+          100
+        );
       } else {
         return this.discountValue;
       }
@@ -2451,73 +3827,112 @@ export default {
       return this.subtotal - this.partialPayment;
     },
     change() {
-      return (this.cashAmount > this.total) ? this.cashAmount - this.total : 0;
+      return this.cashAmount > this.total ? this.cashAmount - this.total : 0;
     },
     isThereLeisures() {
-      return this.cart.filter(item => item.type === 'LEISURES').length > 0;
+      return this.cart.filter((item) => item.type === "LEISURES").length > 0;
     },
     countInclusion() {
-      return this.cart.filter(item => item.category === 'inclusion').length;
+      return this.cart.filter((item) => item.category === "inclusion").length;
     },
     numItemCart() {
-      return this.cart.filter(item => item.category === 'main').length;
+      return this.cart.filter((item) => item.category === "main").length;
     },
     filteredCart() {
-      return this.cart.map(o => {
-        const searchCode = o.name;
-        return {
-          ...o,
-          searchCode
-        };
-      }).filter(item => item.category === 'main');
+      return this.cart
+        .map((o) => {
+          const searchCode = o.name;
+          return {
+            ...o,
+            searchCode,
+          };
+        })
+        .filter((item) => item.category === "main");
     },
     bookings() {
       return this.origbookings
-        .map(book => {
+        .map((book) => {
           const { name, room_name, status, isPaid } = book;
-          const paymentStatus = isPaid === 'yes' ? 'fully-paid' : isPaid === 'no' ? 'not paid' : 'partial';
+          const paymentStatus =
+            isPaid === "yes"
+              ? "fully-paid"
+              : isPaid === "no"
+              ? "not paid"
+              : "partial";
           const searchCode = `${name}~${room_name}~${status}~${paymentStatus}`;
           return {
             ...book,
             searchCode,
           };
         })
-        .filter(book => book.searchCode.toLowerCase().includes(this.booksearchtext.toLowerCase()));
+        .filter((book) =>
+          book.searchCode
+            .toLowerCase()
+            .includes(this.booksearchtext.toLowerCase())
+        );
     },
     roomStatus() {
-      return this.rooms.map(room => {
-        const isVacant = this.vacantRoom(room.name);
-        const searchCode = room.name + "~" + room.type + "~" + room.price;
-        return {
-          ...room,
-          isVacant,
-          searchCode
-        };
-      }).filter(rooms => rooms.searchCode.toString().toLowerCase().includes(this.searchText2.toLowerCase()));
+      return this.rooms
+        .map((room) => {
+          const isVacant = this.vacantRoom(room.name);
+          const searchCode = room.name + "~" + room.type + "~" + room.price;
+          return {
+            ...room,
+            isVacant,
+            searchCode,
+          };
+        })
+        .filter((rooms) =>
+          rooms.searchCode
+            .toString()
+            .toLowerCase()
+            .includes(this.searchText2.toLowerCase())
+        );
     },
     filteredReservations() {
-      return this.reservations.map(book => {
-        const searchCode = book.name + "~" + book.checkinDate + "~" + book.checkoutDate + "~" + book.room_name;
-        return {
-          ...book,
-          searchCode
-        };
-      }).filter(reservation => reservation.searchCode.toString().toLowerCase().includes(this.searchText1.toLowerCase()));
+      return this.reservations
+        .map((book) => {
+          const searchCode =
+            book.name +
+            "~" +
+            book.checkinDate +
+            "~" +
+            book.checkoutDate +
+            "~" +
+            book.room_name;
+          return {
+            ...book,
+            searchCode,
+          };
+        })
+        .filter((reservation) =>
+          reservation.searchCode
+            .toString()
+            .toLowerCase()
+            .includes(this.searchText1.toLowerCase())
+        );
     },
     filteredItems() {
-      return this.items.map(item => {
-        const searchCode = item.item + "~" + item.type;
-        return {
-          ...item,
-          searchCode
-        };
-      }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchText3.toLowerCase()));
+      return this.items
+        .map((item) => {
+          const searchCode = item.item + "~" + item.type;
+          return {
+            ...item,
+            searchCode,
+          };
+        })
+        .filter((item) =>
+          item.searchCode
+            .toString()
+            .toLowerCase()
+            .includes(this.searchText3.toLowerCase())
+        );
     },
   },
   methods: {
     handledragstart(e, room, book) {
       this.draggedItem = this.origbookings.filter(
-        o => o.itemID === book.itemID
+        (o) => o.itemID === book.itemID
       );
       this.draggedRoom = room;
     },
@@ -2525,12 +3940,8 @@ export default {
       this.selectionStart = d;
       this.dragDayIsSelected = true;
     },
-    handleDragOver(e) {
-
-    },
-    handledragend(e) {
-
-    },
+    handleDragOver(e) {},
+    handledragend(e) {},
     handleDragDrop(e, d, r) {
       if (this.dragDayIsSelected) {
         this.selectionEnd = d;
@@ -2546,18 +3957,18 @@ export default {
         const roomOrig = this.draggedRoom.name;
         const roomNew = r.name;
         let item = {
-          "originalItem": {
-            "startDate": startDate,
-            "endDate": endDate,
+          originalItem: {
+            startDate: startDate,
+            endDate: endDate,
           },
-          "id": id,
-          "startDate": new Date(startDate),
-          "endDate": new Date(endDate),
-        }
+          id: id,
+          startDate: new Date(startDate),
+          endDate: new Date(endDate),
+        };
         if (roomOrig !== roomNew) {
           this.moveRoom(this.draggedItem[0], r, d, item);
         } else {
-          this.onDrop(item, d)
+          this.onDrop(item, d);
           this.draggedItem = null;
           this.draggedRoom = null;
         }
@@ -2567,19 +3978,17 @@ export default {
       const item = book;
       const room = r;
       const day = d;
-      this.itemIndex = this.bookings.findIndex(
-        o => o.itemID === item.itemID
-      );
+      this.itemIndex = this.bookings.findIndex((o) => o.itemID === item.itemID);
       const oldroom = {
         name: this.bookings[this.itemIndex].room_name,
         type: this.bookings[this.itemIndex].room_type,
-        price: this.bookings[this.itemIndex].room_price
-      }
+        price: this.bookings[this.itemIndex].room_price,
+      };
       const newroom = {
         name: room.name,
         type: room.type,
-        price: room.price
-      }
+        price: room.price,
+      };
       if (oldroom.price !== newroom.price) {
         this.$swal({
           title: "Transfer Error",
@@ -2591,98 +4000,126 @@ export default {
               value: true,
               visible: true,
               className: "confirm-button",
-              closeModal: true
-            }
-          }
+              closeModal: true,
+            },
+          },
         });
         return;
       }
       //fix error here
       const itemStatus = this.bookings[this.itemIndex].status;
       if (itemStatus === "reserved") {
-        const eLength = CalendarMath.dayDiff(o.startDate, d)
+        const eLength = CalendarMath.dayDiff(o.startDate, d);
         let landingDateCheckin = CalendarMath.addDays(o.startDate, eLength);
         let landingDateCheckout = CalendarMath.addDays(o.endDate, eLength);
-        let filteredBookings = this.bookings.filter(booking => booking.status === 'reserved' && booking.itemID !== o.id && booking.room_name === r.name && new Date(booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0]).setHours(0, 0, 0, 0) <= landingDateCheckout.setHours(0, 0, 0, 0)
-          && new Date(booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0));
+        let filteredBookings = this.bookings.filter(
+          (booking) =>
+            booking.status === "reserved" &&
+            booking.itemID !== o.id &&
+            booking.room_name === r.name &&
+            new Date(
+              booking.checkinDate.split("/")[2] +
+                "-" +
+                booking.checkinDate.split("/")[1] +
+                "-" +
+                booking.checkinDate.split("/")[0]
+            ).setHours(0, 0, 0, 0) <=
+              landingDateCheckout.setHours(0, 0, 0, 0) &&
+            new Date(
+              booking.checkoutDate.split("/")[2] +
+                "-" +
+                booking.checkoutDate.split("/")[1] +
+                "-" +
+                booking.checkoutDate.split("/")[0]
+            ).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0)
+        );
         if (filteredBookings.length > 0) {
           this.$swal.fire({
-            icon: 'error',
-            title: 'Cannot Adjust Reservation',
-            text: 'Dates conflict with an existing room reservation.',
-            confirmButtonText: 'OK'
+            icon: "error",
+            title: "Cannot Adjust Reservation",
+            text: "Dates conflict with an existing room reservation.",
+            confirmButtonText: "OK",
           });
           return false;
         }
       }
 
-      axios.post(`${this.API_URL}transaction/item/filter/`, {
-        columnName: 'bookingID',
-        columnKey: item.itemID
-      }).then(response => {
-        try {
-          axios.put(`${this.API_URL}transaction/item/${existingTransactionItems.data[0].id}/`, {
-            bookingID: existingTransactionItems.data[0].bookingID,
-            itemName: newroom.name,
-            itemType: existingTransactionItems.data[0].itemType,
-            itemPriceRate: existingTransactionItems.data[0].itemPriceRate,
-            purchaseQty: existingTransactionItems.data[0].purchaseQty,
-            totalCost: existingTransactionItems.data[0].totalCost,
-            category: existingTransactionItems.data[0].category,
-            itemOption: existingTransactionItems.data[0].itemOption,
-          });
-        } catch (error) {
-        }
-        //this.taskRecord(`action:/transfer guest/client:/${item.name}`)
-        this.onDrop(o, d)
-        item.room_name = newroom.name;
-        item.room_price = newroom.price;
-        item.room_type = newroom.type;
-        item.remarks = "transferred from: " + oldroom.name + " on " + formatDate();
-        this.draggedItem = null;
-        this.draggedRoom = null;
-      })
-
-
+      axios
+        .post(`${this.API_URL}transaction/item/filter/`, {
+          columnName: "bookingID",
+          columnKey: item.itemID,
+        })
+        .then((response) => {
+          try {
+            axios.put(
+              `${this.API_URL}transaction/item/${existingTransactionItems.data[0].id}/`,
+              {
+                bookingID: existingTransactionItems.data[0].bookingID,
+                itemName: newroom.name,
+                itemType: existingTransactionItems.data[0].itemType,
+                itemPriceRate: existingTransactionItems.data[0].itemPriceRate,
+                purchaseQty: existingTransactionItems.data[0].purchaseQty,
+                totalCost: existingTransactionItems.data[0].totalCost,
+                category: existingTransactionItems.data[0].category,
+                itemOption: existingTransactionItems.data[0].itemOption,
+              }
+            );
+          } catch (error) {}
+          //this.taskRecord(`action:/transfer guest/client:/${item.name}`)
+          this.onDrop(o, d);
+          item.room_name = newroom.name;
+          item.room_price = newroom.price;
+          item.room_type = newroom.type;
+          item.remarks =
+            "transferred from: " + oldroom.name + " on " + formatDate();
+          this.draggedItem = null;
+          this.draggedRoom = null;
+        });
     },
     handleReceptionRoomAction(room) {
-      this.$swal.fire({
-        icon: 'warning',
-        title: 'Room Housekeeping',
-        text: 'Are you certain that this room has already been inspected?',
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        showCancelButton: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          axios.post(`${this.API_URL}rooms/filter/`, [
-            { columnName: 'name', columnKey: room.name },
-          ]).then(response => {
-            axios.put(`${this.API_URL}rooms/${room.id}/`, {
-              name: response.data[0].name,
-              type: response.data[0].type,
-              price: response.data[0].price,
-              isAvailable: response.data[0].isAvailable,
-              status: (response.data[0].status === 'clean') ? 'dirty' : 'clean'
-            }).then(response => {
-              document.location.reload();
-            })
-          })
-        }
-
-      })
+      this.$swal
+        .fire({
+          icon: "warning",
+          title: "Room Housekeeping",
+          text: "Are you certain that this room has already been inspected?",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          showCancelButton: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            axios
+              .post(`${this.API_URL}rooms/filter/`, [
+                { columnName: "name", columnKey: room.name },
+              ])
+              .then((response) => {
+                axios
+                  .put(`${this.API_URL}rooms/${room.id}/`, {
+                    name: response.data[0].name,
+                    type: response.data[0].type,
+                    price: response.data[0].price,
+                    isAvailable: response.data[0].isAvailable,
+                    status:
+                      response.data[0].status === "clean" ? "dirty" : "clean",
+                  })
+                  .then((response) => {
+                    document.location.reload();
+                  });
+              });
+          }
+        });
     },
     handleReceptionDayAction(d, room) {
       if (this.booksearchtext !== "") {
         this.$swal.fire({
-          icon: 'error',
-          title: 'Calendar Day Selection Restricted',
-          text: 'Unable to select a day on the calendar when the search query is not empty.',
-          confirmButtonText: 'OK'
+          icon: "error",
+          title: "Calendar Day Selection Restricted",
+          text: "Unable to select a day on the calendar when the search query is not empty.",
+          confirmButtonText: "OK",
         });
         return;
       }
-      this.reservation.status = 'vacant';
+      this.reservation.status = "vacant";
       this.reservation.clientName = "";
       this.reservation.clientEmail = "";
       this.reservation.clientAddress = "";
@@ -2690,20 +4127,20 @@ export default {
       this.reservation.clientType = "in-house";
       this.reservation.remarks = "";
       this.reservation.clientPhone = "";
-      this.reservation.roomName = [{ name: room.name, type: room.type, price: room.price }];
-      this.roomSelect = 'no';
-      this.reservation.checkinDate = d.toLocaleDateString('en-GB');
+      this.reservation.roomName = [
+        { name: room.name, type: room.type, price: room.price },
+      ];
+      this.roomSelect = "no";
+      this.reservation.checkinDate = d.toLocaleDateString("en-GB");
       this.reservation.checkoutDate = formatDate(d);
       this.toggleItemModal();
     },
     handleReceptionItemAction(book, room) {
-      this.itemIndex = this.bookings.findIndex(
-        o => o.itemID === book.itemID
-      );
+      this.itemIndex = this.bookings.findIndex((o) => o.itemID === book.itemID);
       if (this.itemIndex !== -1) {
         this.showReservation();
       } else {
-        this.reservation.status = 'vacant';
+        this.reservation.status = "vacant";
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
         this.reservation.clientAddress = "";
@@ -2712,9 +4149,11 @@ export default {
         this.reservation.remarks = "";
         // this.reservation.numguests = "";
         this.reservation.clientPhone = "";
-        this.reservation.roomName = [{ name: room.name, type: room.type, price: room.price }];
-        this.roomSelect = 'no';
-        this.reservation.checkinDate = new Date().toLocaleDateString('en-GB');
+        this.reservation.roomName = [
+          { name: room.name, type: room.type, price: room.price },
+        ];
+        this.roomSelect = "no";
+        this.reservation.checkinDate = new Date().toLocaleDateString("en-GB");
         this.reservation.checkoutDate = formatDate(new Date());
         this.toggleItemModal();
       }
@@ -2727,31 +4166,37 @@ export default {
         return;
       }
       switch (event.key) {
-        case 'Enter':
-          event.preventDefault()
+        case "Enter":
+          event.preventDefault();
           if (this.total > 0) {
             this.placeOrder();
           }
           break;
-        case 'F1':
-          event.preventDefault()
+        case "F1":
+          event.preventDefault();
           this.showShoppingModal();
           break;
-        case 'F2':
-          event.preventDefault()
+        case "F2":
+          event.preventDefault();
           this.moveInclusionCartToMain();
           break;
-        case 'F10':
-          event.preventDefault()
+        case "F10":
+          event.preventDefault();
           this.generateBillingStatement();
           break;
       }
     },
     addToCash(d) {
-      this.cashAmount = isNaN(parseFloat(this.cashAmount)) ? 0 : parseFloat(this.cashAmount) + d;
+      this.cashAmount = isNaN(parseFloat(this.cashAmount))
+        ? 0
+        : parseFloat(this.cashAmount) + d;
     },
     updateTotalCash() {
-      if (this.cashAmount === 0 || this.cashAmount.toString() === "" || this.cashAmount === NaN) {
+      if (
+        this.cashAmount === 0 ||
+        this.cashAmount.toString() === "" ||
+        this.cashAmount === NaN
+      ) {
         this.cashAmount = 0;
       } else {
         this.cashAmount = this.cashAmount.toString();
@@ -2759,9 +4204,10 @@ export default {
       //alert(this.totalCash)
     },
     setDiscount() {
-      this.$swal.fire({
-        title: 'Set discount value',
-        html: `
+      this.$swal
+        .fire({
+          title: "Set discount value",
+          html: `
       <div>
         <input type="radio" class="form-check-input" id="fixedDiscount" name="discountType" value="fixed" checked>
         <label for="fixedDiscount" class="form-check-label">Fixed</label> &nbsp;
@@ -2771,31 +4217,36 @@ export default {
         <input type="number" class="form-control" id="discountValue" placeholder="Enter discount value" min="0" step="any">
       </div>
     `,
-        showCancelButton: true,
-        confirmButtonText: 'Submit',
-        cancelButtonText: 'Cancel',
-        allowOutsideClick: false,
-        preConfirm: () => {
-          const discountType = document.querySelector('input[name="discountType"]:checked').value;
-          const discountValue = document.getElementById('discountValue').value;
-          return { discountType, discountValue };
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const { discountType, discountValue } = result.value;
-          if (discountValue !== "") {
-            this.discountMode = discountType;
-            this.discountValue = parseFloat(discountValue).toFixed(2);
-            this.justDiscounted = true;
+          showCancelButton: true,
+          confirmButtonText: "Submit",
+          cancelButtonText: "Cancel",
+          allowOutsideClick: false,
+          preConfirm: () => {
+            const discountType = document.querySelector(
+              'input[name="discountType"]:checked'
+            ).value;
+            const discountValue =
+              document.getElementById("discountValue").value;
+            return { discountType, discountValue };
+          },
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            const { discountType, discountValue } = result.value;
+            if (discountValue !== "") {
+              this.discountMode = discountType;
+              this.discountValue = parseFloat(discountValue).toFixed(2);
+              this.justDiscounted = true;
+            }
           }
-        }
-      });
+        });
     },
     setNonCash() {
-      if (this.paymentMethod === 'non-cash') {
-        this.$swal.fire({
-          title: 'Choose non-cash type',
-          html: `
+      if (this.paymentMethod === "non-cash") {
+        this.$swal
+          .fire({
+            title: "Choose non-cash type",
+            html: `
       <div>
         <input type="radio" class="form-check-input" id="cat1" name="noncashType" value="gcash" checked>
         <label for="cat1" class="form-check-label">GCash</label> &nbsp;
@@ -2811,88 +4262,205 @@ export default {
         <input type="text" class="form-control" maxlength=32 id="referenceno" placeholder="Enter reference/transaction no. here after non-cash payment.">
       </div>
     `,
-          showCancelButton: true,
-          confirmButtonText: 'Submit',
-          cancelButtonText: 'Cancel',
-          allowOutsideClick: false,
-          preConfirm: () => {
-            const noncashType = document.querySelector('input[name="noncashType"]:checked').value;
-            const referenceno = document.getElementById('referenceno').value;
-            return { noncashType, referenceno };
-          }
-        }).then((result) => {
-          if (result.isConfirmed) {
-            const { noncashType, referenceno } = result.value;
-            if (noncashType !== "" || referenceno !== "") {
-              this.nonCashPayPlatform = noncashType;
-              this.nonCashReference = referenceno;
-            } else {
-              this.$swal({
-                title: 'Warning',
-                text: 'Please provide both the non-cash type and the reference number.',
-                icon: 'warning',
-              });
-              return;
+            showCancelButton: true,
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
+            allowOutsideClick: false,
+            preConfirm: () => {
+              const noncashType = document.querySelector(
+                'input[name="noncashType"]:checked'
+              ).value;
+              const referenceno = document.getElementById("referenceno").value;
+              return { noncashType, referenceno };
+            },
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              const { noncashType, referenceno } = result.value;
+              if (noncashType !== "" || referenceno !== "") {
+                this.nonCashPayPlatform = noncashType;
+                this.nonCashReference = referenceno;
+              } else {
+                this.$swal({
+                  title: "Warning",
+                  text: "Please provide both the non-cash type and the reference number.",
+                  icon: "warning",
+                });
+                return;
+              }
             }
-          }
-        });
+          });
       } else {
         this.nonCashPayPlatform = "";
         this.nonCashReference = "";
       }
     },
     async deleteTransaction(id) {
-      axios.get(this.API_URL + `transaction/${id}/`).then(async response => {
-        const data = response.data;
-        const itemID = data.bookingID;
-        const gkey = data.groupkey || "";
-        const cname = data.clientname;
-        const type = itemID.charAt(0);
-        this.$swal.fire({
-          title: 'Authorization Required',
-          input: 'text',
+      axios
+        .get(this.API_URL + `transaction/${id}/`)
+        .then(async (response) => {
+          const data = response.data;
+          const itemID = data.bookingID;
+          const gkey = data.groupkey || "";
+          const cname = data.clientname;
+          const type = itemID.charAt(0);
+          this.$swal
+            .fire({
+              title: "Authorization Required",
+              input: "text",
+              showCancelButton: true,
+              allowOutsideClick: false,
+              inputAttributes: {
+                minlength: 6, // Minimum length of 3 characters
+                maxlength: 24, // Maximum length of 24 characters
+                autocomplete: "off",
+                style: "text-security:disc; -webkit-text-security:disc;",
+              },
+              confirmButtonText: "Submit",
+              cancelButtonText: "Cancel",
+              inputPlaceholder: "Enter authorization code",
+            })
+            .then(async (result) => {
+              if (result.isConfirmed) {
+                const authorizationCode = result.value;
+                // Validate the authorization code and perform necessary actions
+                if (
+                  authorizationCode.toLowerCase() ===
+                  this.AUTHORIZATION_KEY.toLowerCase()
+                ) {
+                  // Code is correct, proceed with the desired action
+                  const confirmMessage =
+                    " If you proceed with voiding, all associated items and booking and transaction records will be permanently deleted, and this action cannot be reversed.";
+                  const result = await this.$swal.fire({
+                    title: "Are you sure you want to void this?",
+                    text: confirmMessage,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, void it!",
+                    cancelButtonText: "Cancel",
+                  });
+                  if (result.isConfirmed) {
+                    const countdownMessage =
+                      'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
+                    let countdownResult;
+                    countdownResult = await this.$swal.fire({
+                      title: "Please wait",
+                      html: countdownMessage,
+                      icon: "info",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Confirm now",
+                      cancelButtonText: "Cancel",
+                      didOpen: () => {
+                        const countdownEl =
+                          document.querySelector("#countdown");
+                        let count = 5;
+                        const timerId = setInterval(() => {
+                          countdownEl.textContent = count;
+                          count--;
+                          if (count < 0) {
+                            clearInterval(timerId);
+                            this.$swal.close();
+                          }
+                        }, 1000);
+                      },
+                    });
+                    if (!countdownResult.isConfirmed) {
+                      return;
+                    }
+                    if (type === "f") {
+                      this.voidAction(null, null, itemID, gkey, cname, false);
+                    } else if (type === "e") {
+                      const bID = this.bookings.findIndex(
+                        (o) => o.itemID === itemID
+                      );
+                      const request = await axios.post(
+                        `${this.API_URL}bookings/filter/`,
+                        [{ columnName: "itemID", columnKey: itemID }]
+                      );
+                      const keyID = request.data[0].id;
+                      this.voidAction(bID, keyID, itemID, gkey, cname, true);
+                    }
+                  }
+                } else {
+                  // Code is incorrect, show an error message or take appropriate action
+                  this.$swal.fire({
+                    icon: "error",
+                    title: "Incorrect Passcode",
+                    text: "The entered passcode is incorrect. Please try again.",
+                    allowOutsideClick: false,
+                  });
+                }
+              }
+            });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getTime(d) {
+      const date = d;
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+      return `${hours}:${minutes}`;
+    },
+    async voidBook() {
+      this.toggleItemModal();
+      this.$swal
+        .fire({
+          title: "Authorization Required",
+          input: "text",
           showCancelButton: true,
           allowOutsideClick: false,
           inputAttributes: {
             minlength: 6, // Minimum length of 3 characters
             maxlength: 24, // Maximum length of 24 characters
             autocomplete: "off",
-            style: "text-security:disc; -webkit-text-security:disc;"
+            style: "text-security:disc; -webkit-text-security:disc;",
           },
-          confirmButtonText: 'Submit',
-          cancelButtonText: 'Cancel',
-          inputPlaceholder: 'Enter authorization code',
-        }).then(async (result) => {
+          confirmButtonText: "Submit",
+          cancelButtonText: "Cancel",
+          inputPlaceholder: "Enter authorization code",
+        })
+        .then(async (result) => {
           if (result.isConfirmed) {
             const authorizationCode = result.value;
             // Validate the authorization code and perform necessary actions
-            if (authorizationCode.toLowerCase() === this.AUTHORIZATION_KEY.toLowerCase()) {
+            if (
+              authorizationCode.toLowerCase() ===
+              this.AUTHORIZATION_KEY.toLowerCase()
+            ) {
               // Code is correct, proceed with the desired action
-              const confirmMessage = ' If you proceed with voiding, all associated items and booking and transaction records will be permanently deleted, and this action cannot be reversed.';
+              const confirmMessage =
+                " If you proceed with voiding, all associated items and transaction records will be permanently deleted, and this action cannot be reversed.";
               const result = await this.$swal.fire({
-                title: 'Are you sure you want to void this?',
+                title: "Are you sure you want to void this?",
                 text: confirmMessage,
-                icon: 'warning',
+                icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, void it!',
-                cancelButtonText: 'Cancel'
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, void it!",
+                cancelButtonText: "Cancel",
               });
               if (result.isConfirmed) {
-                const countdownMessage = 'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
+                const countdownMessage =
+                  'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
                 let countdownResult;
                 countdownResult = await this.$swal.fire({
-                  title: 'Please wait',
+                  title: "Please wait",
                   html: countdownMessage,
-                  icon: 'info',
+                  icon: "info",
                   showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33',
-                  confirmButtonText: 'Confirm now',
-                  cancelButtonText: 'Cancel',
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Confirm now",
+                  cancelButtonText: "Cancel",
                   didOpen: () => {
-                    const countdownEl = document.querySelector('#countdown');
+                    const countdownEl = document.querySelector("#countdown");
                     let count = 5;
                     const timerId = setInterval(() => {
                       countdownEl.textContent = count;
@@ -2902,120 +4470,24 @@ export default {
                         this.$swal.close();
                       }
                     }, 1000);
-                  }
+                  },
                 });
                 if (!countdownResult.isConfirmed) {
                   return;
                 }
-                if (type === "f") {
-                  this.voidAction(null, null, itemID, gkey, cname, false);
-                } else if (type === "e") {
-                  const bID = this.bookings.findIndex(
-                    o => o.itemID === itemID
-                  );
-                  const request = await axios.post(`${this.API_URL}bookings/filter/`, [
-                    { "columnName": "itemID", "columnKey": itemID },
-                  ])
-                  const keyID = request.data[0].id;
-                  this.voidAction(bID, keyID, itemID, gkey, cname, true);
-                }
+                this.voidAction(this.itemIndex, null, null, null, null, true);
               }
             } else {
               // Code is incorrect, show an error message or take appropriate action
               this.$swal.fire({
-                icon: 'error',
-                title: 'Incorrect Passcode',
-                text: 'The entered passcode is incorrect. Please try again.',
+                icon: "error",
+                title: "Incorrect Passcode",
+                text: "The entered passcode is incorrect. Please try again.",
                 allowOutsideClick: false,
               });
             }
           }
         });
-      })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getTime(d) {
-      const date = d;
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      return `${hours}:${minutes}`;
-    },
-    async voidBook() {
-      this.toggleItemModal();
-      this.$swal.fire({
-        title: 'Authorization Required',
-        input: 'text',
-        showCancelButton: true,
-        allowOutsideClick: false,
-        inputAttributes: {
-          minlength: 6, // Minimum length of 3 characters
-          maxlength: 24, // Maximum length of 24 characters
-          autocomplete: "off",
-          style: "text-security:disc; -webkit-text-security:disc;"
-        },
-        confirmButtonText: 'Submit',
-        cancelButtonText: 'Cancel',
-        inputPlaceholder: 'Enter authorization code',
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          const authorizationCode = result.value;
-          // Validate the authorization code and perform necessary actions
-          if (authorizationCode.toLowerCase() === this.AUTHORIZATION_KEY.toLowerCase()) {
-            // Code is correct, proceed with the desired action
-            const confirmMessage = ' If you proceed with voiding, all associated items and transaction records will be permanently deleted, and this action cannot be reversed.';
-            const result = await this.$swal.fire({
-              title: 'Are you sure you want to void this?',
-              text: confirmMessage,
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, void it!',
-              cancelButtonText: 'Cancel'
-            });
-            if (result.isConfirmed) {
-              const countdownMessage = 'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
-              let countdownResult;
-              countdownResult = await this.$swal.fire({
-                title: 'Please wait',
-                html: countdownMessage,
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Confirm now',
-                cancelButtonText: 'Cancel',
-                didOpen: () => {
-                  const countdownEl = document.querySelector('#countdown');
-                  let count = 5;
-                  const timerId = setInterval(() => {
-                    countdownEl.textContent = count;
-                    count--;
-                    if (count < 0) {
-                      clearInterval(timerId);
-                      this.$swal.close();
-                    }
-                  }, 1000);
-                }
-              });
-              if (!countdownResult.isConfirmed) {
-                return;
-              }
-              this.voidAction(this.itemIndex, null, null, null, null, true);
-            }
-          } else {
-            // Code is incorrect, show an error message or take appropriate action
-            this.$swal.fire({
-              icon: 'error',
-              title: 'Incorrect Passcode',
-              text: 'The entered passcode is incorrect. Please try again.',
-              allowOutsideClick: false,
-            });
-          }
-        }
-      });
     },
     async voidAction(o, keyID, bkey, gkey, name, brute) {
       let transdata_ID = null;
@@ -3042,129 +4514,147 @@ export default {
       }
       if (groupkey) {
         try {
-          const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-            columnName: 'groupkey',
-            columnKey: groupkey
-          });
+          const existingTransaction = await axios.post(
+            `${this.API_URL}transaction/filter/`,
+            {
+              columnName: "groupkey",
+              columnKey: groupkey,
+            }
+          );
           transdata_ID = existingTransaction.data[0].id;
-        } catch (error) {
-        }
+        } catch (error) {}
         try {
-          const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-            columnName: 'groupkey',
-            columnKey: groupkey
-          });
+          const existingTransaction_ITEM = await axios.post(
+            `${this.API_URL}transaction/item/filter/`,
+            {
+              columnName: "groupkey",
+              columnKey: groupkey,
+            }
+          );
           for (const item of existingTransaction_ITEM.data) {
-            axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
+            axios.get(this.API_URL + `transaction/item/delete/${item.id}/`);
           }
-        } catch (error) {
-        }
+        } catch (error) {}
         try {
           if (transdata_ID) {
-            const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
-              columnName: 'transaction',
-              columnKey: transdata_ID
-            });
+            const existingTransaction_RECORD = await axios.post(
+              `${this.API_URL}transaction/record/filter/`,
+              {
+                columnName: "transaction",
+                columnKey: transdata_ID,
+              }
+            );
             for (const item of existingTransaction_RECORD.data) {
-              axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
+              axios.get(
+                this.API_URL +
+                  `transaction/record/delete/${item.transactionrecord_id}/`
+              );
             }
           }
-        } catch (error) {
-        }
+        } catch (error) {}
         try {
           if (transdata_ID) {
-            axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
+            axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`);
           }
-        } catch (error) {
-        }
+        } catch (error) {}
         if (brute) {
           try {
-            const existingBooking = await axios.post(`${this.API_URL}bookings/filter/`, {
-              columnName: 'groupkey',
-              columnKey: groupkey
-            });
+            const existingBooking = await axios.post(
+              `${this.API_URL}bookings/filter/`,
+              {
+                columnName: "groupkey",
+                columnKey: groupkey,
+              }
+            );
             for (const item of existingBooking.data) {
               axios.get(this.API_URL + `bookings/delete/${item.id}/`);
             }
-          } catch (error) {
-          }
+          } catch (error) {}
         }
       } else {
         try {
-          const existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-            columnName: 'bookingID',
-            columnKey: bookKey
-          });
+          const existingTransaction = await axios.post(
+            `${this.API_URL}transaction/filter/`,
+            {
+              columnName: "bookingID",
+              columnKey: bookKey,
+            }
+          );
           transdata_ID = existingTransaction.data[0].id;
-        } catch (error) {
-        }
+        } catch (error) {}
         try {
-          const existingTransaction_ITEM = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-            columnName: 'bookingID',
-            columnKey: bookKey
-          });
+          const existingTransaction_ITEM = await axios.post(
+            `${this.API_URL}transaction/item/filter/`,
+            {
+              columnName: "bookingID",
+              columnKey: bookKey,
+            }
+          );
           for (const item of existingTransaction_ITEM.data) {
-            axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
+            axios.get(this.API_URL + `transaction/item/delete/${item.id}/`);
           }
-        } catch (error) {
-        }
+        } catch (error) {}
         try {
           if (transdata_ID) {
-            const existingTransaction_RECORD = await axios.post(`${this.API_URL}transaction/record/filter/`, {
-              columnName: 'transaction',
-              columnKey: transdata_ID
-            });
+            const existingTransaction_RECORD = await axios.post(
+              `${this.API_URL}transaction/record/filter/`,
+              {
+                columnName: "transaction",
+                columnKey: transdata_ID,
+              }
+            );
             for (const item of existingTransaction_RECORD.data) {
-              axios.get(this.API_URL + `transaction/record/delete/${item.transactionrecord_id}/`)
+              axios.get(
+                this.API_URL +
+                  `transaction/record/delete/${item.transactionrecord_id}/`
+              );
             }
           }
-        } catch (error) {
-        }
+        } catch (error) {}
         try {
           if (transdata_ID) {
-            axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`)
+            axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`);
           }
-        } catch (error) {
-        }
+        } catch (error) {}
         if (brute) {
           try {
-            await axios.get(this.API_URL + `bookings/delete/${kid}/`)
-          } catch (error) {
-          }
+            await axios.get(this.API_URL + `bookings/delete/${kid}/`);
+          } catch (error) {}
         }
       }
       this.taskRecord(`action:/void/client:/${cname}`);
-      await this.$swal.fire({
-        title: 'Success',
-        text: 'Item was voided successfully!',
-        icon: 'success'
-      }).then(response => {
-        document.location.reload();
-      })
+      await this.$swal
+        .fire({
+          title: "Success",
+          text: "Item was voided successfully!",
+          icon: "success",
+        })
+        .then((response) => {
+          document.location.reload();
+        });
     },
     async taskRecord(msg) {
-      this.socket.send(JSON.stringify({
-        'message': msg
-      }));
+      this.socket.send(
+        JSON.stringify({
+          message: msg,
+        })
+      );
       try {
         await axios.post(`${this.API_URL}task/record/`, {
           actor: this.userdata.fName + " " + this.userdata.lName,
           task: msg,
-        })
-      } catch (error) {
-      }
+        });
+      } catch (error) {}
     },
     handleChange() {
-      alert()
+      alert();
     },
     cardAction(id, room_name, room_type, room_price) {
-      this.itemIndex = this.bookings.findIndex(
-        o => o.itemID === id
-      );
+      this.itemIndex = this.bookings.findIndex((o) => o.itemID === id);
       if (this.itemIndex !== -1) {
         this.showReservation();
       } else {
-        this.reservation.status = 'vacant';
+        this.reservation.status = "vacant";
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
         this.reservation.clientAddress = "";
@@ -3173,15 +4663,17 @@ export default {
         this.reservation.remarks = "";
         // this.reservation.numguests = "";
         this.reservation.clientPhone = "";
-        this.reservation.roomName = [{ name: room_name, type: room_type, price: room_price }];
-        this.roomSelect = 'no';
-        this.reservation.checkinDate = new Date().toLocaleDateString('en-GB');
+        this.reservation.roomName = [
+          { name: room_name, type: room_type, price: room_price },
+        ];
+        this.roomSelect = "no";
+        this.reservation.checkinDate = new Date().toLocaleDateString("en-GB");
         this.reservation.checkoutDate = formatDate(new Date());
         this.toggleItemModal();
       }
     },
     sendMessage() {
-      console.log("Hello")
+      console.log("Hello");
       console.log(this.socket);
       this.socket.send('{"message":"hello"}');
     },
@@ -3191,7 +4683,7 @@ export default {
       this.loadTransactionData();
     },
     parseDate2(dateString) {
-      const [day, month, year] = dateString.split('/');
+      const [day, month, year] = dateString.split("/");
       return new Date(`${month}/${day}/${year}`).setHours(0, 0, 0, 0);
     },
     async logout() {
@@ -3200,37 +4692,42 @@ export default {
         username: authStore.user.username,
         FirstName: authStore.user.fName,
         LastName: authStore.user.lName,
-        role: authStore.user.role
-      }
-      const response = await axios.put(`${this.API_URL}users/${authStore.user.id}/`, { ...user, isActive: false })
+        role: authStore.user.role,
+      };
+      const response = await axios.put(
+        `${this.API_URL}users/${authStore.user.id}/`,
+        { ...user, isActive: false }
+      );
       if (response.data !== undefined) {
         authStore.logout();
-        this.$router.push('/');
+        this.$router.push("/");
       } else {
         this.$swal({
           icon: "error",
-          title: "Logout error. Please contact your admin for assistance!"
+          title: "Logout error. Please contact your admin for assistance!",
         });
       }
     },
     toggleAllTD() {
       this.toggleAll = !this.toggleAll;
-      Object.keys(this.showTable).forEach(prop => {
+      Object.keys(this.showTable).forEach((prop) => {
         this.showTable[prop] = this.toggleAll;
-      })
-      $('.togglebuttons').trigger('click');
+      });
+      $(".togglebuttons").trigger("click");
     },
     async toggleTable(transactionID, bookingID) {
       // method to toggle the visibility of the related table for the given transactionID
       this.showTable[transactionID] = !this.showTable[transactionID];
       if (this.showTable[transactionID]) {
         try {
-          const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
-            { "columnName": "transaction", "columnKey": transactionID },
-          ])
-          const response2 = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-            { "columnName": "bookingID", "columnKey": bookingID },
-          ])
+          const response = await axios.post(
+            `${this.API_URL}transaction/record/filter/`,
+            [{ columnName: "transaction", columnKey: transactionID }]
+          );
+          const response2 = await axios.post(
+            `${this.API_URL}transaction/item/filter/`,
+            [{ columnName: "bookingID", columnKey: bookingID }]
+          );
           //     return filtered.map(item => {
           //   const searchCode = Object.values(item).join("~");
           //   return {
@@ -3240,15 +4737,14 @@ export default {
           // }).filter(item => item.searchCode.toString().toLowerCase().includes(this.searchTerm.toLowerCase()));
           const history = response.data;
           const itemprops = response2.data;
-          this.transactions = this.transactions.map(t => {
+          this.transactions = this.transactions.map((t) => {
             if (t.id === transactionID) {
               t.items = history;
               t.props = itemprops;
             }
             return t;
           });
-        } catch (error) {
-        }
+        } catch (error) {}
       }
     },
     async addWalkInGuest() {
@@ -3261,10 +4757,9 @@ export default {
       this.isItNew = true;
       this.walkinStatus = true;
       try {
-        const response = await axios.get(this.API_URL + 'transaction/');
+        const response = await axios.get(this.API_URL + "transaction/");
         this.billing.bookingID = response.data[response.data.length - 1].id + 1;
-      } catch {
-      }
+      } catch {}
       this.toggleAddAccountModal();
     },
     showShoppingModal() {
@@ -3276,77 +4771,106 @@ export default {
       const n = this.filteredInclusionCart.length;
       if (n > 0) {
         const result = await this.$swal.fire({
-          title: 'Confirmation',
-          text: 'This action will update your cart. Do you want to proceed?',
-          icon: 'warning',
+          title: "Confirmation",
+          text: "This action will update your cart. Do you want to proceed?",
+          icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, do it!',
-          cancelButtonText: 'Cancel'
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, do it!",
+          cancelButtonText: "Cancel",
         });
         if (result.isConfirmed) {
           try {
-            bId = this.bookings[this.itemIndex].itemID
+            bId = this.bookings[this.itemIndex].itemID;
           } catch {
-            bId = "walkin"
+            bId = "walkin";
           }
           try {
-            gkey = this.bookings[this.itemIndex].groupkey
-          } catch {
-          }
+            gkey = this.bookings[this.itemIndex].groupkey;
+          } catch {}
           try {
             const updatedItems = [];
             let isFind = false;
             // Loop through inclusion items in the cart
-            this.cart.filter(item => item.category === 'inclusion').forEach(async (item, index) => {
-              // Define the API endpoint and data for the PUT request
-              const api = `${this.API_URL}transaction/item/${item.id}/`;
-              const data = {
-                itemName: item.name,
-                itemType: item.type,
-                itemPriceRate: item.priceRate,
-                purchaseQty: item.purqty,
-                totalCost: item.totalCartPrice,
-                category: 'main',
-                itemOption: 'addons',
-              };
-              const numBookedRooms = this.cart.filter(o => (o.type.toLowerCase() === 'beach room' || o.type.toLowerCase() === 'pool room' || o.type.toLowerCase() === 'leisures') && o.category === 'main').length;
-              const numGuestsCard = this.cart.filter(o => o.name.toLowerCase() === 'general entrance' && o.category === 'main').length;
-              const entranceFee = parseFloat(this.items.filter(o => o.item.toLowerCase() === 'general entrance')[0].priceRate);
-              if (numGuestsCard === 0 && numBookedRooms > 0 && item.name.toLowerCase() === 'general entrance' && isFind === false) {
-                const totalGuests = this.cart.filter(o => o.name.toLowerCase() === 'general entrance').reduce((acc, item) => acc + parseFloat(item.purqty), 0);
-                if (totalGuests === 1) {
-                  data.totalCost = parseFloat(data.totalCost) - entranceFee;
-                } else if (totalGuests >= 2) {
-                  data.totalCost = parseFloat(data.totalCost) - 2 * entranceFee;
+            this.cart
+              .filter((item) => item.category === "inclusion")
+              .forEach(async (item, index) => {
+                // Define the API endpoint and data for the PUT request
+                const api = `${this.API_URL}transaction/item/${item.id}/`;
+                const data = {
+                  itemName: item.name,
+                  itemType: item.type,
+                  itemPriceRate: item.priceRate,
+                  purchaseQty: item.purqty,
+                  totalCost: item.totalCartPrice,
+                  category: "main",
+                  itemOption: "addons",
+                };
+                const numBookedRooms = this.cart.filter(
+                  (o) =>
+                    (o.type.toLowerCase() === "beach room" ||
+                      o.type.toLowerCase() === "pool room" ||
+                      o.type.toLowerCase() === "leisures") &&
+                    o.category === "main"
+                ).length;
+                const numGuestsCard = this.cart.filter(
+                  (o) =>
+                    o.name.toLowerCase() === "general entrance" &&
+                    o.category === "main"
+                ).length;
+                const entranceFee = parseFloat(
+                  this.items.filter(
+                    (o) => o.item.toLowerCase() === "general entrance"
+                  )[0].priceRate
+                );
+                if (
+                  numGuestsCard === 0 &&
+                  numBookedRooms > 0 &&
+                  item.name.toLowerCase() === "general entrance" &&
+                  isFind === false
+                ) {
+                  const totalGuests = this.cart
+                    .filter((o) => o.name.toLowerCase() === "general entrance")
+                    .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
+                  if (totalGuests === 1) {
+                    data.totalCost = parseFloat(data.totalCost) - entranceFee;
+                  } else if (totalGuests >= 2) {
+                    data.totalCost =
+                      parseFloat(data.totalCost) - 2 * entranceFee;
+                  }
+                  item.totalCartPrice = data.totalCost;
+                  isFind = true;
                 }
-                item.totalCartPrice = data.totalCost;
-                isFind = true;
-              }
-              try {
-                data.bookingID = bId;
-                data.groupkey = gkey;
-                // Send PUT request to update the item
-                const response = await axios.put(api, data);
-                updatedItems.push(response.data);
-              } catch (error) {
-                data.bookingID = "walkin"
-                bId = data.bookingID;
-                updatedItems.push(data);
-              }
-            });
+                try {
+                  data.bookingID = bId;
+                  data.groupkey = gkey;
+                  // Send PUT request to update the item
+                  const response = await axios.put(api, data);
+                  updatedItems.push(response.data);
+                } catch (error) {
+                  data.bookingID = "walkin";
+                  bId = data.bookingID;
+                  updatedItems.push(data);
+                }
+              });
             // Wait for all PUT requests to finish before updating the local cart
-            await Promise.all(this.cart.filter(item => item.category === 'inclusion').map(async (item) => {
-              // Update the category of each inclusion item to 'main'
-              item.category = 'main';
-              // Find the updated version of the item in the list of updated items
-              const updatedItem = updatedItems.find(updatedItem => updatedItem.id === item.id);
-              // If the item was successfully updated, update the local cart with the new data
-              if (updatedItem) {
-                Object.assign(item, updatedItem);
-              }
-            }));
+            await Promise.all(
+              this.cart
+                .filter((item) => item.category === "inclusion")
+                .map(async (item) => {
+                  // Update the category of each inclusion item to 'main'
+                  item.category = "main";
+                  // Find the updated version of the item in the list of updated items
+                  const updatedItem = updatedItems.find(
+                    (updatedItem) => updatedItem.id === item.id
+                  );
+                  // If the item was successfully updated, update the local cart with the new data
+                  if (updatedItem) {
+                    Object.assign(item, updatedItem);
+                  }
+                })
+            );
             if (bId !== "walkin") {
               const resId = this.bookings[this.itemIndex].id;
               this.bookings[this.itemIndex].isPaid = "partial";
@@ -3368,7 +4892,7 @@ export default {
         clientAddress: "",
         clientNationality: "Filipino",
         clientType: "walkin",
-        bookingID: ""
+        bookingID: "",
       };
       this.cashHistory = [];
       this.walkinreservation = {
@@ -3377,8 +4901,8 @@ export default {
         clientPhone: "",
         clientAddress: "",
         clientNationality: "Filipino",
-        clientType: "walkin"
-      }
+        clientType: "walkin",
+      };
       this.subtotal = 0;
       this.partialPayment = 0;
       this.total = 0;
@@ -3396,8 +4920,8 @@ export default {
         counter: "",
         purqty: "",
         totalCartPrice: "",
-        category: ""
-      }
+        category: "",
+      };
       this.justDiscounted = false;
       this.alreadyDiscounted = false;
       this.itemIndex = -1;
@@ -3416,12 +4940,15 @@ export default {
       }
     },
     changeTab(tab) {
-      this.activeTab = tab
+      this.activeTab = tab;
     },
     //generic methods
     optionClicked1(event) {
       const item = event.item;
-      const uniqID = item.substring(item.toString().indexOf("~") + 1, item.toString().lastIndexOf("~"));
+      const uniqID = item.substring(
+        item.toString().indexOf("~") + 1,
+        item.toString().lastIndexOf("~")
+      );
       const action = event.option.slug;
       window.alert(action);
     },
@@ -3442,7 +4969,12 @@ export default {
       $("#showall-modal").modal("toggle");
     },
     changeItemColor(status) {
-      let item = this.calendarItems[this.calendarItems.findIndex(o => o.id === this.bookings[this.itemIndex].itemID)];
+      let item =
+        this.calendarItems[
+          this.calendarItems.findIndex(
+            (o) => o.id === this.bookings[this.itemIndex].itemID
+          )
+        ];
       if (status === "checkedin") {
         item.classes = ["custom-date-class-green"];
       } else if (status === "cancelled") {
@@ -3460,28 +4992,32 @@ export default {
       let gkey = "";
       let groupbookings = [];
       item.remarks = this.reservation.remarks;
-      this.updateBookings(item.id)
+      this.updateBookings(item.id);
       try {
-        gkey = (this.bookings[this.itemIndex].groupkey || "x");
+        gkey = this.bookings[this.itemIndex].groupkey || "x";
         try {
           const o = await axios.post(`${this.API_URL}bookings/filter/`, [
-            { "columnName": "groupkey", "columnKey": gkey },
-          ])
+            { columnName: "groupkey", columnKey: gkey },
+          ]);
           groupbookings = o.data;
-        } catch (error) {
-        }
-      } catch (error) {
-      }
+        } catch (error) {}
+      } catch (error) {}
       if (groupbookings.length > 0) {
-        existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-          columnName: 'groupkey',
-          columnKey: gkey
-        });
+        existingTransaction = await axios.post(
+          `${this.API_URL}transaction/filter/`,
+          {
+            columnName: "groupkey",
+            columnKey: gkey,
+          }
+        );
       } else {
-        existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-          columnName: 'bookingID',
-          columnKey: bookingID
-        });
+        existingTransaction = await axios.post(
+          `${this.API_URL}transaction/filter/`,
+          {
+            columnName: "bookingID",
+            columnKey: bookingID,
+          }
+        );
       }
       try {
         if (existingTransaction.length !== 0) {
@@ -3493,21 +5029,24 @@ export default {
             this.alreadyDiscounted = true;
           }
         }
-      } catch (error) {
-      }
-      const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-        { "columnName": "bookingID", "columnKey": bookingID },
-        { "columnName": "itemName", "columnKey": item.room_name }
-      ])
+      } catch (error) {}
+      const response = await axios.post(
+        `${this.API_URL}transaction/item/filter/`,
+        [
+          { columnName: "bookingID", columnKey: bookingID },
+          { columnName: "itemName", columnKey: item.room_name },
+        ]
+      );
       if (response.data.length > 0) {
         //show instead
         //update this.cart
         this.cart = [];
         if (groupbookings.length > 0) {
-          const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-            { "columnName": "groupkey", "columnKey": gkey },
-          ])
-          response.data.forEach(item => {
+          const response = await axios.post(
+            `${this.API_URL}transaction/item/filter/`,
+            [{ columnName: "groupkey", columnKey: gkey }]
+          );
+          response.data.forEach((item) => {
             let newItem = {
               id: item.id,
               name: item.itemName,
@@ -3516,17 +5055,18 @@ export default {
               purqty: item.purchaseQty,
               totalCartPrice: item.totalCost,
               category: item.category,
-              itemOption: item.itemOption
+              itemOption: item.itemOption,
             };
             this.cart.push(newItem);
           });
         } else {
-          const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-            { "columnName": "bookingID", "columnKey": bookingID },
-          ])
+          const response = await axios.post(
+            `${this.API_URL}transaction/item/filter/`,
+            [{ columnName: "bookingID", columnKey: bookingID }]
+          );
           if (response.data.length > 0) {
             try {
-              response.data.forEach(item => {
+              response.data.forEach((item) => {
                 let newItem = {
                   id: item.id,
                   name: item.itemName,
@@ -3535,7 +5075,7 @@ export default {
                   purqty: item.purchaseQty,
                   totalCartPrice: item.totalCost,
                   category: item.category,
-                  itemOption: item.itemOption
+                  itemOption: item.itemOption,
                 };
                 this.cart.push(newItem);
               });
@@ -3558,16 +5098,20 @@ export default {
         this.billing.bookingID = "";
       }
       try {
-        this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
-        const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
-          { "columnName": "transaction", "columnKey": transaction.id },
-        ]);
+        this.partialPayment =
+          groupbookings.length === 0
+            ? item.partialPayment
+            : transaction.cashAmountPay;
+        const response = await axios.post(
+          `${this.API_URL}transaction/record/filter/`,
+          [{ columnName: "transaction", columnKey: transaction.id }]
+        );
         this.cashHistory = response.data;
-        this.gbookingscount = (groupbookings.length === 0) ? 1 : groupbookings.length;
-      } catch (error) {
-      }
+        this.gbookingscount =
+          groupbookings.length === 0 ? 1 : groupbookings.length;
+      } catch (error) {}
       this.toggleItemModal();
-      $("#others-tab").tab('show');
+      $("#others-tab").tab("show");
       this.movetocartFlag = true;
       this.activeAccountFlag = true;
       this.itemCart = {
@@ -3580,7 +5124,7 @@ export default {
         totalCartPrice: "",
         category: "",
         groupkey: "",
-      }
+      };
     },
     removeDuplicates(groupBookings) {
       if (!groupBookings) {
@@ -3605,28 +5149,32 @@ export default {
       let gkey = "";
       let groupbookings = [];
       item.remarks = this.reservation.remarks;
-      this.updateBookings(item.id)
+      this.updateBookings(item.id);
       try {
-        gkey = (this.bookings[this.itemIndex].groupkey || "x");
+        gkey = this.bookings[this.itemIndex].groupkey || "x";
         try {
           const o = await axios.post(`${this.API_URL}bookings/filter/`, [
-            { "columnName": "groupkey", "columnKey": gkey },
-          ])
+            { columnName: "groupkey", columnKey: gkey },
+          ]);
           groupbookings = o.data;
-        } catch (error) {
-        }
-      } catch (error) {
-      }
+        } catch (error) {}
+      } catch (error) {}
       if (groupbookings.length > 0) {
-        existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-          columnName: 'groupkey',
-          columnKey: gkey
-        });
+        existingTransaction = await axios.post(
+          `${this.API_URL}transaction/filter/`,
+          {
+            columnName: "groupkey",
+            columnKey: gkey,
+          }
+        );
       } else {
-        existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-          columnName: 'bookingID',
-          columnKey: bookingID
-        });
+        existingTransaction = await axios.post(
+          `${this.API_URL}transaction/filter/`,
+          {
+            columnName: "bookingID",
+            columnKey: bookingID,
+          }
+        );
       }
       try {
         if (existingTransaction.length !== 0) {
@@ -3638,22 +5186,41 @@ export default {
             this.alreadyDiscounted = true;
           }
         }
-      } catch (error) {
-      }
-      const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-        { "columnName": "bookingID", "columnKey": bookingID },
-        { "columnName": "itemName", "columnKey": item.room_name }
-      ])
+      } catch (error) {}
+      const response = await axios.post(
+        `${this.API_URL}transaction/item/filter/`,
+        [
+          { columnName: "bookingID", columnKey: bookingID },
+          { columnName: "itemName", columnKey: item.room_name },
+        ]
+      );
       if (response.data.length === 0) {
         if (groupbookings.length > 0) {
-          groupbookings.forEach(async res => {
-            const numDays = Math.ceil((new Date(res.checkoutDate.split('/')[2] + "-" + res.checkoutDate.split('/')[1] + "-" + res.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) - new Date(res.checkinDate.split('/')[2] + "-" + res.checkinDate.split('/')[1] + "-" + res.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
+          groupbookings.forEach(async (res) => {
+            const numDays = Math.ceil(
+              (new Date(
+                res.checkoutDate.split("/")[2] +
+                  "-" +
+                  res.checkoutDate.split("/")[1] +
+                  "-" +
+                  res.checkoutDate.split("/")[0]
+              ).setHours(0, 0, 0, 0) -
+                new Date(
+                  res.checkinDate.split("/")[2] +
+                    "-" +
+                    res.checkinDate.split("/")[1] +
+                    "-" +
+                    res.checkinDate.split("/")[0]
+                ).setHours(0, 0, 0, 0)) /
+                (1000 * 60 * 60 * 24)
+            );
             this.itemCart.id = this.cart.length + 1;
             this.itemCart.name = res.room_name;
             this.itemCart.type = res.room_type;
             this.itemCart.priceRate = res.room_price + "/check-in";
             this.itemCart.purqty = numDays + 1;
-            this.itemCart.totalCartPrice = parseFloat(res.room_price) * (numDays + 1);
+            this.itemCart.totalCartPrice =
+              parseFloat(res.room_price) * (numDays + 1);
             this.itemCart.category = "main";
             this.itemCart.itemOption = "room";
             const data = {
@@ -3669,10 +5236,11 @@ export default {
               groupkey: gkey,
             };
             // Make a POST request to the API to save the data
-            await axios.post(this.API_URL + 'transaction/item/', data)
-              .then(response => {
+            await axios
+              .post(this.API_URL + "transaction/item/", data)
+              .then((response) => {
                 // Log a success message to the console
-                this.itemCart = {}
+                this.itemCart = {};
                 this.itemCart.id = response.data.id;
                 this.itemCart.name = response.data.itemName;
                 this.itemCart.type = response.data.itemType;
@@ -3682,21 +5250,38 @@ export default {
                 this.itemCart.category = response.data.category;
                 this.itemCart.itemOption = response.data.itemOption;
                 this.itemCart.groupkey = response.data.groupkey;
-                this.cart.push(this.itemCart)
+                this.cart.push(this.itemCart);
               })
-              .catch(error => {
+              .catch((error) => {
                 // Log an error message to the console
-                console.error('Error saving data:', error);
+                console.error("Error saving data:", error);
               });
-          })
+          });
         } else {
-          const numDays = Math.ceil((new Date(item.checkoutDate.split('/')[2] + "-" + item.checkoutDate.split('/')[1] + "-" + item.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) - new Date(item.checkinDate.split('/')[2] + "-" + item.checkinDate.split('/')[1] + "-" + item.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24));
+          const numDays = Math.ceil(
+            (new Date(
+              item.checkoutDate.split("/")[2] +
+                "-" +
+                item.checkoutDate.split("/")[1] +
+                "-" +
+                item.checkoutDate.split("/")[0]
+            ).setHours(0, 0, 0, 0) -
+              new Date(
+                item.checkinDate.split("/")[2] +
+                  "-" +
+                  item.checkinDate.split("/")[1] +
+                  "-" +
+                  item.checkinDate.split("/")[0]
+              ).setHours(0, 0, 0, 0)) /
+              (1000 * 60 * 60 * 24)
+          );
           this.itemCart.id = this.cart.length + 1;
           this.itemCart.name = item.room_name;
           this.itemCart.type = item.room_type;
           this.itemCart.priceRate = item.room_price + "/check-in";
           this.itemCart.purqty = numDays + 1;
-          this.itemCart.totalCartPrice = parseFloat(item.room_price) * (numDays + 1);
+          this.itemCart.totalCartPrice =
+            parseFloat(item.room_price) * (numDays + 1);
           this.itemCart.category = "main";
           this.itemCart.itemOption = "room";
           const data = {
@@ -3711,14 +5296,15 @@ export default {
             dateCreated: new Date(), // Set the dateCreated field to the current date and time
           };
           // Make a POST request to the API to save the data
-          await axios.post(this.API_URL + 'transaction/item/', data)
-            .then(response => {
+          await axios
+            .post(this.API_URL + "transaction/item/", data)
+            .then((response) => {
               // Log a success message to the console
-              console.log('Data saved:', response.data);
+              console.log("Data saved:", response.data);
             })
-            .catch(error => {
+            .catch((error) => {
               // Log an error message to the console
-              console.error('Error saving data:', error);
+              console.error("Error saving data:", error);
             });
           this.cart.push(this.itemCart);
         }
@@ -3727,10 +5313,11 @@ export default {
         //update this.cart
         this.cart = [];
         if (groupbookings.length > 0) {
-          const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-            { "columnName": "groupkey", "columnKey": gkey },
-          ])
-          response.data.forEach(item => {
+          const response = await axios.post(
+            `${this.API_URL}transaction/item/filter/`,
+            [{ columnName: "groupkey", columnKey: gkey }]
+          );
+          response.data.forEach((item) => {
             let newItem = {
               id: item.id,
               name: item.itemName,
@@ -3739,17 +5326,18 @@ export default {
               purqty: item.purchaseQty,
               totalCartPrice: item.totalCost,
               category: item.category,
-              itemOption: item.itemOption
+              itemOption: item.itemOption,
             };
             this.cart.push(newItem);
           });
         } else {
-          const response = await axios.post(`${this.API_URL}transaction/item/filter/`, [
-            { "columnName": "bookingID", "columnKey": bookingID },
-          ])
+          const response = await axios.post(
+            `${this.API_URL}transaction/item/filter/`,
+            [{ columnName: "bookingID", columnKey: bookingID }]
+          );
           if (response.data.length > 0) {
             try {
-              response.data.forEach(item => {
+              response.data.forEach((item) => {
                 let newItem = {
                   id: item.id,
                   name: item.itemName,
@@ -3758,7 +5346,7 @@ export default {
                   purqty: item.purchaseQty,
                   totalCartPrice: item.totalCost,
                   category: item.category,
-                  itemOption: item.itemOption
+                  itemOption: item.itemOption,
                 };
                 this.cart.push(newItem);
               });
@@ -3781,16 +5369,20 @@ export default {
         this.billing.bookingID = "";
       }
       try {
-        this.partialPayment = (groupbookings.length === 0) ? item.partialPayment : transaction.cashAmountPay;
-        const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
-          { "columnName": "transaction", "columnKey": transaction.id },
-        ]);
+        this.partialPayment =
+          groupbookings.length === 0
+            ? item.partialPayment
+            : transaction.cashAmountPay;
+        const response = await axios.post(
+          `${this.API_URL}transaction/record/filter/`,
+          [{ columnName: "transaction", columnKey: transaction.id }]
+        );
         this.cashHistory = response.data;
-        this.gbookingscount = (groupbookings.length === 0) ? 1 : groupbookings.length;
-      } catch (error) {
-      }
+        this.gbookingscount =
+          groupbookings.length === 0 ? 1 : groupbookings.length;
+      } catch (error) {}
       this.toggleItemModal();
-      $("#others-tab").tab('show');
+      $("#others-tab").tab("show");
       this.movetocartFlag = true;
       this.activeAccountFlag = true;
       this.itemCart = {
@@ -3803,37 +5395,45 @@ export default {
         totalCartPrice: "",
         category: "",
         groupkey: "",
-      }
+      };
     },
     cancelReservation() {
-      this.$swal.fire({
-        icon: 'warning',
-        title: 'Are you sure?',
-        text: 'Are you sure you want to cancel this reservation?',
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        showCancelButton: true
-      }).then((result) => {
-        // Check if user confirmed the cancellation
-        if (result.isConfirmed) {
-          // Perform reservation cancellation logic here
-          this.bookings[this.itemIndex].status = 'cancelled';
-          this.bookings[this.itemIndex].cancellationDate = new Date();
-          this.updateBookings(this.bookings[this.itemIndex].id);
-          this.changeItemColor("cancelled");
-          this.taskRecord(`action:/cancel reservation/client:/${this.bookings[this.itemIndex].name}`)
-          this.toggleItemModal();
-          // Display success message using SweetAlert
-          this.$swal.fire({
-            icon: 'success',
-            title: 'Reservation Canceled!',
-            text: 'The reservation has been canceled.',
-            confirmButtonText: 'OK'
-          }).then(response => {
-            document.location.reload();
-          })
-        }
-      })
+      this.$swal
+        .fire({
+          icon: "warning",
+          title: "Are you sure?",
+          text: "Are you sure you want to cancel this reservation?",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          showCancelButton: true,
+        })
+        .then((result) => {
+          // Check if user confirmed the cancellation
+          if (result.isConfirmed) {
+            // Perform reservation cancellation logic here
+            this.bookings[this.itemIndex].status = "cancelled";
+            this.bookings[this.itemIndex].cancellationDate = new Date();
+            this.updateBookings(this.bookings[this.itemIndex].id);
+            this.changeItemColor("cancelled");
+            this.taskRecord(
+              `action:/cancel reservation/client:/${
+                this.bookings[this.itemIndex].name
+              }`
+            );
+            this.toggleItemModal();
+            // Display success message using SweetAlert
+            this.$swal
+              .fire({
+                icon: "success",
+                title: "Reservation Canceled!",
+                text: "The reservation has been canceled.",
+                confirmButtonText: "OK",
+              })
+              .then((response) => {
+                document.location.reload();
+              });
+          }
+        });
     },
     async transferRoom() {
       if (this.toggleselect === false) {
@@ -3849,25 +5449,34 @@ export default {
         const oldroom = {
           name: this.bookings[this.itemIndex].room_name,
           type: this.bookings[this.itemIndex].room_type,
-          price: this.bookings[this.itemIndex].room_price
-        }
+          price: this.bookings[this.itemIndex].room_price,
+        };
         const newroom = {
           name: room.name,
           type: room.type,
-          price: room.price
-        }
+          price: room.price,
+        };
         const result = await this.$swal.fire({
-          icon: 'warning',
-          title: 'Are you sure?',
-          text: 'Are you sure you want to transfer from ' + oldroom.name + ' to ' + newroom.name + '?',
-          confirmButtonText: 'Yes',
-          cancelButtonText: 'No',
-          showCancelButton: true
-        })
+          icon: "warning",
+          title: "Are you sure?",
+          text:
+            "Are you sure you want to transfer from " +
+            oldroom.name +
+            " to " +
+            newroom.name +
+            "?",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          showCancelButton: true,
+        });
         if (!result.isConfirmed) {
           return;
         }
-        if (oldroom.type !== newroom.type && (oldroom.type !== 'BEACH COTTAGE' && newroom.type !== 'BEACH COTTAGE')) {
+        if (
+          oldroom.type !== newroom.type &&
+          oldroom.type !== "BEACH COTTAGE" &&
+          newroom.type !== "BEACH COTTAGE"
+        ) {
           this.$swal({
             title: "Transfer Error",
             text: "Room types do not match. Unable to transfer room.",
@@ -3878,9 +5487,9 @@ export default {
                 value: true,
                 visible: true,
                 className: "confirm-button",
-                closeModal: true
-              }
-            }
+                closeModal: true,
+              },
+            },
           });
           return;
         }
@@ -3895,61 +5504,69 @@ export default {
                 value: true,
                 visible: true,
                 className: "confirm-button",
-                closeModal: true
-              }
-            }
+                closeModal: true,
+              },
+            },
           });
           return;
         }
         item.room_name = newroom.name;
         item.room_price = newroom.price;
         item.room_type = newroom.type;
-        item.remarks = "transferred from: " + oldroom.name + " on " + formatDate();
+        item.remarks =
+          "transferred from: " + oldroom.name + " on " + formatDate();
         this.updateBookings(item.id);
-        const existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-          columnName: 'bookingID',
-          columnKey: item.itemID
-        });
+        const existingTransactionItems = await axios.post(
+          `${this.API_URL}transaction/item/filter/`,
+          {
+            columnName: "bookingID",
+            columnKey: item.itemID,
+          }
+        );
         try {
-          await axios.put(`${this.API_URL}transaction/item/${existingTransactionItems.data[0].id}/`, {
-            bookingID: existingTransactionItems.data[0].bookingID,
-            itemName: newroom.name,
-            itemType: existingTransactionItems.data[0].itemType,
-            itemPriceRate: existingTransactionItems.data[0].itemPriceRate,
-            purchaseQty: existingTransactionItems.data[0].purchaseQty,
-            totalCost: existingTransactionItems.data[0].totalCost,
-            category: existingTransactionItems.data[0].category,
-            itemOption: existingTransactionItems.data[0].itemOption,
+          await axios.put(
+            `${this.API_URL}transaction/item/${existingTransactionItems.data[0].id}/`,
+            {
+              bookingID: existingTransactionItems.data[0].bookingID,
+              itemName: newroom.name,
+              itemType: existingTransactionItems.data[0].itemType,
+              itemPriceRate: existingTransactionItems.data[0].itemPriceRate,
+              purchaseQty: existingTransactionItems.data[0].purchaseQty,
+              totalCost: existingTransactionItems.data[0].totalCost,
+              category: existingTransactionItems.data[0].category,
+              itemOption: existingTransactionItems.data[0].itemOption,
+            }
+          );
+        } catch (error) {}
+        this.taskRecord(`action:/transfer guest/client:/${item.name}`);
+        this.$swal
+          .fire({
+            icon: "success",
+            title: "Room Transfer",
+            text: "Room transferred successfully.",
+            confirmButtonText: "OK",
+          })
+          .then((response) => {
+            document.location.reload();
           });
-        } catch (error) {
-        }
-        this.taskRecord(`action:/transfer guest/client:/${item.name}`)
-        this.$swal.fire({
-          icon: 'success',
-          title: 'Room Transfer',
-          text: 'Room transferred successfully.',
-          confirmButtonText: 'OK'
-        }).then(response => {
-          document.location.reload();
-        })
       }
     },
     async extendBooking() {
       const result = await this.$swal.fire({
-        icon: 'warning',
-        title: 'Are you sure?',
-        text: 'Are you sure you want to extend this guest?',
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        showCancelButton: true
-      })
+        icon: "warning",
+        title: "Are you sure?",
+        text: "Are you sure you want to extend this guest?",
+        confirmButtonText: "Yes",
+        cancelButtonText: "No",
+        showCancelButton: true,
+      });
       if (!result.isConfirmed) {
         return;
       }
       const item = this.bookings[this.itemIndex];
       const bId = item.id;
       const bookingID = item.itemID;
-      const groupkey = (item.groupkey || '');
+      const groupkey = item.groupkey || "";
       const roomPrice = parseFloat(item.room_price);
       let groupbookings = [];
       let existingTransactionItems = [];
@@ -3973,10 +5590,13 @@ export default {
       //     columnKey: bookingID
       //   });
       // }
-      existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-        columnName: 'bookingID',
-        columnKey: bookingID
-      });
+      existingTransactionItems = await axios.post(
+        `${this.API_URL}transaction/item/filter/`,
+        {
+          columnName: "bookingID",
+          columnKey: bookingID,
+        }
+      );
       // if (groupbookings.length > 0) {
       //   groupbookings.forEach(async item => {
       //     let itemIndex = this.bookings.findIndex(
@@ -4026,163 +5646,209 @@ export default {
       //   this.bookings[this.itemIndex].totalPrice = newTotalPrice;
       //   this.updateBookings(bId);
       // }
-      const itemCheckout = new Date(parseDate(this.bookings[this.itemIndex].checkoutDate));
-      const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
-      const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
-      const newTotalPrice = parseFloat(this.bookings[this.itemIndex].totalPrice) + parseFloat(this.bookings[this.itemIndex].room_price);
+      const itemCheckout = new Date(
+        parseDate(this.bookings[this.itemIndex].checkoutDate)
+      );
+      const extendItemCheckout = new Date(
+        itemCheckout.setDate(itemCheckout.getDate() + 1)
+      );
+      const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB");
+      const newTotalPrice =
+        parseFloat(this.bookings[this.itemIndex].totalPrice) +
+        parseFloat(this.bookings[this.itemIndex].room_price);
       this.bookings[this.itemIndex].checkoutDate = newCheckoutString;
       this.bookings[this.itemIndex].isPaid = "partial";
       this.bookings[this.itemIndex].totalPrice = newTotalPrice;
       this.updateBookings(bId);
-      existingTransactionItems.data.filter(o => o.itemOption === 'room').forEach(async item => {
-        try {
-          await axios.put(`${this.API_URL}transaction/item/${item.id}/`, {
-            bookingID: item.bookingID,
-            itemName: item.itemName,
-            itemType: item.itemType,
-            itemPriceRate: item.itemPriceRate,
-            purchaseQty: parseFloat(item.purchaseQty) + 1,
-            totalCost: parseFloat(item.totalCost) + roomPrice,
-            category: item.category,
-            itemOption: item.itemOption,
-          });
-        } catch (error) {
-        }
-      });
-      this.taskRecord(`action:/extend guest/client:/${this.bookings[this.itemIndex].name}`)
+      existingTransactionItems.data
+        .filter((o) => o.itemOption === "room")
+        .forEach(async (item) => {
+          try {
+            await axios.put(`${this.API_URL}transaction/item/${item.id}/`, {
+              bookingID: item.bookingID,
+              itemName: item.itemName,
+              itemType: item.itemType,
+              itemPriceRate: item.itemPriceRate,
+              purchaseQty: parseFloat(item.purchaseQty) + 1,
+              totalCost: parseFloat(item.totalCost) + roomPrice,
+              category: item.category,
+              itemOption: item.itemOption,
+            });
+          } catch (error) {}
+        });
+      this.taskRecord(
+        `action:/extend guest/client:/${this.bookings[this.itemIndex].name}`
+      );
       // this.updateBookings(this.bookings[bId].id);
       this.toggleItemModal();
-      this.$swal.fire({
-        icon: 'success',
-        title: 'Guest Extended!',
-        text: 'Thank you for extending the guest.',
-        confirmButtonText: 'OK'
-      }).then(response => {
-        document.location.reload();
-      })
+      this.$swal
+        .fire({
+          icon: "success",
+          title: "Guest Extended!",
+          text: "Thank you for extending the guest.",
+          confirmButtonText: "OK",
+        })
+        .then((response) => {
+          document.location.reload();
+        });
     },
     checkinGuest() {
-      this.$swal.fire({
-        icon: 'warning',
-        title: 'Are you sure?',
-        text: 'Are you sure you want to check in this guest?',
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        showCancelButton: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-
-          axios.post(`${this.API_URL}rooms/filter/`, [
-            { columnName: 'name', columnKey: this.bookings[this.itemIndex].room_name },
-          ]).then(response => {
-            const status = response.data[0].status;
-            const category = response.data[0].type;
-            if (status === 'dirty' && (category === 'BEACH ROOM' || category === 'POOL ROOM')) {
-              this.$swal({
-                title: "Error!",
-                text: "Uncleaned room, not ready for check-in. Contact housekeeping first.",
-                icon: "error",
-              }).then((result) => {
-                this.toggleItemModal();
-                return;
-              })
-            } else {
-              const item = this.bookings[this.itemIndex];
-              item.remarks = this.reservation.remarks;
-              item.status = "checkedin";
-              this.updateBookings(item.id);
-              this.populateCalendarItems();
-              //this.changeItemColor("checkedin");
-              this.toggleItemModal();
-              this.taskRecord(`action:/checked-in guest/client:/${item.name}`)
-              this.$swal.fire({
-                icon: 'success',
-                title: 'Guest Checked In!',
-                text: 'Thank you for checking in the guest.',
-                confirmButtonText: 'OK'
-              }).then(response => {
-                document.location.reload();
-              })
-            }
-          })
-
-        }
-      })
+      this.$swal
+        .fire({
+          icon: "warning",
+          title: "Are you sure?",
+          text: "Are you sure you want to check in this guest?",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          showCancelButton: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            axios
+              .post(`${this.API_URL}rooms/filter/`, [
+                {
+                  columnName: "name",
+                  columnKey: this.bookings[this.itemIndex].room_name,
+                },
+              ])
+              .then((response) => {
+                const status = response.data[0].status;
+                const category = response.data[0].type;
+                if (
+                  status === "dirty" &&
+                  (category === "BEACH ROOM" || category === "POOL ROOM")
+                ) {
+                  this.$swal({
+                    title: "Error!",
+                    text: "Uncleaned room, not ready for check-in. Contact housekeeping first.",
+                    icon: "error",
+                  }).then((result) => {
+                    this.toggleItemModal();
+                    return;
+                  });
+                } else {
+                  const item = this.bookings[this.itemIndex];
+                  item.remarks = this.reservation.remarks;
+                  item.status = "checkedin";
+                  this.updateBookings(item.id);
+                  this.populateCalendarItems();
+                  //this.changeItemColor("checkedin");
+                  this.toggleItemModal();
+                  this.taskRecord(
+                    `action:/checked-in guest/client:/${item.name}`
+                  );
+                  this.$swal
+                    .fire({
+                      icon: "success",
+                      title: "Guest Checked In!",
+                      text: "Thank you for checking in the guest.",
+                      confirmButtonText: "OK",
+                    })
+                    .then((response) => {
+                      document.location.reload();
+                    });
+                }
+              });
+          }
+        });
     },
     checkOutGuest() {
-      this.$swal.fire({
-        icon: 'warning',
-        title: 'Are you sure?',
-        text: 'Are you sure you want to check out this guest?',
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-        showCancelButton: true
-      }).then((result) => {
-        // Check if user confirmed the cancellation
-        if (result.isConfirmed) {
-          // Perform reservation cancellation logic here
-          axios.post(`${this.API_URL}restoorders/filter/`, [
-            { columnName: 'customer_name', columnKey: this.bookings[this.itemIndex].room_name },
-            { columnName: 'status', columnKey: 'closed' },
-          ])
-            .then(response => {
-              let checkTable = null;
-              let restoStatus = null;
-              try {
-                const tableID = response.data[0].table_id;
-                restoStatus = response.data[0].status;
-                checkTable = this.rooms.find(table => table.id === tableID).name;
-              } catch (error) {
-                checkTable = this.bookings[this.itemIndex].room_name;
-                restoStatus = "closed";
-              }
-              if (checkTable === this.bookings[this.itemIndex].room_name) {
-                if (restoStatus !== "closed") {
-                  this.$swal.fire({
-                    icon: 'error',
-                    title: 'Customer Checkout Restricted',
-                    text: 'Customer has outstanding payables in the restaurant; cannot be checked out yet!',
-                    confirmButtonText: 'OK'
-                  });
-                  return
-                } else {
-                  let roomId = -1;
-                  axios.post(`${this.API_URL}rooms/filter/`, [
-                    { columnName: 'name', columnKey: this.bookings[this.itemIndex].room_name },
-                  ]).then(response => {
-                    roomId = response.data[0].id;
-                    axios.put(`${this.API_URL}rooms/${roomId}/`, {
-                      name: response.data[0].name,
-                      type: response.data[0].type,
-                      price: response.data[0].price,
-                      isAvailable: response.data[0].isAvailable,
-                      status: 'dirty'
-                    }).then(response => {
-                      this.bookings[this.itemIndex].status = "checkedout";
-                      this.bookings[this.itemIndex].actualCheckoutDate = new Date();
-                      this.reservation.status = "vacant";
-                      this.updateBookings(this.bookings[this.itemIndex].id);
-                      this.populateCalendarItems();
-                      //this.changeItemColor("checkedout");
-                      this.toggleItemModal();
-                      this.taskRecord(`action:/checked-out guest/client:/${this.bookings[this.itemIndex].name}`)
-                      // Display success message using SweetAlert
-                      this.$swal.fire({
-                        icon: 'success',
-                        title: 'Guest Checked Out!',
-                        text: 'The guest has been checked out.',
-                        confirmButtonText: 'OK'
-                      }).then(response => {
-                        document.location.reload();
-                      })
-                    })
-                  })
-
+      this.$swal
+        .fire({
+          icon: "warning",
+          title: "Are you sure?",
+          text: "Are you sure you want to check out this guest?",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          showCancelButton: true,
+        })
+        .then((result) => {
+          // Check if user confirmed the cancellation
+          if (result.isConfirmed) {
+            // Perform reservation cancellation logic here
+            axios
+              .post(`${this.API_URL}restoorders/filter/`, [
+                {
+                  columnName: "customer_name",
+                  columnKey: this.bookings[this.itemIndex].room_name,
+                },
+                { columnName: "status", columnKey: "closed" },
+              ])
+              .then((response) => {
+                let checkTable = null;
+                let restoStatus = null;
+                try {
+                  const tableID = response.data[0].table_id;
+                  restoStatus = response.data[0].status;
+                  checkTable = this.rooms.find(
+                    (table) => table.id === tableID
+                  ).name;
+                } catch (error) {
+                  checkTable = this.bookings[this.itemIndex].room_name;
+                  restoStatus = "closed";
                 }
-              }
-            })
-        }
-      });
+                if (checkTable === this.bookings[this.itemIndex].room_name) {
+                  if (restoStatus !== "closed") {
+                    this.$swal.fire({
+                      icon: "error",
+                      title: "Customer Checkout Restricted",
+                      text: "Customer has outstanding payables in the restaurant; cannot be checked out yet!",
+                      confirmButtonText: "OK",
+                    });
+                    return;
+                  } else {
+                    let roomId = -1;
+                    axios
+                      .post(`${this.API_URL}rooms/filter/`, [
+                        {
+                          columnName: "name",
+                          columnKey: this.bookings[this.itemIndex].room_name,
+                        },
+                      ])
+                      .then((response) => {
+                        roomId = response.data[0].id;
+                        axios
+                          .put(`${this.API_URL}rooms/${roomId}/`, {
+                            name: response.data[0].name,
+                            type: response.data[0].type,
+                            price: response.data[0].price,
+                            isAvailable: response.data[0].isAvailable,
+                            status: "dirty",
+                          })
+                          .then((response) => {
+                            this.bookings[this.itemIndex].status = "checkedout";
+                            this.bookings[this.itemIndex].actualCheckoutDate =
+                              new Date();
+                            this.reservation.status = "vacant";
+                            this.updateBookings(
+                              this.bookings[this.itemIndex].id
+                            );
+                            this.populateCalendarItems();
+                            //this.changeItemColor("checkedout");
+                            this.toggleItemModal();
+                            this.taskRecord(
+                              `action:/checked-out guest/client:/${
+                                this.bookings[this.itemIndex].name
+                              }`
+                            );
+                            // Display success message using SweetAlert
+                            this.$swal
+                              .fire({
+                                icon: "success",
+                                title: "Guest Checked Out!",
+                                text: "The guest has been checked out.",
+                                confirmButtonText: "OK",
+                              })
+                              .then((response) => {
+                                document.location.reload();
+                              });
+                          });
+                      });
+                  }
+                }
+              });
+          }
+        });
     },
     //methods for calendar items
     periodChanged() {
@@ -4193,14 +5859,14 @@ export default {
       //console.log(range)
     },
     thisMonth(d, h, m) {
-      const t = new Date()
-      return new Date(t.getFullYear(), t.getMonth(), d, h || 0, m || 0)
+      const t = new Date();
+      return new Date(t.getFullYear(), t.getMonth(), d, h || 0, m || 0);
     },
     clickDay() {
       let today = new Date();
       if (this.dayreserve.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)) {
-        this.selectionStart = null
-        this.selectionEnd = null
+        this.selectionStart = null;
+        this.selectionEnd = null;
         this.toggledayMenuModal();
         this.toggleItemModal();
         this.toggleselect = false;
@@ -4214,23 +5880,24 @@ export default {
         this.reservation.remarks = "";
         // this.reservation.numguests = "";
         this.reservation.clientPhone = "";
-        this.reservation.checkinDate = this.dayreserve.toLocaleDateString('en-GB');
+        this.reservation.checkinDate =
+          this.dayreserve.toLocaleDateString("en-GB");
         this.reservation.checkoutDate = formatDate(this.dayreserve);
         this.reservation.status = "vacant";
       }
     },
     viewAllReservation() {
-      this.convDate = this.dayreserve.toLocaleDateString('en-GB');
+      this.convDate = this.dayreserve.toLocaleDateString("en-GB");
       this.toggledayMenuModal();
       this.toggleShowAllModal();
     },
     onClickDay(d) {
       if (this.booksearchtext !== "") {
         this.$swal.fire({
-          icon: 'error',
-          title: 'Calendar Day Selection Restricted',
-          text: 'Unable to select a day on the calendar when the search query is not empty.',
-          confirmButtonText: 'OK'
+          icon: "error",
+          title: "Calendar Day Selection Restricted",
+          text: "Unable to select a day on the calendar when the search query is not empty.",
+          confirmButtonText: "OK",
         });
         return;
       }
@@ -4241,16 +5908,14 @@ export default {
     onClickItem(e) {
       if (this.booksearchtext !== "") {
         this.$swal.fire({
-          icon: 'error',
-          title: 'Calendar Item Selection Restricted',
-          text: 'Unable to select an item on the calendar when the search query is not empty.',
-          confirmButtonText: 'OK'
+          icon: "error",
+          title: "Calendar Item Selection Restricted",
+          text: "Unable to select an item on the calendar when the search query is not empty.",
+          confirmButtonText: "OK",
         });
         return;
       }
-      this.itemIndex = this.bookings.findIndex(
-        o => o.itemID === e.id
-      );
+      this.itemIndex = this.bookings.findIndex((o) => o.itemID === e.id);
       this.showReservation();
     },
     showReservation() {
@@ -4258,35 +5923,42 @@ export default {
       this.roomSelect = "ok";
       this.reservation.clientName = this.bookings[this.itemIndex].name;
       this.reservation.clientEmail = this.bookings[this.itemIndex].clientemail;
-      this.reservation.clientAddress = this.bookings[this.itemIndex].clientaddress;
-      this.reservation.clientNationality = this.bookings[this.itemIndex].clientnationality;
+      this.reservation.clientAddress =
+        this.bookings[this.itemIndex].clientaddress;
+      this.reservation.clientNationality =
+        this.bookings[this.itemIndex].clientnationality;
       this.reservation.clientType = this.bookings[this.itemIndex].clientType;
       this.reservation.checkinDate = this.bookings[this.itemIndex].checkinDate;
-      this.reservation.checkoutDate = this.bookings[this.itemIndex].checkoutDate;
+      this.reservation.checkoutDate =
+        this.bookings[this.itemIndex].checkoutDate;
       this.reservation.roomName = this.bookings[this.itemIndex].room_name;
       this.reservation.remarks = this.bookings[this.itemIndex].remarks;
-      this.reservation.clientPhone = this.bookings[this.itemIndex].contactNumber;
+      this.reservation.clientPhone =
+        this.bookings[this.itemIndex].contactNumber;
       this.reservation.status = this.bookings[this.itemIndex].status;
       this.reservation.isPaid = this.bookings[this.itemIndex].isPaid;
       // this.reservation.numguests = this.bookings[this.itemIndex].numguests;
       this.toggleItemModal();
     },
     setShowDate(d) {
-      this.message = `Changing calendar view to ${d.toLocaleDateString()}`
-      this.showDate = d
+      this.message = `Changing calendar view to ${d.toLocaleDateString()}`;
+      this.showDate = d;
     },
     setSelection(dateRange) {
-      this.selectionEnd = dateRange[1]
-      this.selectionStart = dateRange[0]
+      this.selectionEnd = dateRange[1];
+      this.selectionStart = dateRange[0];
     },
     finishSelection(dateRange) {
       const currentDate = new Date(); // get current date
-      if (dateRange[0].setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) { // check if start date is before current date
+      if (
+        dateRange[0].setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)
+      ) {
+        // check if start date is before current date
         // prompt user to select a valid start date
         return;
       }
-      this.setSelection(dateRange)
-      this.message = `You selected: ${this.selectionStart.toLocaleDateString()} -${this.selectionEnd.toLocaleDateString()}`
+      this.setSelection(dateRange);
+      this.message = `You selected: ${this.selectionStart.toLocaleDateString()} -${this.selectionEnd.toLocaleDateString()}`;
       this.toggleselect = false;
       this.roomSelect = "ok";
       this.reservation.status = "vacant";
@@ -4303,48 +5975,81 @@ export default {
       this.reservation.remarks = "";
       this.reservation.clientPhone = "";
       this.toggleItemModal();
-      this.reservation.checkinDate = this.selectionStart.toLocaleDateString('en-GB');
-      this.reservation.checkoutDate = formatDate(new Date(parseDate(this.selectionEnd.toLocaleDateString('en-GB'))));
+      this.reservation.checkinDate =
+        this.selectionStart.toLocaleDateString("en-GB");
+      this.reservation.checkoutDate = formatDate(
+        new Date(parseDate(this.selectionEnd.toLocaleDateString("en-GB")))
+      );
     },
     onDrop(item, date) {
       const currentDate = new Date(); // get current date
-      if (date.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) { // check if start date is before current date
+      if (date.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
+        // check if start date is before current date
         // prompt user to select a valid start date
         return;
       }
-      this.itemIndex = this.bookings.findIndex(
-        o => o.itemID === item.id
-      );
+      this.itemIndex = this.bookings.findIndex((o) => o.itemID === item.id);
       //issue in reloading
       const itemStatus = this.bookings[this.itemIndex].status;
       if (itemStatus === "reserved") {
-        const eLength = CalendarMath.dayDiff(item.startDate, date)
+        const eLength = CalendarMath.dayDiff(item.startDate, date);
         let landingDateCheckin = CalendarMath.addDays(item.startDate, eLength);
         let landingDateCheckout = CalendarMath.addDays(item.endDate, eLength);
-        let filteredBookings = this.bookings.filter(booking => booking.status === 'reserved' && booking.itemID !== this.bookings[this.itemIndex].itemID && booking.room_name === this.bookings[this.itemIndex].room_name && new Date(booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0]).setHours(0, 0, 0, 0) <= landingDateCheckout.setHours(0, 0, 0, 0)
-          && new Date(booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0));
+        let filteredBookings = this.bookings.filter(
+          (booking) =>
+            booking.status === "reserved" &&
+            booking.itemID !== this.bookings[this.itemIndex].itemID &&
+            booking.room_name === this.bookings[this.itemIndex].room_name &&
+            new Date(
+              booking.checkinDate.split("/")[2] +
+                "-" +
+                booking.checkinDate.split("/")[1] +
+                "-" +
+                booking.checkinDate.split("/")[0]
+            ).setHours(0, 0, 0, 0) <=
+              landingDateCheckout.setHours(0, 0, 0, 0) &&
+            new Date(
+              booking.checkoutDate.split("/")[2] +
+                "-" +
+                booking.checkoutDate.split("/")[1] +
+                "-" +
+                booking.checkoutDate.split("/")[0]
+            ).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0)
+        );
         if (filteredBookings.length === 0) {
           if (event.ctrlKey) {
-            let sd = CalendarMath.addDays(item.startDate, 0)
-            let ed = CalendarMath.addDays(item.endDate, eLength - CalendarMath.dayDiff(item.startDate, item.endDate))
+            let sd = CalendarMath.addDays(item.startDate, 0);
+            let ed = CalendarMath.addDays(
+              item.endDate,
+              eLength - CalendarMath.dayDiff(item.startDate, item.endDate)
+            );
             if (ed >= sd) {
-              item.originalItem.startDate = sd
-              item.originalItem.endDate = ed
+              item.originalItem.startDate = sd;
+              item.originalItem.endDate = ed;
             } else {
-              item.originalItem.endDate = item.endDate
-              item.originalItem.startDate = ed
+              item.originalItem.endDate = item.endDate;
+              item.originalItem.startDate = ed;
             }
           } else {
-            item.originalItem.startDate = CalendarMath.addDays(item.startDate, eLength)
-            item.originalItem.endDate = CalendarMath.addDays(item.endDate, eLength)
+            item.originalItem.startDate = CalendarMath.addDays(
+              item.startDate,
+              eLength
+            );
+            item.originalItem.endDate = CalendarMath.addDays(
+              item.endDate,
+              eLength
+            );
           }
           if (this.draggedItem) {
-            this.draggedItem[0].checkinDate = item.originalItem.startDate.toLocaleDateString('en-GB');
-            this.draggedItem[0].checkoutDate = item.originalItem.endDate.toLocaleDateString('en-GB');
+            this.draggedItem[0].checkinDate =
+              item.originalItem.startDate.toLocaleDateString("en-GB");
+            this.draggedItem[0].checkoutDate =
+              item.originalItem.endDate.toLocaleDateString("en-GB");
           } else {
-
-            this.bookings[this.itemIndex].checkinDate = item.originalItem.startDate.toLocaleDateString('en-GB');
-            this.bookings[this.itemIndex].checkoutDate = item.originalItem.endDate.toLocaleDateString('en-GB');
+            this.bookings[this.itemIndex].checkinDate =
+              item.originalItem.startDate.toLocaleDateString("en-GB");
+            this.bookings[this.itemIndex].checkoutDate =
+              item.originalItem.endDate.toLocaleDateString("en-GB");
           }
 
           this.updateBookings(this.bookings[this.itemIndex].id);
@@ -4353,10 +6058,10 @@ export default {
           // this.taskRecord(`action:/adjust date reservation/client:/${this.bookings[this.itemIndex].name}`)
         } else {
           this.$swal.fire({
-            icon: 'error',
-            title: 'Cannot Adjust Reservation',
-            text: 'Dates conflict with an existing room reservation.',
-            confirmButtonText: 'OK'
+            icon: "error",
+            title: "Cannot Adjust Reservation",
+            text: "Dates conflict with an existing room reservation.",
+            confirmButtonText: "OK",
           });
         }
       }
@@ -4391,39 +6096,61 @@ export default {
       }
     },
     populateCalendarItems() {
-      this.calendarItems = this.bookings.map(booking => {
-        const startDate = booking.checkinDate.split('/')[2] + "-" + booking.checkinDate.split('/')[1] + "-" + booking.checkinDate.split('/')[0];
-        const endDate = booking.checkoutDate.split('/')[2] + "-" + booking.checkoutDate.split('/')[1] + "-" + booking.checkoutDate.split('/')[0];
-        const title = `${booking.room_name}-${(booking.groupkey === null) ? '' : '<span class="text-white">group</span>-'}${booking.name}<span style="display:none">~${booking.itemID}~</span>`;
+      this.calendarItems = this.bookings.map((booking) => {
+        const startDate =
+          booking.checkinDate.split("/")[2] +
+          "-" +
+          booking.checkinDate.split("/")[1] +
+          "-" +
+          booking.checkinDate.split("/")[0];
+        const endDate =
+          booking.checkoutDate.split("/")[2] +
+          "-" +
+          booking.checkoutDate.split("/")[1] +
+          "-" +
+          booking.checkoutDate.split("/")[0];
+        const title = `${booking.room_name}-${
+          booking.groupkey === null
+            ? ""
+            : '<span class="text-white">group</span>-'
+        }${booking.name}<span style="display:none">~${booking.itemID}~</span>`;
         const id = booking.itemID;
-        const tooltip = `${booking.room_name}-${booking.name}\n*${booking.status}-${(booking.isPaid === 'yes') ? 'fully paid' : (booking.isPaid === 'no') ? 'not paid' : 'partial'}`;
-        let classes = '';
-        if (booking.status === 'reserved') {
-          if (booking.isPaid === 'partial' || booking.isPaid === 'yes') {
-            classes = ['hotel-reserved'];
+        const tooltip = `${booking.room_name}-${booking.name}\n*${
+          booking.status
+        }-${
+          booking.isPaid === "yes"
+            ? "fully paid"
+            : booking.isPaid === "no"
+            ? "not paid"
+            : "partial"
+        }`;
+        let classes = "";
+        if (booking.status === "reserved") {
+          if (booking.isPaid === "partial" || booking.isPaid === "yes") {
+            classes = ["hotel-reserved"];
           } else {
-            classes = ['hotel-reserved-unpaid'];
+            classes = ["hotel-reserved-unpaid"];
           }
-        } else if (booking.status === 'checkedin') {
-          if (booking.isPaid === 'no' || booking.isPaid === '') {
-            classes = ['hotel-checkedin-unpaid'];
-          } else if (booking.isPaid === 'partial') {
-            classes = ['hotel-checkedin-partial'];
+        } else if (booking.status === "checkedin") {
+          if (booking.isPaid === "no" || booking.isPaid === "") {
+            classes = ["hotel-checkedin-unpaid"];
+          } else if (booking.isPaid === "partial") {
+            classes = ["hotel-checkedin-partial"];
           } else {
-            classes = ['hotel-checkedin-paid'];
+            classes = ["hotel-checkedin-paid"];
           }
-        } else if (booking.status === 'cancelled') {
-          classes = ['hotel-cancelled'];
-        } else if (booking.status === 'checkedout') {
-          classes = ['hotel-checkedout'];
+        } else if (booking.status === "cancelled") {
+          classes = ["hotel-cancelled"];
+        } else if (booking.status === "checkedout") {
+          classes = ["hotel-checkedout"];
         }
         return { startDate, endDate, title, id, classes, tooltip };
       });
-      let suggestionsArray = this.rooms.map(room => room.name);
+      let suggestionsArray = this.rooms.map((room) => room.name);
       const roomStatus = ["cancelled", "reserved", "checkedin", "checkedout"];
       suggestionsArray = roomStatus.concat(suggestionsArray);
       // Filter the suggestions based on the search text
-      this.autosuggestions = suggestionsArray.filter(suggestion =>
+      this.autosuggestions = suggestionsArray.filter((suggestion) =>
         suggestion.toLowerCase().includes(this.booksearchtext.toLowerCase())
       );
       this.autosuggestions = this.autosuggestions.slice(0, 15);
@@ -4441,7 +6168,7 @@ export default {
       }, 200);
     },
     generateUniqueString() {
-      let randomString = '';
+      let randomString = "";
       while (randomString.length < 64) {
         randomString += Math.random().toString(36).substr(2, 36);
       }
@@ -4461,13 +6188,18 @@ export default {
         return false;
       }
       for (const res of this.reservation.roomName) {
-        const hasExistingBooking = this.bookings.filter(item => item.status !== 'checkedout').filter(item => item.status !== 'cancelled').filter(booking =>
-          booking.room_name === res.name && booking.checkinDate === this.reservation.checkinDate
-        );
+        const hasExistingBooking = this.bookings
+          .filter((item) => item.status !== "checkedout")
+          .filter((item) => item.status !== "cancelled")
+          .filter(
+            (booking) =>
+              booking.room_name === res.name &&
+              booking.checkinDate === this.reservation.checkinDate
+          );
         if (hasExistingBooking.length > 0) {
           await this.$swal.fire({
-            icon: 'error',
-            title: 'Booking Error',
+            icon: "error",
+            title: "Booking Error",
             text: `There is already a booking for ${res.name} on ${this.reservation.checkinDate}. Please choose another date or room.`,
           });
           this.reservation.roomName = "";
@@ -4480,19 +6212,50 @@ export default {
         if (roomBooked.length > 1) {
           gkey = "group-" + this.generateUniqueString();
         }
-        roomBooked.forEach(async res => {
+        roomBooked.forEach(async (res) => {
           //change id format
-          let id = "e" + new Date().getTime().toString() + this.generateUniqueString();
-          let startDate = this.reservation.checkinDate.split('/')[2] + "-" + this.reservation.checkinDate.split('/')[1] + "-" + this.reservation.checkinDate.split('/')[0];
-          let endDate = this.reservation.checkoutDate.split('/')[2] + "-" + this.reservation.checkoutDate.split('/')[1] + "-" + this.reservation.checkoutDate.split('/')[0];
+          let id =
+            "e" + new Date().getTime().toString() + this.generateUniqueString();
+          let startDate =
+            this.reservation.checkinDate.split("/")[2] +
+            "-" +
+            this.reservation.checkinDate.split("/")[1] +
+            "-" +
+            this.reservation.checkinDate.split("/")[0];
+          let endDate =
+            this.reservation.checkoutDate.split("/")[2] +
+            "-" +
+            this.reservation.checkoutDate.split("/")[1] +
+            "-" +
+            this.reservation.checkoutDate.split("/")[0];
           let title = res.name + "-" + this.reservation.clientName;
-          const numDays = Math.ceil((
-            new Date(this.reservation.checkoutDate.split('/')[2] + "-" + this.reservation.checkoutDate.split('/')[1] + "-" + this.reservation.checkoutDate.split('/')[0]).setHours(0, 0, 0, 0)
-            -
-            new Date(this.reservation.checkinDate.split('/')[2] + "-" + this.reservation.checkinDate.split('/')[1] + "-" + this.reservation.checkinDate.split('/')[0]).setHours(0, 0, 0, 0)
-          ) / (1000 * 60 * 60 * 24));
-          const roomPrice = (this.rooms.findIndex(o => o.name === res.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === res.name)].price : 0;
-          const roomType = (this.rooms.findIndex(o => o.name === res.name) !== -1) ? this.rooms[this.rooms.findIndex(o => o.name === res.name)].type : '';
+          const numDays = Math.ceil(
+            (new Date(
+              this.reservation.checkoutDate.split("/")[2] +
+                "-" +
+                this.reservation.checkoutDate.split("/")[1] +
+                "-" +
+                this.reservation.checkoutDate.split("/")[0]
+            ).setHours(0, 0, 0, 0) -
+              new Date(
+                this.reservation.checkinDate.split("/")[2] +
+                  "-" +
+                  this.reservation.checkinDate.split("/")[1] +
+                  "-" +
+                  this.reservation.checkinDate.split("/")[0]
+              ).setHours(0, 0, 0, 0)) /
+              (1000 * 60 * 60 * 24)
+          );
+          const roomPrice =
+            this.rooms.findIndex((o) => o.name === res.name) !== -1
+              ? this.rooms[this.rooms.findIndex((o) => o.name === res.name)]
+                  .price
+              : 0;
+          const roomType =
+            this.rooms.findIndex((o) => o.name === res.name) !== -1
+              ? this.rooms[this.rooms.findIndex((o) => o.name === res.name)]
+                  .type
+              : "";
           const response = await axios.post(this.API_URL + "bookings/", {
             itemID: id,
             status: "reserved",
@@ -4509,8 +6272,8 @@ export default {
             remarks: this.reservation.remarks,
             // numguests: this.reservation.numguests,
             contactNumber: this.reservation.clientPhone,
-            isPaid: 'no',
-            created_at: moment().format('YYYY-MM-DD hh:mm:ss'),
+            isPaid: "no",
+            created_at: moment().format("YYYY-MM-DD hh:mm:ss"),
             totalPrice: (numDays + 1) * parseFloat(roomPrice),
             partialPayment: 0,
             processedBy: this.userdata.fName + " " + this.userdata.lName,
@@ -4534,11 +6297,13 @@ export default {
             contactNumber: this.reservation.clientPhone,
             processedBy: this.userdata.fName + " " + this.userdata.lName,
             groupkey: gkey,
-          })
+          });
         });
         this.reloadData();
         this.populateCalendarItems();
-        this.taskRecord(`action:/added reservation/client:/${this.reservation.clientName}`)
+        this.taskRecord(
+          `action:/added reservation/client:/${this.reservation.clientName}`
+        );
         this.toggleItemModal();
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
@@ -4555,13 +6320,15 @@ export default {
         // this.reservation.numguests = "";
         this.reservation.clientPhone = "";
         this.walkinStatus = false;
-        this.$swal.fire({
-          title: "Success!",
-          text: "Booking successful!",
-          icon: "success",
-        }).then(response => {
-          //document.location.reload();
-        })
+        this.$swal
+          .fire({
+            title: "Success!",
+            text: "Booking successful!",
+            icon: "success",
+          })
+          .then((response) => {
+            //document.location.reload();
+          });
       } catch (error) {
         console.log(error);
         this.$swal.fire({
@@ -4575,15 +6342,17 @@ export default {
     },
     removeItem() {
       this.calendarItems = this.calendarItems.filter(
-        o => o.id !== this.bookings[this.itemIndex].itemID
+        (o) => o.id !== this.bookings[this.itemIndex].itemID
       );
       this.bookings = this.bookings.filter(
-        o => o.itemID !== this.bookings[this.itemIndex].itemID
+        (o) => o.itemID !== this.bookings[this.itemIndex].itemID
       );
     },
     async loadTransactionData() {
       try {
-        const response = await axios.get(this.API_URL + 'transactions_itemizer/0/');
+        const response = await axios.get(
+          this.API_URL + "transactions_itemizer/0/"
+        );
         this.transactions = response.data;
         // this.transactions.forEach(async (item, index) => {
         //   try {
@@ -4623,47 +6392,53 @@ export default {
         try {
           bookid = this.bookings[this.itemIndex].itemID;
           groupid = this.bookings[this.itemIndex].groupkey;
-          reserveStatus = this.bookings[this.itemIndex].status
+          reserveStatus = this.bookings[this.itemIndex].status;
         } catch (error) {
           bookid = "f";
         }
         let gkey = "";
         let groupbookings = [];
         try {
-          gkey = (this.bookings[this.itemIndex].groupkey || "x");
+          gkey = this.bookings[this.itemIndex].groupkey || "x";
           try {
             const o = await axios.post(`${this.API_URL}bookings/filter/`, [
-              { "columnName": "groupkey", "columnKey": gkey },
-            ])
+              { columnName: "groupkey", columnKey: gkey },
+            ]);
             groupbookings = o.data;
-          } catch (error) {
-          }
-        } catch (error) {
-        }
-        if (this.walkinStatus && parseFloat(this.cashAmount) < parseFloat(this.total)) {
+          } catch (error) {}
+        } catch (error) {}
+        if (
+          this.walkinStatus &&
+          parseFloat(this.cashAmount) < parseFloat(this.total)
+        ) {
           await this.$swal.fire({
-            title: 'Error',
-            text: 'There is no partial payment for walkin guests.',
-            icon: 'error'
+            title: "Error",
+            text: "There is no partial payment for walkin guests.",
+            icon: "error",
           });
           return false;
         }
-        const numGuests = this.cart.filter(o => o.type.toLowerCase() === 'entrance').length;
+        const numGuests = this.cart.filter(
+          (o) => o.type.toLowerCase() === "entrance"
+        ).length;
         if (bookid === "f") {
           if (numGuests === 0) {
             await this.$swal.fire({
-              title: 'Error',
-              text: 'Kindly specify the number of guests by providing the quantity within the general/pool entrance fee.',
-              icon: 'error'
+              title: "Error",
+              text: "Kindly specify the number of guests by providing the quantity within the general/pool entrance fee.",
+              icon: "error",
             });
             return false;
           }
         } else {
-          if (numGuests === 0 && this.bookings[this.itemIndex].status === 'checkedin') {
+          if (
+            numGuests === 0 &&
+            this.bookings[this.itemIndex].status === "checkedin"
+          ) {
             await this.$swal.fire({
-              title: 'Error',
-              text: 'Kindly specify the number of guests by providing the quantity within the general/pool entrance fee.',
-              icon: 'error'
+              title: "Error",
+              text: "Kindly specify the number of guests by providing the quantity within the general/pool entrance fee.",
+              icon: "error",
             });
             return false;
           }
@@ -4676,31 +6451,33 @@ export default {
         //   });
         //   return false;
         // }
-        const confirmMessage = 'Are you sure you want to save this transaction?';
+        const confirmMessage =
+          "Are you sure you want to save this transaction?";
         const result = await this.$swal.fire({
-          title: 'Confirmation',
+          title: "Confirmation",
           text: confirmMessage,
-          icon: 'warning',
+          icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, save it!',
-          cancelButtonText: 'Cancel'
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, save it!",
+          cancelButtonText: "Cancel",
         });
         if (result.isConfirmed) {
-          const countdownMessage = 'Transaction will be saved in <span id="countdown">5</span> seconds. Do you want to cancel?';
+          const countdownMessage =
+            'Transaction will be saved in <span id="countdown">5</span> seconds. Do you want to cancel?';
           let countdownResult;
           countdownResult = await this.$swal.fire({
-            title: 'Please wait',
+            title: "Please wait",
             html: countdownMessage,
-            icon: 'info',
+            icon: "info",
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Confirm now',
-            cancelButtonText: 'Cancel',
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Confirm now",
+            cancelButtonText: "Cancel",
             didOpen: () => {
-              const countdownEl = document.querySelector('#countdown');
+              const countdownEl = document.querySelector("#countdown");
               let count = 5;
               const timerId = setInterval(() => {
                 countdownEl.textContent = count;
@@ -4710,38 +6487,53 @@ export default {
                   this.$swal.close();
                 }
               }, 1000);
-            }
+            },
           });
           if (!countdownResult.isConfirmed) {
             return;
           }
           try {
             let existingTransaction = {
-              data: []
+              data: [],
             };
             if (bookid.charAt(0) !== "f") {
-              existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-                columnName: 'groupkey',
-                columnKey: gkey
-              });
+              existingTransaction = await axios.post(
+                `${this.API_URL}transaction/filter/`,
+                {
+                  columnName: "groupkey",
+                  columnKey: gkey,
+                }
+              );
               if (existingTransaction.data.length === 0) {
                 existingTransaction = {
-                  data: []
+                  data: [],
                 };
-                existingTransaction = await axios.post(`${this.API_URL}transaction/filter/`, {
-                  columnName: 'bookingID',
-                  columnKey: bookid
-                });
+                existingTransaction = await axios.post(
+                  `${this.API_URL}transaction/filter/`,
+                  {
+                    columnName: "bookingID",
+                    columnKey: bookid,
+                  }
+                );
               }
             }
             let payStatus = null;
             if (existingTransaction.data.length === 0) {
               // Create a new transaction if it doesn't exist yet
               if (bookid.charAt(0) === "f") {
-                bookid = "f" + existingTransaction.data.length + this.generateUniqueString();
+                bookid =
+                  "f" +
+                  existingTransaction.data.length +
+                  this.generateUniqueString();
               }
-              payStatus = (parseFloat(this.total) - parseFloat(this.cashAmount)) <= 0 ? 'full' : 'partial';
-              const updatedcashamount = parseFloat(this.cashAmount) > parseFloat(this.total) ? parseFloat(this.total) : parseFloat(this.cashAmount);
+              payStatus =
+                parseFloat(this.total) - parseFloat(this.cashAmount) <= 0
+                  ? "full"
+                  : "partial";
+              const updatedcashamount =
+                parseFloat(this.cashAmount) > parseFloat(this.total)
+                  ? parseFloat(this.total)
+                  : parseFloat(this.cashAmount);
               const transactionData = {
                 clientname: this.billing.clientName,
                 clientemail: this.billing.clientEmail,
@@ -4749,7 +6541,8 @@ export default {
                 clientaddress: this.billing.clientAddress,
                 clientnationality: this.billing.clientNationality,
                 clientType: this.billing.clientType,
-                nonCashReference: this.nonCashPayPlatform + '-' + this.nonCashReference,
+                nonCashReference:
+                  this.nonCashPayPlatform + "-" + this.nonCashReference,
                 totalAmountToPay: parseFloat(this.total),
                 paymentMethod: this.paymentMethod,
                 cashAmountPay: updatedcashamount,
@@ -4762,7 +6555,10 @@ export default {
                 groupkey: groupid,
                 cashRemarks: this.cashRemarks,
               };
-              let doneTransaction = await axios.post(`${this.API_URL}transaction/`, transactionData);
+              let doneTransaction = await axios.post(
+                `${this.API_URL}transaction/`,
+                transactionData
+              );
               let transactionRecordData = {
                 transaction: doneTransaction.data.id,
                 transaction_date: doneTransaction.data.transaction_date,
@@ -4774,9 +6570,12 @@ export default {
                 discountMode: doneTransaction.data.discountMode,
                 discountValue: doneTransaction.data.discountValue,
                 processedBy: this.userdata.fName + " " + this.userdata.lName,
-                payStatus: doneTransaction.data.payStatus
-              }
-              await axios.post(`${this.API_URL}transaction/record/`, transactionRecordData);
+                payStatus: doneTransaction.data.payStatus,
+              };
+              await axios.post(
+                `${this.API_URL}transaction/record/`,
+                transactionRecordData
+              );
               if (bookid.charAt(0) === "f") {
                 this.cart.forEach(async (item, index) => {
                   // Define the API endpoint and data for the PUT request
@@ -4787,60 +6586,72 @@ export default {
                     itemPriceRate: item.priceRate,
                     purchaseQty: item.purqty,
                     totalCost: item.totalCartPrice,
-                    category: 'main',
-                    itemOption: 'addons',
-                    bookingID: bookid
+                    category: "main",
+                    itemOption: "addons",
+                    bookingID: bookid,
                   };
                   try {
                     await axios.post(api, data);
-                  } catch (error) {
-                  }
+                  } catch (error) {}
                 });
               }
               if (bookid.charAt(0) !== "f") {
                 if (groupbookings.length > 0) {
-                  groupbookings.forEach(async item => {
+                  groupbookings.forEach(async (item) => {
                     let itemIndex = this.bookings.findIndex(
-                      o => o.itemID === item.itemID
+                      (o) => o.itemID === item.itemID
                     );
-                    this.bookings[itemIndex].totalPrice = transactionData.totalAmountToPay;
-                    this.bookings[itemIndex].partialPayment = transactionData.cashAmountPay;
+                    this.bookings[itemIndex].totalPrice =
+                      transactionData.totalAmountToPay;
+                    this.bookings[itemIndex].partialPayment =
+                      transactionData.cashAmountPay;
                     if (payStatus === "partial") {
                       this.bookings[itemIndex].isPaid = "partial";
                     } else {
                       this.bookings[itemIndex].isPaid = "yes";
                     }
                     try {
-                      const response = await axios.put(this.API_URL + `bookings/${this.bookings[itemIndex].id}/`, {
-                        itemID: this.bookings[itemIndex].itemID,
-                        status: this.bookings[itemIndex].status,
-                        name: this.bookings[itemIndex].name,
-                        clientemail: this.bookings[itemIndex].clientemail,
-                        clientaddress: this.bookings[itemIndex].clientaddress,
-                        clientnationality: this.bookings[itemIndex].clientnationality,
-                        clientType: this.bookings[itemIndex].clientType,
-                        checkinDate: this.bookings[itemIndex].checkinDate,
-                        checkoutDate: this.bookings[itemIndex].checkoutDate,
-                        room_name: this.bookings[itemIndex].room_name,
-                        room_price: this.bookings[itemIndex].room_price,
-                        room_type: this.bookings[itemIndex].room_type,
-                        remarks: this.bookings[itemIndex].remarks,
-                        contactNumber: this.bookings[itemIndex].contactNumber,
-                        actualCheckoutDate: this.bookings[itemIndex].actualCheckoutDate,
-                        cancellationDate: this.bookings[itemIndex].cancellationDate,
-                        isPaid: this.bookings[itemIndex].isPaid,
-                        totalPrice: this.bookings[itemIndex].totalPrice,
-                        partialPayment: this.bookings[itemIndex].partialPayment,
-                        processedBy: this.userdata.fName + " " + this.userdata.lName,
-                        groupkey: this.bookings[itemIndex].groupkey,
-                      });
+                      const response = await axios.put(
+                        this.API_URL +
+                          `bookings/${this.bookings[itemIndex].id}/`,
+                        {
+                          itemID: this.bookings[itemIndex].itemID,
+                          status: this.bookings[itemIndex].status,
+                          name: this.bookings[itemIndex].name,
+                          clientemail: this.bookings[itemIndex].clientemail,
+                          clientaddress: this.bookings[itemIndex].clientaddress,
+                          clientnationality:
+                            this.bookings[itemIndex].clientnationality,
+                          clientType: this.bookings[itemIndex].clientType,
+                          checkinDate: this.bookings[itemIndex].checkinDate,
+                          checkoutDate: this.bookings[itemIndex].checkoutDate,
+                          room_name: this.bookings[itemIndex].room_name,
+                          room_price: this.bookings[itemIndex].room_price,
+                          room_type: this.bookings[itemIndex].room_type,
+                          remarks: this.bookings[itemIndex].remarks,
+                          contactNumber: this.bookings[itemIndex].contactNumber,
+                          actualCheckoutDate:
+                            this.bookings[itemIndex].actualCheckoutDate,
+                          cancellationDate:
+                            this.bookings[itemIndex].cancellationDate,
+                          isPaid: this.bookings[itemIndex].isPaid,
+                          totalPrice: this.bookings[itemIndex].totalPrice,
+                          partialPayment:
+                            this.bookings[itemIndex].partialPayment,
+                          processedBy:
+                            this.userdata.fName + " " + this.userdata.lName,
+                          groupkey: this.bookings[itemIndex].groupkey,
+                        }
+                      );
                     } catch (error) {
                       console.log(error);
                     }
-                  })
+                  });
                 } else {
-                  this.bookings[this.itemIndex].totalPrice = transactionData.totalAmountToPay;
-                  this.bookings[this.itemIndex].partialPayment = transactionData.cashAmountPay;
+                  this.bookings[this.itemIndex].totalPrice =
+                    transactionData.totalAmountToPay;
+                  this.bookings[this.itemIndex].partialPayment =
+                    transactionData.cashAmountPay;
                   if (payStatus === "partial") {
                     this.bookings[this.itemIndex].isPaid = "partial";
                   } else {
@@ -4851,24 +6662,46 @@ export default {
               }
               try {
                 this.partialPayment = doneTransaction.data.cashAmountPay;
-                const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
-                  { "columnName": "transaction", "columnKey": doneTransaction.data.id },
-                ]);
+                const response = await axios.post(
+                  `${this.API_URL}transaction/record/filter/`,
+                  [
+                    {
+                      columnName: "transaction",
+                      columnKey: doneTransaction.data.id,
+                    },
+                  ]
+                );
                 this.cashHistory = response.data;
-                this.gbookingscount = (groupbookings.length === 0) ? 1 : groupbookings.length;
-
-              } catch (error) {
-              }
+                this.gbookingscount =
+                  groupbookings.length === 0 ? 1 : groupbookings.length;
+              } catch (error) {}
               this.billing.bookingID = doneTransaction.data.id;
             } else {
               // Update the transaction if it already exists
-              payStatus = (parseFloat(this.total) - parseFloat(this.cashAmount)) <= 0 ? 'full' : 'partial';
+              payStatus =
+                parseFloat(this.total) - parseFloat(this.cashAmount) <= 0
+                  ? "full"
+                  : "partial";
               const transaction = existingTransaction.data[0];
-              const existingCashAmountPay = parseFloat(transaction.cashAmountPay);
-              const newcashAmountPay = (existingCashAmountPay + parseFloat(this.cashAmount) < parseFloat(this.subtotal)) ? existingCashAmountPay + parseFloat(this.cashAmount) : parseFloat(this.subtotal);
+              const existingCashAmountPay = parseFloat(
+                transaction.cashAmountPay
+              );
+              const newcashAmountPay =
+                existingCashAmountPay + parseFloat(this.cashAmount) <
+                parseFloat(this.subtotal)
+                  ? existingCashAmountPay + parseFloat(this.cashAmount)
+                  : parseFloat(this.subtotal);
               const existingbalance = transaction.balance;
-              let origCash = parseFloat(this.cashAmount) > parseFloat(this.total) ? parseFloat(this.total) : parseFloat(this.cashAmount);
-              const newbalance = (existingCashAmountPay + parseFloat(this.cashAmount) < parseFloat(this.subtotal)) ? parseFloat(transaction.totalAmountToPay) - parseFloat(newcashAmountPay) : 0;
+              let origCash =
+                parseFloat(this.cashAmount) > parseFloat(this.total)
+                  ? parseFloat(this.total)
+                  : parseFloat(this.cashAmount);
+              const newbalance =
+                existingCashAmountPay + parseFloat(this.cashAmount) <
+                parseFloat(this.subtotal)
+                  ? parseFloat(transaction.totalAmountToPay) -
+                    parseFloat(newcashAmountPay)
+                  : 0;
               const origbal = parseFloat(this.subtotal) - newcashAmountPay;
               // const payamountnow = (existingbalance - newbalance <= 0) ? origCash : existingbalance - newbalance;
               const payamountnow = origCash;
@@ -4881,7 +6714,8 @@ export default {
                 clientType: this.billing.clientType,
                 totalAmountToPay: parseFloat(this.subtotal),
                 paymentMethod: this.paymentMethod,
-                nonCashReference: this.nonCashPayPlatform + '-' + this.nonCashReference,
+                nonCashReference:
+                  this.nonCashPayPlatform + "-" + this.nonCashReference,
                 cashAmountPay: newcashAmountPay,
                 balance: origbal,
                 payStatus: payStatus,
@@ -4892,7 +6726,10 @@ export default {
                 groupkey: groupid,
                 cashRemarks: this.cashRemarks,
               };
-              let doneTransaction = await axios.put(`${this.API_URL}transaction/${existingTransaction.data[0].id}/`, transactionData);
+              let doneTransaction = await axios.put(
+                `${this.API_URL}transaction/${existingTransaction.data[0].id}/`,
+                transactionData
+              );
               let transactionRecordData = {
                 transaction: doneTransaction.data.id,
                 transaction_date: doneTransaction.data.transaction_date,
@@ -4904,15 +6741,19 @@ export default {
                 discountMode: doneTransaction.data.discountMode,
                 discountValue: doneTransaction.data.discountValue,
                 processedBy: this.userdata.fName + " " + this.userdata.lName,
-                payStatus: doneTransaction.data.payStatus
-              }
-              await axios.post(`${this.API_URL}transaction/record/`, transactionRecordData);
+                payStatus: doneTransaction.data.payStatus,
+              };
+              await axios.post(
+                `${this.API_URL}transaction/record/`,
+                transactionRecordData
+              );
               if (groupbookings.length > 0) {
-                groupbookings.forEach(async item => {
+                groupbookings.forEach(async (item) => {
                   let itemIndex = this.bookings.findIndex(
-                    o => o.itemID === item.itemID
+                    (o) => o.itemID === item.itemID
                   );
-                  this.bookings[itemIndex].totalPrice = transactionRecordData.totalAmountToPay;
+                  this.bookings[itemIndex].totalPrice =
+                    transactionRecordData.totalAmountToPay;
                   this.bookings[itemIndex].partialPayment = newcashAmountPay;
                   if (payStatus === "partial") {
                     this.bookings[itemIndex].isPaid = "partial";
@@ -4920,35 +6761,43 @@ export default {
                     this.bookings[itemIndex].isPaid = "yes";
                   }
                   try {
-                    const response = await axios.put(this.API_URL + `bookings/${this.bookings[itemIndex].id}/`, {
-                      itemID: this.bookings[itemIndex].itemID,
-                      status: this.bookings[itemIndex].status,
-                      name: this.bookings[itemIndex].name,
-                      clientemail: this.bookings[itemIndex].clientemail,
-                      clientaddress: this.bookings[itemIndex].clientaddress,
-                      clientnationality: this.bookings[itemIndex].clientnationality,
-                      clientType: this.bookings[itemIndex].clientType,
-                      checkinDate: this.bookings[itemIndex].checkinDate,
-                      checkoutDate: this.bookings[itemIndex].checkoutDate,
-                      room_name: this.bookings[itemIndex].room_name,
-                      room_price: this.bookings[itemIndex].room_price,
-                      room_type: this.bookings[itemIndex].room_type,
-                      remarks: this.bookings[itemIndex].remarks,
-                      contactNumber: this.bookings[itemIndex].contactNumber,
-                      actualCheckoutDate: this.bookings[itemIndex].actualCheckoutDate,
-                      cancellationDate: this.bookings[itemIndex].cancellationDate,
-                      isPaid: this.bookings[itemIndex].isPaid,
-                      totalPrice: this.bookings[itemIndex].totalPrice,
-                      partialPayment: this.bookings[itemIndex].partialPayment,
-                      processedBy: this.userdata.fName + " " + this.userdata.lName,
-                      groupkey: this.bookings[itemIndex].groupkey,
-                    });
+                    const response = await axios.put(
+                      this.API_URL + `bookings/${this.bookings[itemIndex].id}/`,
+                      {
+                        itemID: this.bookings[itemIndex].itemID,
+                        status: this.bookings[itemIndex].status,
+                        name: this.bookings[itemIndex].name,
+                        clientemail: this.bookings[itemIndex].clientemail,
+                        clientaddress: this.bookings[itemIndex].clientaddress,
+                        clientnationality:
+                          this.bookings[itemIndex].clientnationality,
+                        clientType: this.bookings[itemIndex].clientType,
+                        checkinDate: this.bookings[itemIndex].checkinDate,
+                        checkoutDate: this.bookings[itemIndex].checkoutDate,
+                        room_name: this.bookings[itemIndex].room_name,
+                        room_price: this.bookings[itemIndex].room_price,
+                        room_type: this.bookings[itemIndex].room_type,
+                        remarks: this.bookings[itemIndex].remarks,
+                        contactNumber: this.bookings[itemIndex].contactNumber,
+                        actualCheckoutDate:
+                          this.bookings[itemIndex].actualCheckoutDate,
+                        cancellationDate:
+                          this.bookings[itemIndex].cancellationDate,
+                        isPaid: this.bookings[itemIndex].isPaid,
+                        totalPrice: this.bookings[itemIndex].totalPrice,
+                        partialPayment: this.bookings[itemIndex].partialPayment,
+                        processedBy:
+                          this.userdata.fName + " " + this.userdata.lName,
+                        groupkey: this.bookings[itemIndex].groupkey,
+                      }
+                    );
                   } catch (error) {
                     console.log(error);
                   }
-                })
+                });
               } else {
-                this.bookings[this.itemIndex].totalPrice = transactionRecordData.totalAmountToPay;
+                this.bookings[this.itemIndex].totalPrice =
+                  transactionRecordData.totalAmountToPay;
                 this.bookings[this.itemIndex].partialPayment = newcashAmountPay;
                 if (payStatus === "partial") {
                   this.bookings[this.itemIndex].isPaid = "partial";
@@ -4959,60 +6808,73 @@ export default {
               }
               try {
                 this.partialPayment = newcashAmountPay;
-                const response = await axios.post(`${this.API_URL}transaction/record/filter/`, [
-                  { "columnName": "transaction", "columnKey": transactionRecordData.transaction },
-                ]);
+                const response = await axios.post(
+                  `${this.API_URL}transaction/record/filter/`,
+                  [
+                    {
+                      columnName: "transaction",
+                      columnKey: transactionRecordData.transaction,
+                    },
+                  ]
+                );
                 this.cashHistory = response.data;
-                this.gbookingscount = (groupbookings.length === 0) ? 1 : groupbookings.length;
-              } catch (error) {
-              }
+                this.gbookingscount =
+                  groupbookings.length === 0 ? 1 : groupbookings.length;
+              } catch (error) {}
             }
-            this.taskRecord(`action:/transaction added/client:/${this.billing.clientName}`)
+            this.taskRecord(
+              `action:/transaction added/client:/${this.billing.clientName}`
+            );
             this.walkinStatus = false;
-            await this.$swal.fire({
-              title: 'Success',
-              text: 'Transaction saved successfully!',
-              icon: 'success'
-            }).then(response => {
-              setTimeout(() => {
-                this.generateBillingStatement();
-              }, 500);
-              //document.location.reload();
-            })
+            await this.$swal
+              .fire({
+                title: "Success",
+                text: "Transaction saved successfully!",
+                icon: "success",
+              })
+              .then((response) => {
+                setTimeout(() => {
+                  this.generateBillingStatement();
+                }, 500);
+                //document.location.reload();
+              });
           } catch (error) {
             // Show an error message using SweetAlert
             await this.$swal.fire({
-              title: 'Error',
-              text: 'An error occurred while saving the transaction.',
-              icon: 'error'
+              title: "Error",
+              text: "An error occurred while saving the transaction.",
+              icon: "error",
             });
             console.log(error);
           }
         }
       } else {
         await this.$swal.fire({
-          title: 'Error',
-          text: 'Invalid entry for cash tendered.',
-          icon: 'error'
+          title: "Error",
+          text: "Invalid entry for cash tendered.",
+          icon: "error",
         });
       }
     },
     async printSection(idstring, pLength, pWidth, ft) {
       const section = document.getElementById(idstring);
       const sectionHTML = section.outerHTML;
-      const printBtn = '<div class="row no-print"><div class="col-md-12 text-right"><button class="btn btn-danger" onclick="window.print()">Print Now</button></div></div>';
+      const printBtn =
+        '<div class="row no-print"><div class="col-md-12 text-right"><button class="btn btn-danger" onclick="window.print()">Print Now</button></div></div>';
       const footerContent = `<p class="text-right">Total = ${this.filteredTransactionsTotal}</p><p class="text-right">Collectibles = ${this.filteredTransactionsBalance}</p>`;
-      const footerSummary = (ft) ? footerContent : '';
+      const footerSummary = ft ? footerContent : "";
       const bootstrapCSS = `<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"><style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 1.25;padding: 0.5in;font-size:16px} hr {margin-top: 0.5px;;margin-bottom: 0.5px;} p {margin-top: 0.5px;;margin-bottom: 0.5px;} table {table-layout: auto;width:100%;margin:0 auto;border-collapse:collapse;margin-top: 1px;margin-bottom: 1px;} tr td:last-child{width:1%;white-space:nowrap;} .container {width: ${pWidth}px;height: ${pLength}px;padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}}html, body {width: ${pWidth}px;height: ${pLength}px;margin: 0;padding: 0;}}</style>`;
-      const bootstrapJS = '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">';
+      const bootstrapJS =
+        '<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">';
       const html = `<!doctype html><html><head>${bootstrapCSS}</head><body>${printBtn}${sectionHTML}${footerSummary}${bootstrapJS}<script>setTimeout('alert()',1000)<\/script></body></html>`;
       // Create a new jsPDF instance
       function printAndDetect() {
-        const options = 'height=500,width=800,scrollbars=no,status=no,toolbar=no,location=no';
-        const printWindow = window.open('', options);
+        const options =
+          "height=500,width=800,scrollbars=no,status=no,toolbar=no,location=no";
+        const printWindow = window.open("", options);
         printWindow.document.write(html);
         printWindow.document.close();
-        printWindow.addEventListener('load', function () {
+        printWindow.addEventListener("load", function () {
           printWindow.focus();
           printWindow.print();
           printWindow.close();
@@ -5024,7 +6886,7 @@ export default {
     async generateBillingStatement() {
       // const response = await axios.get(this.API_URL + "transaction/");
       // this.billing.bookingID = response.data.length.toString()
-      this.printSection('billing-details', 1300, 850, false);
+      this.printSection("billing-details", 1300, 850, false);
     },
     // printReservationHistory() {
     //   this.printSection('reservationHistory', 850, 1300, true);
@@ -5038,7 +6900,7 @@ export default {
     async reloadItemsData() {
       try {
         const response = await axios.get(this.API_URL + "leisures/");
-        this.items = response.data.filter(item => item.isAvailable === true);
+        this.items = response.data.filter((item) => item.isAvailable === true);
       } catch (error) {
         console.log(error);
       }
@@ -5046,20 +6908,24 @@ export default {
     async reloadData() {
       try {
         const roomsResponse = await axios.get(this.API_URL + "rooms/");
-        this.rooms = roomsResponse.data.filter(item => item.isAvailable === true);
+        this.rooms = roomsResponse.data.filter(
+          (item) => item.isAvailable === true
+        );
         /*
 this.bookings.filter(booking => booking.room_name === this.bookings[this.itemIndex].room_name );
         */
-        const reservationsResponse = await axios.get(this.API_URL + "bookings/");
+        const reservationsResponse = await axios.get(
+          this.API_URL + "bookings/"
+        );
         this.origbookings = reservationsResponse.data;
-        this.populateCalendarItems()
+        this.populateCalendarItems();
       } catch (error) {
         console.log(error);
       }
     },
     vacantRoom(roomNumber) {
       const bookingIndex = this.reservations.findIndex(
-        reservation =>
+        (reservation) =>
           reservation.room_name === roomNumber &&
           new Date(reservation.checkinDate) < new Date() &&
           new Date(reservation.checkoutDate) > new Date()
@@ -5067,15 +6933,14 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
       return bookingIndex === -1;
     },
     isItemAvailableInCart(item) {
-      const itemIndex = this.cart.findIndex(
-        o =>
-          o.name === item
-      );
+      const itemIndex = this.cart.findIndex((o) => o.name === item);
       return itemIndex === -1;
     },
     isRoomAvailable(room, checkinDate, checkoutDate) {
       // Get all reservations for the given room
-      const roomReservations = this.bookings.filter(reservation => reservation.room_name === room);
+      const roomReservations = this.bookings.filter(
+        (reservation) => reservation.room_name === room
+      );
       // Check if the room is available for the given date range
       for (let i = 0; i < roomReservations.length; i++) {
         const reservation = roomReservations[i];
@@ -5093,15 +6958,15 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
         // if (this.isItemAvailableInCart(item.item)) {
         let reserveStatus = null;
         try {
-          reserveStatus = this.bookings[this.itemIndex].status
+          reserveStatus = this.bookings[this.itemIndex].status;
         } catch (error) {
           reserveStatus = "n/a";
         }
         if (reserveStatus === "reserved") {
           await this.$swal.fire({
-            title: 'Error',
-            text: 'No purchase of add-ons until guest is checked in.',
-            icon: 'error'
+            title: "Error",
+            text: "No purchase of add-ons until guest is checked in.",
+            icon: "error",
           });
           return false;
         }
@@ -5114,7 +6979,8 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
           this.itemCart.purqty = this.howMany[index];
           this.itemCart.category = "inclusion";
           this.itemCart.itemOption = "addons";
-          this.itemCart.totalCartPrice = parseFloat(item.priceRate) * parseFloat(this.howMany[index]);
+          this.itemCart.totalCartPrice =
+            parseFloat(item.priceRate) * parseFloat(this.howMany[index]);
           this.$swal.fire({
             title: "Success!",
             text: "Added to cart!",
@@ -5135,23 +7001,24 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
             // Access property here
             data.bookingID = this.bookings[this.itemIndex].itemID;
             // Make a POST request to the API to save the data
-            await axios.post(this.API_URL + 'transaction/item/', data)
-              .then(response => {
+            await axios
+              .post(this.API_URL + "transaction/item/", data)
+              .then((response) => {
                 // Log a success message to the console
                 this.itemCart.id = response.data.id;
               })
-              .catch(error => {
+              .catch((error) => {
                 // Log an error message to the console
-                console.error('Error saving data:', error);
+                console.error("Error saving data:", error);
               });
           } catch (e) {
             // Handle the error here
             data.bookingID = "walkin";
           }
-          console.log(this.itemCart)
+          console.log(this.itemCart);
           this.cart.push(this.itemCart);
           $("#shopModal").modal("toggle");
-          this.howMany[index] = '';
+          this.howMany[index] = "";
           this.itemCart = {
             id: 0,
             name: "",
@@ -5160,8 +7027,8 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
             counter: "",
             purqty: "",
             totalCartPrice: "",
-            category: ""
-          }
+            category: "",
+          };
         } else {
           this.$swal.fire({
             title: "Error!",
@@ -5177,57 +7044,59 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
         //   });
         // }
       } else {
-        this.$swal.fire({
-          title: "Error!",
-          text: "Supply first client's info.",
-          icon: "error",
-        }).then((result) => {
-          this.howMany[index] = '';
-          this.toggleAddAccountModal();
-        });
+        this.$swal
+          .fire({
+            title: "Error!",
+            text: "Supply first client's info.",
+            icon: "error",
+          })
+          .then((result) => {
+            this.howMany[index] = "";
+            this.toggleAddAccountModal();
+          });
       }
     },
     cancelItem(item) {
-      this.$swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.cart = this.cart.filter(
-            o => o.id !== item.id
-          );
-          if (this.itemIndex !== -1) {
-            axios.get(this.API_URL + `transaction/item/delete/${item.id}/`)
-              .then(response => {
-                this.$swal.fire(
-                  'Deleted!',
-                  'Your item has been deleted.',
-                  'success'
-                )
-                // perform any additional operations after successful delete
-              })
-              .catch(error => {
-                console.log(error)
-                this.$swal.fire(
-                  'Error!',
-                  'Failed to delete item.',
-                  'error'
-                )
-              })
-          } {
+      this.$swal
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, delete it!",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.cart = this.cart.filter((o) => o.id !== item.id);
+            if (this.itemIndex !== -1) {
+              axios
+                .get(this.API_URL + `transaction/item/delete/${item.id}/`)
+                .then((response) => {
+                  this.$swal.fire(
+                    "Deleted!",
+                    "Your item has been deleted.",
+                    "success"
+                  );
+                  // perform any additional operations after successful delete
+                })
+                .catch((error) => {
+                  console.log(error);
+                  this.$swal.fire("Error!", "Failed to delete item.", "error");
+                });
+            }
+            {
+            }
           }
-        }
-      })
+        });
     },
     async bookRoom(room) {
       const checkinDate = new Date(this.reservation.checkinDate);
       const checkoutDate = new Date(this.reservation.checkoutDate);
-      const numDays = Math.ceil((checkoutDate - checkinDate) / (1000 * 60 * 60 * 24));
+      const numDays = Math.ceil(
+        (checkoutDate - checkinDate) / (1000 * 60 * 60 * 24)
+      );
       if (this.isRoomAvailable(this.choice_room, checkinDate, checkoutDate)) {
         this.reservation.name = this.clientName;
         this.reservation.contactNumber = this.clientPhone;
@@ -5245,7 +7114,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
             room_price: this.reservation.room_price,
             remarks: this.reservation.remarks,
             contactNumber: this.reservation.contactNumber,
-            totalPrice: this.reservation.totalPrice
+            totalPrice: this.reservation.totalPrice,
           });
           this.reservations.push(this.reservation);
           this.reloadData();
@@ -5255,7 +7124,7 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
             room_type: "",
             room_price: "",
             contactNumber: "",
-            totalPrice: 0
+            totalPrice: 0,
           };
           this.$swal.fire({
             title: "Success!",
@@ -5293,9 +7162,9 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     },
     handleContextMenu(event) {
       event.preventDefault();
-      if (event.target.classList.contains('cv-item')) {
+      if (event.target.classList.contains("cv-item")) {
         //this.$refs.vueSimpleContextMenu1.showMenu(event, event.target.innerHTML);
-      } else if (event.target.classList.contains('cv-day')) {
+      } else if (event.target.classList.contains("cv-day")) {
         // const item = event.target.outerHTML.toString()
         // const strDate = item.split(" ")[4].replace('d', '');
         // const strDateDay = strDate.split("-")[2];
@@ -5321,28 +7190,30 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
   async mounted() {
     this.$refs.searchQuery.focus();
     this.$refs.searchQuery.blur();
-    $('.currentPeriod').click();
-    $('#suglist').hide();
-    this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
-    this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today())
+    $(".currentPeriod").click();
+    $("#suglist").hide();
+    this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today());
+    this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today());
     this.$nextTick(() => {
       // document.body.addEventListener('contextmenu', this.handleContextMenu);
     });
-    document.addEventListener('keydown', this.handleKeyPress);
+    document.addEventListener("keydown", this.handleKeyPress);
     const modal = this.$refs.modal;
     // Attach event listener for modal hidden event
     modal.addEventListener("hidden.bs.modal", this.handleModalClosed);
-    this.socket = new WebSocket(`ws://${this.API_URL.replace(/^https?:\/\//, '')}ws/realtime/`);
+    this.socket = new WebSocket(
+      `ws://${this.API_URL.replace(/^https?:\/\//, "")}ws/realtime/`
+    );
     //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
     const vm = this;
     this.socket.onmessage = function (e) {
       const data = JSON.parse(e.data);
-      console.log(data.message)
+      console.log(data.message);
       // $("#BookDayModal").modal("hide");
       vm.loadAlldata();
       vm.componentKey += 1;
     };
-  }
+  },
 };
 </script>
 <style>
@@ -5355,7 +7226,6 @@ body {
 
 #app {
   font-family: Calibri, sans-serif;
-
 }
 
 .calendar-parent {
@@ -5540,28 +7410,52 @@ img {
 .cv-item.task-progress {
   background-color: rgb(0, 170, 255);
   color: white;
-  font-family: Avenir, Avenir Next, Segoe UI, Helvetica, Arial, sans-serif;
+  font-family:
+    Avenir,
+    Avenir Next,
+    Segoe UI,
+    Helvetica,
+    Arial,
+    sans-serif;
   /* adjust the color as needed */
 }
 
 .cv-item.task-inspected {
   background-color: rgb(46, 215, 216);
   color: white;
-  font-family: Avenir, Avenir Next, Segoe UI, Helvetica, Arial, sans-serif;
+  font-family:
+    Avenir,
+    Avenir Next,
+    Segoe UI,
+    Helvetica,
+    Arial,
+    sans-serif;
   /* adjust the color as needed */
 }
 
 .cv-item.task-open {
   background-color: rgb(208, 31, 46);
   color: white;
-  font-family: Avenir, Avenir Next, Segoe UI, Helvetica, Arial, sans-serif;
+  font-family:
+    Avenir,
+    Avenir Next,
+    Segoe UI,
+    Helvetica,
+    Arial,
+    sans-serif;
   /* adjust the color as needed */
 }
 
 .cv-item.task-completed {
   background-color: rgb(255, 170, 0);
   color: white;
-  font-family: Avenir, Avenir Next, Segoe UI, Helvetica, Arial, sans-serif;
+  font-family:
+    Avenir,
+    Avenir Next,
+    Segoe UI,
+    Helvetica,
+    Arial,
+    sans-serif;
   /* adjust the color as needed */
 }
 
@@ -5654,10 +7548,18 @@ img {
 
 .come-from-modal.right.fade .modal-dialog {
   right: -320px;
-  -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
-  -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
-  -o-transition: opacity 0.3s linear, right 0.3s ease-out;
-  transition: opacity 0.3s linear, right 0.3s ease-out;
+  -webkit-transition:
+    opacity 0.3s linear,
+    right 0.3s ease-out;
+  -moz-transition:
+    opacity 0.3s linear,
+    right 0.3s ease-out;
+  -o-transition:
+    opacity 0.3s linear,
+    right 0.3s ease-out;
+  transition:
+    opacity 0.3s linear,
+    right 0.3s ease-out;
 }
 
 .come-from-modal.right.fade.in .modal-dialog {
