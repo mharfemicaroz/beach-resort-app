@@ -66,7 +66,7 @@
               <a
                 v-if="!isToggleBox"
                 href="#"
-                class="btn btn-link text-white text-decoration-none"
+                class="btn btn-link text-white text-decoration-none timeline"
                 @click="toggleTimeline"
               >
                 <i
@@ -601,19 +601,31 @@
                   style="font-size: large"
                 ></i>
               </button>
-              <button
-                type="button"
-                @click="toggleNotify"
-                :class="!isNotify ? 'btn btn-primary' : 'btn btn-danger'"
-                style="margin-right: 60px !important"
-              >
-                <i
+              <template v-if="userdata.role !== 'supervisor'">
+                <button
+                  type="button"
+                  v-if="!task.isNotify"
+                  @click="toggleNotify"
+                  :class="!isNotify ? 'btn btn-primary' : 'btn btn-danger'"
+                  style="margin-right: 60px !important"
+                >
+                  <i class="fa-solid fa-bell" style="font-size: large"></i>
+                </button>
+              </template>
+              <template v-else>
+                <button
+                  type="button"
                   v-if="task.isNotify"
-                  class="fa-solid fa-bell-slash wiggle-animation"
-                  style="font-size: large"
-                ></i>
-                <i v-else class="fa-solid fa-bell" style="font-size: large"></i>
-              </button>
+                  @click="toggleNotify"
+                  :class="!isNotify ? 'btn btn-primary' : 'btn btn-danger'"
+                  style="margin-right: 60px !important"
+                >
+                  <i
+                    class="fa-solid fa-bell-slash wiggle-animation"
+                    style="font-size: large"
+                  ></i>
+                </button>
+              </template>
 
               <select
                 v-if="!task.isCompleted"
@@ -1003,6 +1015,7 @@
                                 updateTasks(
                                   'changed status to ' + task.status.name
                                 );
+                                toggleNotify();
                                 task.status.isEditing = false;
                               "
                             >
@@ -1415,9 +1428,21 @@ export default {
       this.taskMembers = response2.data.filter(
         (item) => item.role === "errand"
       );
+
+      if (this.currentItemID !== "") {
+        const newitem = this.tasks.filter(
+          (o) => o.itemID === this.currentItemID
+        )[0].itemID;
+        this.setInitialData({ id: newitem });
+      }
+
       this.populateCalendarItems();
     },
     toggleNotify() {
+      this.switchNotify();
+      this.saveAction();
+    },
+    switchNotify() {
       this.task.isNotify = !this.task.isNotify;
       this.addComment(
         this.currentItemID,
@@ -1426,7 +1451,6 @@ export default {
           this.task.isNotify ? "notified supervisor" : "saw your notification"
         }`
       );
-      this.saveAction();
     },
     moveTasktoNewday() {
       if (this.countBackLogTasks === 0) {
@@ -1499,11 +1523,17 @@ export default {
       this.temptasks = [];
     },
     handleDragstart(e, o, source) {
+      if (this.userdata.role !== "supervisor") {
+        return;
+      }
       this.itemDragged = o;
       this.dragSource = source;
     },
     handleDragdrop(e, prop, source) {
       e.preventDefault();
+      if (this.userdata.role !== "supervisor") {
+        return;
+      }
       const data = this.itemDragged;
       if (data.isCompleted) {
         return;
@@ -1652,6 +1682,7 @@ export default {
       this.task.states.push(item);
       data.states = JSON.stringify(this.task.states);
       this.taskComment = "";
+      console.log(this.task);
     },
     completeTask() {
       this.task.isCompleted = !this.task.isCompleted;
@@ -1775,6 +1806,7 @@ export default {
           item.completionDate = data.completionDate;
 
           await axios.put(`${this.API_URL}task/${item.id}/`, data);
+
           this.taskRecord(`action:/updateTask`);
         }
 
@@ -1902,21 +1934,33 @@ export default {
       this.showDate = d;
     },
     onClickDay(d) {
+      if (this.userdata.role !== "supervisor") {
+        return;
+      }
       this.dayreserve = d;
       this.task.startDate = formatDate(this.dayreserve);
       this.task.endDate = formatDate(this.dayreserve);
       this.addNewTask();
     },
     setSelection(dateRange) {
+      if (this.userdata.role !== "supervisor") {
+        return;
+      }
       this.selectionEnd = dateRange[1];
       this.selectionStart = dateRange[0];
     },
     finishSelection(dateRange) {
+      if (this.userdata.role !== "supervisor") {
+        return;
+      }
       this.task.startDate = formatDate(dateRange[0]);
       this.task.endDate = formatDate(dateRange[1]);
       this.addNewTask();
     },
     onDrop(item, date) {
+      if (this.userdata.role !== "supervisor") {
+        return;
+      }
       this.setInitialData(item);
       const data = this.tasks[this.itemIndex];
       if (data.isCompleted) {
@@ -2042,6 +2086,13 @@ export default {
       vm.loadData();
       //vm.componentKey += 1;
     };
+
+    if (this.userdata.role !== "supervisor") {
+      setTimeout(() => {
+        this.toggleTimeline();
+        this.toggleTaskBox();
+      }, 1000);
+    }
   },
 };
 </script>
