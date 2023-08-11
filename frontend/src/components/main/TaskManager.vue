@@ -3,35 +3,50 @@
     <div class="row app-header">
       <div class="col-md-12">
         <div class="d-flex justify-content-between">
-          <a
-            class="navbar-brand text-white align-middlev vv vv v vv v"
-            href="#"
-          >
-            <div style="display: flex; align-items: center">
-              <img
-                src="@/assets/pantukan-waterworld-logo.png"
-                width="45"
-                height="45"
-                class="d-inline-block align-top"
-                alt="Pantukan Waterworld Logo"
-                style="margin-right: 10px"
-              />
-              <div class="icon-container">
-                <span class="h4">Task Manager v 1.0 </span>
-                <a
-                  href="#"
-                  v-if="userdata.role === 'supervisor'"
-                  class="btn btn-link text-decoration-none text-white"
-                  @click="toggleModal('settings-modal')"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="top"
-                  title="Show settings"
+          <div>
+            <a
+              class="navbar-brand text-white align-middlev vv vv v vv v"
+              href="#"
+            >
+              <div style="display: flex; align-items: center">
+                <img
+                  src="@/assets/pantukan-waterworld-logo.png"
+                  width="45"
+                  height="45"
+                  class="d-inline-block align-top"
+                  alt="Pantukan Waterworld Logo"
+                  style="margin-right: 10px"
+                />
+                <div class="icon-container" style="margin-right: 25px">
+                  <span class="h4">Task Manager v 1.0 </span>
+                  <a
+                    href="#"
+                    v-if="userdata.role === 'supervisor'"
+                    class="btn btn-link text-decoration-none text-white"
+                    @click="toggleModal('settings-modal')"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Show settings"
+                  >
+                    <i class="fa fa-bars" style="font-size: 24px"></i>
+                  </a>
+                </div>
+                <span
+                  class="search-bar-container"
+                  style="margin-right: 10px; display: flex; align-items: center"
                 >
-                  <i class="fa fa-bars" style="font-size: 24px"></i>
-                </a>
+                  <input
+                    v-model="searchText"
+                    type="text"
+                    class="form-control"
+                    placeholder="Search..."
+                    style="margin-right: 5px"
+                  />
+                  <i class="fa fa-search"></i>
+                </span>
               </div>
-            </div>
-          </a>
+            </a>
+          </div>
 
           <div class="d-flex justify-content-between icon-container">
             <div class="icon-wrapper">
@@ -1267,6 +1282,7 @@ export default {
       isToggleBox: false,
       itemDragged: null,
       dragSource: "",
+      searchText: "",
     };
   },
   computed: {
@@ -1284,6 +1300,11 @@ export default {
     todayTasks() {
       const currentDate = new Date().setHours(0, 0, 0, 0);
       return this.tasks
+        .filter((o) =>
+          (o.taskname + o.dept + o.status + o.person_name)
+            .toLowerCase()
+            .includes(this.searchText.toLowerCase())
+        )
         .filter((task) => {
           return (
             currentDate >= new Date(task.startDate).setHours(0, 0, 0, 0) &&
@@ -1515,11 +1536,16 @@ export default {
           completionDate: item.completionDate,
           processedBy: "su",
           groupkey: "",
-          states: item.states,
+          states: item.states.push({
+            created_at: new Date(),
+            actor: this.userdata.role,
+            comment: "changed startdate to " + formattedToday,
+          }),
         };
         await axios.put(`${this.API_URL}task/${item.id}/`, data);
         this.taskRecord(`action:/moveTasktoNewday`);
       }
+
       this.temptasks = [];
     },
     handleDragstart(e, o, source) {
@@ -1999,6 +2025,16 @@ export default {
       }
       this.task.itemID = this.currentItemID;
       this.populateCalendarItems();
+      this.addComment(
+        this.currentItemID,
+        this.userdata.role,
+        "changed startdate to " + this.task.startDate
+      );
+      this.addComment(
+        this.currentItemID,
+        this.userdata.role,
+        "changed enddate to " + this.task.endDate
+      );
       this.saveAction();
     },
     toggleModal(id) {
