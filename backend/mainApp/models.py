@@ -60,6 +60,7 @@ class Task(models.Model):
     states = models.TextField(null=True, blank=True)
     isCompleted = models.BooleanField(default=False)
     isNotify = models.BooleanField(default=False)
+    isNewMessage = models.BooleanField(default=False)
     completionDate = models.CharField(max_length=50, blank=True, null=True)
 
 

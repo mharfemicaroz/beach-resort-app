@@ -273,12 +273,23 @@
                     @click="onBoxItemClick(itemData)"
                   >
                     <div class="d-flex justify-content-between">
-                      <span
+                      <span class="list-txtdesc"
                         >{{ itemData.person_name }}-{{ itemData.taskname }}
                       </span>
                       <span v-if="itemData.isNotify" class="p-0 m-0">
                         <i
                           class="fa-solid fa-bell text-white wiggle-animation"
+                          style="font-size: 24px"
+                        ></i>
+                      </span>
+                      <span
+                        v-if="
+                          itemData.isNewMessage && checkLastMessage(itemData)
+                        "
+                        class="p-0 m-0"
+                      >
+                        <i
+                          class="fa-solid fa-message text-white wiggle-animation"
                           style="font-size: 24px"
                         ></i>
                       </span>
@@ -350,7 +361,9 @@
                     :key="index2"
                   >
                     <div class="d-flex justify-content-between">
-                      <span>{{ itemData.taskname }}-{{ itemData.dept }}</span>
+                      <span class="list-txtdesc"
+                        >{{ itemData.taskname }}-{{ itemData.dept }}</span
+                      >
                       <span v-if="itemData.isNotify" class="p-0 m-0">
                         <i
                           class="fa-solid fa-bell text-white wiggle-animation"
@@ -379,7 +392,18 @@
           >
             <div class="card c-h" style="width: 350px; height: 335px">
               <div
-                class="card-header bg-light text-dark d-flex justify-content-between"
+                class="card-header text-white d-flex justify-content-between"
+                :class="[
+                  `${
+                    item.status === 'Open'
+                      ? 'task-open'
+                      : item.status === 'In progress'
+                      ? 'task-progress'
+                      : item.status === 'Inspected'
+                      ? 'task-inspected'
+                      : ''
+                  }`,
+                ]"
               >
                 <h3>
                   <i class="fa-solid fa-info-circle mr-3 p-0"></i>&nbsp;{{
@@ -387,7 +411,7 @@
                   }}
                 </h3>
 
-                <button class="btn text-white bg-danger">
+                <button class="btn text-dark bg-light">
                   {{ item.data.length }}
                 </button>
               </div>
@@ -419,7 +443,7 @@
                     :key="index2"
                   >
                     <div class="d-flex justify-content-between">
-                      <span
+                      <span class="list-txtdesc"
                         >{{ itemData.person_name }}-{{ itemData.taskname }}-{{
                           itemData.dept
                         }}</span
@@ -450,7 +474,7 @@
     style="display: none; padding-right: 17px"
     aria-modal="true"
   >
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 class="modal-title" id="settings-modalLabel">Settings</h4>
@@ -549,35 +573,50 @@
             <div class="col-md-6">
               <div class="form-group">
                 <table
-                  class="table"
-                  style="table-layout: fixed; word-wrap: break-word"
+                  class="table table-bordered table-striped"
+                  style="word-wrap: break-word"
                 >
                   <thead>
                     <tr>
-                      <th scope="col">Status</th>
-                      <th scope="col">Color</th>
+                      <th scope="col" style="width: 70% !important">
+                        Status <i class="fas fa-tasks align-icon"></i>
+                      </th>
+                      <th scope="col" style="width: 30% !important">
+                        Color <i class="fas fa-palette align-icon"></i>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td>Open</td>
-                      <td class="task-open" style="width: 25px"></td>
+                      <td>
+                        Open <i class="fas fa-folder-open align-icon"></i>
+                      </td>
+                      <td class="task-open bg-primary"></td>
                     </tr>
                     <tr>
-                      <td>In progress</td>
-                      <td class="task-progress" style="width: 25px"></td>
+                      <td>
+                        In progress <i class="fas fa-spinner align-icon"></i>
+                      </td>
+                      <td class="task-progress bg-warning"></td>
                     </tr>
                     <tr>
-                      <td>Inspected</td>
-                      <td class="task-inspected" style="width: 25px"></td>
+                      <td>
+                        Inspected <i class="fas fa-search align-icon"></i>
+                      </td>
+                      <td class="task-inspected bg-info"></td>
                     </tr>
                     <tr>
-                      <td>Completed</td>
-                      <td class="task-completed" style="width: 25px"></td>
+                      <td>
+                        Completed <i class="fas fa-check-circle align-icon"></i>
+                      </td>
+                      <td class="task-completed bg-success"></td>
                     </tr>
                     <tr>
-                      <td>Incomplete</td>
-                      <td class="task-incomplete" style="width: 25px"></td>
+                      <td>
+                        Incomplete
+                        <i class="fas fa-times-circle align-icon"></i>
+                      </td>
+                      <td class="task-incomplete bg-danger"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -1270,6 +1309,7 @@ export default {
             role: "",
           },
         },
+        isNewMessage: false,
         isNotify: false,
         isCompleted: false,
         completionDate: "",
@@ -1473,8 +1513,9 @@ export default {
       if (this.currentItemID !== "") {
         const newitem = this.tasks.filter(
           (o) => o.itemID === this.currentItemID
-        )[0].itemID;
-        this.setInitialData({ id: newitem });
+        )[0];
+        const newid = newitem.itemID;
+        this.setInitialData({ id: newid });
       }
 
       this.populateCalendarItems();
@@ -1559,9 +1600,11 @@ export default {
           taskdesc: item.taskdesc,
           status: item.status,
           itemID: item.itemID,
+          isNewMessage: item.isNewMessage,
+          isNotify: item.isNotify,
           isCompleted: item.isCompleted,
           completionDate: item.completionDate,
-          processedBy: "su",
+          processedBy: this.userdata.fName + " " + this.userdata.lName,
           groupkey: "",
           states: JSON.stringify(newstates),
         };
@@ -1612,6 +1655,8 @@ export default {
             role: data.person_role,
           },
         },
+        isNewMessage: data.isNewMessage,
+        isNotify: data.isNotify,
         isCompleted: data.isCompleted,
         completionDate: data.completionDate,
         states: JSON.parse(data.states),
@@ -1731,7 +1776,6 @@ export default {
       this.task.states.push(item);
       data.states = JSON.stringify(this.task.states);
       this.taskComment = "";
-      console.log(this.task);
     },
     completeTask() {
       this.task.isCompleted = !this.task.isCompleted;
@@ -1751,6 +1795,7 @@ export default {
     },
     updateTasks(remarks) {
       this.addComment(this.currentItemID, this.userdata.role, remarks);
+      this.task.isNewMessage = true;
       this.saveAction();
     },
     saveTaskChanges() {
@@ -1800,6 +1845,15 @@ export default {
         }
       });
     },
+    checkLastMessage(e) {
+      const states = JSON.parse(e.states);
+      const lastMessage = states[states.length - 1];
+      const actor = lastMessage.actor;
+      if (actor !== this.userdata.role) {
+        return true;
+      }
+      return false;
+    },
     async saveAction() {
       let data = {
         taskname: this.task.name,
@@ -1812,14 +1866,16 @@ export default {
         taskdesc: this.task.desc,
         status: this.task.status.name,
         itemID: this.task.itemID,
+        isNewMessage: this.task.isNewMessage,
         isNotify: this.task.isNotify,
         isCompleted: this.task.isCompleted,
         completionDate: this.task.completionDate,
-        processedBy: "su",
+        processedBy: this.userdata.fName + " " + this.userdata.lName,
         groupkey: "",
         states: JSON.stringify(this.task.states),
       };
       await axios.get(this.API_URL + "task/").then(async (response) => {
+        const oldtask = this.tasks;
         this.tasks = response.data;
         const isDataExists =
           this.tasks.findIndex((o) => o.itemID === data.itemID) !== -1;
@@ -1850,6 +1906,7 @@ export default {
           item.taskdesc = data.taskdesc;
           item.status = data.status;
           item.states = data.states;
+          item.isNewMessage = data.isNewMessage;
           item.isNotify = data.isNotify;
           item.isCompleted = data.isCompleted;
           item.completionDate = data.completionDate;
@@ -1872,7 +1929,12 @@ export default {
     },
     onClickItem(e) {
       this.setInitialData(e);
+      this.toggleNewMessage(e);
       this.toggleModal("loadTaskModal");
+    },
+    toggleNewMessage() {
+      this.task.isNewMessage = false;
+      this.saveAction();
     },
     setInitialData(e) {
       this.currentItemID = e.id;
@@ -1895,6 +1957,7 @@ export default {
             role: data.person_role,
           },
         },
+        isNewMessage: data.isNewMessage,
         isNotify: data.isNotify,
         isCompleted: data.isCompleted,
         completionDate: data.completionDate,
@@ -1952,6 +2015,7 @@ export default {
         "t" + new Date().getTime().toString() + this.generateUniqueString();
       this.task.itemID = id;
       this.currentItemID = id;
+      this.task.isNewMessage = false;
       this.task.isCompleted = false;
       this.task.isNotify = false;
       this.task.actualStartTime = new Date().toLocaleTimeString();
@@ -2137,9 +2201,7 @@ export default {
     this.socket.onmessage = function (e) {
       const data = JSON.parse(e.data);
       console.log(data.message);
-      // $("#BookDayModal").modal("hide");
       vm.loadData();
-      //vm.componentKey += 1;
     };
 
     if (this.userdata.role !== "supervisor") {
@@ -2294,5 +2356,15 @@ export default {
 .wiggle-animation {
   animation: wiggle 0.75s infinite;
   /* Adjust animation duration as needed */
+}
+.align-icon {
+  float: right;
+}
+
+.list-txtdesc {
+  width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
