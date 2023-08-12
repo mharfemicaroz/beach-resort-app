@@ -370,6 +370,17 @@
                           style="font-size: 24px"
                         ></i>
                       </span>
+                      <span
+                        v-if="
+                          itemData.isNewMessage && checkLastMessage(itemData)
+                        "
+                        class="p-0 m-0"
+                      >
+                        <i
+                          class="fa-solid fa-message text-white wiggle-animation"
+                          style="font-size: 24px"
+                        ></i>
+                      </span>
                     </div>
                   </li>
                 </ul>
@@ -451,6 +462,17 @@
                       <span v-if="itemData.isNotify" class="p-0 m-0">
                         <i
                           class="fa-solid fa-bell text-dark wiggle-animation"
+                          style="font-size: 24px"
+                        ></i>
+                      </span>
+                      <span
+                        v-if="
+                          itemData.isNewMessage && checkLastMessage(itemData)
+                        "
+                        class="p-0 m-0"
+                      >
+                        <i
+                          class="fa-solid fa-message text-white wiggle-animation"
                           style="font-size: 24px"
                         ></i>
                       </span>
