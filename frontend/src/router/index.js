@@ -57,7 +57,7 @@ const router = createRouter({
       component: Booking,     
       meta: { 
         requiresAuth: true,
-        roles: ["superuser", "reservationist", "frontdesk"]
+        roles: ["superuser", "reservationist", "frontdesk","supervisor","supervisor-aide"]
       },
     },    
     // {

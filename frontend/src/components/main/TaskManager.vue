@@ -229,8 +229,8 @@
                     class="fas fa-pizza-slice mr-3 p-0"
                   ></i>
                   <i
-                    v-else-if="item.dept === 'Pool'"
-                    class="fas fa-swimming-pool mr-3 p-0"
+                    v-else-if="item.dept === 'Pools'"
+                    class="fa-solid fa-person-swimming mr-3 p-0"
                   ></i>
                   {{ item.dept }}
                 </h3>
@@ -561,15 +561,23 @@
                   <tbody>
                     <tr>
                       <td>Open</td>
-                      <td style="background-color: #ef5350; width: 25px"></td>
+                      <td class="task-open" style="width: 25px"></td>
                     </tr>
                     <tr>
                       <td>In progress</td>
-                      <td style="background-color: #66bb6a; width: 25px"></td>
+                      <td class="task-progress" style="width: 25px"></td>
                     </tr>
                     <tr>
                       <td>Inspected</td>
-                      <td style="background-color: #5c6bc0; width: 25px"></td>
+                      <td class="task-inspected" style="width: 25px"></td>
+                    </tr>
+                    <tr>
+                      <td>Completed</td>
+                      <td class="task-completed" style="width: 25px"></td>
+                    </tr>
+                    <tr>
+                      <td>Incomplete</td>
+                      <td class="task-incomplete" style="width: 25px"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -985,7 +993,7 @@
                               <option value="Beach">Beach</option>
                               <option value="Resto">Resto</option>
                               <option value="Rooms">Rooms</option>
-                              <option value="Rooms">Pools</option>
+                              <option value="Pools">Pools</option>
                               <!-- Other options here -->
                             </select>
                           </div>
@@ -1247,13 +1255,13 @@ export default {
       dayreserve: new Date(),
       task: {
         itemID: "",
-        name: "test",
+        name: "",
         dept: {
-          name: "Beach",
+          name: "",
           isEditing: false,
         },
         status: {
-          name: "Open",
+          name: "",
           isEditing: false,
         },
         assign: {
@@ -1283,6 +1291,11 @@ export default {
       itemDragged: null,
       dragSource: "",
       searchText: "",
+      statusOrder: {
+        Open: 0,
+        "In progress": 1,
+        Inspected: 2,
+      },
     };
   },
   computed: {
@@ -1312,13 +1325,20 @@ export default {
           );
         })
         .sort((a, b) => {
-          if (a.person_name.toLowerCase() < b.person_name.toLowerCase())
-            return -1;
-          if (a.person_name.toLowerCase() > b.person_name.toLowerCase())
-            return 1;
-        })
-        .sort((a, b) => {
-          return b.isNotify - a.isNotify;
+          // Sort by isNotify
+          if (b.isNotify !== a.isNotify) {
+            return b.isNotify - a.isNotify;
+          }
+
+          // If person_name is also same, sort by status
+          return this.statusOrder[a.status] - this.statusOrder[b.status];
+
+          // If isNotify is same, sort by person_name
+          if (a.person_name.toLowerCase() !== b.person_name.toLowerCase()) {
+            return a.person_name.toLowerCase() < b.person_name.toLowerCase()
+              ? -1
+              : 1;
+          }
         });
     },
     aggregateByPerson() {
@@ -1521,6 +1541,13 @@ export default {
         const endDate = new Date(item.endDate);
         endDate.setDate(endDate.getDate() + daysDifference); // Shift the endDate by the same difference
 
+        const newstates = JSON.parse(item.states);
+        newstates.push({
+          created_at: new Date(),
+          actor: this.userdata.role,
+          comment: "changed startdate to " + formattedToday,
+        });
+
         let data = {
           taskname: item.taskname,
           actualStartTime: item.actualStartTime,
@@ -1536,16 +1563,11 @@ export default {
           completionDate: item.completionDate,
           processedBy: "su",
           groupkey: "",
-          states: item.states.push({
-            created_at: new Date(),
-            actor: this.userdata.role,
-            comment: "changed startdate to " + formattedToday,
-          }),
+          states: JSON.stringify(newstates),
         };
         await axios.put(`${this.API_URL}task/${item.id}/`, data);
-        this.taskRecord(`action:/moveTasktoNewday`);
       }
-
+      this.taskRecord(`action:/moveTasktoNewday`);
       this.temptasks = [];
     },
     handleDragstart(e, o, source) {
@@ -1614,6 +1636,7 @@ export default {
         $(".calendar-parent").show(1000);
         $(".task-box").show(1000);
         $(".person-box").show(1000);
+        $(".status-box").show(1000);
       }
     },
     toggleBox() {
@@ -1899,33 +1922,28 @@ export default {
       this.isDropdownVisible = !this.isDropdownVisible;
     },
     addNewTask() {
-      (this.task = {
-        itemID: "",
+      this.task.name = "";
+      this.task.dept = {
         name: "",
-        dept: {
-          name: "",
-          isEditing: false,
+        isEditing: false,
+      };
+      this.task.status = {
+        name: "",
+        isEditing: false,
+      };
+      this.task.assign = {
+        person: {
+          name: "Unassigned",
+          role: "",
         },
-        status: {
-          name: "",
-          isEditing: false,
-        },
-        assign: {
-          person: {
-            name: "Unassigned",
-            role: "",
-          },
-        },
-        isNotify: false,
-        isCompleted: false,
-        completionDate: "",
-        states: [],
-        actualStartTime: new Date().toLocaleTimeString(),
-        startDate: formatDate(new Date()),
-        endDate: formatDate(new Date()),
-        desc: "",
-      }),
-        this.toggleModal("addTaskModal");
+      };
+      this.task.completionDate = "";
+      this.task.desc = "";
+      this.task.created_at = new Date().toLocaleString();
+      this.task.modified_at = new Date().toLocaleString();
+      this.taskComment = "";
+
+      this.toggleModal("addTaskModal");
     },
     loadNewTask() {
       this.toggleModal("addTaskModal");
@@ -1935,6 +1953,7 @@ export default {
       this.task.itemID = id;
       this.currentItemID = id;
       this.task.isCompleted = false;
+      this.task.isNotify = false;
       this.task.actualStartTime = new Date().toLocaleTimeString();
       this.task.states = [
         {
