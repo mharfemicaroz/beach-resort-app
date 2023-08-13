@@ -207,22 +207,22 @@
       <div class="col-md-12">
         <div class="d-flex flex-row bd-highlight mb-3">
           <div
-            class="p-2 bd-highlight"
+            class="p-0 m-0 bd-highlight"
             v-for="(item, index) in aggregateByDept"
             :key="index"
           >
-            <div class="card c-h" style="width: 350px; height: 335px">
+            <div class="card c-h" style="width: 277px; height: 335px">
               <div
                 class="card-header bg-light text-dark d-flex justify-content-between"
               >
-                <h3>
+                <h4>
                   <i
                     v-if="item.dept === 'Beach'"
                     class="fa fa-umbrella-beach mr-3 p-0"
                   ></i>
                   <i
-                    v-else-if="item.dept === 'Rooms'"
-                    class="fa fa-bed mr-3 p-0"
+                    v-else-if="item.dept === 'Housekeeping'"
+                    class="fas fa-broom mr-3 p-0"
                   ></i>
                   <i
                     v-else-if="item.dept === 'Resto'"
@@ -232,10 +232,25 @@
                     v-else-if="item.dept === 'Pools'"
                     class="fa-solid fa-person-swimming mr-3 p-0"
                   ></i>
+                  <i
+                    v-else-if="item.dept === 'Office'"
+                    class="fas fa-building mr-3 p-0"
+                  ></i>
+                  <i
+                    v-else-if="item.dept === 'Maintenance'"
+                    class="fas fa-tools mr-3 p-0"
+                  ></i>
+                  <i
+                    v-else-if="item.dept === 'Security'"
+                    class="fas fa-shield-alt mr-3 p-0"
+                  ></i>
                   {{ item.dept }}
-                </h3>
+                </h4>
 
-                <button class="btn text-white bg-danger">
+                <button
+                  class="btn text-white bg-danger"
+                  style="font-size: small"
+                >
                   {{ item.data.length }}
                 </button>
               </div>
@@ -244,7 +259,7 @@
                 @dragover="handleDragover($event)"
                 @drop="handleDragdrop($event, item, 'task')"
                 style="
-                  width: 350px;
+                  width: 277px;
                   height: 335px;
                   overflow-y: auto;
                   overflow-x: hidden;
@@ -279,7 +294,7 @@
                       <span v-if="itemData.isNotify" class="p-0 m-0">
                         <i
                           class="fa-solid fa-bell text-white wiggle-animation"
-                          style="font-size: 24px"
+                          style="font-size: 18px"
                         ></i>
                       </span>
                       <span
@@ -290,7 +305,104 @@
                       >
                         <i
                           class="fa-solid fa-message text-white wiggle-animation"
-                          style="font-size: 24px"
+                          style="font-size: 18px"
+                        ></i>
+                      </span>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="row status-box"
+      :style="`width:${calcMeasure.innerWidth}; overflow-y: hidden; overflow-x: auto`"
+    >
+      <div class="col-md-12">
+        <div class="d-flex flex-row bd-highlight mb-3">
+          <div
+            class="p-0 bd-highlight"
+            v-for="(item, index) in aggregateByStatus"
+            :key="index"
+          >
+            <div class="card c-h" style="width: 277px; height: 335px">
+              <div
+                class="card-header text-white d-flex justify-content-between"
+                :class="[
+                  `${
+                    item.status === 'Open'
+                      ? 'task-open'
+                      : item.status === 'In progress'
+                      ? 'task-progress'
+                      : item.status === 'Inspected'
+                      ? 'task-inspected'
+                      : ''
+                  }`,
+                ]"
+              >
+                <h4>
+                  <i class="fa-solid fa-info-circle mr-3 p-0"></i>&nbsp;{{
+                    item.status
+                  }}
+                </h4>
+                <button
+                  class="btn text-white bg-danger"
+                  style="font-size: small"
+                >
+                  {{ item.data.length }}
+                </button>
+              </div>
+              <div
+                class="card-body c-h"
+                @dragover="handleDragover($event)"
+                @drop="handleDragdrop($event, item, 'status')"
+                style="
+                  width: 277px;
+                  height: 335px;
+                  overflow-y: auto;
+                  overflow-x: hidden;
+                "
+              >
+                <ul class="list-group">
+                  <li
+                    class="list-group-item mb-1 list-item"
+                    draggable="true"
+                    @dragstart="handleDragstart($event, itemData, 'status')"
+                    :class="[
+                      `${
+                        itemData.isCompleted
+                          ? 'task-completed'
+                          : 'task-incomplete'
+                      }`,
+                    ]"
+                    v-for="(itemData, index2) in item.data"
+                    @click="onBoxItemClick(itemData)"
+                    :key="index2"
+                  >
+                    <div class="d-flex justify-content-between">
+                      <span class="list-txtdesc"
+                        >{{ itemData.person_name }}-{{ itemData.taskname }}-{{
+                          itemData.dept
+                        }}</span
+                      >
+                      <span v-if="itemData.isNotify" class="p-0 m-0">
+                        <i
+                          class="fa-solid fa-bell text-dark wiggle-animation"
+                          style="font-size: 18px"
+                        ></i>
+                      </span>
+                      <span
+                        v-if="
+                          itemData.isNewMessage && checkLastMessage(itemData)
+                        "
+                        class="p-0 m-0"
+                      >
+                        <i
+                          class="fa-solid fa-message text-dark wiggle-animation"
+                          style="font-size: 18px"
                         ></i>
                       </span>
                     </div>
@@ -309,21 +421,24 @@
       <div class="col-md-12">
         <div class="d-flex flex-row bd-highlight mb-3">
           <div
-            class="p-2 bd-highlight"
+            class="p-0 bd-highlight"
             v-for="(item, index) in aggregateByPerson"
             :key="index"
           >
-            <div class="card c-h" style="width: 350px; height: 335px">
+            <div class="card c-h" style="width: 277px; height: 335px">
               <div
                 class="card-header bg-light text-dark d-flex justify-content-between"
               >
-                <h3>
+                <h4>
                   <i class="fa-solid fa-user mr-3 p-0"></i>&nbsp;{{
                     item.person_name
                   }}
-                </h3>
+                </h4>
 
-                <button class="btn text-white bg-danger">
+                <button
+                  class="btn text-white bg-danger"
+                  style="font-size: small"
+                >
                   {{ item.data.length }}
                 </button>
               </div>
@@ -332,7 +447,7 @@
                 @dragover="handleDragover($event)"
                 @drop="handleDragdrop($event, item, 'person')"
                 style="
-                  width: 350px;
+                  width: 277px;
                   height: 335px;
                   overflow-y: auto;
                   overflow-x: hidden;
@@ -367,7 +482,7 @@
                       <span v-if="itemData.isNotify" class="p-0 m-0">
                         <i
                           class="fa-solid fa-bell text-white wiggle-animation"
-                          style="font-size: 24px"
+                          style="font-size: 18px"
                         ></i>
                       </span>
                       <span
@@ -378,102 +493,7 @@
                       >
                         <i
                           class="fa-solid fa-message text-white wiggle-animation"
-                          style="font-size: 24px"
-                        ></i>
-                      </span>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="row status-box"
-      :style="`width:${calcMeasure.innerWidth}; overflow-y: hidden; overflow-x: auto`"
-    >
-      <div class="col-md-12">
-        <div class="d-flex flex-row bd-highlight mb-3">
-          <div
-            class="p-2 bd-highlight"
-            v-for="(item, index) in aggregateByStatus"
-            :key="index"
-          >
-            <div class="card c-h" style="width: 350px; height: 335px">
-              <div
-                class="card-header text-white d-flex justify-content-between"
-                :class="[
-                  `${
-                    item.status === 'Open'
-                      ? 'task-open'
-                      : item.status === 'In progress'
-                      ? 'task-progress'
-                      : item.status === 'Inspected'
-                      ? 'task-inspected'
-                      : ''
-                  }`,
-                ]"
-              >
-                <h3>
-                  <i class="fa-solid fa-info-circle mr-3 p-0"></i>&nbsp;{{
-                    item.status
-                  }}
-                </h3>
-
-                <button class="btn text-dark bg-light">
-                  {{ item.data.length }}
-                </button>
-              </div>
-              <div
-                class="card-body c-h"
-                @dragover="handleDragover($event)"
-                @drop="handleDragdrop($event, item, 'status')"
-                style="
-                  width: 350px;
-                  height: 335px;
-                  overflow-y: auto;
-                  overflow-x: hidden;
-                "
-              >
-                <ul class="list-group">
-                  <li
-                    class="list-group-item mb-1 list-item"
-                    draggable="true"
-                    @dragstart="handleDragstart($event, itemData, 'status')"
-                    :class="[
-                      `${
-                        itemData.isCompleted
-                          ? 'task-completed'
-                          : 'task-incomplete'
-                      }`,
-                    ]"
-                    v-for="(itemData, index2) in item.data"
-                    @click="onBoxItemClick(itemData)"
-                    :key="index2"
-                  >
-                    <div class="d-flex justify-content-between">
-                      <span class="list-txtdesc"
-                        >{{ itemData.person_name }}-{{ itemData.taskname }}-{{
-                          itemData.dept
-                        }}</span
-                      >
-                      <span v-if="itemData.isNotify" class="p-0 m-0">
-                        <i
-                          class="fa-solid fa-bell text-dark wiggle-animation"
-                          style="font-size: 24px"
-                        ></i>
-                      </span>
-                      <span
-                        v-if="
-                          itemData.isNewMessage && checkLastMessage(itemData)
-                        "
-                        class="p-0 m-0"
-                      >
-                        <i
-                          class="fa-solid fa-message text-white wiggle-animation"
-                          style="font-size: 24px"
+                          style="font-size: 18px"
                         ></i>
                       </span>
                     </div>
@@ -1051,10 +1071,16 @@
                                 task.dept.isEditing = false;
                               "
                             >
+                              <option value="">-- Department --</option>
                               <option value="Beach">Beach</option>
+                              <option value="Office">Front Office</option>
                               <option value="Resto">Resto</option>
-                              <option value="Rooms">Rooms</option>
                               <option value="Pools">Pools</option>
+                              <option value="Maintenance">
+                                Maintenance/Engineering
+                              </option>
+                              <option value="Security">Security</option>
+                              <option value="Housekeeping">Housekeeping</option>
                               <!-- Other options here -->
                             </select>
                           </div>
@@ -1213,9 +1239,12 @@
                 <select class="form-control" v-model="task.dept.name" required>
                   <option value="">-- Department --</option>
                   <option value="Beach">Beach</option>
-                  <option value="Rooms">Rooms</option>
+                  <option value="Office">Front Office</option>
                   <option value="Resto">Resto</option>
                   <option value="Pools">Pools</option>
+                  <option value="Maintenance">Maintenance/Engineering</option>
+                  <option value="Security">Security</option>
+                  <option value="Housekeeping">Housekeeping</option>
                 </select>
               </div>
               <div class="col-sm-6">
@@ -1369,7 +1398,7 @@ export default {
     calcMeasure() {
       return {
         w1: parseFloat(window.innerWidth) - 300 + "px",
-        h1: parseFloat(window.innerHeight) - 143 + "px",
+        h1: parseFloat(window.innerHeight) - 130 + "px",
       };
     },
     todayTasks() {
@@ -2259,6 +2288,7 @@ export default {
     Helvetica,
     Arial,
     sans-serif;
+  font-size: medium;
 }
 
 .app-header {

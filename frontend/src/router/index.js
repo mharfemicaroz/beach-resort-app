@@ -3,6 +3,7 @@ import { useAuthStore } from "../stores/authStore";
 import login from "../components/auth/Login.vue";
 import Main from "../components/main/MainComponent.vue";
 import Booking from "../components/main/BookingComponent.vue";
+import BookingMgr from "../components/main/BookingManager.vue";
 import Cashier from "../components/main/CashierComponent.vue";
 import Inventory from "../components/main/InventoryComponent.vue";
 import GuestCounter from "../components/main/GuestCounter.vue";
@@ -60,6 +61,15 @@ const router = createRouter({
         roles: ["superuser", "reservationist", "frontdesk","supervisor","supervisor-aide"]
       },
     },    
+    {
+      path: "/booking_mgr",
+      name: "booking_mgr",
+      component: BookingMgr,     
+      meta: { 
+        requiresAuth: true,
+        roles: ["superuser", "reservationist", "frontdesk","supervisor","supervisor-aide"]
+      },
+    },   
     // {
     //   path: "/reception",
     //   name: "reception",
