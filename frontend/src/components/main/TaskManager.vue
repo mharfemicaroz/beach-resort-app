@@ -288,9 +288,7 @@
                     @click="onBoxItemClick(itemData)"
                   >
                     <div class="d-flex justify-content-between">
-                      <span class="list-txtdesc"
-                        >{{ itemData.person_name }}-{{ itemData.taskname }}
-                      </span>
+                      <span class="list-txtdesc">{{ itemData.taskname }} </span>
                       <span v-if="itemData.isNotify" class="p-0 m-0">
                         <i
                           class="fa-solid fa-bell text-white wiggle-animation"
@@ -348,10 +346,7 @@
                     item.status
                   }}
                 </h4>
-                <button
-                  class="btn text-white bg-danger"
-                  style="font-size: small"
-                >
+                <button class="btn text-dark bg-light" style="font-size: small">
                   {{ item.data.length }}
                 </button>
               </div>
@@ -383,11 +378,7 @@
                     :key="index2"
                   >
                     <div class="d-flex justify-content-between">
-                      <span class="list-txtdesc"
-                        >{{ itemData.person_name }}-{{ itemData.taskname }}-{{
-                          itemData.dept
-                        }}</span
-                      >
+                      <span class="list-txtdesc">{{ itemData.taskname }}</span>
                       <span v-if="itemData.isNotify" class="p-0 m-0">
                         <i
                           class="fa-solid fa-bell text-dark wiggle-animation"
@@ -476,9 +467,7 @@
                     :key="index2"
                   >
                     <div class="d-flex justify-content-between">
-                      <span class="list-txtdesc"
-                        >{{ itemData.taskname }}-{{ itemData.dept }}</span
-                      >
+                      <span class="list-txtdesc">{{ itemData.taskname }}</span>
                       <span v-if="itemData.isNotify" class="p-0 m-0">
                         <i
                           class="fa-solid fa-bell text-white wiggle-animation"
@@ -2178,7 +2167,7 @@ export default {
       this.calendarItems = this.tasks.map((task) => {
         const startDate = task.startDate;
         const endDate = task.endDate;
-        const title = `${task.taskname}-${task.dept}<span style="display:none">~${task.itemID}~</span>`;
+        const title = `${task.taskname}<span style="display:none">~${task.itemID}~</span>`;
         const id = task.itemID;
         const tooltip = "test";
         let classes = "";
