@@ -17,6 +17,7 @@ app.config.globalProperties = {
   APP_NAME: import.meta.env.VITE_APP_NAME,
   APP_LOGO_NAME: import.meta.env.VITE_APP_LOGO_NAME,
   SITE_ADDRESS: import.meta.env.VITE_SITE_ADDRESS,
+  LOGIN_BG: import.meta.env.VITE_LOGIN_BG.split(" "),
   EVALUATION_STAGE: false,
   EVALUATION_TIME: 15,
   API_URL: `http://${window.location.hostname}:8081/`,

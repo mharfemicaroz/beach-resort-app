@@ -2178,7 +2178,7 @@ export default {
       this.calendarItems = this.tasks.map((task) => {
         const startDate = task.startDate;
         const endDate = task.endDate;
-        const title = `${task.person_name}-${task.taskname}-${task.dept}<span style="display:none">~${task.itemID}~</span>`;
+        const title = `${task.taskname}-${task.dept}<span style="display:none">~${task.itemID}~</span>`;
         const id = task.itemID;
         const tooltip = "test";
         let classes = "";

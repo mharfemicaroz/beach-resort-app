@@ -17,8 +17,8 @@
           >
             <div class="text-center">
               <img
-                src="@/assets/pantukan-waterworld-logo.png"
-                alt="Pantukan Waterworld Logo"
+                :src="`/src/assets/${this.APP_LOGO_NAME}`"
+                alt="Logo"
                 class="img-fluid mx-auto d-block"
                 style="max-width: 200px"
               />
@@ -81,19 +81,14 @@ export default {
   data() {
     return {
       backgroundIndex: 0,
-      backgrounds: [
-        "src/assets/beach-resort-background1.jpg",
-        "src/assets/beach-resort-background2.jpg",
-        "src/assets/beach-resort-background3.jpg",
-        "src/assets/beach-resort-background4.jpg",
-      ],
+      backgrounds: this.LOGIN_BG,
       username: "",
       password: "",
     };
   },
   computed: {
     currentBackground() {
-      return `url(${this.backgrounds[this.backgroundIndex]})`;
+      return `url(src/assets/${this.backgrounds[this.backgroundIndex]})`;
     },
   },
   methods: {
