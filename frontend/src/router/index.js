@@ -4,7 +4,7 @@ import login from "../components/auth/Login.vue";
 import Main from "../components/main/MainComponent.vue";
 import Booking from "../components/main/BookingComponent.vue";
 import BookingMgr from "../components/main/BookingManager.vue";
-import Cashier from "../components/main/CashierComponent.vue";
+import Restaurant from "../components/main/RestaurantComponent.vue";
 import Inventory from "../components/main/InventoryComponent.vue";
 import GuestCounter from "../components/main/GuestCounter.vue";
 import TaskManager from "../components/main/TaskManager.vue";
@@ -29,74 +29,92 @@ const router = createRouter({
       path: "/main",
       name: "main",
       component: Main,
-      meta: { 
+      meta: {
         requiresAuth: true,
-        roles: ["superuser"]
+        roles: ["superuser"],
       },
     },
     {
       path: "/counter",
       name: "counter",
       component: GuestCounter,
-      meta: { 
+      meta: {
         requiresAuth: true,
-        roles: ["superuser","guard"]
+        roles: ["superuser", "guard"],
       },
     },
     {
       path: "/taskmgr",
       name: "taskmgr",
       component: TaskManager,
-      meta: { 
+      meta: {
         requiresAuth: true,
-        roles: ["superuser","supervisor","supervisor-aide"]
+        roles: ["superuser", "supervisor", "supervisor-aide"],
       },
     },
     {
       path: "/booking",
       name: "booking",
-      component: Booking,     
-      meta: { 
+      component: Booking,
+      meta: {
         requiresAuth: true,
-        roles: ["superuser", "reservationist", "frontdesk","supervisor","supervisor-aide"]
+        roles: [
+          "superuser",
+          "reservationist",
+          "frontdesk",
+          "supervisor",
+          "supervisor-aide",
+        ],
       },
-    },    
+    },
     {
       path: "/booking_mgr",
       name: "booking_mgr",
-      component: BookingMgr,     
-      meta: { 
+      component: BookingMgr,
+      meta: {
         requiresAuth: true,
-        roles: ["superuser", "reservationist", "frontdesk","supervisor","supervisor-aide"]
+        roles: [
+          "superuser",
+          "reservationist",
+          "frontdesk",
+          "supervisor",
+          "supervisor-aide",
+        ],
       },
-    },   
+    },
     // {
     //   path: "/reception",
     //   name: "reception",
-    //   component: ReceptionHotel,     
-    //   meta: { 
+    //   component: ReceptionHotel,
+    //   meta: {
     //     requiresAuth: true,
     //     roles: ["superuser"]
     //   },
-    // }, 
+    // },
     {
-      path: "/cashier",
-      name: "cashier",
-      component: Cashier,
-      meta: { 
+      path: "/restaurant",
+      name: "restaurant",
+      component: Restaurant,
+      meta: {
         requiresAuth: true,
-        roles: ["superuser", "cashier", "waiter", "foodserver", "restoinventory"]
+        roles: [
+          "superuser",
+          "cashier",
+          "waiter",
+          "foodserver",
+          "restoinventory",
+        ],
       },
     },
     {
       path: "/inventory",
       name: "inventory",
       component: Inventory,
-      meta: { 
+      meta: {
         requiresAuth: true,
-        roles: ["superuser", "inventorymanager"]
+        roles: ["superuser", "inventorymanager"],
       },
-    },   
+    },
     {
       path: "/403",
       name: "error403",
@@ -105,7 +123,7 @@ const router = createRouter({
     {
       path: "/:catchAll(.*)",
       redirect: { name: "error403" },
-    },     
+    },
   ],
 });
 
@@ -114,11 +132,11 @@ router.beforeEach((to, from, next) => {
   const userRole = authStore.user?.role;
   const userRoute = authStore.user?.route;
 
-  if (to.path === '/login' && authStore.isAuthenticated) {
+  if (to.path === "/login" && authStore.isAuthenticated) {
     next({ name: userRoute });
-  } else if (to.matched.some(record => record.meta.requiresAuth)) {
+  } else if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!authStore.isAuthenticated) {
-      next({ name: 'login' });
+      next({ name: "login" });
     } else if (!to.meta.roles.includes(userRole)) {
       next({ name: userRoute, params: { from: from.path }, replace: true });
     } else {
@@ -130,11 +148,10 @@ router.beforeEach((to, from, next) => {
 });
 
 router.addRoute({
-  path: '/403/:from*',
-  name: '403',
+  path: "/403/:from*",
+  name: "403",
   component: Error403,
-  props: route => ({ from: route.params.from || '/' })
+  props: (route) => ({ from: route.params.from || "/" }),
 });
-
 
 export default router;

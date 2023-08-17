@@ -39,6 +39,9 @@ class Booking(models.Model):
     partialPayment = models.DecimalField(max_digits=8, decimal_places=2)
     processedBy = models.CharField(max_length=128)
     groupkey = models.CharField(max_length=128, null=True, blank=True)
+    states = models.TextField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
 
 class Task(models.Model):

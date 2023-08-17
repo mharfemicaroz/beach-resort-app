@@ -10,11 +10,11 @@
             >
               <div style="display: flex; align-items: center">
                 <img
-                  src="@/assets/pantukan-waterworld-logo.png"
+                  :src="`/src/assets/${this.APP_LOGO_NAME}`"
                   width="45"
                   height="45"
                   class="d-inline-block align-top"
-                  alt="Pantukan Waterworld Logo"
+                  alt="Logo"
                   style="margin-right: 10px"
                 />
                 <div class="icon-container" style="margin-right: 25px">

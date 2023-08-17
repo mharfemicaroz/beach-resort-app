@@ -613,7 +613,7 @@
                   <button
                     type="button"
                     class="btn btn-primary"
-                    v-show="this.isItNew"
+                    v-show="this.isItNew && countInclusion === 0"
                     v-if="!this.walkinStatus && !this.justDiscounted"
                     @click="generateBillingStatement()"
                   >
@@ -643,7 +643,7 @@
                       <div class="row justify-content-between">
                         <div class="col-4">
                           <img
-                            src="@/assets/pantukan-waterworld-logo.jpg"
+                            :src="`/src/assets/${this.APP_LOGO_NAME}`"
                             width="60"
                             height="60"
                             alt="Company Logo"
@@ -837,7 +837,7 @@
                   <button
                     type="button"
                     class="btn btn-primary"
-                    @click="placeOrder"
+                    @click="initializePlaceOrder"
                     :disabled="total <= 0 || countInclusion > 0"
                     style="
                       display: flex;
@@ -987,7 +987,14 @@
                               <strong class="text-primary">Total:</strong>
                             </div>
                             <div class="col-6 text-right">
-                              <strong>{{ total }}</strong>
+                              <strong>{{ total }}</strong
+                              >&nbsp;
+                              <a
+                                v-if="total < 0"
+                                href="#"
+                                @click="refundPayment"
+                                ><i>for refund→</i></a
+                              >
                             </div>
                           </div>
                           <!-- <div class="row">
@@ -1326,7 +1333,7 @@
             >
               <div class="col-4">
                 <img
-                  src="@/assets/pantukan-waterworld-logo.jpg"
+                  :src="`/src/assets/${this.APP_LOGO_NAME}`"
                   width="60"
                   height="60"
                   alt="Company Logo"
@@ -1533,13 +1540,12 @@
             </p>
             <p>
               The UNDERSIGND herein agrees and acknowledge that neither
-              WATERWORLD PANTUKAN BEACH RESORT located at Mendoza,King-king,
-              Pantukan Davao De oro nor any of its officers, employees and staff
-              or representative may not be held responsible or liable in any way
-              what so ever for any incident, mishap or other occurrence in
-              connection with the use of the WATER SPORTS which may result in
-              injury, death illness or other physical or mental damages to the
-              undersigned or company.
+              {{ APP_NAME }} located at {{ SITE_ADDRESS }}
+              nor any of its officers, employees and staff or representative may
+              not be held responsible or liable in any way what so ever for any
+              incident, mishap or other occurrence in connection with the use of
+              the WATER SPORTS which may result in injury, death illness or
+              other physical or mental damages to the undersigned or company.
             </p>
             <p>
               The UNDERSIGNED finally declares that he/she is of legal age and
@@ -1551,9 +1557,7 @@
             </p>
             <p>
               In witness thereof; this Waiver and Release is voluntary signed at
-              <span style="text-decoration: underline"
-                >WATER WORLD PANTUKAN BEACH RESORT</span
-              >
+              <span style="text-decoration: underline">{{ APP_NAME }}</span>
               on this day of
               <span style="text-decoration: underline">{{ currentDate }}</span>
             </p>
@@ -1607,7 +1611,7 @@
                 </p>
                 <p>
                   11. The lessor has the right to stop the operation of the
-                  WATERN SPORT and the amount paid or deposit shall be forfeited
+                  WATER SPORT and the amount paid or deposit shall be forfeited
                   if the rules and regulations are not followed accordingly.
                 </p>
                 <p>
@@ -2845,6 +2849,10 @@ function parseDateOrig(dateString) {
   const [day, month, year] = dateString.split("/");
   return `${year}-${month}-${day}`;
 }
+function parseDateOrig2(dateString) {
+  const [month, day, year] = dateString.split("/");
+  return `${padTo2Digits(day)}/${padTo2Digits(month)}/${year}`;
+}
 function parseDate(dateString) {
   const [day, month, year] = dateString.split("/");
   return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
@@ -2888,6 +2896,10 @@ export default {
   },
   data() {
     return {
+      periodStart: "",
+      periodEnd: "",
+      allowOverPayment: false,
+      newbillingbalance: 0,
       dragDayIsSelected: false,
       draggedItem: null,
       draggedRoom: null,
@@ -3827,7 +3839,9 @@ export default {
       return this.subtotal - this.partialPayment;
     },
     change() {
-      return this.cashAmount > this.total ? this.cashAmount - this.total : 0;
+      return this.cashAmount > this.total && this.total > 0
+        ? this.cashAmount - this.total
+        : 0;
     },
     isThereLeisures() {
       return this.cart.filter((item) => item.type === "LEISURES").length > 0;
@@ -4169,7 +4183,7 @@ export default {
         case "Enter":
           event.preventDefault();
           if (this.total > 0) {
-            this.placeOrder();
+            this.initializePlaceOrder();
           }
           break;
         case "F1":
@@ -5093,6 +5107,7 @@ export default {
       this.billing.clientType = item.clientType;
       if (existingTransaction.data[0] !== undefined) {
         this.billing.bookingID = existingTransaction.data[0].id;
+        this.newbillingbalance = existingTransaction.data[0].balance;
         this.isItNew = true;
       } else {
         this.billing.bookingID = "";
@@ -5364,6 +5379,7 @@ export default {
       this.billing.clientType = item.clientType;
       if (existingTransaction.data[0] !== undefined) {
         this.billing.bookingID = existingTransaction.data[0].id;
+        this.newbillingbalance = existingTransaction.data[0].balance;
         this.isItNew = true;
       } else {
         this.billing.bookingID = "";
@@ -5435,12 +5451,162 @@ export default {
           }
         });
     },
+    async refundPayment() {
+      this.$swal
+        .fire({
+          title: "Authorization Required",
+          input: "text",
+          showCancelButton: true,
+          allowOutsideClick: false,
+          inputAttributes: {
+            minlength: 6, // Minimum length of 3 characters
+            maxlength: 24, // Maximum length of 24 characters
+            autocomplete: "off",
+            style: "text-security:disc; -webkit-text-security:disc;",
+          },
+          confirmButtonText: "Submit",
+          cancelButtonText: "Cancel",
+          inputPlaceholder: "Enter authorization code",
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const authorizationCode = result.value;
+            // Validate the authorization code and perform necessary actions
+            if (
+              authorizationCode.toLowerCase() ===
+              this.AUTHORIZATION_KEY.toLowerCase()
+            ) {
+              // Code is correct, proceed with the desired action
+              const confirmMessage = "This action cannot be undone.";
+              const result = await this.$swal.fire({
+                title: "Are you sure to proceed for refund?",
+                text: confirmMessage,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes",
+                cancelButtonText: "Cancel",
+              });
+              if (result.isConfirmed) {
+                const countdownMessage =
+                  'Refund will be processed in <span id="countdown">5</span> seconds. Do you want to cancel?';
+                let countdownResult;
+                countdownResult = await this.$swal.fire({
+                  title: "Please wait",
+                  html: countdownMessage,
+                  icon: "info",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Confirm now",
+                  cancelButtonText: "Cancel",
+                  didOpen: () => {
+                    const countdownEl = document.querySelector("#countdown");
+                    let count = 5;
+                    const timerId = setInterval(() => {
+                      countdownEl.textContent = count;
+                      count--;
+                      if (count < 0) {
+                        clearInterval(timerId);
+                        this.$swal.close();
+                      }
+                    }, 1000);
+                  },
+                });
+                if (!countdownResult.isConfirmed) {
+                  return;
+                }
+                this.processRefundPayment();
+              }
+            } else {
+              // Code is incorrect, show an error message or take appropriate action
+              this.$swal.fire({
+                icon: "error",
+                title: "Incorrect Passcode",
+                text: "The entered passcode is incorrect. Please try again.",
+                allowOutsideClick: false,
+              });
+            }
+          }
+        });
+    },
+    async processRefundPayment() {
+      const trans_id = this.billing.bookingID;
+      this.bookings[this.itemIndex].partialPayment =
+        parseFloat(this.bookings[this.itemIndex].partialPayment) +
+        parseFloat(this.newbillingbalance);
+      this.updateBookings(this.bookings[this.itemIndex].id);
+
+      await axios
+        .get(this.API_URL + `transaction/${trans_id}/`)
+        .then(async (response) => {
+          const transactionData = {
+            clientname: response.data.clientname,
+            clientemail: response.data.clientemail,
+            clientcontact: response.data.clientcontact,
+            clientaddress: response.data.clientaddress,
+            clientnationality: response.data.clientnationality,
+            clientType: response.data.clientType,
+            nonCashReference: response.data.nonCashReference,
+            totalAmountToPay: response.data.totalAmountToPay,
+            paymentMethod: response.data.paymentMethod,
+            cashAmountPay: response.data.cashAmountPay,
+            balance: 0,
+            payStatus: response.data.payStatus,
+            discountMode: response.data.discountMode,
+            discountValue: response.data.discountValue,
+            bookingID: response.data.bookingID,
+            processedBy: this.userdata.fName + " " + this.userdata.lName,
+            groupkey: response.data.groupkey,
+            cashRemarks: response.data.cashRemarks,
+          };
+
+          let doneTransaction = await axios.put(
+            this.API_URL + `transaction/${trans_id}/`,
+            transactionData
+          );
+
+          let transactionRecordData = {
+            transaction: doneTransaction.data.id,
+            transaction_date: doneTransaction.data.transaction_date,
+            paymentMethod: doneTransaction.data.paymentMethod,
+            nonCashReference: doneTransaction.data.nonCashReference,
+            totalAmountToPay: doneTransaction.data.totalAmountToPay,
+            cashAmountPay: parseFloat(this.newbillingbalance),
+            balance: doneTransaction.data.balance,
+            discountMode: doneTransaction.data.discountMode,
+            discountValue: doneTransaction.data.discountValue,
+            processedBy: this.userdata.fName + " " + this.userdata.lName,
+            payStatus: doneTransaction.data.payStatus,
+          };
+          await axios.post(
+            `${this.API_URL}transaction/record/`,
+            transactionRecordData
+          );
+
+          this.$swal
+            .fire({
+              icon: "success",
+              title: "Success!",
+              text: "Refund has been processed successfully.",
+              confirmButtonText: "OK",
+            })
+            .then((response) => {
+              this.taskRecord(
+                `action:/refunded guest/client:/${transactionData.clientname}`
+              );
+              document.location.reload();
+            });
+        });
+    },
     async transferRoom() {
       if (this.toggleselect === false) {
         this.reservation.roomName = "";
         this.toggleselect = true;
         this.roomSelect = "ok";
       } else {
+        this.bookNowFlag = false;
         const item = this.bookings[this.itemIndex];
         const room = this.reservation.roomName;
         if (room.name === undefined) {
@@ -5491,6 +5657,7 @@ export default {
               },
             },
           });
+          this.toggleItemModal();
           return;
         }
         if (oldroom.price !== newroom.price) {
@@ -5508,6 +5675,7 @@ export default {
               },
             },
           });
+          this.toggleItemModal();
           return;
         }
         item.room_name = newroom.name;
@@ -5538,7 +5706,9 @@ export default {
             }
           );
         } catch (error) {}
+        this.toggleItemModal();
         this.taskRecord(`action:/transfer guest/client:/${item.name}`);
+        this.bookNowFlag = true;
         this.$swal
           .fire({
             icon: "success",
@@ -5546,9 +5716,7 @@ export default {
             text: "Room transferred successfully.",
             confirmButtonText: "OK",
           })
-          .then((response) => {
-            document.location.reload();
-          });
+          .then((response) => {});
       }
     },
     async extendBooking() {
@@ -5688,9 +5856,7 @@ export default {
           text: "Thank you for extending the guest.",
           confirmButtonText: "OK",
         })
-        .then((response) => {
-          document.location.reload();
-        });
+        .then((response) => {});
     },
     checkinGuest() {
       this.$swal
@@ -5745,7 +5911,7 @@ export default {
                       confirmButtonText: "OK",
                     })
                     .then((response) => {
-                      document.location.reload();
+                      //document.location.reload();
                     });
                 }
               });
@@ -5840,7 +6006,7 @@ export default {
                                 confirmButtonText: "OK",
                               })
                               .then((response) => {
-                                document.location.reload();
+                                //document.location.reload();
                               });
                           });
                       });
@@ -5851,12 +6017,13 @@ export default {
         });
     },
     //methods for calendar items
-    periodChanged() {
-      // range, eventSource) {
-      // Demo does nothing with this information, just including the method to demonstrate how
-      // you can listen for changes to the displayed range and react to them (by loading items, etc.)
-      //console.log(eventSource)
-      //console.log(range)
+    periodChanged(range) {
+      this.periodStart = parseDateOrig2(
+        range._value.displayFirstDate._value.toLocaleDateString()
+      );
+      this.periodEnd = parseDateOrig2(
+        range._value.displayLastDate._value.toLocaleDateString()
+      );
     },
     thisMonth(d, h, m) {
       const t = new Date();
@@ -6383,6 +6550,28 @@ export default {
         this.transactions = []; // return an empty array in case of errors
       }
     },
+    initializePlaceOrder() {
+      if (this.cashAmount > this.total) {
+        this.$swal({
+          title: "Over-Payment Detected!",
+          text: "You are about to overpay. Do you want to push excess amount to his account?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "No!",
+          cancelButtonText: "Yes, continue!",
+          reverseButtons: true,
+        }).then((result) => {
+          if (!result.isConfirmed) {
+            this.allowOverPayment = true;
+          } else {
+            this.allowOverPayment = false;
+          }
+          this.placeOrder();
+        });
+      } else {
+        this.placeOrder();
+      }
+    },
     async placeOrder() {
       if (parseFloat(this.cashAmount) > 0) {
         let bookid = null;
@@ -6443,6 +6632,7 @@ export default {
             return false;
           }
         }
+
         // if (reserveStatus === "reserved" && parseFloat(this.cashAmount) > parseFloat(this.total) * 0.50) {
         //   await this.$swal.fire({
         //     title: 'Error',
@@ -6527,12 +6717,16 @@ export default {
                   this.generateUniqueString();
               }
               payStatus =
-                parseFloat(this.total) - parseFloat(this.cashAmount) <= 0
+                parseFloat(this.total) -
+                  parseFloat(this.cashAmount) -
+                  (this.allowOverPayment ? this.change : 0) <=
+                0
                   ? "full"
                   : "partial";
               const updatedcashamount =
                 parseFloat(this.cashAmount) > parseFloat(this.total)
-                  ? parseFloat(this.total)
+                  ? parseFloat(this.total) +
+                    (this.allowOverPayment ? this.change : 0)
                   : parseFloat(this.cashAmount);
               const transactionData = {
                 clientname: this.billing.clientName,
@@ -6679,7 +6873,10 @@ export default {
             } else {
               // Update the transaction if it already exists
               payStatus =
-                parseFloat(this.total) - parseFloat(this.cashAmount) <= 0
+                parseFloat(this.total) -
+                  parseFloat(this.cashAmount) -
+                  (this.allowOverPayment ? this.change : 0) <=
+                0
                   ? "full"
                   : "partial";
               const transaction = existingTransaction.data[0];
@@ -6690,7 +6887,8 @@ export default {
                 existingCashAmountPay + parseFloat(this.cashAmount) <
                 parseFloat(this.subtotal)
                   ? existingCashAmountPay + parseFloat(this.cashAmount)
-                  : parseFloat(this.subtotal);
+                  : parseFloat(this.subtotal) +
+                    (this.allowOverPayment ? this.change : 0);
               const existingbalance = transaction.balance;
               let origCash =
                 parseFloat(this.cashAmount) > parseFloat(this.total)
@@ -7478,6 +7676,7 @@ img {
   border: 1px solid #dee2e6;
   border-radius: 0.25rem;
   transition: all 0.2s ease-in-out;
+  /* z-index: 55000; */
 }
 
 .card:hover {
