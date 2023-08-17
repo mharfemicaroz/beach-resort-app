@@ -721,6 +721,7 @@
               </template>
 
               <select
+                v-show="false"
                 v-if="!task.isCompleted"
                 :disabled="task.isCompleted || userdata.role !== 'supervisor'"
                 v-model="task.assign.person.name"
@@ -729,7 +730,7 @@
                   updateTasks('assigned task to ' + task.assign.person.name)
                 "
               >
-                <option value="Unassigned">Unassigned</option>
+                <option value="Staff">Staff</option>
                 <option
                   v-for="item in taskMembers"
                   :key="index"
@@ -900,6 +901,7 @@
                 <textarea
                   :disabled="task.isCompleted"
                   class="form-control"
+                  minlength="3"
                   maxlength="256"
                   placeholder="Add comment"
                   v-model="taskComment"
@@ -1114,7 +1116,6 @@
                                 updateTasks(
                                   'changed status to ' + task.status.name
                                 );
-                                toggleNotify();
                                 task.status.isEditing = false;
                               "
                             >
@@ -1345,7 +1346,7 @@ export default {
         },
         assign: {
           person: {
-            name: "Unassigned",
+            name: "Staff",
             role: "",
           },
         },
@@ -1900,8 +1901,8 @@ export default {
         actualStartTime: this.task.actualStartTime,
         startDate: this.task.startDate,
         endDate: this.task.endDate,
-        person_name: this.task.assign.person.name || "Unassigned",
-        person_role: this.task.assign.person.role || "Unassigned",
+        person_name: this.task.assign.person.name || "Staff",
+        person_role: this.task.assign.person.role || "Staff",
         dept: this.task.dept.name,
         taskdesc: this.task.desc,
         status: this.task.status.name,
@@ -2036,7 +2037,7 @@ export default {
       };
       this.task.assign = {
         person: {
-          name: "Unassigned",
+          name: "Staff",
           role: "",
         },
       };
