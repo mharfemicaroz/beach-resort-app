@@ -253,6 +253,12 @@ div.container-fluid.main {
 
 .login-background {
   background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   transition: background-image 1s ease-out;
 }
 
@@ -265,6 +271,13 @@ div.container-fluid.main {
   height: 100%;
   background-image: inherit;
   filter: blur(1px);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
 }
 
 .container-fluid.login-background {
