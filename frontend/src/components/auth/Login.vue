@@ -6,6 +6,11 @@
       'background-repeat': 'no-repeat',
       'background-position': 'center center',
       'background-attachment': 'fixed',
+      'background-size': '100% 100%',
+      '-webkit-background-size': 'cover',
+      '-moz-background-size': 'cover',
+      '-o-background-size': 'cover',
+      'background-size': 'cover',
     }"
   >
     <div class="row justify-content-center align-items-center vh-100">
