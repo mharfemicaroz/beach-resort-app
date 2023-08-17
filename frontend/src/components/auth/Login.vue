@@ -1,17 +1,7 @@
 <template>
   <div
     class="container-fluid login-background"
-    :style="{
-      'background-image': currentBackground,
-      'background-repeat': 'no-repeat',
-      'background-position': 'center center',
-      'background-attachment': 'fixed',
-      'background-size': '100% 100%',
-      '-webkit-background-size': 'cover',
-      '-moz-background-size': 'cover',
-      '-o-background-size': 'cover',
-      'background-size': 'cover',
-    }"
+    :style="`background-image:${currentBackground}`"
   >
     <div class="row justify-content-center align-items-center vh-100">
       <div class="col-md-3">
@@ -225,6 +215,7 @@ export default {
     let reading = false;
     this.enterFullscreen();
     this.startBackgroundSlideshow();
+    document.title = this.APP_NAME;
     document.addEventListener("keypress", (e) => {
       //usually barcode scanners throw an 'Enter' key at the end of read
       if (e.keyCode === 13) {
@@ -278,9 +269,13 @@ div.container-fluid.main {
 
 .container-fluid.login-background {
   background-image: url(src/assets/beach-resort-background1.jpg);
-  background-repeat: "no-repeat";
-  background-position: "center center";
-  background-attachment: "fixed";
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
 }
 
 .animated-form {
