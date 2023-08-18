@@ -963,6 +963,15 @@
                           :title="item.actor"
                           style="font-size: 12px"
                           class="btn btn-circle"
+                          :class="
+                            item.actor === 'Staff'
+                              ? 'bg-warning'
+                              : item.actor === 'supervisor-aide'
+                              ? 'bg-success'
+                              : item.actor === 'supervisor'
+                              ? 'bg-danger'
+                              : 'bg-primary'
+                          "
                         >
                           <!-- <i class="fas fa-comment text-primary"></i> -->
                           {{
