@@ -671,7 +671,11 @@
     aria-labelledby="loadTaskModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-lg">
+    <div
+      :class="`modal-dialog ${
+        userdata.role === 'supervisor' ? 'modal-lg' : ''
+      }`"
+    >
       <div class="modal-content p-3">
         <div class="modal-header">
           <div class="d-flex justify-content-between w-100">
@@ -861,7 +865,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-7">
+            <div :class="`col-md-${userdata.role === 'supervisor' ? 7 : 12}`">
               <div class="form-group row">
                 <div class="col-sm-12">
                   <input
@@ -975,7 +979,12 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-5 bg-light p-0">
+            <div
+              :class="`col-md-${
+                userdata.role === 'supervisor' ? 5 : 0
+              } bg-light p-0`"
+              v-show="userdata.role === 'supervisor'"
+            >
               <div id="accordion">
                 <div class="card">
                   <div class="card-header" id="headingOne">
