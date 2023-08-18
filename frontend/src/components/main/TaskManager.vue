@@ -1591,7 +1591,7 @@ export default {
           (o) => o.itemID === this.currentItemID
         )[0];
         const newid = newitem.itemID;
-        this.setInitialData({ id: newid });
+        this.setCommentData({ id: newid });
       }
 
       this.populateCalendarItems();
@@ -2022,6 +2022,10 @@ export default {
     toggleNewMessage() {
       this.task.isNewMessage = false;
       this.saveAction();
+    },
+    setCommentData(e) {
+      const data = this.tasks.filter((o) => o.itemID === e.id)[0];
+      this.task.states = JSON.parse(data.states);
     },
     setInitialData(e) {
       this.currentItemID = e.id;
