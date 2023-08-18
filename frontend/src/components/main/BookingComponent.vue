@@ -6554,7 +6554,7 @@ export default {
       if (this.cashAmount > this.total) {
         this.$swal({
           title: "Over-Payment Detected!",
-          text: "You are about to overpay. Do you want to push excess amount to his account?",
+          text: "You are about to overpay. Do you want to push excess amount to this account?",
           icon: "warning",
           showCancelButton: true,
           confirmButtonText: "No!",
