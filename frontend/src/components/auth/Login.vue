@@ -134,16 +134,16 @@ export default {
                     route = "inventory";
                     break;
                   case "cashier":
-                    route = "cashier";
+                    route = "restaurant";
                     break;
                   case "waiter":
-                    route = "cashier";
+                    route = "restaurant";
                     break;
                   case "foodserver":
-                    route = "cashier";
+                    route = "restaurant";
                     break;
                   case "restoinventory":
-                    route = "cashier";
+                    route = "restaurant";
                     break;
                   case "guard":
                     route = "counter";

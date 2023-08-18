@@ -755,7 +755,7 @@ export default {
         this.user.role === "foodserver" ||
         this.user.role === "restoinventory"
       ) {
-        this.user.route = "pos";
+        this.user.route = "restaurant";
       } else if (this.user.role === "guard") {
         this.user.route = "counter";
       } else if (this.user.role === "supervisor") {
