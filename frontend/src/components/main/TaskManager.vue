@@ -919,7 +919,7 @@
                   v-if="userdata.role !== 'supervisor'"
                   class="btn btn-circle"
                   @click="
-                    addComment(
+                    newComment(
                       task.itemID,
                       task.assign.person.name,
                       'notified task is done.'
@@ -934,7 +934,7 @@
                   v-if="userdata.role !== 'supervisor'"
                   class="btn btn-circle"
                   @click="
-                    addComment(
+                    newComment(
                       task.itemID,
                       task.assign.person.name,
                       'notified for task completion follow-up.'
@@ -946,7 +946,7 @@
                 <button
                   :disabled="task.isCompleted"
                   class="btn btn-circle"
-                  @click="addComment(task.itemID, userdata.role, taskComment)"
+                  @click="newComment(task.itemID, userdata.role, taskComment)"
                 >
                   <i class="fas fa-arrow-right"></i>
                 </button>
@@ -959,13 +959,27 @@
                   >
                     <div class="row" v-for="item in sortedStates" :key="index">
                       <div class="col-md-1 d-flex align-items-center">
-                        <span style="font-size: 28px">
-                          <i class="fas fa-comment text-primary"></i>
+                        <span
+                          :title="item.actor"
+                          style="font-size: 12px"
+                          class="btn btn-circle"
+                        >
+                          <!-- <i class="fas fa-comment text-primary"></i> -->
+                          {{
+                            item.actor === "Staff"
+                              ? "ST"
+                              : item.actor === "supervisor-aide"
+                              ? "SA"
+                              : item.actor === "supervisor"
+                              ? "SV"
+                              : userdata.FirstName.toString().toUpperCase() +
+                                userdata.LastName.toString().toUpperCase()
+                          }}
                         </span>
                       </div>
                       <div class="col-md-11">
                         <div class="row">
-                          <span class="text-muted">
+                          <span class="text-muted px-3">
                             {{
                               timeAgo(item.created_at) === "0 seconds"
                                 ? "Just now"
@@ -974,10 +988,7 @@
                           </span>
                         </div>
                         <div class="row">
-                          <span
-                            ><strong>{{ item.actor }}</strong>
-                            {{ item.comment }}</span
-                          >
+                          <span class="px-3"> {{ item.comment }}</span>
                         </div>
                       </div>
                     </div>
@@ -1822,6 +1833,11 @@ export default {
 
       const diffInDays = Math.floor(diffInHours / 24);
       return `${diffInDays} days`;
+    },
+    newComment(id, actor, comment) {
+      this.addComment(id, actor, comment);
+      this.task.isNewMessage = true;
+      this.saveAction();
     },
     addComment(id, actor, comment) {
       this.generateArrayID(id);
