@@ -100,11 +100,7 @@ export default {
     return {
       currentTime: new Date(),
       backgroundIndex: 0,
-      backgrounds: [
-        "src/assets/headerbg1.png",
-        "src/assets/headerbg2.png",
-        "src/assets/headerbg3.png",
-      ],
+      backgrounds: this.LOGIN_BG,
       user: {
         username: "",
         password: "",
@@ -131,7 +127,7 @@ export default {
       return user;
     },
     currentBackground() {
-      return `url(${this.backgrounds[this.backgroundIndex]})`;
+      return `url(src/assets/${this.backgrounds[this.backgroundIndex]})`;
     },
   },
   methods: {
@@ -189,9 +185,15 @@ export default {
   position: relative;
   background-image: url("@/assets/headerbg1.png");
   /* Replace with your background image */
-  background-size: cover;
   z-index: 1;
   transition: background-image 1s ease-out;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
 }
 
 .navbar::before {
@@ -204,6 +206,13 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
   /* Adjust the opacity and color as desired */
   z-index: -1;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
 }
 
 /* Custom font style for the top navbar */
