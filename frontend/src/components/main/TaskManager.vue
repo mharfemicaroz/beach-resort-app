@@ -919,7 +919,11 @@
                   v-if="userdata.role !== 'supervisor'"
                   class="btn btn-circle"
                   @click="
-                    updateTasks(`said “${task.assign.person.name} is done!”`)
+                    addComment(
+                      task.itemID,
+                      task.assign.person.name,
+                      'notified task is done.'
+                    )
                   "
                 >
                   <i class="fas fa-check"></i>
@@ -930,8 +934,10 @@
                   v-if="userdata.role !== 'supervisor'"
                   class="btn btn-circle"
                   @click="
-                    updateTasks(
-                      `said “${task.assign.person.name} is following up!”`
+                    addComment(
+                      task.itemID,
+                      task.assign.person.name,
+                      'notified for task completion follow-up.'
                     )
                   "
                 >
@@ -940,7 +946,7 @@
                 <button
                   :disabled="task.isCompleted"
                   class="btn btn-circle"
-                  @click="updateTasks('said ' + taskComment)"
+                  @click="addComment(task.itemID, userdata.role, taskComment)"
                 >
                   <i class="fas fa-arrow-right"></i>
                 </button>
@@ -1589,17 +1595,19 @@ export default {
         return;
       }
 
-      // Get today's date in 'YYYY-MM-DD' format
+      // Get today's date in 'YYYY-MM-DD' format and set time to midnight
       const today = new Date();
+      today.setHours(0, 0, 0, 0);
       const formattedToday = formatDate(today);
+
       this.temptasks = JSON.parse(JSON.stringify(this.tasks));
+
       this.tasks = this.tasks.map((task) => {
         const taskDate = new Date(task.startDate);
+        taskDate.setHours(0, 0, 0, 0);
 
         if (!task.isCompleted && taskDate < today) {
-          const daysDifference = Math.floor(
-            (today - taskDate) / (1000 * 60 * 60 * 24)
-          ); // Calculate the difference in days
+          const daysDifference = (today - taskDate) / (1000 * 60 * 60 * 24); // Calculate the difference in days
 
           const endDate = new Date(task.endDate);
           endDate.setDate(endDate.getDate() + daysDifference); // Shift the endDate by the same difference
@@ -1616,18 +1624,20 @@ export default {
       this.populateCalendarItems();
       this.batchSaveAction();
     },
+
     async batchSaveAction() {
       const today = new Date();
+      today.setHours(0, 0, 0, 0);
       const tasks = this.temptasks.filter((task) => {
         const taskDate = new Date(task.startDate);
+        taskDate.setHours(0, 0, 0, 0);
         return !task.isCompleted && taskDate < today;
       });
       for (const item of tasks) {
         const formattedToday = formatDate(today);
         const taskDate = new Date(item.startDate);
-        const daysDifference = Math.floor(
-          (today - taskDate) / (1000 * 60 * 60 * 24)
-        ); // Calculate the difference in days
+        taskDate.setHours(0, 0, 0, 0);
+        const daysDifference = (today - taskDate) / (1000 * 60 * 60 * 24);
 
         const endDate = new Date(item.endDate);
         endDate.setDate(endDate.getDate() + daysDifference); // Shift the endDate by the same difference
@@ -1834,7 +1844,9 @@ export default {
         : "";
       this.addComment(
         this.currentItemID,
-        this.task.assign.person.name,
+        this.task.isCompleted
+          ? this.task.assign.person.name
+          : this.userdata.role,
         `${this.task.isCompleted ? "completed" : "restored"} the task on ${
           this.task.isCompleted
             ? this.task.completionDate
