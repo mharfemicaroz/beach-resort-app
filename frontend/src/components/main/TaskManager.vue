@@ -2026,6 +2026,11 @@ export default {
     setCommentData(e) {
       const data = this.tasks.filter((o) => o.itemID === e.id)[0];
       this.task.states = JSON.parse(data.states);
+      this.task.isNotify = data.isNotify;
+      this.task.isCompleted = data.isCompleted;
+      this.task.actualStartTime = data.actualStartTime;
+      this.task.isNewMessage = data.isNewMessage;
+      this.task.completionDate = data.completionDate;
     },
     setInitialData(e) {
       this.currentItemID = e.id;
