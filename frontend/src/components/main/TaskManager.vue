@@ -982,8 +982,14 @@
                               ? "SA"
                               : item.actor === "supervisor"
                               ? "SV"
-                              : userdata.FirstName.toString().toUpperCase() +
-                                userdata.LastName.toString().toUpperCase()
+                              : userdata.fName
+                                  .toString()
+                                  .charAt(0)
+                                  .toUpperCase() +
+                                userdata.lName
+                                  .toString()
+                                  .charAt(0)
+                                  .toUpperCase()
                           }}
                         </span>
                       </div>
