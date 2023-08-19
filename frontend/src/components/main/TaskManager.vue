@@ -944,6 +944,7 @@
                   <i class="fas fa-reply"></i>
                 </button>
                 <button
+                  v-show="taskComment.length >= 3"
                   :disabled="task.isCompleted"
                   class="btn btn-circle"
                   @click="newComment(task.itemID, userdata.role, taskComment)"
