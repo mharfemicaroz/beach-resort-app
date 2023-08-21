@@ -4203,7 +4203,7 @@ export default {
       ];
       this.roomSelect = "no";
       this.reservation.checkinDate = d.toLocaleDateString("en-GB");
-      this.reservation.checkoutDate = formatDate(d);
+      this.reservation.checkoutDate = d.toLocaleDateString("en-GB");
       this.toggleItemModal();
     },
     handleReceptionItemAction(book, room) {
@@ -4225,7 +4225,7 @@ export default {
         ];
         this.roomSelect = "no";
         this.reservation.checkinDate = new Date().toLocaleDateString("en-GB");
-        this.reservation.checkoutDate = formatDate(new Date());
+        this.reservation.checkoutDate = new Date().toLocaleDateString("en-GB");
         this.toggleItemModal();
       }
     },
@@ -4758,7 +4758,7 @@ export default {
         ];
         this.roomSelect = "no";
         this.reservation.checkinDate = new Date().toLocaleDateString("en-GB");
-        this.reservation.checkoutDate = formatDate(new Date());
+        this.reservation.checkoutDate = new Date().toLocaleDateString("en-GB");
         this.toggleItemModal();
       }
     },
@@ -6439,7 +6439,7 @@ export default {
     async clickTestAddItem() {
       this.bookNowFlag = false;
       const checkin = parseDate(this.reservation.checkinDate);
-      const checkout = parseDate(formatDate2(this.reservation.checkoutDate));
+      const checkout = parseDate(this.reservation.checkoutDate);
       if (checkout < checkin) {
         this.$swal.fire({
           title: "error",
@@ -6526,7 +6526,7 @@ export default {
             clientnationality: this.reservation.clientNationality,
             clientType: this.reservation.clientType,
             checkinDate: this.reservation.checkinDate,
-            checkoutDate: formatDate2(this.reservation.checkoutDate),
+            checkoutDate: this.reservation.checkoutDate,
             room_name: res.name,
             room_price: roomPrice,
             room_type: roomType,
