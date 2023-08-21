@@ -80,7 +80,7 @@ class Room(models.Model):
     type = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     isAvailable = models.BooleanField(default=True)
-    status = models.CharField(max_length=100)
+    status = models.CharField(max_length=100, blank=True, null=True)
 
 
 class LeisureItem(models.Model):
