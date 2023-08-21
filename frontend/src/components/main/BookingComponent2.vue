@@ -287,6 +287,7 @@
             <ReceptionHotel
               :bookingsdata="bookings"
               :roomsdata="rooms"
+              :roomcategoriesdata="roomcategories"
               @clickItem-action="handleReceptionItemAction"
               @clickDay-action="handleReceptionDayAction"
               @clickRoom-action="handleReceptionRoomAction"
@@ -2549,29 +2550,14 @@
               >
               <div class="col-sm-4">
                 <input
-                  v-if="reservation.status == 'vacant'"
-                  aria-describedby="inputhelp2"
-                  type="date"
-                  class="form-control"
-                  id="checkout"
+                  type="text"
+                  aria-describedby="inputhelp"
+                  class="form-control mb-0"
+                  id="checkin"
                   v-model="reservation.checkoutDate"
                   required
-                />
-                <input
-                  v-else
-                  type="text"
-                  class="form-control"
-                  id="checkout"
-                  v-model="reservation.checkoutDate"
                   readonly
                 />
-                <small
-                  v-if="reservation.status == 'vacant'"
-                  id="inputhelp2"
-                  class="form-text text-muted mt-0"
-                  style="font-size: 11px"
-                  >Please enter the date in the format: DD/MM/YYYY.</small
-                >
               </div>
             </div>
             <div class="form-group row mt-2">
@@ -2589,8 +2575,8 @@
                   v-model="reservation.roomName"
                   required
                 >
-                  <template #option="{ name, type, price }">
-                    <h6 style="margin: 0">{{ name }}</h6>
+                  <template #option="{ name, type, price, pax }">
+                    <h6 style="margin: 0">{{ name }} &nbsp; pax:{{ pax }}</h6>
                     <em
                       ><small>{{ type }}</small></em
                     >
@@ -4884,6 +4870,12 @@ export default {
             const updatedItems = [];
             let isFind = false;
             // Loop through inclusion items in the cart
+            const roompax = parseFloat(
+              this.rooms.filter(
+                (o) => o.name === this.bookings[this.itemIndex].room_name
+              )[0].pax
+            );
+
             this.cart
               .filter((item) => item.category === "inclusion")
               .forEach(async (item, index) => {
@@ -4898,6 +4890,7 @@ export default {
                   category: "main",
                   itemOption: "addons",
                 };
+
                 const numBookedRooms = this.cart.filter(
                   (o) =>
                     (o.type.toLowerCase().includes("room") ||
@@ -4925,9 +4918,9 @@ export default {
                     .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
                   if (totalGuests === 1) {
                     data.totalCost = parseFloat(data.totalCost) - entranceFee;
-                  } else if (totalGuests >= 2) {
+                  } else if (totalGuests >= roompax) {
                     data.totalCost =
-                      parseFloat(data.totalCost) - 2 * entranceFee;
+                      parseFloat(data.totalCost) - roompax * entranceFee;
                   }
                   item.totalCartPrice = data.totalCost;
                   isFind = true;
@@ -6440,6 +6433,18 @@ export default {
         });
         return false;
       }
+      //   const initialResPax = this.reservation.roomName[0].pax;
+      //   for (const res of this.reservation.roomName) {
+      //     if (res.pax !== initialResPax) {
+      //       await this.$swal.fire({
+      //         icon: "error",
+      //         title: "Booking Error",
+      //         text: "It is not allowed to book multiple rooms with different pax.",
+      //       });
+      //       this.reservation.roomName = "";
+      //       return;
+      //     }
+      //   }
       for (const res of this.reservation.roomName) {
         const hasExistingBooking = this.bookings
           .filter((item) => item.status !== "checkedout")

@@ -287,6 +287,7 @@
             <ReceptionHotel
               :bookingsdata="bookings"
               :roomsdata="rooms"
+              :roomcategoriesdata="roomcategories"
               @clickItem-action="handleReceptionItemAction"
               @clickDay-action="handleReceptionDayAction"
               @clickRoom-action="handleReceptionRoomAction"
@@ -2549,29 +2550,14 @@
               >
               <div class="col-sm-4">
                 <input
-                  v-if="reservation.status == 'vacant'"
-                  aria-describedby="inputhelp2"
-                  type="date"
-                  class="form-control"
-                  id="checkout"
+                  type="text"
+                  aria-describedby="inputhelp"
+                  class="form-control mb-0"
+                  id="checkin"
                   v-model="reservation.checkoutDate"
                   required
-                />
-                <input
-                  v-else
-                  type="text"
-                  class="form-control"
-                  id="checkout"
-                  v-model="reservation.checkoutDate"
                   readonly
                 />
-                <small
-                  v-if="reservation.status == 'vacant'"
-                  id="inputhelp2"
-                  class="form-text text-muted mt-0"
-                  style="font-size: 11px"
-                  >Please enter the date in the format: DD/MM/YYYY.</small
-                >
               </div>
             </div>
             <div class="form-group row mt-2">
