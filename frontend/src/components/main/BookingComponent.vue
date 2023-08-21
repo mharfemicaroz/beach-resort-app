@@ -6653,8 +6653,8 @@ export default {
     clickDay() {
       let today = new Date();
       if (this.dayreserve.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)) {
-        this.selectionStart = null;
-        this.selectionEnd = null;
+        this.selectionStart = this.dayreserve;
+        this.selectionEnd = this.dayreserve;
         this.toggledayMenuModal();
         this.toggleItemModal();
         this.toggleselect = false;
