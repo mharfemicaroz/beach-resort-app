@@ -2320,6 +2320,577 @@
   </div>
   <div
     class="modal fade"
+    id="availableRoomsModal"
+    tabindex="-1"
+    aria-labelledby="availableRoomsLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="availableRoomsLabel">
+            Available Rooms/Cottages from
+            {{ selectionStart.toLocaleDateString() }} to
+            {{ selectionEnd.toLocaleDateString() }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div
+          class="modal-body"
+          style="height: 500px; overflow-y: auto; overflow-x: hidden"
+        >
+          <div class="row">
+            <div :class="cartItems.length > 0 ? 'col-md-9' : 'col-md-12'">
+              <div class="col-md-12">
+                <ul
+                  class="nav bg radius nav-pills nav-fill mb-3 bg mt-3"
+                  role="tablist"
+                >
+                  <li class="nav-item">
+                    <a
+                      class="nav-link active show"
+                      data-bs-toggle="tab"
+                      role="tab"
+                      href="#roomcat1"
+                    >
+                      <i class="fa fa-tags"></i>Beach Rooms</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a
+                      class="nav-link"
+                      data-bs-toggle="tab"
+                      role="tab"
+                      href="#roomcat2"
+                    >
+                      <i class="fa fa-tags"></i>Pool Rooms</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a
+                      class="nav-link"
+                      data-bs-toggle="tab"
+                      role="tab"
+                      href="#roomcat3"
+                    >
+                      <i class="fa fa-tags"></i>Pool Cottages</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a
+                      class="nav-link"
+                      data-bs-toggle="tab"
+                      role="tab"
+                      href="#roomcat4"
+                    >
+                      <i class="fa fa-tags"></i>Gazebo</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a
+                      class="nav-link"
+                      data-bs-toggle="tab"
+                      role="tab"
+                      href="#roomcat5"
+                    >
+                      <i class="fa fa-tags"></i>Beach Cottages (Day)</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a
+                      class="nav-link"
+                      data-bs-toggle="tab"
+                      role="tab"
+                      href="#roomcat6"
+                    >
+                      <i class="fa fa-tags"></i>Beach Cottages (Night)</a
+                    >
+                  </li>
+                  <li class="nav-item">
+                    <a
+                      class="nav-link"
+                      data-bs-toggle="tab"
+                      role="tab"
+                      href="#roomcat7"
+                    >
+                      <i class="fa fa-tags"></i>Halls</a
+                    >
+                  </li>
+                </ul>
+              </div>
+              <div class="tab-content" id="myTabContent">
+                <div
+                  class="tab-pane fade show active"
+                  id="roomcat1"
+                  role="tabpanel"
+                >
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div
+                          class="row row-cols-1"
+                          :class="
+                            cartItems.filter((o) => o.type === 'BEACH ROOM')
+                              .length > 0
+                              ? 'row-cols-md-4'
+                              : 'row-cols-md-5'
+                          "
+                        >
+                          <div
+                            class="col mb-6"
+                            v-for="(item, index) in updatedRooms.filter((r) => {
+                              if (r.type) {
+                                const isDataExist = !(
+                                  this.cartItems.findIndex(
+                                    (o) => o.id === r.id
+                                  ) === -1
+                                );
+                                return r.type === 'BEACH ROOM' && !isDataExist;
+                              }
+                              return true;
+                            })"
+                            :key="item.id"
+                          >
+                            <div
+                              class="card"
+                              style="transition: transform 0.2s ease-in-out"
+                              @click="addToCartItem(item)"
+                            >
+                              <div
+                                class="card-header d-flex justify-content-between align-items-center"
+                              >
+                                <h5 class="card-title">
+                                  <i class="fas fa-table"></i>
+                                  {{ item.name }}
+                                </h5>
+                              </div>
+                              <div class="card-body">
+                                <h6 class="text-dark">
+                                  <i class="fas fa-info-circle"></i>
+                                  available
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="roomcat2" role="tabpanel">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div
+                          class="row row-cols-1"
+                          :class="
+                            cartItems.filter((o) => o.type === 'POOL ROOM')
+                              .length > 0
+                              ? 'row-cols-md-4'
+                              : 'row-cols-md-5'
+                          "
+                        >
+                          <div
+                            class="col mb-6"
+                            v-for="(item, index) in updatedRooms.filter((r) => {
+                              if (r.type) {
+                                const isDataExist = !(
+                                  this.cartItems.findIndex(
+                                    (o) => o.id === r.id
+                                  ) === -1
+                                );
+                                return r.type === 'POOL ROOM' && !isDataExist;
+                              }
+                              return true;
+                            })"
+                            :key="item.id"
+                          >
+                            <div
+                              class="card"
+                              style="transition: transform 0.2s ease-in-out"
+                              @click="addToCartItem(item)"
+                            >
+                              <div
+                                class="card-header d-flex justify-content-between align-items-center"
+                              >
+                                <h5 class="card-title">
+                                  <i class="fas fa-table"></i>
+                                  {{ item.name }}
+                                </h5>
+                              </div>
+                              <div class="card-body">
+                                <h6 class="text-dark">
+                                  <i class="fas fa-info-circle"></i>
+                                  available
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="roomcat3" role="tabpanel">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div
+                          class="row row-cols-1"
+                          :class="
+                            cartItems.filter((o) => o.type === 'POOL COTTAGE')
+                              .length > 0
+                              ? 'row-cols-md-4'
+                              : 'row-cols-md-5'
+                          "
+                        >
+                          <div
+                            class="col mb-6"
+                            v-for="(item, index) in updatedRooms.filter((r) => {
+                              if (r.type) {
+                                const isDataExist = !(
+                                  this.cartItems.findIndex(
+                                    (o) => o.id === r.id
+                                  ) === -1
+                                );
+                                return (
+                                  r.type === 'POOL COTTAGE' && !isDataExist
+                                );
+                              }
+                              return true;
+                            })"
+                            :key="item.id"
+                          >
+                            <div
+                              class="card"
+                              style="transition: transform 0.2s ease-in-out"
+                              @click="addToCartItem(item)"
+                            >
+                              <div
+                                class="card-header d-flex justify-content-between align-items-center"
+                              >
+                                <h5 class="card-title">
+                                  <i class="fas fa-table"></i>
+                                  {{ item.name }}
+                                </h5>
+                              </div>
+                              <div class="card-body">
+                                <h6 class="text-dark">
+                                  <i class="fas fa-info-circle"></i>
+                                  available
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="roomcat4" role="tabpanel">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div
+                          class="row row-cols-1"
+                          :class="
+                            cartItems.filter((o) => o.type === 'GAZEBO COTTAGE')
+                              .length > 0
+                              ? 'row-cols-md-4'
+                              : 'row-cols-md-5'
+                          "
+                        >
+                          <div
+                            class="col mb-6"
+                            v-for="(item, index) in updatedRooms.filter((r) => {
+                              if (r.type) {
+                                const isDataExist = !(
+                                  this.cartItems.findIndex(
+                                    (o) => o.id === r.id
+                                  ) === -1
+                                );
+                                return (
+                                  r.type === 'GAZEBO COTTAGE' && !isDataExist
+                                );
+                              }
+                              return true;
+                            })"
+                            :key="item.id"
+                          >
+                            <div
+                              class="card"
+                              style="transition: transform 0.2s ease-in-out"
+                              @click="addToCartItem(item)"
+                            >
+                              <div
+                                class="card-header d-flex justify-content-between align-items-center"
+                              >
+                                <h5 class="card-title">
+                                  <i class="fas fa-table"></i>
+                                  {{ item.name }}
+                                </h5>
+                              </div>
+                              <div class="card-body">
+                                <h6 class="text-dark">
+                                  <i class="fas fa-info-circle"></i>
+                                  available
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="roomcat5" role="tabpanel">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div
+                          class="row row-cols-1"
+                          :class="
+                            cartItems.filter((o) => o.type === 'BEACH COTTAGE')
+                              .length > 0
+                              ? 'row-cols-md-4'
+                              : 'row-cols-md-5'
+                          "
+                        >
+                          <div
+                            class="col mb-6"
+                            v-for="(item, index) in updatedRooms.filter((r) => {
+                              if (r.type) {
+                                const isDataExist = !(
+                                  this.cartItems.findIndex(
+                                    (o) => o.id === r.id
+                                  ) === -1
+                                );
+                                return (
+                                  r.type === 'BEACH COTTAGE' && !isDataExist
+                                );
+                              }
+                              return true;
+                            })"
+                            :key="item.id"
+                          >
+                            <div
+                              class="card"
+                              style="transition: transform 0.2s ease-in-out"
+                              @click="addToCartItem(item)"
+                            >
+                              <div
+                                class="card-header d-flex justify-content-between align-items-center"
+                              >
+                                <h5 class="card-title">
+                                  <i class="fas fa-table"></i>
+                                  {{ item.name }}
+                                </h5>
+                              </div>
+                              <div class="card-body">
+                                <h6 class="text-dark">
+                                  <i class="fas fa-info-circle"></i>
+                                  available
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="roomcat6" role="tabpanel">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div
+                          class="row row-cols-1"
+                          :class="
+                            cartItems.filter(
+                              (o) => o.type === 'N-BEACH COTTAGE'
+                            ).length > 0
+                              ? 'row-cols-md-4'
+                              : 'row-cols-md-5'
+                          "
+                        >
+                          <div
+                            class="col mb-6"
+                            v-for="(item, index) in updatedRooms.filter((r) => {
+                              if (r.type) {
+                                const isDataExist = !(
+                                  this.cartItems.findIndex(
+                                    (o) => o.id === r.id
+                                  ) === -1
+                                );
+                                return (
+                                  r.type === 'N-BEACH COTTAGE' && !isDataExist
+                                );
+                              }
+                              return true;
+                            })"
+                            :key="item.id"
+                          >
+                            <div
+                              class="card"
+                              style="transition: transform 0.2s ease-in-out"
+                              @click="addToCartItem(item)"
+                            >
+                              <div
+                                class="card-header d-flex justify-content-between align-items-center"
+                              >
+                                <h5 class="card-title">
+                                  <i class="fas fa-table"></i>
+                                  {{ item.name }}
+                                </h5>
+                              </div>
+                              <div class="card-body">
+                                <h6 class="text-dark">
+                                  <i class="fas fa-info-circle"></i>
+                                  available
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="roomcat7" role="tabpanel">
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div
+                          class="row row-cols-1"
+                          :class="
+                            cartItems.filter((o) => o.type === 'HALL').length >
+                            0
+                              ? 'row-cols-md-4'
+                              : 'row-cols-md-5'
+                          "
+                        >
+                          <div
+                            class="col mb-6"
+                            v-for="(item, index) in updatedRooms.filter((r) => {
+                              if (r.type) {
+                                const isDataExist = !(
+                                  this.cartItems.findIndex(
+                                    (o) => o.id === r.id
+                                  ) === -1
+                                );
+                                return r.type === 'HALL' && !isDataExist;
+                              }
+                              return true;
+                            })"
+                            :key="item.id"
+                          >
+                            <div
+                              class="card"
+                              style="transition: transform 0.2s ease-in-out"
+                              @click="addToCartItem(item)"
+                            >
+                              <div
+                                class="card-header d-flex justify-content-between align-items-center"
+                              >
+                                <h5 class="card-title">
+                                  <i class="fas fa-table"></i>
+                                  {{ item.name }}
+                                </h5>
+                              </div>
+                              <div class="card-body">
+                                <h6 class="text-dark">
+                                  <i class="fas fa-info-circle"></i>
+                                  available
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="cartItems.length > 0"
+              :class="cartItems.length > 0 ? 'col-md-3' : 'col-md-0'"
+            >
+              <div
+                ref="itemCart"
+                class="card"
+                style="height: 450px; overflow-y: auto; overflow-x: hidden"
+              >
+                <div class="row">
+                  <div class="col-md-12 px-3">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">
+                            Item
+                            <span
+                              v-if="cartItems.length > 0"
+                              class="badge-pill badge-danger"
+                              >{{ cartItems.length }}</span
+                            >
+                          </th>
+                          <th scope="col">
+                            <span class="d-flex flex-row-reverse">
+                              <button
+                                v-if="cartItems.length > 0"
+                                type="button"
+                                @click="bookAll"
+                                class="btn btn-sm bg-primary text-white"
+                              >
+                                <i class="fas fa-check"></i>
+                              </button>
+                              &nbsp;
+                              <button
+                                v-if="cartItems.length > 0"
+                                type="button"
+                                @click="clearAll"
+                                class="btn btn-sm btn-danger"
+                              >
+                                <i class="fas fa-trash-alt"></i>
+                              </button>
+                            </span>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="(item, index) in cartItems" :key="index">
+                          <td>
+                            {{ item.name }}
+                          </td>
+
+                          <td align="right">
+                            <button
+                              class="btn btn-outline-danger btn-sm"
+                              type="button"
+                              @click="removeFromCart(item)"
+                            >
+                              <i class="fas fa-times"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="modal fade"
     id="dayMenuModal"
     tabindex="-1"
     aria-labelledby="dayMenuModalLabel"
@@ -2340,7 +2911,7 @@
         </div>
         <div class="modal-body">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
               <a
                 href="#"
                 @click="clickDay"
@@ -2350,14 +2921,27 @@
                 <span>Create</span>
               </a>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
               <a
                 href="#"
                 @click="viewAllReservation"
                 class="d-flex flex-column align-items-center"
               >
                 <i class="fa fa-calendar-check"></i>
-                <span>View</span>
+                <span>History</span>
+              </a>
+            </div>
+            <div class="col-md-4">
+              <a
+                href="#"
+                @click="
+                  toggleRoomsModal();
+                  toggledayMenuModal();
+                "
+                class="d-flex flex-column align-items-center"
+              >
+                <i class="fa fa-check"></i>
+                <span>Available</span>
               </a>
             </div>
           </div>
@@ -2741,7 +3325,10 @@
                     clickTestAddItem();
                     disablebutton = true;
                   "
-                  v-else-if="reservation.status == 'vacant'"
+                  v-else-if="
+                    reservation.status == 'vacant' &&
+                    reservation.clientName !== ''
+                  "
                   type="button"
                   class="btn btn-primary btn-sm btn-margin rounded"
                 >
@@ -2896,6 +3483,7 @@ export default {
   },
   data() {
     return {
+      cartItems: [],
       periodStart: "",
       periodEnd: "",
       allowOverPayment: false,
@@ -3273,8 +3861,8 @@ export default {
       displayPeriodCount: 1,
       displayWeekNumbers: false,
       showTimes: true,
-      selectionStart: null,
-      selectionEnd: null,
+      selectionStart: new Date(),
+      selectionEnd: new Date(),
       newItemTitle: "",
       newItemStartDate: "",
       newItemEndDate: "",
@@ -3662,13 +4250,14 @@ export default {
       const isOccupied = this.activeTab === "occupied";
       const isCheckedout = this.activeTab === "checkedout";
       const selectedDate = parseDate(this.convDate);
+      const startDate = this.selectionStart.setHours(0, 0, 0, 0);
+      const endDate = this.selectionEnd.setHours(0, 0, 0, 0);
       return this.bookings
         .filter((booking) => {
           const bookingCheckinDate = parseDate(booking.checkinDate);
           const bookingCheckoutDate = parseDate(booking.checkoutDate);
           const dateInRange =
-            selectedDate >= bookingCheckinDate &&
-            selectedDate <= bookingCheckoutDate;
+            endDate >= bookingCheckinDate && startDate <= bookingCheckoutDate;
           const isReservedMatch = !isReserved || booking.status === "reserved";
           const isOccupiedMatch = !isOccupied || booking.status === "checkedin";
           const isCancelledMatch =
@@ -4663,6 +5252,25 @@ export default {
     handleChange() {
       alert();
     },
+    addToCartItem(item) {
+      const isItemExist = !(
+        this.cartItems.findIndex((o) => o.id === item.id) === -1
+      );
+      if (isItemExist) return;
+      this.cartItems.push(item);
+    },
+    clearAll() {
+      this.cartItems = [];
+    },
+    bookAll() {
+      this.reservation.roomName = this.cartItems;
+      this.clearAll();
+      this.toggleRoomsModal();
+      this.toggleItemModal();
+    },
+    removeFromCart(item) {
+      this.cartItems = this.cartItems.filter((o) => o.id !== item.id);
+    },
     cardAction(id, room_name, room_type, room_price) {
       this.itemIndex = this.bookings.findIndex((o) => o.itemID === id);
       if (this.itemIndex !== -1) {
@@ -4975,6 +5583,19 @@ export default {
     toggleItemModal() {
       this.disablebutton = false;
       $("#BookDayModal").modal("toggle");
+    },
+    toggleRoomsModal() {
+      const currentDate = new Date(); // get current date
+      if (
+        this.selectionStart.setHours(0, 0, 0, 0) <
+        currentDate.setHours(0, 0, 0, 0)
+      ) {
+        // check if start date is before current date
+        // prompt user to select a valid start date
+        return;
+      }
+      this.disablebutton = false;
+      $("#availableRoomsModal").modal("toggle");
     },
     toggleSettingsModal() {
       $("#settings-modal").modal("toggle");
@@ -6069,6 +6690,10 @@ export default {
         return;
       }
       this.dayreserve = d;
+      this.selectionStart = d;
+      this.selectionEnd = d;
+      this.reservation.checkinDate = d.toLocaleDateString("en-GB");
+      this.reservation.checkoutDate = d.toLocaleDateString("en-GB");
       this.roomSelect = "ok";
       this.toggledayMenuModal();
     },
@@ -6141,12 +6766,12 @@ export default {
       // this.reservation.numguests = "";
       this.reservation.remarks = "";
       this.reservation.clientPhone = "";
-      this.toggleItemModal();
       this.reservation.checkinDate =
         this.selectionStart.toLocaleDateString("en-GB");
       this.reservation.checkoutDate = formatDate(
         new Date(parseDate(this.selectionEnd.toLocaleDateString("en-GB")))
       );
+      this.toggledayMenuModal();
     },
     onDrop(item, date) {
       const currentDate = new Date(); // get current date
@@ -6562,11 +7187,91 @@ export default {
           reverseButtons: true,
         }).then((result) => {
           if (!result.isConfirmed) {
-            this.allowOverPayment = true;
+            this.$swal
+              .fire({
+                title: "Authorization Required",
+                input: "text",
+                showCancelButton: true,
+                allowOutsideClick: false,
+                inputAttributes: {
+                  minlength: 6, // Minimum length of 3 characters
+                  maxlength: 24, // Maximum length of 24 characters
+                  autocomplete: "off",
+                  style: "text-security:disc; -webkit-text-security:disc;",
+                },
+                confirmButtonText: "Submit",
+                cancelButtonText: "Cancel",
+                inputPlaceholder: "Enter authorization code",
+              })
+              .then(async (result) => {
+                if (result.isConfirmed) {
+                  const authorizationCode = result.value;
+                  // Validate the authorization code and perform necessary actions
+                  if (
+                    authorizationCode.toLowerCase() ===
+                    this.AUTHORIZATION_KEY.toLowerCase()
+                  ) {
+                    // Code is correct, proceed with the desired action
+                    const confirmMessage =
+                      " If you proceed with voiding, all associated items and booking and transaction records will be permanently deleted, and this action cannot be reversed.";
+                    const result = await this.$swal.fire({
+                      title: "Are you sure you want to void this?",
+                      text: confirmMessage,
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Yes, void it!",
+                      cancelButtonText: "Cancel",
+                    });
+                    if (result.isConfirmed) {
+                      const countdownMessage =
+                        'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
+                      let countdownResult;
+                      countdownResult = await this.$swal.fire({
+                        title: "Please wait",
+                        html: countdownMessage,
+                        icon: "info",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Confirm now",
+                        cancelButtonText: "Cancel",
+                        didOpen: () => {
+                          const countdownEl =
+                            document.querySelector("#countdown");
+                          let count = 5;
+                          const timerId = setInterval(() => {
+                            countdownEl.textContent = count;
+                            count--;
+                            if (count < 0) {
+                              clearInterval(timerId);
+                              this.$swal.close();
+                            }
+                          }, 1000);
+                        },
+                      });
+                      if (!countdownResult.isConfirmed) {
+                        return;
+                      }
+                      this.allowOverPayment = true;
+                      this.placeOrder();
+                    }
+                  } else {
+                    // Code is incorrect, show an error message or take appropriate action
+                    this.$swal.fire({
+                      icon: "error",
+                      title: "Incorrect Passcode",
+                      text: "The entered passcode is incorrect. Please try again.",
+                      allowOutsideClick: false,
+                    });
+                  }
+                }
+              });
           } else {
             this.allowOverPayment = false;
+            this.placeOrder();
           }
-          this.placeOrder();
         });
       } else {
         this.placeOrder();
@@ -7792,5 +8497,26 @@ img {
 .wiggle-animation {
   animation: wiggle 1.5s infinite;
   /* Adjust animation duration as needed */
+}
+
+.badge-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.badge-pill {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  font-size: 75%;
+  font-weight: 700;
+  vertical-align: top;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 10rem;
+  position: relative;
+  top: -0.75em;
+  left: -0.25em;
 }
 </style>

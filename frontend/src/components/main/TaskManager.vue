@@ -21,7 +21,10 @@
                   <span class="h4">Task Manager v 1.0 </span>
                   <a
                     href="#"
-                    v-if="userdata.role === 'supervisor'"
+                    v-if="
+                      userdata.role === 'supervisor' ||
+                      userdata.role === 'superuser'
+                    "
                     class="btn btn-link text-decoration-none text-white"
                     @click="toggleModal('settings-modal')"
                     data-bs-toggle="tooltip"
@@ -52,7 +55,10 @@
             <div class="icon-wrapper">
               <a
                 href="#"
-                v-if="userdata.role === 'supervisor'"
+                v-if="
+                  userdata.role === 'supervisor' ||
+                  userdata.role === 'superuser'
+                "
                 class="btn btn-link text-decoration-none text-white"
                 @click="addNewTask"
               >
@@ -60,7 +66,10 @@
               </a>
               <a
                 href="#"
-                v-if="countBackLogTasks > 0 && userdata.role === 'supervisor'"
+                v-if="
+                  (countBackLogTasks > 0 && userdata.role === 'supervisor') ||
+                  userdata.role === 'superuser'
+                "
                 class="btn btn-link text-decoration-none text-white"
                 @click="moveTasktoNewday"
               >
@@ -673,7 +682,9 @@
   >
     <div
       :class="`modal-dialog ${
-        userdata.role === 'supervisor' ? 'modal-lg' : ''
+        userdata.role === 'supervisor' || userdata.role === 'superuser'
+          ? 'modal-lg'
+          : ''
       }`"
     >
       <div class="modal-content p-3">
@@ -683,7 +694,10 @@
               <button
                 type="button"
                 @click="completeTask"
-                v-if="userdata.role === 'supervisor'"
+                v-if="
+                  userdata.role === 'supervisor' ||
+                  userdata.role === 'superuser'
+                "
                 class="btn btn-primary"
                 style="margin-right: 10px !important"
               >
@@ -766,7 +780,10 @@
               <!-- Button that triggers the dropdown -->
               <button
                 type="button"
-                v-if="userdata.role === 'supervisor'"
+                v-if="
+                  userdata.role === 'supervisor' ||
+                  userdata.role === 'superuser'
+                "
                 class="btn btn-circle bg-light text-dark btn-dropdown"
                 style="font-size: small"
                 @click="toggleDropdown"
@@ -865,7 +882,13 @@
             </div>
           </div>
           <div class="row">
-            <div :class="`col-md-${userdata.role === 'supervisor' ? 7 : 12}`">
+            <div
+              :class="`col-md-${
+                userdata.role === 'supervisor' || userdata.role === 'superuser'
+                  ? 7
+                  : 12
+              }`"
+            >
               <div class="form-group row">
                 <div class="col-sm-12">
                   <input
@@ -1014,9 +1037,13 @@
             </div>
             <div
               :class="`col-md-${
-                userdata.role === 'supervisor' ? 5 : 0
+                userdata.role === 'supervisor' || userdata.role === 'superuser'
+                  ? 5
+                  : 0
               } bg-light p-0`"
-              v-show="userdata.role === 'supervisor'"
+              v-show="
+                userdata.role === 'supervisor' || userdata.role === 'superuser'
+              "
             >
               <div id="accordion">
                 <div class="card">
@@ -1120,7 +1147,10 @@
 
                           <div
                             class="col-md-2"
-                            v-if="userdata.role === 'supervisor'"
+                            v-if="
+                              userdata.role === 'supervisor' ||
+                              userdata.role === 'superuser'
+                            "
                           >
                             <i
                               v-if="!task.dept.isEditing"
@@ -1170,7 +1200,10 @@
 
                           <div
                             class="col-md-2"
-                            v-if="userdata.role === 'supervisor'"
+                            v-if="
+                              userdata.role === 'supervisor' ||
+                              userdata.role === 'superuser'
+                            "
                           >
                             <i
                               v-if="!task.status.isEditing"
@@ -1701,7 +1734,10 @@ export default {
       this.temptasks = [];
     },
     handleDragstart(e, o, source) {
-      if (this.userdata.role !== "supervisor") {
+      if (
+        this.userdata.role !== "supervisor" &&
+        this.userdata.role !== "superuser"
+      ) {
         return;
       }
       this.itemDragged = o;
@@ -1709,7 +1745,10 @@ export default {
     },
     handleDragdrop(e, prop, source) {
       e.preventDefault();
-      if (this.userdata.role !== "supervisor") {
+      if (
+        this.userdata.role !== "supervisor" &&
+        this.userdata.role !== "superuser"
+      ) {
         return;
       }
       const data = this.itemDragged;
@@ -2146,7 +2185,10 @@ export default {
       this.showDate = d;
     },
     onClickDay(d) {
-      if (this.userdata.role !== "supervisor") {
+      if (
+        this.userdata.role !== "supervisor" &&
+        this.userdata.role !== "superuser"
+      ) {
         return;
       }
       this.dayreserve = d;
@@ -2155,14 +2197,20 @@ export default {
       this.addNewTask();
     },
     setSelection(dateRange) {
-      if (this.userdata.role !== "supervisor") {
+      if (
+        this.userdata.role !== "supervisor" &&
+        this.userdata.role !== "superuser"
+      ) {
         return;
       }
       this.selectionEnd = dateRange[1];
       this.selectionStart = dateRange[0];
     },
     finishSelection(dateRange) {
-      if (this.userdata.role !== "supervisor") {
+      if (
+        this.userdata.role !== "supervisor" &&
+        this.userdata.role !== "superuser"
+      ) {
         return;
       }
       this.task.startDate = formatDate(dateRange[0]);
@@ -2170,7 +2218,10 @@ export default {
       this.addNewTask();
     },
     onDrop(item, date) {
-      if (this.userdata.role !== "supervisor") {
+      if (
+        this.userdata.role !== "supervisor" &&
+        this.userdata.role !== "superuser"
+      ) {
         return;
       }
       this.setInitialData(item);
@@ -2307,7 +2358,10 @@ export default {
       vm.loadData();
     };
 
-    if (this.userdata.role !== "supervisor") {
+    if (
+      this.userdata.role !== "supervisor" &&
+      this.userdata.role !== "superuser"
+    ) {
       setTimeout(() => {
         this.toggleTimeline();
         this.toggleTaskBox();

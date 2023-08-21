@@ -77,6 +77,15 @@
                     >Restaurant</router-link
                   >
                 </li>
+                <li>
+                  <router-link
+                    to="/taskmgr"
+                    tag="a"
+                    target="_blank"
+                    class="dropdown-item"
+                    >Task Manager</router-link
+                  >
+                </li>
                 <hr class="dropdown-divider" />
               </div>
               <li>
