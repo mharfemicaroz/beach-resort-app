@@ -6654,7 +6654,6 @@ export default {
     clickDay() {
       let today = new Date();
       if (this.dayreserve.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)) {
-        alert(this.dayreserve);
         this.selectionStart = this.dayreserve;
         this.selectionEnd = this.dayreserve;
         this.toggledayMenuModal();
