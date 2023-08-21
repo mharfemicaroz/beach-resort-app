@@ -4731,6 +4731,8 @@ export default {
       this.cartItems = [];
     },
     bookAll() {
+      this.reservation.clientNationality = "Filipino";
+      this.reservation.clientType = "in-house";
       this.reservation.roomName = this.cartItems;
       this.clearAll();
       this.toggleRoomsModal();
