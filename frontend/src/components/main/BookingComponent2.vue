@@ -308,34 +308,34 @@
         <div class="container-fluid">
           <div class="row">
             <!-- <div class="col-md-3">
-              <h2>Add-ons</h2>
-              <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3">
-              <div class="wrapper-content" :style="`height:${calcMeasure.height1}`">
-                <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                  <thead>
-                    <tr>
-                      <th style="white-space: nowrap;">Item</th>
-                      <th>Qty</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, index) in filteredItems" :key="index">
-                      <td>{{ item.item }} ({{ item.priceRate }}/{{ item.counter }})</td>
-                      <td>
-                        <input style="width:75px!important" class="form-control input-sm" type="number"
-                          v-model.number="howMany[index]">
-                      </td>
-                      <td>
-                        <button class="btn btn-primary" @click="addToCart(item, index)" :disabled="!item.isAvailable">
-                          <i class="fa fa-cart-plus"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div> -->
+                <h2>Add-ons</h2>
+                <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3">
+                <div class="wrapper-content" :style="`height:${calcMeasure.height1}`">
+                  <table class="table" style="table-layout: fixed;word-wrap: break-word;">
+                    <thead>
+                      <tr>
+                        <th style="white-space: nowrap;">Item</th>
+                        <th>Qty</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, index) in filteredItems" :key="index">
+                        <td>{{ item.item }} ({{ item.priceRate }}/{{ item.counter }})</td>
+                        <td>
+                          <input style="width:75px!important" class="form-control input-sm" type="number"
+                            v-model.number="howMany[index]">
+                        </td>
+                        <td>
+                          <button class="btn btn-primary" @click="addToCart(item, index)" :disabled="!item.isAvailable">
+                            <i class="fa fa-cart-plus"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div> -->
             <div class="col-md-3">
               <div class="d-flex align-items-center">
                 <h2 class="position-relative">
@@ -425,37 +425,37 @@
               </div>
             </div>
             <!-- <div class="col-md-3">
-              <div class="d-flex align-items-center">
-                <h2 class="position-relative">
-                  Order Summary 
-                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    style="font-size: 0.75rem;">
-                    {{ numItemCart }}
-                    <span class="visually-hidden">items in cart</span>
-                  </span>
-                </h2>
-                <button v-if="this.itemIndex === -1" type="button" class="btn btn-primary ms-auto"
-                  @click="toggleAddAccountModal()">
-                  <i class="fa fa-plus"></i>
-                </button>
-              </div>
-              <div class="card-deck wrapper-content" :style="`height:${calcMeasure.height3};`">
-                <div class="card" v-for="(item, index) in combinedcart" :key="item.id">
-                  <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">{{ item.name }}</h5>
-                    <button v-if="item.itemOption === 'addons' && userdata.role === 'superuser'" type="button"
-                      class="btn btn-sm btn-close" aria-label="Close" @click="cancelItem(item)"></button>
-                  </div>
-                  <div class="card-body">
-                    <p class="card-text">Type: {{ item.type }}</p>
-                    <p class="card-text">Price Rate: {{ item.priceRate }}</p>
-                    <p class="card-text">{{ (item.itemOption === 'room') ? `No. of Days: ${item.purqty}` : `Purchase Qty.:
-                      ${item.purqty}` }}</p>
-                    <p class="card-text">Total Price: {{ item.totalCartPrice }}</p>
+                <div class="d-flex align-items-center">
+                  <h2 class="position-relative">
+                    Order Summary 
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      style="font-size: 0.75rem;">
+                      {{ numItemCart }}
+                      <span class="visually-hidden">items in cart</span>
+                    </span>
+                  </h2>
+                  <button v-if="this.itemIndex === -1" type="button" class="btn btn-primary ms-auto"
+                    @click="toggleAddAccountModal()">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+                <div class="card-deck wrapper-content" :style="`height:${calcMeasure.height3};`">
+                  <div class="card" v-for="(item, index) in combinedcart" :key="item.id">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                      <h5 class="card-title">{{ item.name }}</h5>
+                      <button v-if="item.itemOption === 'addons' && userdata.role === 'superuser'" type="button"
+                        class="btn btn-sm btn-close" aria-label="Close" @click="cancelItem(item)"></button>
+                    </div>
+                    <div class="card-body">
+                      <p class="card-text">Type: {{ item.type }}</p>
+                      <p class="card-text">Price Rate: {{ item.priceRate }}</p>
+                      <p class="card-text">{{ (item.itemOption === 'room') ? `No. of Days: ${item.purqty}` : `Purchase Qty.:
+                        ${item.purqty}` }}</p>
+                      <p class="card-text">Total Price: {{ item.totalCartPrice }}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div> -->
+              </div> -->
             <div class="col-md-6">
               <div class="d-flex align-items-center">
                 <h2 class="position-relative">Registration Form (preview)</h2>
@@ -476,13 +476,13 @@
                 </div>
               </div>
               <!-- <div class="card">
-                  <div class="card-body">
-                    <span><strong>Name:</strong> {{ billing.clientName }}</span><br />
-                    <span><strong>Email:</strong> {{ billing.clientEmail }}</span><br />
-                    <span><strong>Phone:</strong> {{ billing.clientPhone }}</span><br />
-                    <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
-                  </div>
-                </div> -->
+                    <div class="card-body">
+                      <span><strong>Name:</strong> {{ billing.clientName }}</span><br />
+                      <span><strong>Email:</strong> {{ billing.clientEmail }}</span><br />
+                      <span><strong>Phone:</strong> {{ billing.clientPhone }}</span><br />
+                      <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
+                    </div>
+                  </div> -->
               <div
                 id="billing-details-preview"
                 class="bg-light"
@@ -706,43 +706,43 @@
                   <div class="col-12">
                     <form>
                       <!-- <div class="form-group">
-                    <label for="paymentMethod">Payment method:</label>
-                    <select class="form-control" id="paymentMethod" v-model="paymentMethod">
-                      <option value="cash">Cash</option>
-                      <option value="non-cash">Non-cash</option>
-                    </select>
-                  </div> -->
+                      <label for="paymentMethod">Payment method:</label>
+                      <select class="form-control" id="paymentMethod" v-model="paymentMethod">
+                        <option value="cash">Cash</option>
+                        <option value="non-cash">Non-cash</option>
+                      </select>
+                    </div> -->
                       <!-- <div v-if="paymentMethod === 'non-cash'" class="form-group">
-                    <label for="nonCashReference">Reference No.:</label>
-                    <div class="input-group">
-                      <div class="input-group-prepend">
-                        <select class="form-control selectpicker" data-style="btn-primary" data-width="fit"
-                          v-model="nonCashPayPlatform">
-                          <option value="">-- Please select --</option>
-                          <option>GCash</option>
-                          <option>PayMaya</option>
-                          <option>Debit Card</option>
-                          <option>Credit Card</option>
-                          <option>Bank</option>
-                        </select>
+                      <label for="nonCashReference">Reference No.:</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <select class="form-control selectpicker" data-style="btn-primary" data-width="fit"
+                            v-model="nonCashPayPlatform">
+                            <option value="">-- Please select --</option>
+                            <option>GCash</option>
+                            <option>PayMaya</option>
+                            <option>Debit Card</option>
+                            <option>Credit Card</option>
+                            <option>Bank</option>
+                          </select>
+                        </div>
+                        <input type="text" class="form-control" id="nonCashReference" v-model="nonCashReference">
                       </div>
-                      <input type="text" class="form-control" id="nonCashReference" v-model="nonCashReference">
-                    </div>
-                  </div> -->
+                    </div> -->
                       <!-- <div class="form-group row mt-2">
-                    <label for="name" class="col-sm-4 col-form-label">Dicount:</label>
-                    <div class="col-sm-4">
-                      <div v-if="alreadyDiscounted === false">
-                        <select style="width: 100px;" class="form-control" id="discountMode" v-model="discountMode">
-                          <option value="percentage">Percentage</option>
-                          <option value="fixed">Fixed amount</option>
-                        </select>
+                      <label for="name" class="col-sm-4 col-form-label">Dicount:</label>
+                      <div class="col-sm-4">
+                        <div v-if="alreadyDiscounted === false">
+                          <select style="width: 100px;" class="form-control" id="discountMode" v-model="discountMode">
+                            <option value="percentage">Percentage</option>
+                            <option value="fixed">Fixed amount</option>
+                          </select>
+                        </div>
                       </div>
-                    </div>
-                    <div class="col-sm-4">
-                      <input type="number" class="form-control" id="discountValue" v-model="discountValue">
-                    </div>
-                  </div> -->
+                      <div class="col-sm-4">
+                        <input type="number" class="form-control" id="discountValue" v-model="discountValue">
+                      </div>
+                    </div> -->
                       <div class="form-group mb-2 mt-0">
                         <div class="input-group">
                           <input
@@ -849,9 +849,9 @@
                             </div>
                           </div>
                           <!-- <div class="row">
-                        <div class="col-6"><strong style="font-size: 18px;">Change:</strong></div>
-                        <div class="col-6 text-right text-danger" style="font-size: 18px;">{{ change }}</div>
-                      </div> -->
+                          <div class="col-6"><strong style="font-size: 18px;">Change:</strong></div>
+                          <div class="col-6 text-right text-danger" style="font-size: 18px;">{{ change }}</div>
+                        </div> -->
                         </div>
                       </div>
                       <div class="form-group">
@@ -921,9 +921,9 @@
                         </div>
                       </div>
                       <!-- 
-                  <button v-show="this.isItNew" v-if="!this.walkinStatus" type="button" class="btn btn-primary"
-                    @click="generateBillingStatement">Generate
-                    BS</button>&nbsp; -->
+                    <button v-show="this.isItNew" v-if="!this.walkinStatus" type="button" class="btn btn-primary"
+                      @click="generateBillingStatement">Generate
+                      BS</button>&nbsp; -->
                     </form>
                   </div>
                 </div>
@@ -968,17 +968,17 @@
                       <div class="col-md-3">
                         <div>
                           <!-- <div class="form-group">
-                            <label for="search">Search Reservation:</label>
-                            <div class="input-group">
-                              <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">
-                                  <i class="fa fa-search"></i>
-                                </button>
+                              <label for="search">Search Reservation:</label>
+                              <div class="input-group">
+                                <div class="input-group-append">
+                                  <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fa fa-search"></i>
+                                  </button>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Search reservation"
+                                  v-model="searchTerm2">
                               </div>
-                              <input type="text" class="form-control" placeholder="Search reservation"
-                                v-model="searchTerm2">
-                            </div>
-                          </div> -->
+                            </div> -->
                           <div class="form-group">
                             <label for="date-filter">Date Filter:</label>
                             <select
@@ -1036,9 +1036,9 @@
                             </select>
                           </div>
                           <!-- <div class="form-group mt-2">
-                            <button type="button" class="btn btn-primary"
-                              @click="printReservationHistory">Print</button>&nbsp;
-                          </div> -->
+                              <button type="button" class="btn btn-primary"
+                                @click="printReservationHistory">Print</button>&nbsp;
+                            </div> -->
                         </div>
                       </div>
                       <div class="col-md-9">
@@ -1059,17 +1059,17 @@
                       <div class="col-md-2">
                         <div>
                           <!-- <div class="form-group">
-                            <label for="search">Search Transaction:</label>
-                            <div class="input-group">
-                              <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button">
-                                  <i class="fa fa-search"></i>
-                                </button>
+                              <label for="search">Search Transaction:</label>
+                              <div class="input-group">
+                                <div class="input-group-append">
+                                  <button class="btn btn-outline-secondary" type="button">
+                                    <i class="fa fa-search"></i>
+                                  </button>
+                                </div>
+                                <input type="text" class="form-control" placeholder="Search transaction"
+                                  v-model="searchTerm" id="search">
                               </div>
-                              <input type="text" class="form-control" placeholder="Search transaction"
-                                v-model="searchTerm" id="search">
-                            </div>
-                          </div> -->
+                            </div> -->
                           <div class="form-group">
                             <label for="date-filter">Date Filter:</label>
                             <select
@@ -1124,9 +1124,9 @@
                             </select>
                           </div>
                           <!-- <div class="form-group mt-2">
-                            <button type="button" class="btn btn-primary"
-                              @click="printTransactionHistory">Print</button>&nbsp;
-                          </div> -->
+                              <button type="button" class="btn btn-primary"
+                                @click="printTransactionHistory">Print</button>&nbsp;
+                            </div> -->
                         </div>
                       </div>
                       <div class="col-md-10">
@@ -1154,19 +1154,19 @@
             </div>
           </div>
           <!-- <div class="row">
-            <div class="col-md-6">
-              <h2>Reservations Chart</h2>
-              <div style="height:350px">
-                <Line :data="linedata" :options="lineoptions" />
+              <div class="col-md-6">
+                <h2>Reservations Chart</h2>
+                <div style="height:350px">
+                  <Line :data="linedata" :options="lineoptions" />
+                </div>
               </div>
-            </div>
-            <div class="col-md-6">
-              <h2>Sales Chart</h2>
-              <div style="height:350px">
-                <Line :data="linedata" :options="lineoptions" />
+              <div class="col-md-6">
+                <h2>Sales Chart</h2>
+                <div style="height:350px">
+                  <Line :data="linedata" :options="lineoptions" />
+                </div>
               </div>
-            </div>
-          </div> -->
+            </div> -->
         </div>
       </div>
     </div>
@@ -1649,27 +1649,27 @@
                   :toggleable="false"
                 />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                  <thead>
-                    <tr>
-                      <th>Room Name</th>
-                      <th>Checkin Date</th>
-                      <th>Checkout Date</th>
-                      <th>Guest</th>
-                      <th>Contact Number</th>
-                      <th>Email</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
-                      <td>{{ reservation.room_name }}</td>
-                      <td>{{ reservation.checkinDate }}</td>
-                      <td>{{ reservation.checkoutDate }}</td>
-                      <td>{{ reservation.name }}</td>
-                      <td>{{ reservation.contactNumber }}</td>
-                      <td>{{ reservation.clientemail }}</td>
-                    </tr>
-                  </tbody>
-                </table> -->
+                    <thead>
+                      <tr>
+                        <th>Room Name</th>
+                        <th>Checkin Date</th>
+                        <th>Checkout Date</th>
+                        <th>Guest</th>
+                        <th>Contact Number</th>
+                        <th>Email</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
+                        <td>{{ reservation.room_name }}</td>
+                        <td>{{ reservation.checkinDate }}</td>
+                        <td>{{ reservation.checkoutDate }}</td>
+                        <td>{{ reservation.name }}</td>
+                        <td>{{ reservation.contactNumber }}</td>
+                        <td>{{ reservation.clientemail }}</td>
+                      </tr>
+                    </tbody>
+                  </table> -->
               </div>
             </div>
             <div
@@ -1687,27 +1687,27 @@
                   :toggleable="false"
                 />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                  <thead>
-                    <tr>
-                      <th>Room Name</th>
-                      <th>Checkin Date</th>
-                      <th>Checkout Date</th>
-                      <th>Guest</th>
-                      <th>Contact Number</th>
-                      <th>Email</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
-                      <td>{{ reservation.room_name }}</td>
-                      <td>{{ reservation.checkinDate }}</td>
-                      <td>{{ reservation.checkoutDate }}</td>
-                      <td>{{ reservation.name }}</td>
-                      <td>{{ reservation.contactNumber }}</td>
-                      <td>{{ reservation.clientemail }}</td>
-                    </tr>
-                  </tbody>
-                </table> -->
+                    <thead>
+                      <tr>
+                        <th>Room Name</th>
+                        <th>Checkin Date</th>
+                        <th>Checkout Date</th>
+                        <th>Guest</th>
+                        <th>Contact Number</th>
+                        <th>Email</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
+                        <td>{{ reservation.room_name }}</td>
+                        <td>{{ reservation.checkinDate }}</td>
+                        <td>{{ reservation.checkoutDate }}</td>
+                        <td>{{ reservation.name }}</td>
+                        <td>{{ reservation.contactNumber }}</td>
+                        <td>{{ reservation.clientemail }}</td>
+                      </tr>
+                    </tbody>
+                  </table> -->
               </div>
             </div>
             <div
@@ -1725,27 +1725,27 @@
                   :toggleable="false"
                 />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                  <thead>
-                    <tr>
-                      <th>Room Name</th>
-                      <th>Checkin Date</th>
-                      <th>Checkout Date</th>
-                      <th>Guest</th>
-                      <th>Contact Number</th>
-                      <th>Email</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
-                      <td>{{ reservation.room_name }}</td>
-                      <td>{{ reservation.checkinDate }}</td>
-                      <td>{{ reservation.checkoutDate }}</td>
-                      <td>{{ reservation.name }}</td>
-                      <td>{{ reservation.contactNumber }}</td>
-                      <td>{{ reservation.clientemail }}</td>
-                    </tr>
-                  </tbody>
-                </table> -->
+                    <thead>
+                      <tr>
+                        <th>Room Name</th>
+                        <th>Checkin Date</th>
+                        <th>Checkout Date</th>
+                        <th>Guest</th>
+                        <th>Contact Number</th>
+                        <th>Email</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
+                        <td>{{ reservation.room_name }}</td>
+                        <td>{{ reservation.checkinDate }}</td>
+                        <td>{{ reservation.checkoutDate }}</td>
+                        <td>{{ reservation.name }}</td>
+                        <td>{{ reservation.contactNumber }}</td>
+                        <td>{{ reservation.clientemail }}</td>
+                      </tr>
+                    </tbody>
+                  </table> -->
               </div>
             </div>
             <div
@@ -1763,27 +1763,27 @@
                   :toggleable="false"
                 />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                  <thead>
-                    <tr>
-                      <th>Room Name</th>
-                      <th>Checkin Date</th>
-                      <th>Checkout Date</th>
-                      <th>Guest</th>
-                      <th>Contact Number</th>
-                      <th>Email</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
-                      <td>{{ reservation.room_name }}</td>
-                      <td>{{ reservation.checkinDate }}</td>
-                      <td>{{ reservation.checkoutDate }}</td>
-                      <td>{{ reservation.name }}</td>
-                      <td>{{ reservation.contactNumber }}</td>
-                      <td>{{ reservation.clientemail }}</td>
-                    </tr>
-                  </tbody>
-                </table> -->
+                    <thead>
+                      <tr>
+                        <th>Room Name</th>
+                        <th>Checkin Date</th>
+                        <th>Checkout Date</th>
+                        <th>Guest</th>
+                        <th>Contact Number</th>
+                        <th>Email</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
+                        <td>{{ reservation.room_name }}</td>
+                        <td>{{ reservation.checkinDate }}</td>
+                        <td>{{ reservation.checkoutDate }}</td>
+                        <td>{{ reservation.name }}</td>
+                        <td>{{ reservation.contactNumber }}</td>
+                        <td>{{ reservation.clientemail }}</td>
+                      </tr>
+                    </tbody>
+                  </table> -->
               </div>
             </div>
             <div
@@ -2966,7 +2966,7 @@ export default {
       dashboardStatus: true,
       bookingComponentStatus: true,
       componentKey: 0,
-      activeMainTab: "BEACH ROOM",
+      activeMainTab: "STANDARD ROOM",
       roomSelect: "ok",
       toggleselect: false,
       isItNew: false,
@@ -3340,13 +3340,13 @@ export default {
       origbookings: [],
       calendarItems: [
         /*{
-            id: id,
-            startDate: this.thisMonth(day, hr, min),
-            endDate: this.thisMonth(day, hr, min),
-            title: book.title,
-            classes: "purple",
-            tooltip: "This spans multiple days hehe",
-        },*/
+              id: id,
+              startDate: this.thisMonth(day, hr, min),
+              endDate: this.thisMonth(day, hr, min),
+              title: book.title,
+              classes: "purple",
+              tooltip: "This spans multiple days hehe",
+          },*/
       ],
       linedata: {
         labels: [
@@ -4171,7 +4171,6 @@ export default {
                     isAvailable: response.data[0].isAvailable,
                     status:
                       response.data[0].status === "clean" ? "dirty" : "clean",
-                    pax: response.data[0].pax,
                   })
                   .then((response) => {
                     document.location.reload();
@@ -4279,15 +4278,15 @@ export default {
         .fire({
           title: "Set discount value",
           html: `
-      <div>
-        <input type="radio" class="form-check-input" id="fixedDiscount" name="discountType" value="fixed" checked>
-        <label for="fixedDiscount" class="form-check-label">Fixed</label> &nbsp;
-        <input type="radio" class="form-check-input" id="percentageDiscount" name="discountType" value="percentage">
-        <label for="percentageDiscount" class="form-check-label">Percentage</label>
-        <br><br>
-        <input type="number" class="form-control" id="discountValue" placeholder="Enter discount value" min="0" step="any">
-      </div>
-    `,
+        <div>
+          <input type="radio" class="form-check-input" id="fixedDiscount" name="discountType" value="fixed" checked>
+          <label for="fixedDiscount" class="form-check-label">Fixed</label> &nbsp;
+          <input type="radio" class="form-check-input" id="percentageDiscount" name="discountType" value="percentage">
+          <label for="percentageDiscount" class="form-check-label">Percentage</label>
+          <br><br>
+          <input type="number" class="form-control" id="discountValue" placeholder="Enter discount value" min="0" step="any">
+        </div>
+      `,
           showCancelButton: true,
           confirmButtonText: "Submit",
           cancelButtonText: "Cancel",
@@ -4318,21 +4317,21 @@ export default {
           .fire({
             title: "Choose non-cash type",
             html: `
-      <div>
-        <input type="radio" class="form-check-input" id="cat1" name="noncashType" value="gcash" checked>
-        <label for="cat1" class="form-check-label">GCash</label> &nbsp;
-        <input type="radio" class="form-check-input" id="cat2" name="noncashType" value="paymaya">
-        <label for="cat2" class="form-check-label">PayMaya</label> &nbsp;
-        <input type="radio" class="form-check-input" id="cat3" name="noncashType" value="debitcard">
-        <label for="cat3" class="form-check-label">Debit Card</label> &nbsp;
-        <input type="radio" class="form-check-input" id="cat4" name="noncashType" value="creditcard">
-        <label for="cat4" class="form-check-label">Credit Card</label> &nbsp;
-        <input type="radio" class="form-check-input" id="cat5" name="noncashType" value="bank">
-        <label for="cat5" class="form-check-label">Bank</label> &nbsp;
-        <br><br>
-        <input type="text" class="form-control" maxlength=32 id="referenceno" placeholder="Enter reference/transaction no. here after non-cash payment.">
-      </div>
-    `,
+        <div>
+          <input type="radio" class="form-check-input" id="cat1" name="noncashType" value="gcash" checked>
+          <label for="cat1" class="form-check-label">GCash</label> &nbsp;
+          <input type="radio" class="form-check-input" id="cat2" name="noncashType" value="paymaya">
+          <label for="cat2" class="form-check-label">PayMaya</label> &nbsp;
+          <input type="radio" class="form-check-input" id="cat3" name="noncashType" value="debitcard">
+          <label for="cat3" class="form-check-label">Debit Card</label> &nbsp;
+          <input type="radio" class="form-check-input" id="cat4" name="noncashType" value="creditcard">
+          <label for="cat4" class="form-check-label">Credit Card</label> &nbsp;
+          <input type="radio" class="form-check-input" id="cat5" name="noncashType" value="bank">
+          <label for="cat5" class="form-check-label">Bank</label> &nbsp;
+          <br><br>
+          <input type="text" class="form-control" maxlength=32 id="referenceno" placeholder="Enter reference/transaction no. here after non-cash payment.">
+        </div>
+      `,
             showCancelButton: true,
             confirmButtonText: "Submit",
             cancelButtonText: "Cancel",
@@ -4899,8 +4898,7 @@ export default {
                 };
                 const numBookedRooms = this.cart.filter(
                   (o) =>
-                    (o.type.toLowerCase() === "beach room" ||
-                      o.type.toLowerCase() === "pool room" ||
+                    (o.type.toLowerCase().includes("room") ||
                       o.type.toLowerCase() === "leisures") &&
                     o.category === "main"
                 ).length;
@@ -5727,11 +5725,7 @@ export default {
         if (!result.isConfirmed) {
           return;
         }
-        if (
-          oldroom.type !== newroom.type &&
-          oldroom.type !== "BEACH COTTAGE" &&
-          newroom.type !== "BEACH COTTAGE"
-        ) {
+        if (oldroom.type !== newroom.type) {
           this.$swal({
             title: "Transfer Error",
             text: "Room types do not match. Unable to transfer room.",
@@ -5969,10 +5963,7 @@ export default {
               .then((response) => {
                 const status = response.data[0].status;
                 const category = response.data[0].type;
-                if (
-                  status === "dirty" &&
-                  (category === "BEACH ROOM" || category === "POOL ROOM")
-                ) {
+                if (status === "dirty" && category.includes("room")) {
                   this.$swal({
                     title: "Error!",
                     text: "Uncleaned room, not ready for check-in. Contact housekeeping first.",
@@ -6069,7 +6060,6 @@ export default {
                             price: response.data[0].price,
                             isAvailable: response.data[0].isAvailable,
                             status: "dirty",
-                            pax: response.data[0].pax,
                           })
                           .then((response) => {
                             this.bookings[this.itemIndex].status = "checkedout";
@@ -7292,8 +7282,8 @@ export default {
         );
 
         /*
-this.bookings.filter(booking => booking.room_name === this.bookings[this.itemIndex].room_name );
-        */
+  this.bookings.filter(booking => booking.room_name === this.bookings[this.itemIndex].room_name );
+          */
         const reservationsResponse = await axios.get(
           this.API_URL + "bookings/"
         );
@@ -7530,13 +7520,13 @@ this.bookings.filter(booking => booking.room_name === this.bookings[this.itemInd
     printReservation(reservation) {
       const doc = new jsPDF();
       const content = `Booking Slip
-      ----------------
-      Name: <b>${reservation.name}</b>
-      Room: ${reservation.room_name}
-      Check-in: ${reservation.checkinDate}
-      Check-out: ${reservation.checkoutDate}
-      Remarks: ${reservation.remarks}
-      Contact: ${reservation.contactNumber}`;
+        ----------------
+        Name: <b>${reservation.name}</b>
+        Room: ${reservation.room_name}
+        Check-in: ${reservation.checkinDate}
+        Check-out: ${reservation.checkoutDate}
+        Remarks: ${reservation.remarks}
+        Contact: ${reservation.contactNumber}`;
       doc.text(content, 10, 10);
       doc.save(`Booking Slip - ${reservation.name}.pdf`);
     },

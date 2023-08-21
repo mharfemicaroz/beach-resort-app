@@ -385,6 +385,16 @@ def users_filter(request):
 
 
 @csrf_exempt
+def roomcategory_filter(request):
+    return filter_model(request, RoomCategory)
+
+
+@csrf_exempt
+def roomcategory_list(request, pk=None):
+    return generic_list(request, RoomCategory, RoomCategorySerializer, pk)
+
+
+@csrf_exempt
 def room_list(request, pk=None):
     return generic_list(request, Room, RoomSerializer, pk)
 

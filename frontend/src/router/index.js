@@ -3,6 +3,7 @@ import { useAuthStore } from "../stores/authStore";
 import login from "../components/auth/Login.vue";
 import Main from "../components/main/MainComponent.vue";
 import Booking from "../components/main/BookingComponent.vue";
+import Booking2 from "../components/main/BookingComponent2.vue";
 import BookingMgr from "../components/main/BookingManager.vue";
 import Restaurant from "../components/main/RestaurantComponent.vue";
 import Inventory from "../components/main/InventoryComponent.vue";
@@ -55,7 +56,10 @@ const router = createRouter({
     {
       path: "/booking",
       name: "booking",
-      component: Booking,
+      component:
+        import.meta.env.VITE_APP_NAME === "Marilou Resort - Dumaluan Beach"
+          ? Booking2
+          : Booking,
       meta: {
         requiresAuth: true,
         roles: [

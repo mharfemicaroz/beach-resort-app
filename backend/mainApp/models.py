@@ -82,6 +82,13 @@ class Room(models.Model):
     isAvailable = models.BooleanField(default=True)
     status = models.CharField(
         max_length=100, default='clean', blank=True, null=True)
+    pax = models.IntegerField(default=0)
+
+
+class RoomCategory(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    isAvailable = models.BooleanField(default=True)
 
 
 class LeisureItem(models.Model):

@@ -13,6 +13,13 @@
               </a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" data-bs-toggle="tab" href="#roomscategory">
+                <i class="fas fa-door-open fa-2x"></i>
+                <br />
+                Rooms Category
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" data-bs-toggle="tab" href="#rooms">
                 <i class="fas fa-door-open fa-2x"></i>
                 <br />
@@ -189,6 +196,85 @@
                 </div>
               </div>
             </div>
+            <div id="roomscategory" class="tab-pane">
+              <div id="roomscategory" class="tab-pane">
+                <div class="row">
+                  <div class="col-md-3">
+                    <form @submit.prevent="saveRoomcategory">
+                      <div class="mb-3">
+                        <label for="name" class="form-label"
+                          >Display Name</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="name"
+                          v-model="roomcategory.name"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="type" class="form-label"
+                          >Availability</label
+                        >
+                        <select
+                          class="form-select"
+                          id="type"
+                          v-model="roomcategory.isAvailable"
+                          required
+                        >
+                          <option value="">-- Select --</option>
+                          <option value="true">Yes</option>
+                          <option value="false">No</option>
+                        </select>
+                      </div>
+                      <button type="submit" class="btn btn-primary">
+                        {{ isUpdatingRoomcategory ? "Update" : "Save" }}
+                      </button>
+                    </form>
+                  </div>
+                  <div
+                    class="col-md-9"
+                    style="
+                      height: 550px;
+                      max-height: 550px;
+                      overflow-y: auto;
+                      overflow-x: hidden;
+                      padding-right: 1px;
+                    "
+                  >
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Is Available?</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="category in roomcategories"
+                          :key="category.id"
+                        >
+                          <td>{{ category.name }}</td>
+                          <td v-if="category.isAvailable">Yes</td>
+                          <td v-else>No</td>
+                          <td>
+                            <button
+                              type="button"
+                              class="btn btn-primary btn-sm"
+                              @click="editRoomcategory(category.id)"
+                            >
+                              <i class="fas fa-edit"></i></button
+                            >&nbsp;
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div id="rooms" class="tab-pane">
               <div id="rooms" class="tab-pane">
                 <div class="row">
@@ -216,6 +302,18 @@
                         />
                       </div>
                       <div class="mb-3">
+                        <label for="pax" class="form-label">Pax</label>
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          class="form-control"
+                          id="pax"
+                          v-model="room.pax"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
                         <label for="type" class="form-label">Type</label>
                         <select
                           class="form-select"
@@ -224,19 +322,13 @@
                           required
                         >
                           <option value="">-- Select Type --</option>
-                          <option value="BEACH ROOM">BEACH ROOM</option>
-                          <option value="POOL ROOM">POOL ROOM</option>
-                          <option value="POOL COTTAGE">POOL COTTAGE</option>
-                          <option value="GAZEBO COTTAGE">
-                            NATIVE GAZEBO COTTAGE
+                          <option
+                            v-for="category in roomcategories"
+                            :key="category.id"
+                            :value="category.name"
+                          >
+                            {{ category.name }}
                           </option>
-                          <option value="BEACH COTTAGE">
-                            BEACH COTTAGE (day)
-                          </option>
-                          <option value="N-BEACH COTTAGE">
-                            BEACH COTTAGE (night)
-                          </option>
-                          <option value="HALL">HALL</option>
                         </select>
                       </div>
                       <div class="mb-3">
@@ -275,6 +367,7 @@
                           <th>Name</th>
                           <th>Price</th>
                           <th>Type</th>
+                          <th>Pax</th>
                           <th>Is Available?</th>
                           <th>Action</th>
                         </tr>
@@ -284,6 +377,7 @@
                           <td>{{ room.name }}</td>
                           <td>{{ room.price }}</td>
                           <td>{{ room.type }}</td>
+                          <td>{{ room.pax }}</td>
                           <td v-if="room.isAvailable">Yes</td>
                           <td v-else>No</td>
                           <td>
@@ -576,6 +670,7 @@ export default {
       ],
       users: [],
       rooms: [],
+      roomcategories: [],
       leisures: [],
       restaurantTables: [],
       logs: [],
@@ -594,6 +689,13 @@ export default {
         price: "",
         type: "",
         isAvailable: "",
+        pax: 0,
+      },
+      roomcategory: {
+        // object representing the current room being edited or added
+        id: null,
+        name: "",
+        isAvailable: "",
       },
       leisure: {
         id: null,
@@ -610,6 +712,7 @@ export default {
         isAvailable: "",
       },
       isUpdatingUser: false,
+      isUpdatingRoomcategory: false,
       isUpdatingRoom: false,
       isUpdatingLeisure: false,
       isUpdatingTable: false,
@@ -653,6 +756,7 @@ export default {
     }
 
     this.getUsers();
+    this.getRoomcategories();
     this.getRooms();
     this.getLeisures();
     this.getRestaurantTables();
@@ -705,6 +809,16 @@ export default {
           this.users = response.data.filter(
             (item) => item.role !== "superuser"
           );
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getRoomcategories() {
+      axios
+        .get(`${this.API_URL}rooms/category/`)
+        .then((response) => {
+          this.roomcategories = response.data;
         })
         .catch((error) => {
           console.log(error);
@@ -891,6 +1005,66 @@ export default {
           });
       }
     },
+    saveRoomcategory() {
+      if (this.isUpdatingRoomcategory) {
+        axios
+          .put(
+            `${this.API_URL}rooms/category/${this.roomcategory.id}/`,
+            this.roomcategory
+          )
+          .then((response) => {
+            this.$swal({
+              icon: "success",
+              title: "Room updated successfully",
+            });
+            this.getRoomcategories();
+            this.roomcategory = {
+              id: null,
+              name: "",
+              isAvailable: "",
+            };
+            this.isUpdatingRoomcategory = false;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .post(`${this.API_URL}rooms/category/filter/`, {
+            columnName: "name",
+            columnKey: this.roomcategory.name,
+          })
+          .then((response) => {
+            if (response.data.length > 0) {
+              this.$swal({
+                icon: "error",
+                title: "Room name already exists",
+              });
+            } else {
+              axios
+                .post(`${this.API_URL}rooms/category/`, this.roomcategory)
+                .then((response) => {
+                  this.$swal({
+                    icon: "success",
+                    title: "Room saved successfully",
+                  });
+                  this.getRoomcategories();
+                  this.roomcategory = {
+                    id: null,
+                    name: "",
+                    isAvailable: "",
+                  };
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
     saveRoom() {
       if (this.isUpdatingRoom) {
         axios
@@ -907,6 +1081,7 @@ export default {
               price: "",
               type: "",
               isAvailable: "",
+              pax: 0,
             };
             this.isUpdatingRoom = false;
           })
@@ -940,6 +1115,7 @@ export default {
                     price: "",
                     type: "",
                     isAvailable: "",
+                    pax: 0,
                   };
                 })
                 .catch((error) => {
@@ -1060,6 +1236,17 @@ export default {
         .then((response) => {
           this.user = response.data;
           this.isUpdatingUser = true;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    editRoomcategory(id) {
+      axios
+        .get(`${this.API_URL}rooms/category/${id}/`)
+        .then((response) => {
+          this.roomcategory = response.data;
+          this.isUpdatingRoomcategory = true;
         })
         .catch((error) => {
           console.log(error);
