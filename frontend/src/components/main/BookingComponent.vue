@@ -4307,20 +4307,21 @@ export default {
         });
 
         // Check if there exists a booking with the same room_name in yesterday that has not been checked out
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayBooking = this.bookings.find((prevBooking) => {
-          const prevCheckOutDate = parseDate(prevBooking.checkoutDate);
-          return (
-            prevBooking.room_name === room.name &&
-            new Date(prevCheckOutDate).toDateString() ===
-              new Date(yesterday).toDateString() &&
-            prevBooking.status === "checkedin"
-          );
-        });
+        // const yesterday = new Date();
+        // yesterday.setDate(yesterday.getDate() - 1);
+        // const yesterdayBooking = this.bookings.find((prevBooking) => {
+        //   const prevCheckOutDate = parseDate(prevBooking.checkoutDate);
+        //   return (
+        //     prevBooking.room_name === room.name &&
+        //     new Date(prevCheckOutDate).toDateString() ===
+        //       new Date(yesterday).toDateString() &&
+        //     prevBooking.status === "checkedin"
+        //   );
+        // });
 
         // Return true if there are no overlapping bookings and no booking in yesterday that has not been checked out
-        return overlappingBookings.length === 0 && !yesterdayBooking;
+        // return overlappingBookings.length === 0 && !yesterdayBooking;
+        return overlappingBookings.length === 0;
       });
     },
     userLocale() {
@@ -6653,6 +6654,7 @@ export default {
     clickDay() {
       let today = new Date();
       if (this.dayreserve.setHours(0, 0, 0, 0) >= today.setHours(0, 0, 0, 0)) {
+        alert(this.dayreserve);
         this.selectionStart = this.dayreserve;
         this.selectionEnd = this.dayreserve;
         this.toggledayMenuModal();
@@ -6668,9 +6670,10 @@ export default {
         this.reservation.remarks = "";
         // this.reservation.numguests = "";
         this.reservation.clientPhone = "";
-        this.reservation.checkinDate =
-          this.dayreserve.toLocaleDateString("en-GB");
-        this.reservation.checkoutDate = formatDate(this.dayreserve);
+        // this.reservation.checkinDate =
+        //   this.dayreserve.toLocaleDateString("en-GB");
+        // this.reservation.checkoutDate =
+        //   this.dayreserve.toLocaleDateString("en-GB");
         this.reservation.status = "vacant";
       }
     },
@@ -6768,9 +6771,8 @@ export default {
       this.reservation.clientPhone = "";
       this.reservation.checkinDate =
         this.selectionStart.toLocaleDateString("en-GB");
-      this.reservation.checkoutDate = formatDate(
-        new Date(parseDate(this.selectionEnd.toLocaleDateString("en-GB")))
-      );
+      this.reservation.checkoutDate =
+        this.selectionEnd.toLocaleDateString("en-GB");
       this.toggledayMenuModal();
     },
     onDrop(item, date) {
