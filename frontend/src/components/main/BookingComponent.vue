@@ -553,7 +553,20 @@
                                 <td>{{ item.name }}</td>
                                 <td>{{ item.type }}</td>
                                 <td>{{ item.priceRate }}</td>
-                                <td>{{ item.purqty }}</td>
+                                <td>
+                                  {{ item.purqty
+                                  }}{{
+                                    parseFloat(
+                                      item.priceRate.split("/")[0].trim()
+                                    ) *
+                                      item.purqty ===
+                                    parseFloat(item.totalCartPrice)
+                                      ? ""
+                                      : " (free " +
+                                        sumtotalPax() +
+                                        `pax) = ${item.purqty - sumtotalPax()}`
+                                  }}
+                                </td>
                                 <td v-if="item.itemOption !== 'room'">
                                   {{ item.totalCartPrice }}
                                 </td>
@@ -1241,7 +1254,18 @@
                       <td>{{ item.name }}</td>
                       <td>{{ item.type }}</td>
                       <td>{{ item.priceRate }}</td>
-                      <td>{{ item.purqty }}</td>
+                      <td>
+                        {{ item.purqty
+                        }}{{
+                          parseFloat(item.priceRate.split("/")[0].trim()) *
+                            item.purqty ===
+                          parseFloat(item.totalCartPrice)
+                            ? ""
+                            : " (free " +
+                              sumtotalPax() +
+                              `pax) = ${item.purqty - sumtotalPax()}`
+                        }}
+                      </td>
                       <td v-if="item.itemOption !== 'room'">
                         {{ item.totalCartPrice }}
                       </td>
@@ -6657,6 +6681,23 @@ export default {
         console.error(error); // log any errors
         this.transactions = []; // return an empty array in case of errors
       }
+    },
+    sumtotalPax() {
+      const roomsBooked = this.cart.filter(
+        (item) =>
+          item.category === "main" && item.type.toLowerCase().includes("room")
+      );
+
+      let sumAllowedGuest = 0;
+      try {
+        for (const r of roomsBooked) {
+          const roompax = parseFloat(
+            this.rooms.filter((o) => o.name === r.name)[0].pax
+          );
+          sumAllowedGuest += roompax;
+        }
+      } catch (e) {}
+      return sumAllowedGuest;
     },
     initializePlaceOrder() {
       if (this.cashAmount > this.total) {
