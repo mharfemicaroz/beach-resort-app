@@ -564,7 +564,11 @@
                                       ? ""
                                       : " (free " +
                                         sumtotalPax() +
-                                        `pax) = ${item.purqty - sumtotalPax()}`
+                                        `pax) = ${
+                                          item.purqty - sumtotalPax() > 0
+                                            ? item.purqty - sumtotalPax()
+                                            : 0
+                                        }`
                                   }}
                                 </td>
                                 <td v-if="item.itemOption !== 'room'">
@@ -1263,7 +1267,11 @@
                             ? ""
                             : " (free " +
                               sumtotalPax() +
-                              `pax) = ${item.purqty - sumtotalPax()}`
+                              `pax) = ${
+                                item.purqty - sumtotalPax() > 0
+                                  ? item.purqty - sumtotalPax()
+                                  : 0
+                              }`
                         }}
                       </td>
                       <td v-if="item.itemOption !== 'room'">
@@ -4193,13 +4201,16 @@ export default {
               }
             );
           } catch (error) {}
-          //this.taskRecord(`action:/transfer guest/client:/${item.name}`)
-          this.onDrop(o, d);
+
+          //this.onDrop(o, d);
           item.room_name = newroom.name;
           item.room_price = newroom.price;
           item.room_type = newroom.type;
           item.remarks =
             "transferred from: " + oldroom.name + " on " + formatDate();
+
+          this.updateBookings(item.id);
+          this.taskRecord(`action:/transfer guest/client:/${item.name}`);
           this.draggedItem = null;
           this.draggedRoom = null;
         });
@@ -6338,13 +6349,13 @@ export default {
       this.itemIndex = this.bookings.findIndex((o) => o.itemID === item.id);
       //issue in reloading
       const itemStatus = this.bookings[this.itemIndex].status;
-      if (itemStatus === "reserved") {
+      if (itemStatus === "reserved" || itemStatus === "checkedin") {
         const eLength = CalendarMath.dayDiff(item.startDate, date);
         let landingDateCheckin = CalendarMath.addDays(item.startDate, eLength);
         let landingDateCheckout = CalendarMath.addDays(item.endDate, eLength);
         let filteredBookings = this.bookings.filter(
           (booking) =>
-            booking.status === "reserved" &&
+            (booking.status === "reserved" || booking.status === "checkedin") &&
             booking.itemID !== this.bookings[this.itemIndex].itemID &&
             booking.room_name === this.bookings[this.itemIndex].room_name &&
             new Date(
@@ -6400,9 +6411,13 @@ export default {
           }
 
           this.updateBookings(this.bookings[this.itemIndex].id);
-          // //this.reloadData();
-          // this.populateCalendarItems();
-          // this.taskRecord(`action:/adjust date reservation/client:/${this.bookings[this.itemIndex].name}`)
+          //this.reloadData();
+          //this.populateCalendarItems();
+          this.taskRecord(
+            `action:/adjust date reservation/client:/${
+              this.bookings[this.itemIndex].name
+            }`
+          );
         } else {
           this.$swal.fire({
             icon: "error",

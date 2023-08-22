@@ -4163,13 +4163,15 @@ export default {
               }
             );
           } catch (error) {}
-          //this.taskRecord(`action:/transfer guest/client:/${item.name}`)
+          //this.taskRecord(`action:/transfer guest/client:/${item.name}`);
           this.onDrop(o, d);
           item.room_name = newroom.name;
           item.room_price = newroom.price;
           item.room_type = newroom.type;
           item.remarks =
             "transferred from: " + oldroom.name + " on " + formatDate();
+          this.updateBookings(item.id);
+          this.taskRecord(`action:/transfer guest/client:/${item.name}`);
           this.draggedItem = null;
           this.draggedRoom = null;
         });
@@ -6346,7 +6348,11 @@ export default {
           this.updateBookings(this.bookings[this.itemIndex].id);
           // //this.reloadData();
           // this.populateCalendarItems();
-          // this.taskRecord(`action:/adjust date reservation/client:/${this.bookings[this.itemIndex].name}`)
+          this.taskRecord(
+            `action:/adjust date reservation/client:/${
+              this.bookings[this.itemIndex].name
+            }`
+          );
         } else {
           this.$swal.fire({
             icon: "error",
