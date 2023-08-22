@@ -568,7 +568,9 @@
                                           ? subroom.discountValue + '%'
                                           : (
                                               subroom.discountValue /
-                                              gbookingscount
+                                              combinedcart.filter(
+                                                (o) => o.itemOption === 'room'
+                                              ).length
                                             ).toFixed(2)
                                       } off</sup> <span class='text-success font-weight-bold'>${
                                         subroom.discountMode === 'percentage'
@@ -580,7 +582,9 @@
                                           : item.totalCartPrice -
                                             (
                                               subroom.discountValue /
-                                              gbookingscount
+                                              combinedcart.filter(
+                                                (o) => o.itemOption === 'room'
+                                              ).length
                                             ).toFixed(2)
                                       }</span>`
                                     "
@@ -1251,7 +1255,10 @@
                               subroom.discountMode === 'percentage'
                                 ? subroom.discountValue + '%'
                                 : (
-                                    subroom.discountValue / gbookingscount
+                                    subroom.discountValue /
+                                    combinedcart.filter(
+                                      (o) => o.itemOption === 'room'
+                                    ).length
                                   ).toFixed(2)
                             } off</sup> <span class='text-success font-weight-bold'>${
                               subroom.discountMode === 'percentage'
@@ -1259,7 +1266,10 @@
                                   (1 - parseFloat(subroom.discountValue / 100))
                                 : item.totalCartPrice -
                                   (
-                                    subroom.discountValue / gbookingscount
+                                    subroom.discountValue /
+                                    combinedcart.filter(
+                                      (o) => o.itemOption === 'room'
+                                    ).length
                                   ).toFixed(2)
                             }</span>`
                           "

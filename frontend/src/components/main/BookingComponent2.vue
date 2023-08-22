@@ -568,7 +568,9 @@
                                           ? subroom.discountValue + '%'
                                           : (
                                               subroom.discountValue /
-                                              gbookingscount
+                                              combinedcart.filter(
+                                                (o) => o.itemOption === 'room'
+                                              ).length
                                             ).toFixed(2)
                                       } off</sup> <span class='text-success font-weight-bold'>${
                                         subroom.discountMode === 'percentage'
@@ -580,7 +582,9 @@
                                           : item.totalCartPrice -
                                             (
                                               subroom.discountValue /
-                                              gbookingscount
+                                              combinedcart.filter(
+                                                (o) => o.itemOption === 'room'
+                                              ).length
                                             ).toFixed(2)
                                       }</span>`
                                     "
@@ -1251,7 +1255,10 @@
                               subroom.discountMode === 'percentage'
                                 ? subroom.discountValue + '%'
                                 : (
-                                    subroom.discountValue / gbookingscount
+                                    subroom.discountValue /
+                                    combinedcart.filter(
+                                      (o) => o.itemOption === 'room'
+                                    ).length
                                   ).toFixed(2)
                             } off</sup> <span class='text-success font-weight-bold'>${
                               subroom.discountMode === 'percentage'
@@ -1259,7 +1266,10 @@
                                   (1 - parseFloat(subroom.discountValue / 100))
                                 : item.totalCartPrice -
                                   (
-                                    subroom.discountValue / gbookingscount
+                                    subroom.discountValue /
+                                    combinedcart.filter(
+                                      (o) => o.itemOption === 'room'
+                                    ).length
                                   ).toFixed(2)
                             }</span>`
                           "
@@ -1343,30 +1353,67 @@
             <hr />
             <div class="row">
               <div class="col-12">
-                <span style="font-size: small">Terms &amp; Conditions:</span>
+                <span style="font-size: small">TO OUR VALUED GUESTS</span>
                 <p>
-                  1. Check-in time is at 2:00 PM. Check-out time is at 12:00 PM.
+                  Thank you for choosing {{ APP_NAME }}! It is our main priority
+                  to meet up with your expectations. We would like to remind you
+                  of our minimal Rules and Regulations to make your stay
+                  satisfying.
                 </p>
                 <p>
-                  2. Late check-out is subject to availability and may be
-                  charged an additional fee.
+                  1. The resort is not liable for any injury and/or death due to
+                  sickness or negligence of the guest.
+                </p>
+                <p>2. Safety deposit box is available at the Cashier Area.</p>
+                <p>
+                  3. The resort is not liable in loss of valuables in the room
+                  or within the resort premises.
                 </p>
                 <p>
-                  3. Smoking is strictly prohibited inside the resort premises.
-                </p>
-                <p>4. Pets are not allowed inside the resort.</p>
-                <p>
-                  5. Any damage or loss to the resort property will be charged
-                  to the guest.
+                  4. Cancellation of bookings upon arrival is Non-Refundable.
+                  Payments made shall not be refunded.
                 </p>
                 <p>
-                  6. The resort reserves the right to refuse service to anyone.
+                  5. Room is good for 2 persons and maximum of 4 persons only.
+                  Extra person/s will be charged.
                 </p>
-                <p>7. All rates are inclusive of taxes and service charge.</p>
-                <p>8. Payment must be settled upon check-out.</p>
                 <p>
-                  9. The resort is not responsible for any loss or damage to
-                  personal belongings.
+                  6. Check-in time is 3:00PM. Check-out is 11:00AM. Excess hour
+                  will be charged Php 350 per hour. Stay beyond 4:00PM will be
+                  charged full or overnight rate.
+                </p>
+                <p>
+                  7. Bringing of food is strictly not allowed. We charge corkage
+                  of Php 500 per dish and Php 500 per bottle for drinks
+                </p>
+                <p>
+                  8. Any delivery of food from outside, we charge corkage 500.00
+                  per order.
+                </p>
+                <p>9. Lost key is charge Php 1,000.</p>
+                <p>
+                  10. Stains such as Henna, Ink, Dye, Oil or any sort of stains
+                  on linen shall be charged to guest.
+                </p>
+                <p>11. Unavailed package inclusions are non-refundable.</p>
+                <p>12. Breakfast is served from 6:00AM to 9:00AM.</p>
+                <hr />
+                <p>
+                  We agree to abide the safety rules and regulations imposed by
+                  {{ APP_NAME }}. Should any accident or any incident occurs
+                  while in the premises, I/We hereby voluntarily release and
+                  discharge Marilou Resort from any and all liabilities that may
+                  arise from any accident whether or not such may result to
+                  bodily injury or loss of life. I/We also solemnly undertake to
+                  refrain from filing in any court or quasi-judicial government
+                  body any and all kinds of legal action, whether civil,
+                  criminal and/or administrative by reason of such incident
+                  against the resort, its owner, officers and employees.
+                </p>
+                <hr />
+                <p>
+                  I have gone through the terms and conditions of my stay in the
+                  resort and I agree to same.
                 </p>
               </div>
             </div>
@@ -1391,7 +1438,7 @@
               that he/she is fully aware of such basic risks.
             </p>
             <p>
-              The UNDERSIGND herein agrees and acknowledge that neither
+              The UNDERSIGNED herein agrees and acknowledge that neither
               {{ APP_NAME }} located at {{ SITE_ADDRESS }}
               nor any of its officers, employees and staff or representative may
               not be held responsible or liable in any way what so ever for any
@@ -4871,11 +4918,6 @@ export default {
             const updatedItems = [];
             let isFind = false;
             // Loop through inclusion items in the cart
-            const roompax = parseFloat(
-              this.rooms.filter(
-                (o) => o.name === this.bookings[this.itemIndex].room_name
-              )[0].pax
-            );
 
             const roomsBooked = this.cart.filter(
               (item) =>
@@ -4884,12 +4926,14 @@ export default {
             );
 
             let sumAllowedGuest = 0;
-            for (const r of roomsBooked) {
-              const roompax = parseFloat(
-                this.rooms.filter((o) => o.name === r.name)[0].pax
-              );
-              sumAllowedGuest += roompax;
-            }
+            try {
+              for (const r of roomsBooked) {
+                const roompax = parseFloat(
+                  this.rooms.filter((o) => o.name === r.name)[0].pax
+                );
+                sumAllowedGuest += roompax;
+              }
+            } catch (e) {}
 
             this.cart
               .filter((item) => item.category === "inclusion")
@@ -6675,7 +6719,7 @@ export default {
       }
     },
     initializePlaceOrder() {
-      if (this.cashAmount > this.total) {
+      if (this.cashAmount > this.total && !this.walkinStatus) {
         this.$swal({
           title: "Over-Payment Detected!",
           text: "You are about to overpay. Do you want to push excess amount to this account?",
