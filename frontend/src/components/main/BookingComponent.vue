@@ -564,7 +564,11 @@
                                       ? ""
                                       : " (free " +
                                         sumtotalPax() +
-                                        `pax) = ${item.purqty - sumtotalPax()}`
+                                        `pax) = ${
+                                          item.purqty - sumtotalPax() > 0
+                                            ? item.purqty - sumtotalPax()
+                                            : 0
+                                        }`
                                   }}
                                 </td>
                                 <td v-if="item.itemOption !== 'room'">
@@ -1263,7 +1267,11 @@
                             ? ""
                             : " (free " +
                               sumtotalPax() +
-                              `pax) = ${item.purqty - sumtotalPax()}`
+                              `pax) = ${
+                                item.purqty - sumtotalPax() > 0
+                                  ? item.purqty - sumtotalPax()
+                                  : 0
+                              }`
                         }}
                       </td>
                       <td v-if="item.itemOption !== 'room'">
