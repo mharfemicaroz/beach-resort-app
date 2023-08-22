@@ -5008,38 +5008,68 @@ export default {
                       o.type.toLowerCase() === "leisures") &&
                     o.category === "main"
                 ).length;
-                const numGuestsCard = this.cart.filter(
-                  (o) =>
-                    o.name.toLowerCase() === "general entrance" &&
-                    o.category === "main"
-                ).length;
+                const numGuestsCard = this.cart
+                  .filter((o) => o.name.toLowerCase() === "general entrance")
+                  .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
                 const entranceFee = parseFloat(
                   this.items.filter(
                     (o) => o.item.toLowerCase() === "general entrance"
                   )[0].priceRate
                 );
-                if (
-                  numGuestsCard === 0 &&
-                  numBookedRooms > 0 &&
-                  item.name.toLowerCase() === "general entrance" &&
-                  isFind === false
-                ) {
-                  const totalGuests = this.cart
-                    .filter((o) => o.name.toLowerCase() === "general entrance")
-                    .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
-                  if (totalGuests === 1) {
-                    data.totalCost = parseFloat(data.totalCost) - entranceFee;
-                  } else if (totalGuests >= sumAllowedGuest) {
-                    data.totalCost =
-                      parseFloat(data.totalCost) -
-                      sumAllowedGuest * entranceFee;
-                  } else if (totalGuests < sumAllowedGuest) {
-                    data.totalCost = 0;
-                  }
 
+                const totalGuests = this.cart
+                  .filter(
+                    (o) =>
+                      o.name.toLowerCase() === "general entrance" &&
+                      o.category === "inclusion"
+                  )
+                  .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
+
+                const totalGuestsMain = this.cart
+                  .filter(
+                    (o) =>
+                      o.name.toLowerCase() === "general entrance" &&
+                      o.category === "main"
+                  )
+                  .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
+
+                // if (
+                //   totalGuests <= sumAllowedGuest &&
+                //   numBookedRooms > 0 &&
+                //   item.name.toLowerCase() === "general entrance" &&
+                //   isFind === false
+                // ) {
+                //   if (totalGuests === 1) {
+                //     data.totalCost = parseFloat(data.totalCost) - entranceFee;
+                //   } else if (totalGuests === sumAllowedGuest) {
+                //     data.totalCost =
+                //       parseFloat(data.totalCost) -
+                //         sumAllowedGuest * entranceFee <
+                //       0
+                //         ? 0
+                //         : parseFloat(data.totalCost) -
+                //           sumAllowedGuest * entranceFee;
+                //   } else if (totalGuests < sumAllowedGuest) {
+                //     data.totalCost = 0;
+                //   }
+
+                //   item.totalCartPrice = data.totalCost;
+                //   isFind = true;
+                // }
+
+                // alert([totalGuestsMain, totalGuests]);
+
+                if (totalGuestsMain <= totalGuests) {
+                  data.totalCost =
+                    parseFloat(data.totalCost) - sumAllowedGuest * entranceFee <
+                    0
+                      ? 0
+                      : parseFloat(data.totalCost) -
+                        sumAllowedGuest * entranceFee;
                   item.totalCartPrice = data.totalCost;
                   isFind = true;
                 }
+
                 try {
                   data.bookingID = bId;
                   data.groupkey = gkey;
