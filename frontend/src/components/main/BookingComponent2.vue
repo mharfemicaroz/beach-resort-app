@@ -2148,6 +2148,7 @@
                           style="width: 75px !important"
                           class="form-control input-sm"
                           type="number"
+                          min="0"
                           v-model.number="howMany[index]"
                         />
                       </td>
@@ -4876,6 +4877,20 @@ export default {
               )[0].pax
             );
 
+            const roomsBooked = this.cart.filter(
+              (item) =>
+                item.category === "main" &&
+                item.type.toLowerCase().includes("room")
+            );
+
+            let sumAllowedGuest = 0;
+            for (const r of roomsBooked) {
+              const roompax = parseFloat(
+                this.rooms.filter((o) => o.name === r.name)[0].pax
+              );
+              sumAllowedGuest += roompax;
+            }
+
             this.cart
               .filter((item) => item.category === "inclusion")
               .forEach(async (item, index) => {
@@ -4918,9 +4933,10 @@ export default {
                     .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
                   if (totalGuests === 1) {
                     data.totalCost = parseFloat(data.totalCost) - entranceFee;
-                  } else if (totalGuests >= roompax) {
+                  } else if (totalGuests >= sumAllowedGuest) {
                     data.totalCost =
-                      parseFloat(data.totalCost) - roompax * entranceFee;
+                      parseFloat(data.totalCost) -
+                      sumAllowedGuest * entranceFee;
                   }
                   item.totalCartPrice = data.totalCost;
                   isFind = true;
@@ -6556,6 +6572,23 @@ export default {
             processedBy: this.userdata.fName + " " + this.userdata.lName,
             groupkey: gkey,
           });
+
+          const data = {
+            bookingID: id,
+            itemName: res.name,
+            itemType: roomType,
+            itemPriceRate: roomPrice + "/check-in",
+            purchaseQty: numDays + 1,
+            totalCost: (numDays + 1) * parseFloat(roomPrice),
+            category: "main",
+            itemOption: "room",
+            dateCreated: new Date(), // Set the dateCreated field to the current date and time
+            groupkey: gkey,
+          };
+
+          try {
+            await axios.post(this.API_URL + "transaction/item/", data);
+          } catch (e) {}
         });
         this.reloadData();
         this.populateCalendarItems();
@@ -7331,6 +7364,7 @@ export default {
       return true; // Room is available
     },
     async addToCart(item, index) {
+      console.log(this.cart);
       if (this.billing.clientName !== "") {
         // if (this.isItemAvailableInCart(item.item)) {
         let reserveStatus = null;
@@ -7392,8 +7426,9 @@ export default {
             // Handle the error here
             data.bookingID = "walkin";
           }
-          console.log(this.itemCart);
           this.cart.push(this.itemCart);
+          console.log(this.cart);
+
           $("#shopModal").modal("toggle");
           this.howMany[index] = "";
           this.itemCart = {

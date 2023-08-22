@@ -6547,6 +6547,22 @@ export default {
             processedBy: this.userdata.fName + " " + this.userdata.lName,
             groupkey: gkey,
           });
+          const data = {
+            bookingID: id,
+            itemName: res.name,
+            itemType: roomType,
+            itemPriceRate: roomPrice + "/check-in",
+            purchaseQty: numDays + 1,
+            totalCost: (numDays + 1) * parseFloat(roomPrice),
+            category: "main",
+            itemOption: "room",
+            dateCreated: new Date(), // Set the dateCreated field to the current date and time
+            groupkey: gkey,
+          };
+
+          try {
+            await axios.post(this.API_URL + "transaction/item/", data);
+          } catch (e) {}
         });
         this.reloadData();
         this.populateCalendarItems();
