@@ -112,7 +112,7 @@
   </div>
   <div class="row row justify-content-center">
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="card x">
           <div class="card-header text-primary text-center">
             <strong>Reservation Summary</strong>
@@ -132,7 +132,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-6">
         <div class="card x">
           <div class="card-header text-primary text-center">
             <strong>Current Occupancy</strong>
@@ -145,26 +145,6 @@
               :key="componentKey"
               v-if="loaded[1]"
               :chartData="bar1Data"
-            />
-            <div v-else class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card x">
-          <div class="card-header text-primary text-center">
-            <strong>Transaction Type</strong>
-          </div>
-          <div
-            class="card-body chart"
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <pie-chart
-              :key="componentKey"
-              v-if="loaded[2]"
-              :chartData="pie2Data"
             />
             <div v-else class="spinner-border" role="status">
               <span class="sr-only">Loading...</span>
@@ -199,9 +179,21 @@
       <div class="col-md-6">
         <div class="card x">
           <div class="card-header text-primary text-center">
-            <strong>Guest Counter Report</strong>
+            <strong>Transaction Type</strong>
           </div>
-          <div class="card-body chart"></div>
+          <div
+            class="card-body chart"
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <pie-chart
+              :key="componentKey"
+              v-if="loaded[2]"
+              :chartData="pie2Data"
+            />
+            <div v-else class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -779,6 +771,6 @@ export default {
 }
 
 .card-body.chart {
-  height: 300px;
+  height: 400px !important;
 }
 </style>
