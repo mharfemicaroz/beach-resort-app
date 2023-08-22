@@ -5033,7 +5033,10 @@ export default {
                     data.totalCost =
                       parseFloat(data.totalCost) -
                       sumAllowedGuest * entranceFee;
+                  } else if (totalGuests < sumAllowedGuest) {
+                    data.totalCost = 0;
                   }
+
                   item.totalCartPrice = data.totalCost;
                   isFind = true;
                 }

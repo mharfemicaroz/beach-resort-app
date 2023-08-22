@@ -4960,6 +4960,8 @@ export default {
                   } else if (totalGuests >= 2) {
                     data.totalCost =
                       parseFloat(data.totalCost) - 2 * entranceFee;
+                  } else if (totalGuests < sumAllowedGuest) {
+                    data.totalCost = 0;
                   }
                   item.totalCartPrice = data.totalCost;
                   isFind = true;
