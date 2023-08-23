@@ -2347,6 +2347,9 @@
                                   <i class="fas fa-table"></i>
                                   {{ item.name }}
                                 </h5>
+                                <h5>
+                                  <i>pax:{{ item.pax }}</i>
+                                </h5>
                               </div>
                               <div class="card-body">
                                 <h6 class="text-dark">
@@ -7740,7 +7743,7 @@ export default {
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today());
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today());
     this.$nextTick(() => {
-      document.body.addEventListener("contextmenu", this.handleContextMenu);
+      //document.body.addEventListener("contextmenu", this.handleContextMenu);
     });
     document.addEventListener("keydown", this.handleKeyPress);
     const modal = this.$refs.modal;
