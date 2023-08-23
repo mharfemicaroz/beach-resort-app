@@ -282,84 +282,24 @@
                               class="nav bg radius nav-pills nav-fill mb-3 bg mt-3"
                               role="tablist"
                             >
-                              <li class="nav-item">
+                              <li
+                                class="nav-item"
+                                v-for="(category, index) in roomcategories"
+                                :key="category.id"
+                              >
                                 <a
-                                  class="nav-link active show"
+                                  :class="
+                                    index > 0
+                                      ? 'nav-link'
+                                      : 'nav-link active show'
+                                  "
                                   data-bs-toggle="tab"
-                                  @click="activeroomtable = 'BEACH ROOM'"
+                                  @click="activeMainTab = `${category.name}`"
                                   role="tab"
-                                  href="#cat1"
+                                  :href="`#roomcategory${index}`"
                                 >
-                                  <i class="fa fa-tags"></i>Beach Rooms</a
-                                >
-                              </li>
-                              <li class="nav-item">
-                                <a
-                                  class="nav-link"
-                                  data-bs-toggle="tab"
-                                  @click="activeroomtable = 'POOL ROOM'"
-                                  role="tab"
-                                  href="#cat2"
-                                >
-                                  <i class="fa fa-tags"></i>Pool Rooms</a
-                                >
-                              </li>
-                              <li class="nav-item">
-                                <a
-                                  class="nav-link"
-                                  data-bs-toggle="tab"
-                                  @click="activeroomtable = 'POOL COTTAGE'"
-                                  role="tab"
-                                  href="#cat3"
-                                >
-                                  <i class="fa fa-tags"></i>Pool Cottages</a
-                                >
-                              </li>
-                              <li class="nav-item">
-                                <a
-                                  class="nav-link"
-                                  data-bs-toggle="tab"
-                                  @click="activeroomtable = 'GAZEBO COTTAGE'"
-                                  role="tab"
-                                  href="#cat4"
-                                >
-                                  <i class="fa fa-tags"></i>Native Gazebo
-                                  Cottages</a
-                                >
-                              </li>
-                              <li class="nav-item">
-                                <a
-                                  class="nav-link"
-                                  data-bs-toggle="tab"
-                                  @click="activeroomtable = 'BEACH COTTAGE'"
-                                  role="tab"
-                                  href="#cat5"
-                                >
-                                  <i class="fa fa-tags"></i>Beach Cottages
-                                  (Day)</a
-                                >
-                              </li>
-                              <li class="nav-item">
-                                <a
-                                  class="nav-link"
-                                  data-bs-toggle="tab"
-                                  @click="activeroomtable = 'N-BEACH COTTAGE'"
-                                  role="tab"
-                                  href="#cat6"
-                                >
-                                  <i class="fa fa-tags"></i>Beach Cottages
-                                  (Night)</a
-                                >
-                              </li>
-                              <li class="nav-item">
-                                <a
-                                  class="nav-link"
-                                  data-bs-toggle="tab"
-                                  @click="activeroomtable = 'HALL'"
-                                  role="tab"
-                                  href="#cat7"
-                                >
-                                  <i class="fa fa-tags"></i>Halls</a
+                                  <i class="fa fa-tags"></i
+                                  >{{ category.name }}</a
                                 >
                               </li>
                             </ul>
@@ -370,366 +310,6 @@
                                 id="cat1"
                                 role="tabpanel"
                                 aria-labelledby="cat1"
-                              >
-                                <div class="container-fluid">
-                                  <div class="row">
-                                    <div class="row row-cols-1 row-cols-md-6">
-                                      <template
-                                        v-for="(
-                                          item, index
-                                        ) in filteredroom_tables"
-                                        :key="item.id"
-                                      >
-                                        <div
-                                          class="col mb-6"
-                                          v-show="item.b_status"
-                                        >
-                                          <div
-                                            class="card"
-                                            style="
-                                              transition: transform 0.2s
-                                                ease-in-out;
-                                            "
-                                            @click="dineInAction(item)"
-                                          >
-                                            <div
-                                              class="card-header d-flex justify-content-between align-items-center"
-                                              :style="{
-                                                'background-color':
-                                                  'order_id' in item
-                                                    ? '#66bb6a'
-                                                    : '',
-                                              }"
-                                            >
-                                              <h5 class="card-title">
-                                                <i class="fas fa-table"></i>
-                                                {{ item.name }}
-                                              </h5>
-                                            </div>
-                                            <div class="card-body">
-                                              <h6 class="text-dark">
-                                                <i
-                                                  class="fas fa-info-circle"
-                                                ></i>
-                                                {{
-                                                  "order_id" in item
-                                                    ? "w/ order"
-                                                    : "no order"
-                                                }}
-                                              </h6>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </template>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                class="tab-pane fade"
-                                id="cat2"
-                                role="tabpanel"
-                                aria-labelledby="cat2"
-                              >
-                                <div class="container-fluid">
-                                  <div class="row">
-                                    <div class="row row-cols-1 row-cols-md-6">
-                                      <template
-                                        v-for="(
-                                          item, index
-                                        ) in filteredroom_tables"
-                                        :key="item.id"
-                                      >
-                                        <div
-                                          class="col mb-6"
-                                          v-show="item.b_status"
-                                        >
-                                          <div
-                                            class="card"
-                                            style="
-                                              transition: transform 0.2s
-                                                ease-in-out;
-                                            "
-                                            @click="dineInAction(item)"
-                                          >
-                                            <div
-                                              class="card-header d-flex justify-content-between align-items-center"
-                                              :style="{
-                                                'background-color':
-                                                  'order_id' in item
-                                                    ? '#66bb6a'
-                                                    : '',
-                                              }"
-                                            >
-                                              <h5 class="card-title">
-                                                <i class="fas fa-table"></i>
-                                                {{ item.name }}
-                                              </h5>
-                                            </div>
-                                            <div class="card-body">
-                                              <h6 class="text-dark">
-                                                <i
-                                                  class="fas fa-info-circle"
-                                                ></i>
-                                                {{
-                                                  "order_id" in item
-                                                    ? "w/ order"
-                                                    : "no order"
-                                                }}
-                                              </h6>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </template>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                class="tab-pane fade"
-                                id="cat3"
-                                role="tabpanel"
-                                aria-labelledby="cat3"
-                              >
-                                <div class="container-fluid">
-                                  <div class="row">
-                                    <div class="row row-cols-1 row-cols-md-6">
-                                      <template
-                                        v-for="(
-                                          item, index
-                                        ) in filteredroom_tables"
-                                        :key="item.id"
-                                      >
-                                        <div
-                                          class="col mb-6"
-                                          v-show="item.b_status"
-                                        >
-                                          <div
-                                            class="card"
-                                            style="
-                                              transition: transform 0.2s
-                                                ease-in-out;
-                                            "
-                                            @click="dineInAction(item)"
-                                          >
-                                            <div
-                                              class="card-header d-flex justify-content-between align-items-center"
-                                              :style="{
-                                                'background-color':
-                                                  'order_id' in item
-                                                    ? '#66bb6a'
-                                                    : '',
-                                              }"
-                                            >
-                                              <h5 class="card-title">
-                                                <i class="fas fa-table"></i>
-                                                {{ item.name }}
-                                              </h5>
-                                            </div>
-                                            <div class="card-body">
-                                              <h6 class="text-dark">
-                                                <i
-                                                  class="fas fa-info-circle"
-                                                ></i>
-                                                {{
-                                                  "order_id" in item
-                                                    ? "w/ order"
-                                                    : "no order"
-                                                }}
-                                              </h6>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </template>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                class="tab-pane fade"
-                                id="cat4"
-                                role="tabpanel"
-                                aria-labelledby="cat4"
-                              >
-                                <div class="container-fluid">
-                                  <div class="row">
-                                    <div class="row row-cols-1 row-cols-md-6">
-                                      <template
-                                        v-for="(
-                                          item, index
-                                        ) in filteredroom_tables"
-                                        :key="item.id"
-                                      >
-                                        <div
-                                          class="col mb-6"
-                                          v-show="item.b_status"
-                                        >
-                                          <div
-                                            class="card"
-                                            style="
-                                              transition: transform 0.2s
-                                                ease-in-out;
-                                            "
-                                            @click="dineInAction(item)"
-                                          >
-                                            <div
-                                              class="card-header d-flex justify-content-between align-items-center"
-                                              :style="{
-                                                'background-color':
-                                                  'order_id' in item
-                                                    ? '#66bb6a'
-                                                    : '',
-                                              }"
-                                            >
-                                              <h5 class="card-title">
-                                                <i class="fas fa-table"></i>
-                                                {{ item.name }}
-                                              </h5>
-                                            </div>
-                                            <div class="card-body">
-                                              <h6 class="text-dark">
-                                                <i
-                                                  class="fas fa-info-circle"
-                                                ></i>
-                                                {{
-                                                  "order_id" in item
-                                                    ? "w/ order"
-                                                    : "no order"
-                                                }}
-                                              </h6>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </template>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                class="tab-pane fade"
-                                id="cat5"
-                                role="tabpanel"
-                                aria-labelledby="cat5"
-                              >
-                                <div class="container-fluid">
-                                  <div class="row">
-                                    <div class="row row-cols-1 row-cols-md-6">
-                                      <template
-                                        v-for="(
-                                          item, index
-                                        ) in filteredroom_tables"
-                                        :key="item.id"
-                                      >
-                                        <div
-                                          class="col mb-6"
-                                          v-show="item.b_status"
-                                        >
-                                          <div
-                                            class="card"
-                                            style="
-                                              transition: transform 0.2s
-                                                ease-in-out;
-                                            "
-                                            @click="dineInAction(item)"
-                                          >
-                                            <div
-                                              class="card-header d-flex justify-content-between align-items-center"
-                                              :style="{
-                                                'background-color':
-                                                  'order_id' in item
-                                                    ? '#66bb6a'
-                                                    : '',
-                                              }"
-                                            >
-                                              <h5 class="card-title">
-                                                <i class="fas fa-table"></i>
-                                                {{ item.name }}
-                                              </h5>
-                                            </div>
-                                            <div class="card-body">
-                                              <h6 class="text-dark">
-                                                <i
-                                                  class="fas fa-info-circle"
-                                                ></i>
-                                                {{
-                                                  "order_id" in item
-                                                    ? "w/ order"
-                                                    : "no order"
-                                                }}
-                                              </h6>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </template>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                class="tab-pane fade"
-                                id="cat6"
-                                role="tabpanel"
-                                aria-labelledby="cat6"
-                              >
-                                <div class="container-fluid">
-                                  <div class="row">
-                                    <div class="row row-cols-1 row-cols-md-6">
-                                      <template
-                                        v-for="(
-                                          item, index
-                                        ) in filteredroom_tables"
-                                        :key="item.id"
-                                      >
-                                        <div
-                                          class="col mb-6"
-                                          v-show="item.b_status"
-                                        >
-                                          <div
-                                            class="card"
-                                            style="
-                                              transition: transform 0.2s
-                                                ease-in-out;
-                                            "
-                                            @click="dineInAction(item)"
-                                          >
-                                            <div
-                                              class="card-header d-flex justify-content-between align-items-center"
-                                              :style="{
-                                                'background-color':
-                                                  'order_id' in item
-                                                    ? '#66bb6a'
-                                                    : '',
-                                              }"
-                                            >
-                                              <h5 class="card-title">
-                                                <i class="fas fa-table"></i>
-                                                {{ item.name }}
-                                              </h5>
-                                            </div>
-                                            <div class="card-body">
-                                              <h6 class="text-dark">
-                                                <i
-                                                  class="fas fa-info-circle"
-                                                ></i>
-                                                {{
-                                                  "order_id" in item
-                                                    ? "w/ order"
-                                                    : "no order"
-                                                }}
-                                              </h6>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </template>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div
-                                class="tab-pane fade"
-                                id="cat7"
-                                role="tabpanel"
-                                aria-labelledby="cat7"
                               >
                                 <div class="container-fluid">
                                   <div class="row">
@@ -2692,6 +2272,7 @@ export default {
       itemarray: [],
       cartItems: [],
       transactions: [],
+      roomcategories: [],
       cashDenominations: [
         {
           label: "+1.00",
@@ -3042,6 +2623,7 @@ export default {
   },
   methods: {
     loadAlldata() {
+      this.getRoomcategories();
       this.getInventory();
       this.getTransaction();
       this.getRoomTables();
@@ -4072,6 +3654,16 @@ export default {
       if (this.cartItems.length >= 1) {
         this.printSection();
       }
+    },
+    getRoomcategories() {
+      axios
+        .get(`${this.API_URL}rooms/category/`)
+        .then((response) => {
+          this.itemarray = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     getInventory() {
       axios

@@ -533,6 +533,19 @@
                             Address: {{ this.billing.clientAddress }}
                           </p>
                         </div>
+                        <div class="col-6">
+                          <span style="font-size: small">Booking Details:</span>
+                          <p style="margin-bottom: 0px">
+                            Checkin Date: {{ this.reservation.checkinDate }}
+                          </p>
+                          <p style="margin-bottom: 0px">
+                            Checkout Date: {{ this.reservation.checkoutDate }}
+                          </p>
+                          <p style="margin-bottom: 0px">
+                            Total Pax: {{ sumtotalPax() }}
+                          </p>
+                          <p style="margin-bottom: 0px">Guest(s) arrived:</p>
+                        </div>
                       </div>
                       <hr style="margin-bottom: 0px; margin-top: 0px" />
                       <div class="row">
@@ -3830,9 +3843,14 @@ export default {
 
           // Check if the booking's room_name matches the current room and the date range overlaps with the reservation
           const checkInDate = parseDate(booking.checkinDate);
-          const checkOutDate = parseDate(booking.checkoutDate);
+          let checkOutDate = parseDate(booking.checkoutDate);
           const startDate = parseDate(this.reservation.checkinDate);
           const endDate = parseDate(this.reservation.checkoutDate);
+          const numdays = checkOutDate - checkInDate;
+          //   if (numdays > 0) {
+          //     checkOutDate.setDate(checkOutDate.getDate() - 1);
+          //     checkOutDate = checkOutDate.setHours(0, 0, 0, 0);
+          //   }
           const isOverlap =
             booking.room_name === room.name &&
             startDate <= checkOutDate &&
@@ -6324,8 +6342,11 @@ export default {
         this.bookings[this.itemIndex].clientnationality;
       this.reservation.clientType = this.bookings[this.itemIndex].clientType;
       this.reservation.checkinDate = this.bookings[this.itemIndex].checkinDate;
-      this.reservation.checkoutDate =
-        this.bookings[this.itemIndex].checkoutDate;
+      const checkoutdate = new Date(
+        parseDate(this.bookings[this.itemIndex].checkoutDate)
+      );
+      checkoutdate.setDate(checkoutdate.getDate() + 1);
+      this.reservation.checkoutDate = formatDate2(checkoutdate);
       this.reservation.roomName = this.bookings[this.itemIndex].room_name;
       this.reservation.remarks = this.bookings[this.itemIndex].remarks;
       this.reservation.clientPhone =
