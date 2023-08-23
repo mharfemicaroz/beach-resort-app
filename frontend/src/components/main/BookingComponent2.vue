@@ -539,7 +539,7 @@
                             Checkin Date: {{ this.reservation.checkinDate }}
                           </p>
                           <p style="margin-bottom: 0px">
-                            Checkout Date: {{ this.reservation.checkoutDate }}
+                            Checkout Date: {{ setCheckoutDate() }}
                           </p>
                           <p style="margin-bottom: 0px">
                             Total Pax: {{ sumtotalPax() }}
@@ -1248,10 +1248,31 @@
             <div class="row">
               <div class="col-6">
                 <span style="font-size: small">Client Details:</span>
-                <p>Name: {{ this.billing.clientName }}</p>
-                <p>Email: {{ this.billing.clientEmail }}</p>
-                <p>Contact No.: {{ this.billing.clientPhone }}</p>
-                <p>Address.: {{ this.billing.clientAddress }}</p>
+                <p style="margin-bottom: 0px">
+                  Name: {{ this.billing.clientName }}
+                </p>
+                <p style="margin-bottom: 0px">
+                  Email: {{ this.billing.clientEmail }}
+                </p>
+                <p style="margin-bottom: 0px">
+                  Contact No.: {{ this.billing.clientPhone }}
+                </p>
+                <p style="margin-bottom: 0px">
+                  Address: {{ this.billing.clientAddress }}
+                </p>
+              </div>
+              <div class="col-6">
+                <span style="font-size: small">Booking Details:</span>
+                <p style="margin-bottom: 0px">
+                  Checkin Date: {{ this.reservation.checkinDate }}
+                </p>
+                <p style="margin-bottom: 0px">
+                  Checkout Date: {{ setCheckoutDate() }}
+                </p>
+                <p style="margin-bottom: 0px">Total Pax: {{ sumtotalPax() }}</p>
+                <p style="margin-bottom: 0px">
+                  Total Guest(s): {{ sumTotalGuests() }}
+                </p>
               </div>
             </div>
             <hr />
@@ -2460,11 +2481,29 @@
     aria-labelledby="dayMenuModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="dayMenuModalLabel">
-            Room Reservation for {{ dayreserve.toLocaleDateString("en-GB") }}
+            Room Reservation
+            {{
+              this.selectionStart.toLocaleDateString("en-GB") ===
+              this.selectionEnd.toLocaleDateString("en-GB")
+                ? " for" + this.selectionStart.toLocaleDateString("en-GB")
+                : " from" +
+                  this.selectionStart.toLocaleDateString("en-GB") +
+                  " to " +
+                  this.selectionEnd.toLocaleDateString("en-GB")
+            }}
+            <p class="text-muted" style="font-size: smaller">
+              <i class="fa fa-info-circle"></i> Check-out date is day +1 from
+              {{
+                this.selectionStart.toLocaleDateString("en-GB") ===
+                this.selectionEnd.toLocaleDateString("en-GB")
+                  ? this.selectionStart.toLocaleDateString("en-GB")
+                  : this.selectionEnd.toLocaleDateString("en-GB")
+              }}.
+            </p>
           </h5>
           <button
             type="button"
@@ -2527,14 +2566,20 @@
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 id="BookDayModalLabel" class="text-primary">Reservation Info</h4>
-          <button
-            type="button"
-            class="close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <span>
+            <button type="button" class="close" @click="saveBookingInfo">
+              <span aria-hidden="true"><i class="fa fa-save"></i></span>
+            </button>
+            &nbsp;
+            <button
+              type="button"
+              class="close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true"><i class="fa fa-close"></i></span>
+            </button>
+          </span>
         </div>
         <div class="modal-body">
           <div v-if="!movetocartFlag || !bookNowFlag" class="loading-spinner">
@@ -2648,11 +2693,28 @@
               >
               <div class="col-sm-4">
                 <input
+                  v-if="
+                    reservation.status !== 'vacant' &&
+                    reservation.status !== 'reserved' &&
+                    reservation.status !== 'checkedin' &&
+                    reservation.status !== 'checkedout' &&
+                    reservation.status !== 'cancelled'
+                  "
                   type="text"
                   aria-describedby="inputhelp"
                   class="form-control mb-0"
                   id="checkin"
                   v-model="reservation.checkoutDate"
+                  required
+                  readonly
+                />
+                <input
+                  v-else
+                  type="text"
+                  aria-describedby="inputhelp"
+                  class="form-control mb-0"
+                  id="checkin"
+                  :value="setCheckoutDate()"
                   required
                   readonly
                 />
@@ -2702,12 +2764,12 @@
                 >Remarks:</label
               >
               <div class="col-sm-4">
-                <input
-                  type="text"
+                <textarea
                   class="form-control"
                   v-model="reservation.remarks"
                   autocomplete="off"
-                />
+                  rows="4"
+                ></textarea>
               </div>
             </div>
             <div class="form-group row mt-2">
@@ -4089,6 +4151,42 @@ export default {
     },
   },
   methods: {
+    async saveBookingInfo() {
+      const response = await axios.put(
+        this.API_URL + `bookings/${this.bookings[this.itemIndex].id}/`,
+        {
+          itemID: this.bookings[this.itemIndex].itemID,
+          status: this.bookings[this.itemIndex].status,
+          name: this.reservation.clientName,
+          clientemail: this.reservation.clientEmail,
+          clientaddress: this.reservation.clientAddress,
+          clientnationality: this.reservation.clientNationality,
+          clientType: this.reservation.clientType,
+          checkinDate: this.bookings[this.itemIndex].checkinDate,
+          checkoutDate: this.bookings[this.itemIndex].checkoutDate,
+          room_name: this.bookings[this.itemIndex].room_name,
+          room_price: this.bookings[this.itemIndex].room_price,
+          room_type: this.bookings[this.itemIndex].room_type,
+          remarks:
+            this.reservation.remarks +
+            "\n-----created on " +
+            new Date() +
+            "-----\n" +
+            this.bookings[this.itemIndex].remarks,
+          contactNumber: this.bookings[this.itemIndex].contactNumber,
+          isPaid: this.bookings[this.itemIndex].isPaid,
+          totalPrice: this.bookings[this.itemIndex].totalPrice,
+          partialPayment: this.bookings[this.itemIndex].partialPayment,
+          processedBy: this.userdata.fName + " " + this.userdata.lName,
+          groupkey: this.bookings[this.itemIndex].groupkey,
+        }
+      );
+      this.taskRecord(
+        `action:/modified guest info/client:/${
+          this.bookings[this.itemIndex].name
+        }`
+      );
+    },
     handledragstart(e, room, book) {
       this.draggedItem = this.origbookings.filter(
         (o) => o.itemID === book.itemID
@@ -5142,6 +5240,11 @@ export default {
           }
         }
       }
+    },
+    setCheckoutDate() {
+      const checkoutdate = new Date(parseDate(this.reservation.checkoutDate));
+      checkoutdate.setDate(checkoutdate.getDate() + 1);
+      return formatDate2(checkoutdate);
     },
     resetSummary(no) {
       this.cart = [];
@@ -6353,11 +6456,13 @@ export default {
         this.bookings[this.itemIndex].clientnationality;
       this.reservation.clientType = this.bookings[this.itemIndex].clientType;
       this.reservation.checkinDate = this.bookings[this.itemIndex].checkinDate;
-      const checkoutdate = new Date(
-        parseDate(this.bookings[this.itemIndex].checkoutDate)
-      );
-      checkoutdate.setDate(checkoutdate.getDate() + 1);
-      this.reservation.checkoutDate = formatDate2(checkoutdate);
+      //   const checkoutdate = new Date(
+      //     parseDate(this.bookings[this.itemIndex].checkoutDate)
+      //   );
+      //   checkoutdate.setDate(checkoutdate.getDate() + 1);
+      //   this.reservation.checkoutDate = formatDate2(checkoutdate);
+      this.reservation.checkoutDate =
+        this.bookings[this.itemIndex].checkoutDate;
       this.reservation.roomName = this.bookings[this.itemIndex].room_name;
       this.reservation.remarks = this.bookings[this.itemIndex].remarks;
       this.reservation.clientPhone =
@@ -6405,6 +6510,11 @@ export default {
         this.selectionStart.toLocaleDateString("en-GB");
       this.reservation.checkoutDate =
         this.selectionEnd.toLocaleDateString("en-GB");
+      //     const checkoutdate = new Date(
+      //     parseDate(this.selectionEnd.toLocaleDateString("en-GB"))
+      //   );
+      //   checkoutdate.setDate(checkoutdate.getDate() + 1);
+      //   this.reservation.checkoutDate = formatDate2(checkoutdate);
       this.toggledayMenuModal();
     },
     onDrop(item, date) {
@@ -6443,29 +6553,29 @@ export default {
             ).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0)
         );
         if (filteredBookings.length === 0) {
-          if (event.ctrlKey) {
-            let sd = CalendarMath.addDays(item.startDate, 0);
-            let ed = CalendarMath.addDays(
-              item.endDate,
-              eLength - CalendarMath.dayDiff(item.startDate, item.endDate)
-            );
-            if (ed >= sd) {
-              item.originalItem.startDate = sd;
-              item.originalItem.endDate = ed;
-            } else {
-              item.originalItem.endDate = item.endDate;
-              item.originalItem.startDate = ed;
-            }
-          } else {
-            item.originalItem.startDate = CalendarMath.addDays(
-              item.startDate,
-              eLength
-            );
-            item.originalItem.endDate = CalendarMath.addDays(
-              item.endDate,
-              eLength
-            );
-          }
+          //   if (event.ctrlKey) {
+          //     let sd = CalendarMath.addDays(item.startDate, 0);
+          //     let ed = CalendarMath.addDays(
+          //       item.endDate,
+          //       eLength - CalendarMath.dayDiff(item.startDate, item.endDate)
+          //     );
+          //     if (ed >= sd) {
+          //       item.originalItem.startDate = sd;
+          //       item.originalItem.endDate = ed;
+          //     } else {
+          //       item.originalItem.endDate = item.endDate;
+          //       item.originalItem.startDate = ed;
+          //     }
+          //   } else {
+          item.originalItem.startDate = CalendarMath.addDays(
+            item.startDate,
+            eLength
+          );
+          item.originalItem.endDate = CalendarMath.addDays(
+            item.endDate,
+            eLength
+          );
+          //   }
           if (this.draggedItem) {
             this.draggedItem[0].checkinDate =
               item.originalItem.startDate.toLocaleDateString("en-GB");

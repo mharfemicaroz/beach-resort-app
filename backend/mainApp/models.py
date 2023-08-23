@@ -27,7 +27,7 @@ class Booking(models.Model):
     room_name = models.CharField(max_length=255)
     room_type = models.CharField(max_length=255)
     room_price = models.CharField(max_length=20)
-    remarks = models.CharField(max_length=255, null=True, blank=True)
+    remarks = models.TextField(null=True, blank=True)
     contactNumber = models.CharField(max_length=20, null=True, blank=True)
     status = models.CharField(max_length=50)
     itemID = models.CharField(max_length=128)
