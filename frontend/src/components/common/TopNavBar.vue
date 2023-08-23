@@ -89,8 +89,11 @@
                 <hr class="dropdown-divider" />
               </div>
               <li>
-                <a class="dropdown-item" href="#" @click=""
-                  ><i class="fas fa-print me-1"></i>Print Transactions</a
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  @click="toggleShowTransModal()"
+                  ><i class="fas fa-eye me-1"></i>Show Transactions</a
                 >
               </li>
               <li>
@@ -112,6 +115,48 @@
       </div>
     </div>
   </nav>
+
+  <div
+    class="modal fade show"
+    id="showTransModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="showTransModalLabel"
+    style="display: none; padding-right: 17px"
+    aria-modal="true"
+  >
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content" style="">
+        <div class="modal-header">
+          <h4 class="modal-title" id="showTransModalLabel">
+            Show all Today's Transaction
+          </h4>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div
+          class="modal-body"
+          style="height: 600px; overflow-y: auto; overflow-x: hidden"
+        >
+          <div>
+            <table-component
+              :mainHeaders="transactionhistory"
+              :mainItems="transactionrecord"
+              :editable="false"
+              :toggleable="false"
+              :currentNoPage="999999"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div
     class="modal fade show"
@@ -206,13 +251,18 @@
 
 <script>
 import { useAuthStore } from "@/stores/authStore";
+import TableComponent from "@/components/common/GenericTable.vue";
 import axios from "axios";
 export default {
+  components: {
+    TableComponent,
+  },
   data() {
     return {
       currentTime: new Date(),
       backgroundIndex: 0,
       backgrounds: this.LOGIN_BG,
+      transactionrecord: [],
       user: {
         username: "",
         password: "",
@@ -220,11 +270,58 @@ export default {
         LastName: "",
         role: "",
       },
+      transactionhistory: [
+        {
+          label: "Trans ID",
+          field: "transaction",
+        },
+        {
+          label: "Method",
+          field: "paymentMethod",
+        },
+        {
+          label: "Ref. No.",
+          field: "nonCashReference",
+        },
+        {
+          label: "Total",
+          field: "totalAmountToPay",
+        },
+        {
+          label: "Amount Paid",
+          field: "cashAmountPay",
+        },
+        {
+          label: "Balance",
+          field: "balance",
+        },
+        {
+          label: "Discount Mode",
+          field: "discountMode",
+        },
+        {
+          label: "Discount Value",
+          field: "discountValue",
+        },
+        {
+          label: "Processed by",
+          field: "processedBy",
+        },
+        {
+          label: "Status",
+          field: "payStatus",
+        },
+        {
+          label: "Date",
+          field: "transaction_date",
+        },
+      ],
     };
   },
   created() {
     this.startBackgroundSlideshow();
     //this.enterFullscreen();
+    this.loadData();
     setInterval(() => {
       this.currentTime = new Date();
     }, 1000);
@@ -243,6 +340,30 @@ export default {
     },
   },
   methods: {
+    async loadData() {
+      const response = await axios.post(
+        this.API_URL + `transaction/record/filter/`,
+        {
+          columnName: "processedBy",
+          columnKey: this.userdata.fName + " " + this.userdata.lName,
+        }
+      );
+      this.transactionrecord = response.data.filter((item) => {
+        const transactionDate = new Date(item.transaction_date);
+        return (
+          transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
+          transactionDate <
+            new Date(
+              new Date(new Date(new Date().getTime() + 86400000)).setHours(
+                0,
+                0,
+                0,
+                0
+              )
+            )
+        );
+      });
+    },
     async changePassword() {
       if (this.newpass !== this.conpass) {
         this.toggleChangePassModal();
@@ -294,7 +415,13 @@ export default {
           });
         });
     },
+    toggleShowTransModal() {
+      $("#showTransModal").modal("toggle");
+    },
     toggleChangePassModal() {
+      this.oldpass = "";
+      this.newpass = "";
+      this.conpass = "";
       $("#changePassModal").modal("toggle");
     },
     async logout() {
