@@ -122,6 +122,9 @@ class Transaction(models.Model):
     processedBy = models.CharField(max_length=128)
     groupkey = models.CharField(max_length=128, null=True, blank=True)
     cashRemarks = models.CharField(max_length=255, null=True, blank=True)
+    agent_isApproved = models.BooleanField(default=False)
+    agent_approvalDate = models.CharField(
+        max_length=255, null=True, blank=True)
 
 
 class TransactionRecord(models.Model):

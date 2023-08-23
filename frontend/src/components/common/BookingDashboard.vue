@@ -351,7 +351,7 @@ export default {
         ],
       },
       pie2Data: {
-        labels: ["cash", "non-cash"],
+        labels: ["cash", "non-cash", "agent"],
         datasets: [
           {
             data: [],
@@ -451,7 +451,12 @@ export default {
         .reduce((accumulator, currentValue) => {
           return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
         }, 0);
-      this.pie2Data.datasets[0].data = [totcash, totnoncash];
+      const totagent = data
+        .filter((item) => item.paymentMethod === "agent")
+        .reduce((accumulator, currentValue) => {
+          return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
+        }, 0);
+      this.pie2Data.datasets[0].data = [totcash, totnoncash, totagent];
     },
     bar1Datasets(data) {
       this.bar1Data.datasets[0].data = this.roomcategories.map((o) => {

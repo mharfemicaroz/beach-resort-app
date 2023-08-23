@@ -656,7 +656,7 @@
                               <tr>
                                 <th>Date</th>
                                 <th>Type</th>
-                                <th>Invoice ID</th>
+                                <th>Reference #</th>
                                 <th>Description</th>
                                 <th>Amount</th>
                                 <th>Balance</th>
@@ -860,6 +860,17 @@
                               {{ nonCashPayPlatform }} - {{ nonCashReference }}
                             </div>
                           </div>
+                          <div
+                            class="row mb-2"
+                            v-if="paymentMethod === 'agent'"
+                          >
+                            <div class="col-6">
+                              <strong>Reference No.:</strong>
+                            </div>
+                            <div class="col-6 text-right">
+                              {{ agentPayPlatform }} - {{ nonCashReference }}
+                            </div>
+                          </div>
                           <div class="row mb-2">
                             <div class="col-6"><strong>Subtotal:</strong></div>
                             <div class="col-6 text-right">{{ subtotal }}</div>
@@ -902,6 +913,7 @@
                           >
                             <option value="cash">Cash</option>
                             <option value="non-cash">Non-cash</option>
+                            <option value="agent">Agent</option>
                           </select>
                           <span class="input-group-text">₱</span>
                           <input
@@ -939,14 +951,39 @@
                           </div>
                         </div>
                       </div>
-                      <div class="form-group">
+                      <div
+                        class="form-group"
+                        v-if="this.paymentMethod === 'cash'"
+                      >
                         <div class="input-group">
-                          <span class="input-group-text">Remarks</span>
+                          <span class="input-group-text" style="width: 75px"
+                            >OR #:</span
+                          >
                           <input
                             type="text"
                             class="form-control"
-                            v-model="cashRemarks"
+                            v-model="cashOR"
                           />
+                          <span class="input-group-text" style="width: 75px"
+                            >OS #:</span
+                          >
+                          <input
+                            type="text"
+                            class="form-control"
+                            v-model="cashOS"
+                          />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="input-group">
+                          <span class="input-group-text" style="width: 75px"
+                            >Remarks</span
+                          >
+                          <textarea
+                            class="form-control"
+                            v-model="cashRemarks"
+                            rows="3"
+                          ></textarea>
                         </div>
                       </div>
                       <div class="row mt-2 mb-2 bg-light">
@@ -1374,7 +1411,7 @@
                     <tr>
                       <th>Date</th>
                       <th>Type</th>
-                      <th>Invoice ID</th>
+                      <th>Reference #</th>
                       <th>Description</th>
                       <th>Amount</th>
                       <th>Balance</th>
@@ -1383,7 +1420,10 @@
                   <tbody>
                     <tr v-for="(item, index) in cashHistory" :key="item.id">
                       <td>
-                        {{ item.transaction_date }}
+                        {{
+                          new Date(item.transaction_date).toLocaleDateString()
+                        }},
+                        {{ getTime(new Date(item.transaction_date)) }}
                       </td>
                       <td>
                         {{ item.paymentMethod }}
@@ -3539,6 +3579,8 @@ export default {
       discountValue: 0,
       taxValue: 0,
       partialPayment: 0,
+      cashOR: "",
+      cashOS: "",
       cashHistory: [],
       cashRemarks: "",
       activeTab: "all",
@@ -4569,6 +4611,59 @@ export default {
       } else {
         this.nonCashPayPlatform = "";
         this.nonCashReference = "";
+        this.setAgent();
+      }
+    },
+    setAgent() {
+      if (this.paymentMethod === "agent") {
+        this.$swal
+          .fire({
+            title: "Choose agent",
+            html: `
+        <div>
+          <input type="radio" class="form-check-input" id="cat1" name="agentType" value="Agoda" checked>
+          <label for="cat1" class="form-check-label">Agoda</label> &nbsp;
+          <input type="radio" class="form-check-input" id="cat2" name="agentType" value="Expedia">
+          <label for="cat2" class="form-check-label">Expedia</label> &nbsp;
+          <input type="radio" class="form-check-input" id="cat3" name="agentType" value="Booking.com">
+          <label for="cat3" class="form-check-label">Booking.com</label> &nbsp;
+          <input type="radio" class="form-check-input" id="cat4" name="agentType" value="AirBNB">
+          <label for="cat4" class="form-check-label">AirBNB</label> &nbsp;
+          <br><br>
+          <input type="text" class="form-control" maxlength=32 id="referenceno" placeholder="Enter reference/transaction no. here after agent payment.">
+        </div>
+      `,
+            showCancelButton: true,
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
+            allowOutsideClick: false,
+            preConfirm: () => {
+              const agentType = document.querySelector(
+                'input[name="agentType"]:checked'
+              ).value;
+              const referenceno = document.getElementById("referenceno").value;
+              return { agentType, referenceno };
+            },
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              const { agentType, referenceno } = result.value;
+              if (agentType !== "" || referenceno !== "") {
+                this.agentPayPlatform = agentType;
+                this.nonCashReference = referenceno;
+              } else {
+                this.$swal({
+                  title: "Warning",
+                  text: "Please provide both the agent type and the reference number.",
+                  icon: "warning",
+                });
+                return;
+              }
+            }
+          });
+      } else {
+        this.agentPayPlatform = "";
+        this.nonCashReference = "";
       }
     },
     async deleteTransaction(id) {
@@ -5289,6 +5384,7 @@ export default {
       this.change = 0;
       this.paymentMethod = "cash";
       this.nonCashPayPlatform = "";
+      this.agentPayPlatform = "";
       this.nonCashReference = "";
       this.itemCart = {
         id: 0,
@@ -7238,7 +7334,13 @@ export default {
                 clientnationality: this.billing.clientNationality,
                 clientType: this.billing.clientType,
                 nonCashReference:
-                  this.nonCashPayPlatform + "-" + this.nonCashReference,
+                  this.paymentMethod === "cash"
+                    ? (this.cashOR !== "" ? `OR#${this.cashOR}` : "") +
+                      (this.cashOR !== "" && this.cashOS !== "" ? "/" : "") +
+                      (this.cashOS !== "" ? `OS#${this.cashOS}` : "")
+                    : this.paymentMethod === "non-cash"
+                    ? this.nonCashPayPlatform + "-" + this.nonCashReference
+                    : this.agentPayPlatform + "-" + this.nonCashReference,
                 totalAmountToPay: parseFloat(this.total),
                 paymentMethod: this.paymentMethod,
                 cashAmountPay: updatedcashamount,
@@ -7415,7 +7517,13 @@ export default {
                 totalAmountToPay: parseFloat(this.subtotal),
                 paymentMethod: this.paymentMethod,
                 nonCashReference:
-                  this.nonCashPayPlatform + "-" + this.nonCashReference,
+                  this.paymentMethod === "cash"
+                    ? (this.cashOR !== "" ? `OR#${this.cashOR}` : "") +
+                      (this.cashOR !== "" && this.cashOS !== "" ? "/" : "") +
+                      (this.cashOS !== "" ? `OS#${this.cashOS}` : "")
+                    : this.paymentMethod === "non-cash"
+                    ? this.nonCashPayPlatform + "-" + this.nonCashReference
+                    : this.agentPayPlatform + "-" + this.nonCashReference,
                 cashAmountPay: newcashAmountPay,
                 balance: origbal,
                 payStatus: payStatus,
