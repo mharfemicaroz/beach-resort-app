@@ -533,7 +533,7 @@
                             Address: {{ this.billing.clientAddress }}
                           </p>
                         </div>
-                        <div class="col-6">
+                        <div class="col-6" v-if="!walkinStatus">
                           <span style="font-size: small">Booking Details:</span>
                           <p style="margin-bottom: 0px">
                             Checkin Date: {{ this.reservation.checkinDate }}
@@ -1298,7 +1298,7 @@
                   Address: {{ this.billing.clientAddress }}
                 </p>
               </div>
-              <div class="col-6">
+              <div class="col-6" v-if="walkinStatus">
                 <span style="font-size: small">Booking Details:</span>
                 <p style="margin-bottom: 0px">
                   Checkin Date: {{ this.reservation.checkinDate }}
@@ -5408,6 +5408,7 @@ export default {
       }
       if (no === 2 && this.billing.clientName === "") {
         this.activeAccountFlag = true;
+        this.walkinStatus = true;
         // this.toggleAddAccountModal();
       }
       if (no !== 2) {

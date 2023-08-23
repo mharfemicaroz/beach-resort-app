@@ -89,6 +89,19 @@
                 <hr class="dropdown-divider" />
               </div>
               <li>
+                <a class="dropdown-item" href="#" @click=""
+                  ><i class="fas fa-print me-1"></i>Print Transactions</a
+                >
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  @click="toggleChangePassModal()"
+                  ><i class="fas fa-gear me-1"></i>Change Password</a
+                >
+              </li>
+              <li>
                 <a class="dropdown-item" href="#" @click="logout()"
                   ><i class="fas fa-sign-out-alt me-1"></i> Logout</a
                 >
@@ -99,6 +112,96 @@
       </div>
     </div>
   </nav>
+
+  <div
+    class="modal fade show"
+    id="changePassModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="changePassModalLabel"
+    style="display: none; padding-right: 17px"
+    aria-modal="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="">
+        <div class="modal-header">
+          <h4 class="modal-title" id="changePassModalLabel">Update Password</h4>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form @submit.prevent="changePassword">
+            <!-- Client Information -->
+            <div class="form-group row">
+              <label for="name" class="col-sm-4 col-form-label"
+                >Old Password:*</label
+              >
+              <div class="col-sm-8">
+                <input
+                  type="password"
+                  class="form-control"
+                  id="oldpass"
+                  v-model="oldpass"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="name" class="col-sm-4 col-form-label"
+                >New Password:*</label
+              >
+              <div class="col-sm-8">
+                <input
+                  type="password"
+                  class="form-control"
+                  id="newpass"
+                  v-model="newpass"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="name" class="col-sm-4 col-form-label"
+                >Confirm Password:*</label
+              >
+              <div class="col-sm-8">
+                <input
+                  type="password"
+                  class="form-control"
+                  id="conpass"
+                  v-model="conpass"
+                  required
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="mt-3 mb-3 d-flex flex-row-reverse">
+                <button type="submit" class="btn btn-primary">Update</button
+                >&nbsp;
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -140,6 +243,60 @@ export default {
     },
   },
   methods: {
+    async changePassword() {
+      if (this.newpass !== this.conpass) {
+        this.toggleChangePassModal();
+        this.$swal({
+          icon: "error",
+          title: "Password does not match!",
+        });
+        return;
+      }
+      const response = await axios.get(
+        this.API_URL + `users/${this.userdata.id}`
+      );
+      const userdetails = response.data;
+      // alert(JSON.stringify(userdetails));
+      // return;
+      axios
+        .post(this.API_URL + "login/", {
+          username: userdetails.username,
+          password: this.oldpass,
+        })
+        .then(async (result) => {
+          const user = {
+            username: userdetails.username,
+            FirstName: userdetails.FirstName,
+            LastName: userdetails.LastName,
+            role: userdetails.role,
+            route: userdetails.route,
+          };
+          await axios.put(`${this.API_URL}users/${userdetails.id}/`, {
+            ...user,
+            password: this.newpass,
+          });
+          $("#changePassModal").modal("toggle");
+          this.$swal
+            .fire({
+              title: "Success!",
+              text: "Password is updated successfully!",
+              icon: "success",
+            })
+            .then((result) => {
+              this.logout();
+            });
+        })
+        .catch((error) => {
+          this.toggleChangePassModal();
+          this.$swal({
+            icon: "error",
+            title: "There is an error. Please try again!",
+          });
+        });
+    },
+    toggleChangePassModal() {
+      $("#changePassModal").modal("toggle");
+    },
     async logout() {
       const authStore = useAuthStore();
       const user = {
