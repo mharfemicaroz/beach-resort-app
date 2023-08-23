@@ -6543,13 +6543,18 @@ export default {
       this.itemIndex = this.bookings.findIndex((o) => o.itemID === item.id);
       //issue in reloading
       const itemStatus = this.bookings[this.itemIndex].status;
-      if (itemStatus === "reserved" || itemStatus === "checkedin") {
+      const itemisPaid = this.bookings[this.itemIndex].isPaid;
+      if (
+        (itemStatus === "reserved" || itemStatus === "checkedin") &&
+        (itemisPaid === "" || itemisPaid === "no")
+      ) {
         const eLength = CalendarMath.dayDiff(item.startDate, date);
         let landingDateCheckin = CalendarMath.addDays(item.startDate, eLength);
         let landingDateCheckout = CalendarMath.addDays(item.endDate, eLength);
         let filteredBookings = this.bookings.filter(
           (booking) =>
             (booking.status === "reserved" || booking.status === "checkedin") &&
+            (booking.isPaid === "" || booking.isPaid === "no") &&
             booking.itemID !== this.bookings[this.itemIndex].itemID &&
             booking.room_name === this.bookings[this.itemIndex].room_name &&
             new Date(
@@ -6569,29 +6574,29 @@ export default {
             ).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0)
         );
         if (filteredBookings.length === 0) {
-          //   if (event.ctrlKey) {
-          //     let sd = CalendarMath.addDays(item.startDate, 0);
-          //     let ed = CalendarMath.addDays(
-          //       item.endDate,
-          //       eLength - CalendarMath.dayDiff(item.startDate, item.endDate)
-          //     );
-          //     if (ed >= sd) {
-          //       item.originalItem.startDate = sd;
-          //       item.originalItem.endDate = ed;
-          //     } else {
-          //       item.originalItem.endDate = item.endDate;
-          //       item.originalItem.startDate = ed;
-          //     }
-          //   } else {
-          item.originalItem.startDate = CalendarMath.addDays(
-            item.startDate,
-            eLength
-          );
-          item.originalItem.endDate = CalendarMath.addDays(
-            item.endDate,
-            eLength
-          );
-          //   }
+          if (event.ctrlKey) {
+            let sd = CalendarMath.addDays(item.startDate, 0);
+            let ed = CalendarMath.addDays(
+              item.endDate,
+              eLength - CalendarMath.dayDiff(item.startDate, item.endDate)
+            );
+            if (ed >= sd) {
+              item.originalItem.startDate = sd;
+              item.originalItem.endDate = ed;
+            } else {
+              item.originalItem.endDate = item.endDate;
+              item.originalItem.startDate = ed;
+            }
+          } else {
+            item.originalItem.startDate = CalendarMath.addDays(
+              item.startDate,
+              eLength
+            );
+            item.originalItem.endDate = CalendarMath.addDays(
+              item.endDate,
+              eLength
+            );
+          }
           if (this.draggedItem) {
             this.draggedItem[0].checkinDate =
               item.originalItem.startDate.toLocaleDateString("en-GB");
