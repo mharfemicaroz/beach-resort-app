@@ -18,7 +18,7 @@ class CustomUser(models.Model):
 class Booking(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    clientemail = models.EmailField(null=True, blank=True)
+    clientemail = models.CharField(max_length=255, null=True, blank=True)
     clientaddress = models.CharField(max_length=255, null=True, blank=True)
     clientnationality = models.CharField(max_length=50, null=True, blank=True)
     clientType = models.CharField(max_length=50, null=True, blank=True)

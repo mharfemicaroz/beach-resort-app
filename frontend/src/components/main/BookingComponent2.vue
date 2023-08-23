@@ -4151,41 +4151,57 @@ export default {
     },
   },
   methods: {
-    async saveBookingInfo() {
-      const response = await axios.put(
-        this.API_URL + `bookings/${this.bookings[this.itemIndex].id}/`,
-        {
-          itemID: this.bookings[this.itemIndex].itemID,
-          status: this.bookings[this.itemIndex].status,
-          name: this.reservation.clientName,
-          clientemail: this.reservation.clientEmail,
-          clientaddress: this.reservation.clientAddress,
-          clientnationality: this.reservation.clientNationality,
-          clientType: this.reservation.clientType,
-          checkinDate: this.bookings[this.itemIndex].checkinDate,
-          checkoutDate: this.bookings[this.itemIndex].checkoutDate,
-          room_name: this.bookings[this.itemIndex].room_name,
-          room_price: this.bookings[this.itemIndex].room_price,
-          room_type: this.bookings[this.itemIndex].room_type,
-          remarks:
-            this.reservation.remarks +
-            "\n-----created on " +
-            new Date() +
-            "-----\n" +
-            this.bookings[this.itemIndex].remarks,
-          contactNumber: this.bookings[this.itemIndex].contactNumber,
-          isPaid: this.bookings[this.itemIndex].isPaid,
-          totalPrice: this.bookings[this.itemIndex].totalPrice,
-          partialPayment: this.bookings[this.itemIndex].partialPayment,
-          processedBy: this.userdata.fName + " " + this.userdata.lName,
-          groupkey: this.bookings[this.itemIndex].groupkey,
-        }
-      );
-      this.taskRecord(
-        `action:/modified guest info/client:/${
-          this.bookings[this.itemIndex].name
-        }`
-      );
+    saveBookingInfo() {
+      if (this.reservation.clientName === "") {
+        return;
+      }
+      this.$swal
+        .fire({
+          icon: "warning",
+          title: "Update Info",
+          text: "Are you certain so save this updates?",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          showCancelButton: true,
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const response = await axios.put(
+              this.API_URL + `bookings/${this.bookings[this.itemIndex].id}/`,
+              {
+                itemID: this.bookings[this.itemIndex].itemID,
+                status: this.bookings[this.itemIndex].status,
+                name: this.reservation.clientName,
+                clientemail: this.reservation.clientEmail,
+                clientaddress: this.reservation.clientAddress,
+                clientnationality: this.reservation.clientNationality,
+                clientType: this.reservation.clientType,
+                checkinDate: this.bookings[this.itemIndex].checkinDate,
+                checkoutDate: this.bookings[this.itemIndex].checkoutDate,
+                room_name: this.bookings[this.itemIndex].room_name,
+                room_price: this.bookings[this.itemIndex].room_price,
+                room_type: this.bookings[this.itemIndex].room_type,
+                remarks:
+                  this.reservation.remarks +
+                  "\n" +
+                  this.bookings[this.itemIndex].remarks,
+                contactNumber: this.bookings[this.itemIndex].contactNumber,
+                isPaid: this.bookings[this.itemIndex].isPaid,
+                totalPrice: this.bookings[this.itemIndex].totalPrice,
+                partialPayment: this.bookings[this.itemIndex].partialPayment,
+                processedBy: this.userdata.fName + " " + this.userdata.lName,
+                groupkey: this.bookings[this.itemIndex].groupkey,
+              }
+            );
+            this.taskRecord(
+              `action:/modified guest info/client:/${
+                this.bookings[this.itemIndex].name
+              }`
+            );
+            this.populateCalendarItems();
+            this.toggleItemModal();
+          }
+        });
     },
     handledragstart(e, room, book) {
       this.draggedItem = this.origbookings.filter(
