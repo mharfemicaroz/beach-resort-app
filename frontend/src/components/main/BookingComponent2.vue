@@ -544,7 +544,9 @@
                           <p style="margin-bottom: 0px">
                             Total Pax: {{ sumtotalPax() }}
                           </p>
-                          <p style="margin-bottom: 0px">Guest(s) arrived:</p>
+                          <p style="margin-bottom: 0px">
+                            Total Guest(s): {{ sumTotalGuests() }}
+                          </p>
                         </div>
                       </div>
                       <hr style="margin-bottom: 0px; margin-top: 0px" />
@@ -4963,6 +4965,15 @@ export default {
       } catch (e) {}
       return sumAllowedGuest;
     },
+    sumTotalGuests() {
+      const totalGuests = this.cart
+        .filter(
+          (o) =>
+            o.name.toLowerCase() === "general entrance" && o.category === "main"
+        )
+        .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
+      return totalGuests;
+    },
     async moveInclusionCartToMain() {
       let bId = null;
       let gkey = null;
@@ -6868,21 +6879,20 @@ export default {
                     this.AUTHORIZATION_KEY.toLowerCase()
                   ) {
                     // Code is correct, proceed with the desired action
-                    const confirmMessage =
-                      " If you proceed with voiding, all associated items and booking and transaction records will be permanently deleted, and this action cannot be reversed.";
+                    const confirmMessage = "Action cannot be undone";
                     const result = await this.$swal.fire({
-                      title: "Are you sure you want to void this?",
+                      title: "Are you sure you want to continue?",
                       text: confirmMessage,
                       icon: "warning",
                       showCancelButton: true,
                       confirmButtonColor: "#3085d6",
                       cancelButtonColor: "#d33",
-                      confirmButtonText: "Yes, void it!",
+                      confirmButtonText: "Yes!",
                       cancelButtonText: "Cancel",
                     });
                     if (result.isConfirmed) {
                       const countdownMessage =
-                        'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
+                        'Transaction will be posted in <span id="countdown">5</span> seconds. Do you want to cancel?';
                       let countdownResult;
                       countdownResult = await this.$swal.fire({
                         title: "Please wait",
@@ -7530,14 +7540,14 @@ export default {
         } catch (error) {
           reserveStatus = "n/a";
         }
-        if (reserveStatus === "reserved") {
-          await this.$swal.fire({
-            title: "Error",
-            text: "No purchase of add-ons until guest is checked in.",
-            icon: "error",
-          });
-          return false;
-        }
+        // if (reserveStatus === "reserved") {
+        //   await this.$swal.fire({
+        //     title: "Error",
+        //     text: "No purchase of add-ons until guest is checked in.",
+        //     icon: "error",
+        //   });
+        //   return false;
+        // }
         if (this.howMany[index] > 0) {
           this.itemCart.name = item.item;
           this.itemCart.type = item.type;
