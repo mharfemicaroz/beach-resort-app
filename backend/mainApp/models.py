@@ -156,6 +156,10 @@ class TransactionItem(models.Model):
     itemOption = models.CharField(max_length=50)
     transid = models.CharField(max_length=255, null=True, blank=True)
     groupkey = models.CharField(max_length=128, null=True, blank=True)
+    totalguest = models.IntegerField()
+    totalpax = models.IntegerField()
+    numdays = models.IntegerField()
+    currentroom = models.CharField(max_length=255)
 
 
 class StockItem(models.Model):
