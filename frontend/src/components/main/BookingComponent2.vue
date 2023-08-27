@@ -363,7 +363,8 @@
                                                                 <td>{{ item.priceRate }}</td>
                                                                 <td>
                                                                     {{ (item.totalCartPrice < item.purqty *
-                                                                        parseFloat(item.priceRate.split("/")[0]) ?
+                                                                        parseFloat(item.priceRate.split("/")[0]) *
+                                                                        item.numdays && item.itemOption !== 'room' ?
                                                                         item.purqty + "(free " + item.totalpax + ")=" +
                                                                         (item.totalguest < item.totalpax ? 0 :
                                                                             item.totalguest - item.totalpax) +
@@ -5818,30 +5819,29 @@ export default {
 
                     const numdays = (parseDate(this.bookings[this.itemIndex].checkoutDate) - parseDate(this.bookings[this.itemIndex].checkinDate)) / (1000 * 60 * 60 * 24);
 
-                    const data = {
-                        bookingID: this.bookings[this.itemIndex].itemID,
-                        itemName: this.bookings[this.itemIndex].room_name,
-                        itemType: this.bookings[this.itemIndex].room_type,
-                        itemPriceRate: this.bookings[this.itemIndex].room_price + "/check-in",
-                        purchaseQty: (numdays + 1),
-                        totalCost: (numdays + 1) * parseFloat(this.bookings[this.itemIndex].room_price),
-                        category: "main",
-                        itemOption: "room",
-                        dateCreated: new Date(), // Set the dateCreated field to the current date and time
-                        numdays: (numdays + 1),
-                        totalguest: 0,
-                        totalpax: 0,
-                        currentroom: this.bookings[this.itemIndex].room_name,
-                    };
-
                     const response = await axios.post(this.API_URL + "transaction/item/filter/", {
                         columnName: "bookingID",
                         columnKey: this.bookings[this.itemIndex].itemID,
                     });
 
-                    const roombooked = response.data[0];
-
-                    await axios.put(this.API_URL + `transaction/item/${roombooked.id}/`, data);
+                    for (const item of response.data) {
+                        const data = {
+                            bookingID: item.bookingID,
+                            itemName: item.itemName,
+                            itemType: item.itemType,
+                            itemPriceRate: item.itemPriceRate,
+                            purchaseQty: (numdays + 1),
+                            totalCost: (numdays + 1) * parseFloat(item.itemPriceRate.split("/")[0]),
+                            category: item.category,
+                            itemOption: item.itemOption,
+                            dateCreated: new Date(), // Set the dateCreated field to the current date and time
+                            numdays: (numdays + 1),
+                            totalguest: item.totalguest,
+                            totalpax: item.totalpax,
+                            currentroom: item.currentroom,
+                        };
+                        await axios.put(this.API_URL + `transaction/item/${item.id}/`, data);
+                    }
 
 
                     this.updateBookings(this.bookings[this.itemIndex].id);
