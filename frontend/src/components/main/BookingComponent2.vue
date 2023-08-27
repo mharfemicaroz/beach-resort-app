@@ -216,10 +216,20 @@
                                                 ? '<i class=\'fas fa-check text-success\'></i>'
                                                 : '<i class=\'fas fa-hourglass-start text-warning\'></i>'
                                                 "></span>
+
                                         </h5>
-                                        <button v-if="item.category === 'inclusion'" type="button"
-                                            class="btn btn-sm btn-close" aria-label="Close"
-                                            @click="cancelItem(item)"></button>
+                                        <span>
+                                            <button class="btn btn-primary"
+                                                v-if="item.category === 'main' && item.name.toLowerCase() === 'general entrance'"
+                                                type="button" @click="addNewGuest">
+                                                <i class='fas fa-user-plus'></i>
+                                            </button>
+
+                                            <button v-if="item.category === 'inclusion'" type="button"
+                                                class="btn btn-danger" aria-label="Close" @click="cancelItem(item)"><i
+                                                    class='fas fa-times'></i></button>
+                                        </span>
+
                                     </div>
                                     <div class="card-body">
                                         <p class="card-text">Type: {{ item.type }}</p>
@@ -366,10 +376,10 @@
                                                                         parseFloat(item.priceRate.split("/")[0]) *
                                                                         item.numdays && item.itemOption !== 'room' ?
                                                                         item.purqty + "(free " + item.totalpax + ")=" +
-                                                                        (item.totalguest < item.totalpax ? 0 :
-                                                                            item.totalguest - item.totalpax) +
-                                                                        `&times;${item.numdays}` : item.purqty +
-                                                                        (item.itemOption === 'room' ? '' :
+                                                                        (item.purqty < item.totalpax ? 0 : item.purqty -
+                                                                            item.totalpax) + `&times;${item.numdays}` :
+                                                                        item.purqty + (item.itemOption === 'room' ||
+                                                                            item.itemOption === 'addons' ? '' :
                                                                             `&times;${item.numdays}`)) }}</td>
                                                             <td v-if="item.itemOption !== 'room'">
                                                                     {{ item.totalCartPrice }}
@@ -560,7 +570,7 @@
                                             </div>
                                             <div class="form-group mb-2">
                                                 <div class="form-control p-3">
-                                                    <div class="row mb-2 mb-0">
+                                                    <div class="row">
                                                         <div class="col-6">
                                                             <a href="#" @click="setTax">
                                                                 <i class="fas fa-pencil-alt"></i>
@@ -584,19 +594,19 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="row mb-2">
+                                                    <div class="row">
                                                         <div class="col-6">
                                                             <strong>Reservation:</strong>
                                                         </div>
                                                         <div class="col-6 text-right" v-html="subroom.original + ' ' + subroom.discounted
                                                             "></div>
                                                     </div>
-                                                    <div class="row mb-2">
+                                                    <div class="row">
                                                         <div class="col-6"><strong>Add-ons:</strong></div>
                                                         <div class="col-6 text-right">{{ subaddons }}</div>
                                                     </div>
 
-                                                    <div class="row mb-2" v-if="paymentMethod === 'non-cash'">
+                                                    <div class="row" v-if="paymentMethod === 'non-cash'">
                                                         <div class="col-6">
                                                             <strong>Reference No.:</strong>
                                                         </div>
@@ -604,7 +614,7 @@
                                                             {{ nonCashPayPlatform }} - {{ nonCashReference }}
                                                         </div>
                                                     </div>
-                                                    <div class="row mb-2" v-if="paymentMethod === 'agent'">
+                                                    <div class="row" v-if="paymentMethod === 'agent'">
                                                         <div class="col-6">
                                                             <strong>Reference No.:</strong>
                                                         </div>
@@ -612,11 +622,11 @@
                                                             {{ agentPayPlatform }} - {{ nonCashReference }}
                                                         </div>
                                                     </div>
-                                                    <div class="row mb-2">
+                                                    <div class="row">
                                                         <div class="col-6"><strong>Subtotal:</strong></div>
                                                         <div class="col-6 text-right">{{ subtotal }}</div>
                                                     </div>
-                                                    <div class="row mb-2">
+                                                    <div class="row">
                                                         <div class="col-6"><strong>Partial:</strong></div>
                                                         <div class="col-6 text-right">
                                                             {{ partialPayment }}
@@ -683,7 +693,7 @@
                                                 <div class="input-group">
                                                     <span class="input-group-text" style="width: 75px">Remarks</span>
                                                     <textarea class="form-control" v-model="cashRemarks"
-                                                        rows="3"></textarea>
+                                                        rows="2"></textarea>
                                                 </div>
                                             </div>
                                             <div class="row mt-2 mb-2 bg-light">
@@ -1670,13 +1680,6 @@
                             <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3" />
                             <div class="wrapper-content">
                                 <table class="table" style="table-layout: fixed; word-wrap: break-word">
-                                    <thead>
-                                        <tr>
-                                            <th style="white-space: nowrap">Item</th>
-                                            <th>Qty</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
                                     <tbody>
                                         <tr v-for="(item, index) in filteredItems" :key="index">
                                             <td>
@@ -1822,6 +1825,64 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="guestListModal" tabindex="-1" aria-labelledby="guestListModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content p-3">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="guestListModalLabel">
+                        Guest List
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <table class="table">
+                            <thead>
+                                <th>Name</th>
+                                <th>Gender</th>
+                                <th>Address</th>
+                                <th>Contact no.</th>
+                                <th>Email</th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control">
+                                    </td>
+                                    <td>
+                                        <select class="form-control">
+                                            <option value="">Please select a gender</option>
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="lgbtq">LGBTQ+</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <textarea rows="2" class="form-control">
+
+                                        </textarea>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control">
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-m btn-primary"><i
+                                                class="fas fa-check"></i></button> &nbsp;
+                                        <button type="button" class="btn btn-m btn-danger"><i
+                                                class="fas fa-times"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -2063,7 +2124,7 @@
                                         <div v-else>
                                             <button :disabled="disablebutton" v-show="!toggleselect" type="button"
                                                 class="btn btn-primary btn-sm btn-margin rounded" @click="
-                                                    viewSummary();
+                                                    moveToCart();
                                                 disablebutton = true;
                                                 ">
                                                 <i class="fas fa-eye"></i> View Summary
@@ -2610,6 +2671,7 @@ export default {
             autosuggestions: [],
             showAutosuggestions: false,
             origbookings: [],
+            walkinID: "",
             calendarItems: [
                 /*{
                               id: id,
@@ -3279,6 +3341,9 @@ export default {
         },
     },
     methods: {
+        addNewGuest() {
+            this.toggleGuestListModal();
+        },
         saveBookingInfo() {
             if (this.reservation.clientName === "") {
                 return;
@@ -4296,6 +4361,11 @@ export default {
                         bId = this.bookings[this.itemIndex].itemID;
                     } catch {
                         bId = "walkin";
+                        if (this.walkinID === "") {
+                            this.walkinID = "f" +
+                                new Date().getTime().toString() +
+                                this.generateUniqueString();
+                        }
                     }
                     try {
                         gkey = this.bookings[this.itemIndex].groupkey;
@@ -4340,69 +4410,59 @@ export default {
                                     currentroom: item.currentroom,
                                 };
 
-                                const numBookedRooms = this.cart.filter(
-                                    (o) =>
-                                        (o.type.toLowerCase().includes("room") ||
-                                            o.type.toLowerCase() === "leisures") &&
-                                        o.category === "main"
-                                ).length;
-                                const numGuestsCard = this.cart
-                                    .filter((o) => o.name.toLowerCase() === "general entrance")
-                                    .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
-                                const entranceFee = parseFloat(
-                                    this.items.filter(
-                                        (o) => o.item.toLowerCase() === "general entrance"
-                                    )[0].priceRate
-                                );
-
-                                const response = await axios.post(this.API_URL + "transaction/item/filter/", {
-                                    columnName: "bookingID",
-                                    columnKey: this.bookings[this.itemIndex].itemID,
-                                });
-
-                                const totalGuestsMain = response.data
-                                    .filter(
+                                if (!this.walkinStatus) {
+                                    const numBookedRooms = this.cart.filter(
                                         (o) =>
-                                            o.itemName.toLowerCase() === "general entrance" &&
+                                            (o.type.toLowerCase().includes("room") ||
+                                                o.type.toLowerCase() === "leisures") &&
                                             o.category === "main"
-                                    )
-                                    .reduce((acc, item) => acc + parseFloat(item.purchaseQty), 0);
+                                    ).length;
+                                    const numGuestsCard = this.cart
+                                        .filter((o) => o.name.toLowerCase() === "general entrance")
+                                        .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
+                                    const entranceFee = parseFloat(
+                                        this.items.filter(
+                                            (o) => o.item.toLowerCase() === "general entrance"
+                                        )[0].priceRate
+                                    );
 
+                                    const response = await axios.post(this.API_URL + "transaction/item/filter/", {
+                                        columnName: "bookingID",
+                                        columnKey: this.bookings[this.itemIndex].itemID,
+                                    });
 
+                                    const totalGuestsMain = response.data
+                                        .filter(
+                                            (o) =>
+                                                o.itemName.toLowerCase() === "general entrance" &&
+                                                o.category === "main"
+                                        )
+                                        .reduce((acc, item) => acc + parseFloat(item.purchaseQty), 0);
 
-                                // const roomsBooked = this.cart.filter(
-                                //     (item) =>
-                                //         item.category === "main" &&
-                                //         item.type.toLowerCase().includes("room")
-                                // );
+                                    const checkInDate = parseDate(
+                                        this.bookings[this.itemIndex].checkinDate
+                                    );
+                                    const checkOutDate = parseDate(
+                                        this.bookings[this.itemIndex].checkoutDate
+                                    );
+                                    const numdays =
+                                        (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
 
-                                // const sumAllowedGuest = parseFloat(
-                                //     this.rooms.filter((o) => o.name === r.name)[0].pax
-                                // );
+                                    if (totalGuestsMain <= data.totalpax) {
+                                        // if (totalGuestsMain <= totalGuests) {
 
-                                const checkInDate = parseDate(
-                                    this.bookings[this.itemIndex].checkinDate
-                                );
-                                const checkOutDate = parseDate(
-                                    this.bookings[this.itemIndex].checkoutDate
-                                );
-                                const numdays =
-                                    (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
+                                        data.totalCost =
+                                            parseFloat(data.totalCost) - (parseFloat(data.purchaseQty) > parseFloat(data.totalpax) - totalGuestsMain ? parseFloat(data.totalpax) - totalGuestsMain : parseFloat(data.purchaseQty)) * entranceFee <
+                                                0
+                                                ? 0
+                                                : parseFloat(data.totalCost) -
+                                                (parseFloat(data.purchaseQty) > parseFloat(data.totalpax) - totalGuestsMain ? parseFloat(data.totalpax) - totalGuestsMain : parseFloat(data.purchaseQty)) * entranceFee;
+                                    }
 
-                                if (totalGuestsMain <= data.totalpax) {
-                                    // if (totalGuestsMain <= totalGuests) {
-
-                                    data.totalCost =
-                                        parseFloat(data.totalCost) - (parseFloat(data.purchaseQty) > parseFloat(data.totalpax) - totalGuestsMain ? parseFloat(data.totalpax) - totalGuestsMain : parseFloat(data.purchaseQty)) * entranceFee <
-                                            0
-                                            ? 0
-                                            : parseFloat(data.totalCost) -
-                                            (parseFloat(data.purchaseQty) > parseFloat(data.totalpax) - totalGuestsMain ? parseFloat(data.totalpax) - totalGuestsMain : parseFloat(data.purchaseQty)) * entranceFee;
-                                }
-
-                                if (data.itemName.toLowerCase() === "general entrance") {
-                                    data.totalCost = (numdays + 1) * data.totalCost;
-                                    data.totalguest = totalGuestsMain + data.purchaseQty;
+                                    if (data.itemName.toLowerCase() === "general entrance") {
+                                        data.totalCost = (numdays + 1) * data.totalCost;
+                                        data.totalguest = totalGuestsMain + data.purchaseQty;
+                                    }
                                 }
 
                                 item.totalCartPrice = data.totalCost;
@@ -4412,15 +4472,21 @@ export default {
                                 item.currentroom = data.currentroom;
 
                                 try {
-                                    data.bookingID = bId;
-                                    data.groupkey = gkey;
-                                    // Send PUT request to update the item
-                                    const response = await axios.put(api, data);
-                                    updatedItems.push(response.data);
+                                    if (!this.walkinStatus) {
+                                        data.bookingID = bId;
+                                        data.groupkey = gkey;
+                                        // Send PUT request to update the item
+                                        const response = await axios.put(api, data);
+                                        updatedItems.push(response.data);
+                                    } else {
+                                        data.bookingID = this.walkinID;
+                                        data.currentroom = "walkin";
+                                        bId = data.bookingID;
+                                        const response = await axios.post(api, data);
+                                        updatedItems.push(response.data);
+                                    }
                                 } catch (error) {
-                                    data.bookingID = "walkin";
-                                    bId = data.bookingID;
-                                    updatedItems.push(data);
+
                                 }
                             });
                         // Wait for all PUT requests to finish before updating the local cart
@@ -4468,6 +4534,7 @@ export default {
                 clientType: "walkin",
                 bookingID: "",
             };
+            this.walkinID = "";
             this.cashHistory = [];
             this.walkinreservation = {
                 clientName: "",
@@ -4528,6 +4595,9 @@ export default {
             const action = event.option.slug;
             window.alert(action);
         },
+        toggleGuestListModal() {
+            $("#guestListModal").modal("toggle");
+        },
         toggledayMenuModal() {
             $("#dayMenuModal").modal("toggle");
         },
@@ -4573,6 +4643,7 @@ export default {
             }
         },
         async viewSummary() {
+
             this.movetocartFlag = false;
             const item = this.bookings[this.itemIndex];
             const bookingID = item.itemID;
@@ -6448,10 +6519,7 @@ export default {
                         if (existingTransaction.data.length === 0) {
                             // Create a new transaction if it doesn't exist yet
                             if (bookid.charAt(0) === "f") {
-                                bookid =
-                                    "f" +
-                                    existingTransaction.data.length +
-                                    this.generateUniqueString();
+                                bookid = this.walkinID;
                             }
                             payStatus =
                                 parseFloat(this.total) -
@@ -6954,39 +7022,45 @@ export default {
                         dateCreated: new Date(), // Set the dateCreated field to the current date and time
                     };
 
-                    const checkInDate = parseDate(
-                        this.bookings[this.itemIndex].checkinDate
-                    );
-                    const checkOutDate = parseDate(
-                        this.bookings[this.itemIndex].checkoutDate
-                    );
-                    const numdays = (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
+                    let numdays = 0, roompax = 0, totalGuests = 0, currentroom = "";
 
-                    const roomsBooked = this.bookings[this.itemIndex].room_name;
-                    const roompax = parseFloat(
-                        this.rooms.filter((o) => o.name === roomsBooked)[0].pax
-                    );
-
-                    const response = await axios.post(this.API_URL + "transaction/item/filter/", {
-                        columnName: "bookingID",
-                        columnKey: this.bookings[this.itemIndex].itemID,
-                    });
+                    if (!this.walkinStatus) {
+                        const checkInDate = parseDate(
+                            this.bookings[this.itemIndex].checkinDate
+                        );
+                        const checkOutDate = parseDate(
+                            this.bookings[this.itemIndex].checkoutDate
+                        );
+                        numdays = (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
 
 
-                    const totalGuests = response.data
-                        .filter(
-                            (o) =>
-                                o.itemName.toLowerCase() === "general entrance"
-                        )
-                        .reduce((acc, item) => acc + parseFloat(item.purchaseQty), 0) + data.purchaseQty;
+                        const roomsBooked = this.bookings[this.itemIndex].room_name;
+                        roompax = parseFloat(
+                            this.rooms.filter((o) => o.name === roomsBooked)[0].pax
+                        );
 
-                    const currentroom = response.data
-                        .filter(
-                            (o) =>
-                                o.category === "main" && o.itemOption === "room"
-                        )
+                        const response = await axios.post(this.API_URL + "transaction/item/filter/", {
+                            columnName: "bookingID",
+                            columnKey: this.bookings[this.itemIndex].itemID,
+                        });
 
-                    if (data.itemName.toLowerCase() === "general entrance" && data.itemType.toLowerCase() === "entrance") {
+
+                        totalGuests = response.data
+                            .filter(
+                                (o) =>
+                                    o.itemName.toLowerCase() === "general entrance"
+                            )
+                            .reduce((acc, item) => acc + parseFloat(item.purchaseQty), 0) + data.purchaseQty;
+
+                        currentroom = response.data
+                            .filter(
+                                (o) =>
+                                    o.category === "main" && o.itemOption === "room"
+                            )
+                    }
+
+
+                    if (data.itemName.toLowerCase() === "general entrance" && data.itemType.toLowerCase() === "entrance" && !this.walkinStatus) {
                         data.numdays = (numdays + 1);
                         data.totalpax = roompax;
                         data.totalguest = totalGuests;
@@ -7002,7 +7076,8 @@ export default {
                         this.itemCart.totalpax = data.totalpax;
                         this.itemCart.totalguest = data.totalguest;
                     }
-                    data.currentroom = currentroom[0].itemName
+
+                    data.currentroom = (!this.walkinStatus ? currentroom[0].itemName : "n/a");
                     this.itemCart.currentroom = data.currentroom;
 
                     try {

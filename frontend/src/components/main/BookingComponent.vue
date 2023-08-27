@@ -2,125 +2,46 @@
   <TopNavBarComponent />
   <div class="container-fluid main">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li
-        v-if="userdata.role === 'superuser'"
-        class="nav-item"
-        role="presentation"
-      >
-        <button
-          class="nav-link"
-          id="dashboard-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#dashboard"
-          type="button"
-          role="tab"
-          aria-controls="dashboard"
-          aria-selected="true"
-          @click="resetSummary(0)"
-        >
+      <li v-if="userdata.role === 'superuser'" class="nav-item" role="presentation">
+        <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button"
+          role="tab" aria-controls="dashboard" aria-selected="true" @click="resetSummary(0)">
           Dashboard
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button
-          class="nav-link active"
-          id="booking-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#booking"
-          type="button"
-          role="tab"
-          aria-controls="booking"
-          aria-selected="true"
-          @click="resetSummary(1)"
-        >
+        <button class="nav-link active" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking" type="button"
+          role="tab" aria-controls="booking" aria-selected="true" @click="resetSummary(1)">
           Calendar
         </button>
       </li>
-      <li
-        v-if="userdata.role !== 'reservationist'"
-        class="nav-item"
-        role="presentation"
-      >
-        <button
-          class="nav-link"
-          id="monitor-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#monitor"
-          type="button"
-          role="tab"
-          aria-controls="monitor"
-          aria-selected="false"
-          @click="resetSummary(4)"
-        >
+      <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
+        <button class="nav-link" id="monitor-tab" data-bs-toggle="tab" data-bs-target="#monitor" type="button" role="tab"
+          aria-controls="monitor" aria-selected="false" @click="resetSummary(4)">
           Room Reservations
         </button>
       </li>
-      <li
-        v-if="userdata.role !== 'reservationist'"
-        class="nav-item"
-        role="presentation"
-      >
-        <button
-          class="nav-link"
-          id="reception-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#reception"
-          type="button"
-          role="tab"
-          aria-controls="reception"
-          aria-selected="false"
-          @click="resetSummary(5)"
-        >
+      <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
+        <button class="nav-link" id="reception-tab" data-bs-toggle="tab" data-bs-target="#reception" type="button"
+          role="tab" aria-controls="reception" aria-selected="false" @click="resetSummary(5)">
           Reception
         </button>
       </li>
-      <li
-        v-if="userdata.role !== 'reservationist'"
-        class="nav-item"
-        role="presentation"
-      >
-        <button
-          class="nav-link"
-          id="others-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#others"
-          type="button"
-          role="tab"
-          aria-controls="others"
-          aria-selected="false"
-          @click="resetSummary(2)"
-        >
+      <li v-if="userdata.role !== 'reservationist'" class="nav-item" role="presentation">
+        <button class="nav-link" id="others-tab" data-bs-toggle="tab" data-bs-target="#others" type="button" role="tab"
+          aria-controls="others" aria-selected="false" @click="resetSummary(2)">
           Account
         </button>
       </li>
-      <li
-        v-if="userdata.role === 'superuser'"
-        class="nav-item"
-        role="presentation"
-      >
-        <button
-          class="nav-link"
-          id="reports-tab"
-          data-bs-toggle="tab"
-          data-bs-target="#reports"
-          type="button"
-          role="tab"
-          aria-controls="reports"
-          aria-selected="false"
-          @click="resetSummary(3)"
-        >
+      <li v-if="userdata.role === 'superuser'" class="nav-item" role="presentation">
+        <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab"
+          aria-controls="reports" aria-selected="false" @click="resetSummary(3)">
           Reports
         </button>
       </li>
     </ul>
     <div class="tab-content mt-3" id="myTabContent">
-      <div
-        v-if="userdata.role === 'superuser'"
-        class="tab-pane fade"
-        id="dashboard"
-        role="tabpanel"
-        aria-labelledby="dashboard-tab"
-      >
+      <div v-if="userdata.role === 'superuser'" class="tab-pane fade" id="dashboard" role="tabpanel"
+        aria-labelledby="dashboard-tab">
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
@@ -129,87 +50,41 @@
           </div>
         </div>
       </div>
-      <div
-        class="tab-pane fade show active"
-        id="booking"
-        role="tabpanel"
-        aria-labelledby="booking-tab"
-      >
+      <div class="tab-pane fade show active" id="booking" role="tabpanel" aria-labelledby="booking-tab">
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
               <div class="d-flex justify-content-between">
                 <h2>
                   Calendar
-                  <a
-                    href="#"
-                    class="btn btn-link text-decoration-none"
-                    @click="toggleSettingsModal()"
-                    ><i class="fa fa-bars" style="font-size: 1.25em"></i
-                  ></a>
+                  <a href="#" class="btn btn-link text-decoration-none" @click="toggleSettingsModal()"><i
+                      class="fa fa-bars" style="font-size: 1.25em"></i></a>
                 </h2>
                 <div class="form-outline col-md-3">
-                  <input
-                    type="search"
-                    id="form1"
-                    class="form-control"
-                    placeholder="Type query"
-                    v-model="booksearchtext"
-                    @input="populateCalendarItems"
-                    @click="showAutosuggestions = false"
-                    @blur="hideAutosuggestions"
-                    aria-label="Search"
-                    ref="searchQuery"
-                    autocomplete="off"
-                    aria-autocomplete="off"
-                  />
-                  <ul
-                    id="suglist"
-                    class="autosuggestions"
-                    v-if="!showAutosuggestions"
-                  >
-                    <li
-                      v-for="suggestion in autosuggestions"
-                      @click="selectSuggestion(suggestion)"
-                    >
+                  <input type="search" id="form1" class="form-control" placeholder="Type query" v-model="booksearchtext"
+                    @input="populateCalendarItems" @click="showAutosuggestions = false" @blur="hideAutosuggestions"
+                    aria-label="Search" ref="searchQuery" autocomplete="off" aria-autocomplete="off" />
+                  <ul id="suglist" class="autosuggestions" v-if="!showAutosuggestions">
+                    <li v-for="suggestion in autosuggestions" @click="selectSuggestion(suggestion)">
                       {{ suggestion }}
                     </li>
                   </ul>
                 </div>
               </div>
               <div class="calendar-parent c-p">
-                <calendar-view
-                  :items="calendarItems"
-                  :show-date="showDate"
-                  :time-format-options="{ hour: 'numeric', minute: '2-digit' }"
-                  :enable-drag-drop="true"
-                  :disable-past="disablePast"
-                  :disable-future="disableFuture"
-                  :show-times="showTimes"
-                  :date-classes="myDateClasses"
-                  :display-period-uom="displayPeriodUom"
-                  :display-period-count="displayPeriodCount"
-                  :starting-day-of-week="startingDayOfWeek"
-                  :class="themeClasses"
-                  :period-changed-callback="periodChanged"
-                  :current-period-label="useTodayIcons ? 'icons' : ''"
-                  :displayWeekNumbers="displayWeekNumbers"
-                  :enable-date-selection="true"
-                  :selection-start="selectionStart"
-                  :selection-end="selectionEnd"
-                  @date-selection-start="setSelection"
-                  @date-selection="setSelection"
-                  @date-selection-finish="finishSelection"
-                  @drop-on-date="onDrop"
-                  @click-date="onClickDay"
-                  @click-item="onClickItem"
-                >
+                <calendar-view :items="calendarItems" :show-date="showDate"
+                  :time-format-options="{ hour: 'numeric', minute: '2-digit' }" :enable-drag-drop="true"
+                  :disable-past="disablePast" :disable-future="disableFuture" :show-times="showTimes"
+                  :date-classes="myDateClasses" :display-period-uom="displayPeriodUom"
+                  :display-period-count="displayPeriodCount" :starting-day-of-week="startingDayOfWeek"
+                  :class="themeClasses" :period-changed-callback="periodChanged"
+                  :current-period-label="useTodayIcons ? 'icons' : ''" :displayWeekNumbers="displayWeekNumbers"
+                  :enable-date-selection="true" :selection-start="selectionStart" :selection-end="selectionEnd"
+                  @date-selection-start="setSelection" @date-selection="setSelection"
+                  @date-selection-finish="finishSelection" @drop-on-date="onDrop" @click-date="onClickDay"
+                  @click-item="onClickItem">
                   <template #header="{ headerProps }">
-                    <calendar-view-header
-                      slot="header"
-                      :header-props="headerProps"
-                      @input="setShowDate"
-                    />
+                    <calendar-view-header slot="header" :header-props="headerProps" @input="setShowDate" />
                   </template>
                 </calendar-view>
               </div>
@@ -220,53 +95,25 @@
           </div>
         </div>
       </div>
-      <div
-        class="tab-pane fade"
-        id="monitor"
-        role="tabpanel"
-        aria-labelledby="monitor-tab"
-      >
+      <div class="tab-pane fade" id="monitor" role="tabpanel" aria-labelledby="monitor-tab">
         <div class="container-fluid">
           <div class="row">
             <div class="col-sm-2">
-              <ul
-                class="nav nav-tabs flex-column"
-                id="propertyTab"
-                role="tablist"
-              >
-                <li
-                  class="nav-item"
-                  v-for="(category, index) in roomcategories"
-                  :key="category.id"
-                >
-                  <a
-                    :class="index > 0 ? 'nav-link' : 'nav-link active'"
-                    data-bs-toggle="tab"
-                    @click="activeMainTab = `${category.name}`"
-                    :href="`#roomcategory${index}`"
-                    >{{ category.name }}</a
-                  >
+              <ul class="nav nav-tabs flex-column" id="propertyTab" role="tablist">
+                <li class="nav-item" v-for="(category, index) in roomcategories" :key="category.id">
+                  <a :class="index > 0 ? 'nav-link' : 'nav-link active'" data-bs-toggle="tab"
+                    @click="activeMainTab = `${category.name}`" :href="`#roomcategory${index}`">{{ category.name }}</a>
                 </li>
               </ul>
             </div>
             <div class="col-sm-10">
               <div class="tab-content mt-3" id="propertyTabContent">
-                <div
-                  v-for="(category, index) in roomcategories"
-                  :key="category.id"
-                  :class="
-                    index > 0 ? 'tab-pane fade' : 'tab-pane fade show active'
-                  "
-                  :id="`#roomcategory${index}`"
-                  role="tabpanel"
-                >
+                <div v-for="(category, index) in roomcategories" :key="category.id" :class="index > 0 ? 'tab-pane fade' : 'tab-pane fade show active'
+                  " :id="`#roomcategory${index}`" role="tabpanel">
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col-md-12">
-                        <CardBookingsVue
-                          :roomData="roomsjoinbookings"
-                          v-on:click-action="cardAction"
-                        />
+                        <CardBookingsVue :roomData="roomsjoinbookings" v-on:click-action="cardAction" />
                       </div>
                     </div>
                   </div>
@@ -276,36 +123,18 @@
           </div>
         </div>
       </div>
-      <div
-        class="tab-pane fade"
-        id="reception"
-        role="tabpanel"
-        aria-labelledby="others-tab"
-      >
+      <div class="tab-pane fade" id="reception" role="tabpanel" aria-labelledby="others-tab">
         <div class="container-fluid">
           <div class="row">
-            <ReceptionHotel
-              :bookingsdata="bookings"
-              :roomsdata="rooms"
-              :roomcategoriesdata="roomcategories"
-              @clickItem-action="handleReceptionItemAction"
-              @clickDay-action="handleReceptionDayAction"
-              @clickRoom-action="handleReceptionRoomAction"
-              @dragstart-action="handledragstart"
-              @dragend-action="handledragend"
-              @dragover-action="handleDragOver"
-              @dragdrop-action="handleDragDrop"
-              @dragstartday-action="handledragstartday"
-            />
+            <ReceptionHotel :bookingsdata="bookings" :roomsdata="rooms" :roomcategoriesdata="roomcategories"
+              @clickItem-action="handleReceptionItemAction" @clickDay-action="handleReceptionDayAction"
+              @clickRoom-action="handleReceptionRoomAction" @dragstart-action="handledragstart"
+              @dragend-action="handledragend" @dragover-action="handleDragOver" @dragdrop-action="handleDragDrop"
+              @dragstartday-action="handledragstartday" />
           </div>
         </div>
       </div>
-      <div
-        class="tab-pane fade"
-        id="others"
-        role="tabpanel"
-        aria-labelledby="others-tab"
-      >
+      <div class="tab-pane fade" id="others" role="tabpanel" aria-labelledby="others-tab">
         <div class="container-fluid">
           <div class="row">
             <!-- <div class="col-md-3">
@@ -341,40 +170,25 @@
               <div class="d-flex align-items-center">
                 <h2 class="position-relative">
                   Cart
-                  <span
-                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                    style="font-size: 0.75rem"
-                  >
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    style="font-size: 0.75rem">
                     {{ numItemCart }}
                     <span class="visually-hidden">items in cart</span>
                   </span>
                 </h2>
                 <div class="ms-auto d-flex align-items-center">
                   <!-- Wrap the buttons in a flex container -->
-                  <button
-                    type="button"
-                    class="btn btn-primary me-2"
-                    :class="{ 'wiggle-animation': countInclusion === 0 }"
-                    @click="showShoppingModal()"
-                  >
-                    <i class="fa fa-shopping-cart"
-                      ><br />
-                      <span style="font-size: 8px">[F1]</span></i
-                    >
+                  <button type="button" class="btn btn-primary me-2" :class="{ 'wiggle-animation': countInclusion === 0 }"
+                    @click="showShoppingModal()">
+                    <i class="fa fa-shopping-cart"><br />
+                      <span style="font-size: 8px">[F1]</span></i>
                   </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    :class="{ 'wiggle-animation': countInclusion > 0 }"
-                    @click="moveInclusionCartToMain()"
-                  >
-                    <i class="fas fa-thumbs-up" style="position: relative"
-                      ><br />
+                  <button type="button" class="btn btn-primary" :class="{ 'wiggle-animation': countInclusion > 0 }"
+                    @click="moveInclusionCartToMain()">
+                    <i class="fas fa-thumbs-up" style="position: relative"><br />
                       <span style="font-size: 8px">[F2]</span>
-                      <span
-                        class="position-absolute start-1000 translate-middle badge rounded-pill bg-danger"
-                        style="font-size: 0.5rem; top: -25%; left: 120%"
-                      >
+                      <span class="position-absolute start-1000 translate-middle badge rounded-pill bg-danger"
+                        style="font-size: 0.5rem; top: -25%; left: 120%">
                         {{ countInclusion }}
                         <span class="visually-hidden">items in cart</span>
                       </span>
@@ -382,37 +196,21 @@
                   </button>
                 </div>
               </div>
-              <div
-                class="card-deck"
-                :style="`height:${calcMeasure.height2};overflow-y: auto;overflow-x: hidden;padding-right: 1px;`"
-              >
-                <div
-                  class="card"
-                  v-for="(item, index) in cart.sort((a, b) =>
-                    a.category.localeCompare(b.category)
-                  )"
-                  :key="item.id"
-                >
-                  <div
-                    class="card-header d-flex justify-content-between align-items-center"
-                  >
+              <div class="card-deck"
+                :style="`height:${calcMeasure.height2};overflow-y: auto;overflow-x: hidden;padding-right: 1px;`">
+                <div class="card" v-for="(item, index) in cart.sort((a, b) =>
+                  a.category.localeCompare(b.category)
+                )" :key="item.id">
+                  <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title">
                       {{ item.name }}
-                      <span
-                        v-html="
-                          item.category === 'main'
-                            ? '<i class=\'fas fa-check text-success\'></i>'
-                            : '<i class=\'fas fa-hourglass-start text-warning\'></i>'
-                        "
-                      ></span>
+                      <span v-html="item.category === 'main'
+                          ? '<i class=\'fas fa-check text-success\'></i>'
+                          : '<i class=\'fas fa-hourglass-start text-warning\'></i>'
+                        "></span>
                     </h5>
-                    <button
-                      v-if="item.category === 'inclusion'"
-                      type="button"
-                      class="btn btn-sm btn-close"
-                      aria-label="Close"
-                      @click="cancelItem(item)"
-                    ></button>
+                    <button v-if="item.category === 'inclusion'" type="button" class="btn btn-sm btn-close"
+                      aria-label="Close" @click="cancelItem(item)"></button>
                   </div>
                   <div class="card-body">
                     <p class="card-text">Type: {{ item.type }}</p>
@@ -462,17 +260,10 @@
                 <h2 class="position-relative">Registration Form (preview)</h2>
                 <div class="ms-auto d-flex align-items-center">
                   <!-- Wrap the buttons in a flex container -->
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    v-show="this.isItNew && countInclusion === 0"
-                    v-if="!this.walkinStatus && !this.justDiscounted"
-                    @click="generateBillingStatement()"
-                  >
-                    <i class="fas fa-print"
-                      ><br />
-                      <span style="font-size: 8px">[F10]</span></i
-                    >
+                  <button type="button" class="btn btn-primary" v-show="this.isItNew && countInclusion === 0"
+                    v-if="!this.walkinStatus && !this.justDiscounted" @click="generateBillingStatement()">
+                    <i class="fas fa-print"><br />
+                      <span style="font-size: 8px">[F10]</span></i>
                   </button>
                 </div>
               </div>
@@ -484,32 +275,22 @@
                     <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
                   </div>
                 </div> -->
-              <div
-                id="billing-details-preview"
-                class="bg-light"
-                :style="`height:${calcMeasure.height3}!important;overflow-y: auto;overflow-x: hidden;font-size: 100%;padding: 20px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);`"
-              >
+              <div id="billing-details-preview" class="bg-light"
+                :style="`height:${calcMeasure.height3}!important;overflow-y: auto;overflow-x: hidden;font-size: 100%;padding: 20px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);`">
                 <div class="container">
                   <div class="row">
                     <div class="col-12">
                       <div class="row justify-content-between">
                         <div class="col-4">
-                          <img
-                            :src="`/src/assets/${this.APP_LOGO_NAME}`"
-                            width="60"
-                            height="60"
-                            alt="Company Logo"
-                            class="logo"
-                          />
+                          <img :src="`/src/assets/${this.APP_LOGO_NAME}`" width="60" height="60" alt="Company Logo"
+                            class="logo" />
                         </div>
                         <div class="col-4 text-center">
                           <span class="h4">Registration Form</span>
                         </div>
                         <div class="col-3 text-right">
-                          <span style="font-size: small"
-                            >Registration No.:
-                            {{ this.billing.bookingID }}</span
-                          >
+                          <span style="font-size: small">Registration No.:
+                            {{ this.billing.bookingID }}</span>
                         </div>
                       </div>
                       <hr style="margin-bottom: 0px; margin-top: 0px" />
@@ -556,60 +337,49 @@
                                 <td>
                                   {{ item.purqty
                                   }}{{
-                                    parseFloat(
-                                      item.priceRate.split("/")[0].trim()
-                                    ) *
-                                      item.purqty ===
-                                    parseFloat(item.totalCartPrice)
-                                      ? ""
-                                      : " (free " +
-                                        sumtotalPax() +
-                                        `pax) = ${
-                                          item.purqty - sumtotalPax() > 0
-                                            ? item.purqty - sumtotalPax()
-                                            : 0
-                                        }`
-                                  }}
+  parseFloat(
+    item.priceRate.split("/")[0].trim()
+  ) *
+  item.purqty ===
+  parseFloat(item.totalCartPrice)
+  ? ""
+  : " (free " +
+  sumtotalPax() +
+  `pax) = ${item.purqty - sumtotalPax() > 0
+      ? item.purqty - sumtotalPax()
+      : 0
+    }`
+}}
                                 </td>
                                 <td v-if="item.itemOption !== 'room'">
                                   {{ item.totalCartPrice }}
                                 </td>
                                 <td v-else>
-                                  <span
-                                    v-if="!isNaN(subroom.discountValue)"
-                                    v-html="
-                                      `${
-                                        item.totalCartPrice
-                                      } <sup class='text-danger font-weight-bold'>${
-                                        subroom.discountMode === 'percentage'
-                                          ? subroom.discountValue + '%'
-                                          : (
-                                              subroom.discountValue /
-                                              combinedcart.filter(
-                                                (o) => o.itemOption === 'room'
-                                              ).length
-                                            ).toFixed(2)
-                                      } off</sup> <span class='text-success font-weight-bold'>${
-                                        subroom.discountMode === 'percentage'
-                                          ? item.totalCartPrice *
-                                            (1 -
-                                              parseFloat(
-                                                subroom.discountValue / 100
-                                              ))
-                                          : item.totalCartPrice -
-                                            (
-                                              subroom.discountValue /
-                                              combinedcart.filter(
-                                                (o) => o.itemOption === 'room'
-                                              ).length
-                                            ).toFixed(2)
-                                      }</span>`
-                                    "
-                                  ></span>
-                                  <span
-                                    v-else
-                                    v-html="`${item.totalCartPrice}`"
-                                  ></span>
+                                  <span v-if="!isNaN(subroom.discountValue)" v-html="`${item.totalCartPrice
+                                    } <sup class='text-danger font-weight-bold'>${subroom.discountMode === 'percentage'
+                                      ? subroom.discountValue + '%'
+                                      : (
+                                        subroom.discountValue /
+                                        combinedcart.filter(
+                                          (o) => o.itemOption === 'room'
+                                        ).length
+                                      ).toFixed(2)
+                                    } off</sup> <span class='text-success font-weight-bold'>${subroom.discountMode === 'percentage'
+                                      ? item.totalCartPrice *
+                                      (1 -
+                                        parseFloat(
+                                          subroom.discountValue / 100
+                                        ))
+                                      : item.totalCartPrice -
+                                      (
+                                        subroom.discountValue /
+                                        combinedcart.filter(
+                                          (o) => o.itemOption === 'room'
+                                        ).length
+                                      ).toFixed(2)
+                                    }</span>`
+                                    "></span>
+                                  <span v-else v-html="`${item.totalCartPrice}`"></span>
                                 </td>
                               </tr>
                               <tr>
@@ -648,10 +418,7 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr
-                                v-for="(item, index) in cashHistory"
-                                :key="item.id"
-                              >
+                              <tr v-for="(item, index) in cashHistory" :key="item.id">
                                 <td>
                                   {{
                                     new Date(
@@ -668,17 +435,17 @@
                                     item.nonCashReference
                                       .toString()
                                       .replace("-", "") === ""
-                                      ? item.transactionrecord_id
-                                      : item.transactionrecord_id +
-                                        "-" +
-                                        item.nonCashReference
+                                    ? item.transactionrecord_id
+                                    : item.transactionrecord_id +
+                                    "-" +
+                                    item.nonCashReference
                                   }}
                                 </td>
                                 <td>
                                   {{
                                     index === 0
-                                      ? "Init/DP"
-                                      : parseFloat(item.balance) === 0
+                                    ? "Init/DP"
+                                    : parseFloat(item.balance) === 0
                                       ? "Full"
                                       : "Partial"
                                   }}
@@ -699,25 +466,17 @@
                 </div>
               </div>
             </div>
-            <div
-              class="col-md-3"
-              :style="`height:${calcMeasure.height4}!important;overflow-y: auto;overflow-x: hidden;`"
-            >
+            <div class="col-md-3" :style="`height:${calcMeasure.height4}!important;overflow-y: auto;overflow-x: hidden;`">
               <div class="d-flex align-items-center" style="padding: 10px">
                 <h2 class="position-relative">Payment</h2>
                 <div class="ms-auto d-flex align-items-center">
                   <!-- Wrap the buttons in a flex container -->
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    @click="initializePlaceOrder"
-                    :disabled="total <= 0 || countInclusion > 0"
-                    style="
+                  <button type="button" class="btn btn-primary" @click="initializePlaceOrder"
+                    :disabled="total <= 0 || countInclusion > 0" style="
                       display: flex;
                       flex-direction: column;
                       align-items: center;
-                    "
-                  >
+                    ">
                     <i class="fas fa-money-bill"></i>
                     <span style="font-size: 8px">[Enter]</span>
                   </button>
@@ -767,24 +526,12 @@
                   </div> -->
                       <div class="form-group mb-2 mt-0">
                         <div class="input-group">
-                          <input
-                            type="text"
-                            class="form-control"
-                            :value="this.billing.clientName"
-                            readonly
-                          />
-                          <button
-                            type="button"
-                            class="btn btn-primary"
-                            @click="toggleAddAccountModal"
-                          >
-                            <i
-                              :class="
-                                this.billing.clientName === ''
-                                  ? 'fa fa-user-plus'
-                                  : 'fas fa-user-edit'
-                              "
-                            ></i>
+                          <input type="text" class="form-control" :value="this.billing.clientName" readonly />
+                          <button type="button" class="btn btn-primary" @click="toggleAddAccountModal">
+                            <i :class="this.billing.clientName === ''
+                                ? 'fa fa-user-plus'
+                                : 'fas fa-user-edit'
+                              "></i>
                           </button>
                         </div>
                       </div>
@@ -801,11 +548,7 @@
                           </div>
                           <div class="row mt-0">
                             <div class="col-6">
-                              <a
-                                href="#"
-                                @click="setDiscount"
-                                v-if="!alreadyDiscounted"
-                              >
+                              <a href="#" @click="setDiscount" v-if="!alreadyDiscounted">
                                 <i class="fas fa-pencil-alt"></i>
                               </a>
                               <strong>Discount:</strong>
@@ -813,8 +556,8 @@
                             <div class="col-6 text-right">
                               {{ discountValue
                               }}{{
-                                discountMode === "percentage" ? "%" : " off"
-                              }}
+  discountMode === "percentage" ? "%" : " off"
+}}
                             </div>
                           </div>
 
@@ -822,22 +565,15 @@
                             <div class="col-6">
                               <strong>Reservation:</strong>
                             </div>
-                            <div
-                              class="col-6 text-right"
-                              v-html="
-                                subroom.original + ' ' + subroom.discounted
-                              "
-                            ></div>
+                            <div class="col-6 text-right" v-html="subroom.original + ' ' + subroom.discounted
+                              "></div>
                           </div>
                           <div class="row mb-2">
                             <div class="col-6"><strong>Add-ons:</strong></div>
                             <div class="col-6 text-right">{{ subaddons }}</div>
                           </div>
 
-                          <div
-                            class="row mb-2"
-                            v-if="paymentMethod === 'non-cash'"
-                          >
+                          <div class="row mb-2" v-if="paymentMethod === 'non-cash'">
                             <div class="col-6">
                               <strong>Reference No.:</strong>
                             </div>
@@ -860,14 +596,8 @@
                               <strong class="text-primary">Total:</strong>
                             </div>
                             <div class="col-6 text-right">
-                              <strong>{{ total }}</strong
-                              >&nbsp;
-                              <a
-                                v-if="total < 0"
-                                href="#"
-                                @click="refundPayment"
-                                ><i>for refund→</i></a
-                              >
+                              <strong>{{ total }}</strong>&nbsp;
+                              <a v-if="total < 0" href="#" @click="refundPayment"><i>for refund→</i></a>
                             </div>
                           </div>
                           <!-- <div class="row">
@@ -878,26 +608,14 @@
                       </div>
                       <div class="form-group">
                         <div class="input-group">
-                          <select
-                            id="payment-method"
-                            v-model="paymentMethod"
-                            class="form-control"
-                            style="font-weight: bolder"
-                            @change="setNonCash"
-                          >
+                          <select id="payment-method" v-model="paymentMethod" class="form-control"
+                            style="font-weight: bolder" @change="setNonCash">
                             <option value="cash">Cash</option>
                             <option value="non-cash">Non-cash</option>
                           </select>
                           <span class="input-group-text">₱</span>
-                          <input
-                            type="number"
-                            class="form-control"
-                            id="cashAmount"
-                            v-model.number="cashAmount"
-                            step="0.01"
-                            @keyup="updateTotalCash"
-                            @keydown="updateTotalCash"
-                          />
+                          <input type="number" class="form-control" id="cashAmount" v-model.number="cashAmount"
+                            step="0.01" @keyup="updateTotalCash" @keydown="updateTotalCash" />
                           <span class="input-group-text">{{
                             (cashAmount - Math.floor(cashAmount))
                               .toFixed(2)
@@ -908,16 +626,10 @@
                       <div class="row mt-2 mb-2">
                         <div class="col-md-12">
                           <div class="row row-cols-1 row-cols-md-4">
-                            <div
-                              class="col mb-1"
-                              v-for="item in cashDenominations"
-                              :key="item.id"
-                            >
-                              <button
-                                type="button"
+                            <div class="col mb-1" v-for="item in cashDenominations" :key="item.id">
+                              <button type="button"
                                 class="btn bg-white rounded-lg shadow hover:shadow-xs focus:outline-none inline-block px-0 py-0 text-sm"
-                                @click="addToCash(item.value)"
-                              >
+                                @click="addToCash(item.value)">
                                 <span>{{ item.label }}</span>
                               </button>
                             </div>
@@ -927,11 +639,7 @@
                       <div class="form-group">
                         <div class="input-group">
                           <span class="input-group-text">Remarks</span>
-                          <input
-                            type="text"
-                            class="form-control"
-                            v-model="cashRemarks"
-                          />
+                          <input type="text" class="form-control" v-model="cashRemarks" />
                         </div>
                       </div>
                       <div class="row mt-2 mb-2 bg-light">
@@ -954,32 +662,17 @@
           </div>
         </div>
       </div>
-      <div
-        class="tab-pane fade"
-        id="reports"
-        role="tabpanel"
-        aria-labelledby="reports-tab"
-      >
+      <div class="tab-pane fade" id="reports" role="tabpanel" aria-labelledby="reports-tab">
         <div class="container-fluid">
           <div class="row">
             <div class="row">
               <div class="col-sm-1">
                 <ul class="nav nav-tabs flex-column">
                   <li class="nav-item">
-                    <a
-                      class="nav-link rotated-text active"
-                      data-bs-toggle="tab"
-                      href="#reservations"
-                      >Reservations</a
-                    >
+                    <a class="nav-link rotated-text active" data-bs-toggle="tab" href="#reservations">Reservations</a>
                   </li>
                   <li class="nav-item">
-                    <a
-                      class="nav-link rotated-text"
-                      data-bs-toggle="tab"
-                      href="#transactions"
-                      >Transactions</a
-                    >
+                    <a class="nav-link rotated-text" data-bs-toggle="tab" href="#transactions">Transactions</a>
                   </li>
                 </ul>
               </div>
@@ -1003,40 +696,22 @@
                           </div> -->
                           <div class="form-group">
                             <label for="date-filter">Date Filter:</label>
-                            <select
-                              class="form-control"
-                              id="date-filter"
-                              v-model="resdateFilter"
-                            >
+                            <select class="form-control" id="date-filter" v-model="resdateFilter">
                               <option value="any">Any</option>
                               <option value="range">Date Range</option>
                             </select>
                             <div v-if="resdateFilter === 'range'">
                               <div class="form-group">
-                                <input
-                                  type="date"
-                                  class="form-control"
-                                  v-model="resfromDate"
-                                />
+                                <input type="date" class="form-control" v-model="resfromDate" />
                               </div>
                               <div class="form-group">
-                                <input
-                                  type="date"
-                                  class="form-control"
-                                  v-model="restoDate"
-                                />
+                                <input type="date" class="form-control" v-model="restoDate" />
                               </div>
                             </div>
                           </div>
                           <div class="form-group">
-                            <label for="payment-method-filter"
-                              >Payment Status:</label
-                            >
-                            <select
-                              class="form-control"
-                              id="payment-method-filter"
-                              v-model="respaymentStatusFilter"
-                            >
+                            <label for="payment-method-filter">Payment Status:</label>
+                            <select class="form-control" id="payment-method-filter" v-model="respaymentStatusFilter">
                               <option value="">Any</option>
                               <option value="no">No Payment</option>
                               <option value="partial">Partial</option>
@@ -1045,11 +720,7 @@
                           </div>
                           <div class="form-group">
                             <label for="status-filter">Status:</label>
-                            <select
-                              class="form-control"
-                              id="status-filter"
-                              v-model="resstatusFilter"
-                            >
+                            <select class="form-control" id="status-filter" v-model="resstatusFilter">
                               <option value="">Any</option>
                               <option value="cancelled">Cancelled</option>
                               <option value="reserved">Reserved</option>
@@ -1066,12 +737,8 @@
                       <div class="col-md-9">
                         <div id="reservationHistory">
                           <h2>Reservation History</h2>
-                          <table-component
-                            :mainHeaders="reservationsOptions"
-                            :mainItems="filteredReservationsHistory"
-                            :editable="false"
-                            :toggleable="false"
-                          />
+                          <table-component :mainHeaders="reservationsOptions" :mainItems="filteredReservationsHistory"
+                            :editable="false" :toggleable="false" />
                         </div>
                       </div>
                     </div>
@@ -1094,40 +761,22 @@
                           </div> -->
                           <div class="form-group">
                             <label for="date-filter">Date Filter:</label>
-                            <select
-                              class="form-control"
-                              id="date-filter"
-                              v-model="dateFilter"
-                            >
+                            <select class="form-control" id="date-filter" v-model="dateFilter">
                               <option value="any">Any</option>
                               <option value="range">Date Range</option>
                             </select>
                             <div v-if="dateFilter === 'range'">
                               <div class="form-group">
-                                <input
-                                  type="date"
-                                  class="form-control"
-                                  v-model="fromDate"
-                                />
+                                <input type="date" class="form-control" v-model="fromDate" />
                               </div>
                               <div class="form-group">
-                                <input
-                                  type="date"
-                                  class="form-control"
-                                  v-model="toDate"
-                                />
+                                <input type="date" class="form-control" v-model="toDate" />
                               </div>
                             </div>
                           </div>
                           <div class="form-group">
-                            <label for="payment-method-filter"
-                              >Payment Method:</label
-                            >
-                            <select
-                              class="form-control"
-                              id="payment-method-filter"
-                              v-model="paymentMethodFilter"
-                            >
+                            <label for="payment-method-filter">Payment Method:</label>
+                            <select class="form-control" id="payment-method-filter" v-model="paymentMethodFilter">
                               <option value="">Any</option>
                               <option value="cash">Cash</option>
                               <option value="non-cash">Non-cash</option>
@@ -1135,11 +784,7 @@
                           </div>
                           <div class="form-group">
                             <label for="status-filter">Status:</label>
-                            <select
-                              class="form-control"
-                              id="status-filter"
-                              v-model="statusFilter"
-                            >
+                            <select class="form-control" id="status-filter" v-model="statusFilter">
                               <option value="">Any</option>
                               <option value="full">Full</option>
                               <option value="partial">Partial</option>
@@ -1154,16 +799,9 @@
                       <div class="col-md-10">
                         <div id="transactionHistory">
                           <h2>Transaction History</h2>
-                          <table-component
-                            :mainHeaders="transactionsOptions"
-                            :mainItems="filteredTransactions"
-                            :subHeaders2="transactionhistory"
-                            :subHeaders="transactionitem"
-                            @delete-action="deleteTransaction"
-                            :deletable="true"
-                            :editable="false"
-                            :toggleable="true"
-                          />
+                          <table-component :mainHeaders="transactionsOptions" :mainItems="filteredTransactions"
+                            :subHeaders2="transactionhistory" :subHeaders="transactionitem"
+                            @delete-action="deleteTransaction" :deletable="true" :editable="false" :toggleable="true" />
                         </div>
                       </div>
                     </div>
@@ -1192,44 +830,26 @@
         </div>
       </div>
     </div>
-    <div
-      id="billing-details"
-      class="container-fluid billing"
-      style="font-size: 100%"
-    >
+    <div id="billing-details" class="container-fluid billing" style="font-size: 100%">
       <div class="container">
         <div class="row">
           <div class="col-12">
-            <div
-              class="row justify-content-between"
-              :style="!isThereLeisures ? 'border-right: dotted;' : ''"
-            >
+            <div class="row justify-content-between" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
               <div class="col-4">
-                <img
-                  :src="`/src/assets/${this.APP_LOGO_NAME}`"
-                  width="60"
-                  height="60"
-                  alt="Company Logo"
-                  class="logo"
-                />
+                <img :src="`/src/assets/${this.APP_LOGO_NAME}`" width="60" height="60" alt="Company Logo" class="logo" />
               </div>
               <div class="col-4 text-center">
                 <span class="h2">Registration Form</span>
               </div>
               <div class="col-4 text-right">
-                <span style="font-size: small"
-                  >Registration No.: {{ this.billing.bookingID }}</span
-                >
+                <span style="font-size: small">Registration No.: {{ this.billing.bookingID }}</span>
               </div>
             </div>
             <hr />
           </div>
         </div>
         <div class="row">
-          <div
-            class="col-12"
-            :style="!isThereLeisures ? 'border-right: dotted;' : ''"
-          >
+          <div class="col-12" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
             <div class="row">
               <div class="col-6">
                 <span style="font-size: small">Client Details:</span>
@@ -1261,51 +881,43 @@
                       <td>
                         {{ item.purqty
                         }}{{
-                          parseFloat(item.priceRate.split("/")[0].trim()) *
-                            item.purqty ===
-                          parseFloat(item.totalCartPrice)
-                            ? ""
-                            : " (free " +
-                              sumtotalPax() +
-                              `pax) = ${
-                                item.purqty - sumtotalPax() > 0
-                                  ? item.purqty - sumtotalPax()
-                                  : 0
-                              }`
-                        }}
+  parseFloat(item.priceRate.split("/")[0].trim()) *
+  item.purqty ===
+  parseFloat(item.totalCartPrice)
+  ? ""
+  : " (free " +
+  sumtotalPax() +
+  `pax) = ${item.purqty - sumtotalPax() > 0
+      ? item.purqty - sumtotalPax()
+      : 0
+    }`
+}}
                       </td>
                       <td v-if="item.itemOption !== 'room'">
                         {{ item.totalCartPrice }}
                       </td>
                       <td v-else>
-                        <span
-                          v-if="!isNaN(subroom.discountValue)"
-                          v-html="
-                            `${
-                              item.totalCartPrice
-                            } <sup class='text-danger font-weight-bold'>${
-                              subroom.discountMode === 'percentage'
-                                ? subroom.discountValue + '%'
-                                : (
-                                    subroom.discountValue /
-                                    combinedcart.filter(
-                                      (o) => o.itemOption === 'room'
-                                    ).length
-                                  ).toFixed(2)
-                            } off</sup> <span class='text-success font-weight-bold'>${
-                              subroom.discountMode === 'percentage'
-                                ? item.totalCartPrice *
-                                  (1 - parseFloat(subroom.discountValue / 100))
-                                : item.totalCartPrice -
-                                  (
-                                    subroom.discountValue /
-                                    combinedcart.filter(
-                                      (o) => o.itemOption === 'room'
-                                    ).length
-                                  ).toFixed(2)
-                            }</span>`
-                          "
-                        ></span>
+                        <span v-if="!isNaN(subroom.discountValue)" v-html="`${item.totalCartPrice
+                          } <sup class='text-danger font-weight-bold'>${subroom.discountMode === 'percentage'
+                            ? subroom.discountValue + '%'
+                            : (
+                              subroom.discountValue /
+                              combinedcart.filter(
+                                (o) => o.itemOption === 'room'
+                              ).length
+                            ).toFixed(2)
+                          } off</sup> <span class='text-success font-weight-bold'>${subroom.discountMode === 'percentage'
+                            ? item.totalCartPrice *
+                            (1 - parseFloat(subroom.discountValue / 100))
+                            : item.totalCartPrice -
+                            (
+                              subroom.discountValue /
+                              combinedcart.filter(
+                                (o) => o.itemOption === 'room'
+                              ).length
+                            ).toFixed(2)
+                          }</span>`
+                          "></span>
                         <span v-else v-html="`${item.totalCartPrice}`"></span>
                       </td>
                     </tr>
@@ -1356,17 +968,17 @@
                         {{
                           item.nonCashReference.toString().replace("-", "") ===
                           ""
-                            ? item.transactionrecord_id
-                            : item.transactionrecord_id +
-                              "-" +
-                              item.nonCashReference
+                          ? item.transactionrecord_id
+                          : item.transactionrecord_id +
+                          "-" +
+                          item.nonCashReference
                         }}
                       </td>
                       <td>
                         {{
                           index === 0
-                            ? "Init/DP"
-                            : parseFloat(item.balance) === 0
+                          ? "Init/DP"
+                          : parseFloat(item.balance) === 0
                             ? "Full"
                             : "Partial"
                         }}
@@ -1415,13 +1027,8 @@
           </div>
         </div>
         <div class="row">
-          <div
-            v-if="isThereLeisures"
-            :class="isThereLeisures ? 'col-12' : 'col-0'"
-          >
-            <span style="font-size: small"
-              >WAIVER AND AGREEMENT TO LEASE WATER SPORTS</span
-            >
+          <div v-if="isThereLeisures" :class="isThereLeisures ? 'col-12' : 'col-0'">
+            <span style="font-size: small">WAIVER AND AGREEMENT TO LEASE WATER SPORTS</span>
             <p>
               The undersigned
               <span style="text-decoration: underline">{{
@@ -1520,9 +1127,7 @@
             </div>
             <div class="row">
               <div class="col-12">
-                <span style="font-size: small"
-                  >List of Participants with Signature:</span
-                >
+                <span style="font-size: small">List of Participants with Signature:</span>
                 <table border="0" cellpadding="0" cellspcing="0">
                   <tr>
                     <td>
@@ -1551,10 +1156,7 @@
           </div>
         </div>
         <div class="row mt-2">
-          <div
-            class="col-12"
-            :style="!isThereLeisures ? 'border-right: dotted;' : ''"
-          >
+          <div class="col-12" :style="!isThereLeisures ? 'border-right: dotted;' : ''">
             <hr />
             <div class="row">
               <div class="col-6">
@@ -1572,125 +1174,55 @@
     </div>
   </div>
   <!-- Modals -->
-  <div
-    class="modal fade show"
-    id="showall-modal"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="showall-modalLabel"
-    style="display: none; padding-right: 17px"
-    aria-modal="true"
-  >
-    <div
-      class="modal-dialog modal-xl"
-      style="max-width: 1200px !important"
-      role="document"
-    >
+  <div class="modal fade show" id="showall-modal" tabindex="-1" role="dialog" aria-labelledby="showall-modalLabel"
+    style="display: none; padding-right: 17px" aria-modal="true">
+    <div class="modal-dialog modal-xl" style="max-width: 1200px !important" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 class="modal-title" id="showall-modalLabel">Room Status</h4>
-          <button
-            type="button"
-            class="close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          >
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <ul class="nav nav-tabs" id="roomTab" role="tablist">
             <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="cancelled-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#cancelled"
-                type="button"
-                role="tab"
-                aria-controls="cancelled"
-                aria-selected="true"
-                @click="activeTab = 'cancelled'"
-              >
+              <button class="nav-link" id="cancelled-tab" data-bs-toggle="tab" data-bs-target="#cancelled" type="button"
+                role="tab" aria-controls="cancelled" aria-selected="true" @click="activeTab = 'cancelled'">
                 Cancelled
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="reserved-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#reserved"
-                type="button"
-                role="tab"
-                aria-controls="reserved"
-                aria-selected="true"
-                @click="activeTab = 'reserved'"
-              >
+              <button class="nav-link" id="reserved-tab" data-bs-toggle="tab" data-bs-target="#reserved" type="button"
+                role="tab" aria-controls="reserved" aria-selected="true" @click="activeTab = 'reserved'">
                 Reserved
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="occupied-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#occupied"
-                type="button"
-                role="tab"
-                aria-controls="occupied"
-                aria-selected="false"
-                @click="activeTab = 'occupied'"
-              >
+              <button class="nav-link" id="occupied-tab" data-bs-toggle="tab" data-bs-target="#occupied" type="button"
+                role="tab" aria-controls="occupied" aria-selected="false" @click="activeTab = 'occupied'">
                 Occupied
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button
-                class="nav-link"
-                id="checkedout-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#checkedout"
-                type="button"
-                role="tab"
-                aria-controls="checkedout"
-                aria-selected="false"
-                @click="activeTab = 'checkedout'"
-              >
+              <button class="nav-link" id="checkedout-tab" data-bs-toggle="tab" data-bs-target="#checkedout" type="button"
+                role="tab" aria-controls="checkedout" aria-selected="false" @click="activeTab = 'checkedout'">
                 Checked Out
               </button>
             </li>
             <li class="nav-item" role="presentation">
-              <button
-                class="nav-link active"
-                id="all-tab"
-                data-bs-toggle="tab"
-                data-bs-target="#all"
-                type="button"
-                role="tab"
-                aria-controls="all"
-                aria-selected="false"
-                @click="activeTab = 'all'"
-              >
+              <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button"
+                role="tab" aria-controls="all" aria-selected="false" @click="activeTab = 'all'">
                 All
               </button>
             </li>
           </ul>
           <div class="tab-content mt-3" id="roomTabContent">
-            <div
-              class="tab-pane fade"
-              :class="{ 'show active': activeTab === 'cancelled' }"
-              id="cancelled"
-              role="tabpanel"
-              aria-labelledby="cancelled-tab"
-            >
+            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'cancelled' }" id="cancelled"
+              role="tabpanel" aria-labelledby="cancelled-tab">
               <div class="container-fluid">
-                <table-component
-                  :mainHeaders="bookingsOptions"
-                  :mainItems="filteredRoomBookings"
-                  :editable="false"
-                  :toggleable="false"
-                />
+                <table-component :mainHeaders="bookingsOptions" :mainItems="filteredRoomBookings" :editable="false"
+                  :toggleable="false" />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -1715,20 +1247,11 @@
                 </table> -->
               </div>
             </div>
-            <div
-              class="tab-pane fade"
-              :class="{ 'show active': activeTab === 'reserved' }"
-              id="reserved"
-              role="tabpanel"
-              aria-labelledby="reserved-tab"
-            >
+            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'reserved' }" id="reserved" role="tabpanel"
+              aria-labelledby="reserved-tab">
               <div class="container-fluid">
-                <table-component
-                  :mainHeaders="bookingsOptions"
-                  :mainItems="filteredRoomBookings"
-                  :editable="false"
-                  :toggleable="false"
-                />
+                <table-component :mainHeaders="bookingsOptions" :mainItems="filteredRoomBookings" :editable="false"
+                  :toggleable="false" />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -1753,20 +1276,11 @@
                 </table> -->
               </div>
             </div>
-            <div
-              class="tab-pane fade"
-              :class="{ 'show active': activeTab === 'occupied' }"
-              id="occupied"
-              role="tabpanel"
-              aria-labelledby="occupied-tab"
-            >
+            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'occupied' }" id="occupied" role="tabpanel"
+              aria-labelledby="occupied-tab">
               <div class="container-fluid">
-                <table-component
-                  :mainHeaders="bookingsOptions"
-                  :mainItems="filteredRoomBookings"
-                  :editable="false"
-                  :toggleable="false"
-                />
+                <table-component :mainHeaders="bookingsOptions" :mainItems="filteredRoomBookings" :editable="false"
+                  :toggleable="false" />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -1791,20 +1305,11 @@
                 </table> -->
               </div>
             </div>
-            <div
-              class="tab-pane fade"
-              :class="{ 'show active': activeTab === 'checkedout' }"
-              id="checkedout"
-              role="tabpanel"
-              aria-labelledby="checkedout-tab"
-            >
+            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'checkedout' }" id="checkedout"
+              role="tabpanel" aria-labelledby="checkedout-tab">
               <div class="container-fluid">
-                <table-component
-                  :mainHeaders="bookingsOptions"
-                  :mainItems="filteredRoomBookings"
-                  :editable="false"
-                  :toggleable="false"
-                />
+                <table-component :mainHeaders="bookingsOptions" :mainItems="filteredRoomBookings" :editable="false"
+                  :toggleable="false" />
                 <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
                   <thead>
                     <tr>
@@ -1829,20 +1334,11 @@
                 </table> -->
               </div>
             </div>
-            <div
-              class="tab-pane fade"
-              :class="{ 'show active': activeTab === 'all' }"
-              id="all"
-              role="tabpanel"
-              aria-labelledby="all-tab"
-            >
+            <div class="tab-pane fade" :class="{ 'show active': activeTab === 'all' }" id="all" role="tabpanel"
+              aria-labelledby="all-tab">
               <div class="container-fluid">
-                <table-component
-                  :mainHeaders="bookingsAllOptions"
-                  :mainItems="filteredRoomBookings"
-                  :editable="false"
-                  :toggleable="false"
-                >
+                <table-component :mainHeaders="bookingsAllOptions" :mainItems="filteredRoomBookings" :editable="false"
+                  :toggleable="false">
                   <template #content="data">
                     <!-- {{ data.data.id  }} -->
                   </template>
@@ -1859,25 +1355,13 @@
       </div>
     </div>
   </div>
-  <div
-    class="modal fade show"
-    id="addAccountModal"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="addAccountModalLabel"
-    style="display: none; padding-right: 17px"
-    aria-modal="true"
-  >
+  <div class="modal fade show" id="addAccountModal" tabindex="-1" role="dialog" aria-labelledby="addAccountModalLabel"
+    style="display: none; padding-right: 17px" aria-modal="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 class="modal-title" id="addAccountModalLabel">Add Account</h4>
-          <button
-            type="button"
-            class="close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          >
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -1887,76 +1371,39 @@
             <div class="form-group row">
               <label for="name" class="col-sm-2 col-form-label">Name:*</label>
               <div class="col-sm-4">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="name"
-                  v-model="walkinreservation.clientName"
-                  required
-                  autocomplete="off"
-                />
+                <input type="text" class="form-control" id="name" v-model="walkinreservation.clientName" required
+                  autocomplete="off" />
               </div>
               <label for="email" class="col-sm-2 col-form-label">Email:</label>
               <div class="col-sm-4">
-                <input
-                  type="email"
-                  class="form-control"
-                  id="email"
-                  v-model="walkinreservation.clientEmail"
-                  autocomplete="off"
-                />
+                <input type="email" class="form-control" id="email" v-model="walkinreservation.clientEmail"
+                  autocomplete="off" />
               </div>
             </div>
             <div class="form-group row">
-              <label for="address" class="col-sm-2 col-form-label"
-                >Address:</label
-              >
+              <label for="address" class="col-sm-2 col-form-label">Address:</label>
               <div class="col-sm-4">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="address"
-                  v-model="walkinreservation.clientAddress"
-                  autocomplete="off"
-                />
+                <input type="text" class="form-control" id="address" v-model="walkinreservation.clientAddress"
+                  autocomplete="off" />
               </div>
               <label for="phone" class="col-sm-2 col-form-label">Phone:</label>
               <div class="col-sm-4">
-                <input
-                  type="tel"
-                  class="form-control"
-                  id="phone"
-                  v-model="walkinreservation.clientPhone"
-                  autocomplete="off"
-                />
+                <input type="tel" class="form-control" id="phone" v-model="walkinreservation.clientPhone"
+                  autocomplete="off" />
               </div>
             </div>
             <div class="form-group row">
-              <label for="nationality" class="col-sm-2 col-form-label"
-                >Nationality:*</label
-              >
+              <label for="nationality" class="col-sm-2 col-form-label">Nationality:*</label>
               <div class="col-sm-4">
-                <select
-                  class="form-control"
-                  id="nationality"
-                  v-model="walkinreservation.clientNationality"
-                  required
-                >
+                <select class="form-control" id="nationality" v-model="walkinreservation.clientNationality" required>
                   <option value="">-- Please select --</option>
                   <option value="Filipino">Filipino</option>
                   <option value="Foreign">Foreign</option>
                 </select>
               </div>
-              <label for="clientType" class="col-sm-2 col-form-label"
-                >Type:*</label
-              >
+              <label for="clientType" class="col-sm-2 col-form-label">Type:*</label>
               <div class="col-sm-4">
-                <select
-                  class="form-control"
-                  id="clientType"
-                  v-model="walkinreservation.clientType"
-                  required
-                >
+                <select class="form-control" id="clientType" v-model="walkinreservation.clientType" required>
                   <option value="">-- Please select --</option>
                   <option value="walkin">Walk-in</option>
                 </select>
@@ -1965,11 +1412,7 @@
             <div class="form-group row">
               <div class="mt-3 mb-3 d-flex flex-row-reverse">
                 <button type="submit" class="btn btn-primary">Add</button>&nbsp;
-                <button
-                  type="button"
-                  class="btn btn-danger"
-                  data-bs-dismiss="modal"
-                >
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
                   Close
                 </button>
               </div>
@@ -1979,25 +1422,13 @@
       </div>
     </div>
   </div>
-  <div
-    class="modal fade show"
-    id="settings-modal"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="settings-modalLabel"
-    style="display: none; padding-right: 17px"
-    aria-modal="true"
-  >
+  <div class="modal fade show" id="settings-modal" tabindex="-1" role="dialog" aria-labelledby="settings-modalLabel"
+    style="display: none; padding-right: 17px" aria-modal="true">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 class="modal-title" id="settings-modalLabel">Settings</h4>
-          <button
-            type="button"
-            class="close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          >
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -2028,68 +1459,39 @@
                 <label class="form-label">Starting day of the week</label>
                 <div class="input-group">
                   <select class="form-select" v-model="startingDayOfWeek">
-                    <option
-                      v-for="(d, index) in dayNames"
-                      :key="index"
-                      :value="index"
-                    >
+                    <option v-for="(d, index) in dayNames" :key="index" :value="index">
                       {{ d }}
                     </option>
                   </select>
                 </div>
               </div>
               <div class="form-group form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="useTodayIcons"
-                />
-                <label class="form-check-label"
-                  >Use icon for today's period</label
-                >
+                <input class="form-check-input" type="checkbox" v-model="useTodayIcons" />
+                <label class="form-check-label">Use icon for today's period</label>
               </div>
               <div class="form-group form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="displayWeekNumbers"
-                />
+                <input class="form-check-input" type="checkbox" v-model="displayWeekNumbers" />
                 <label class="form-check-label">Show week number</label>
               </div>
               <div class="form-group form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="showTimes"
-                />
+                <input class="form-check-input" type="checkbox" v-model="showTimes" />
                 <label class="form-check-label">Show times</label>
               </div>
               <div class="form-group">
                 <label class="form-label">Themes</label>
               </div>
               <div class="form-group form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="useDefaultTheme"
-                />
+                <input class="form-check-input" type="checkbox" v-model="useDefaultTheme" />
                 <label class="form-check-label">Default</label>
               </div>
               <div class="form-group form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  v-model="useHolidayTheme"
-                />
+                <input class="form-check-input" type="checkbox" v-model="useHolidayTheme" />
                 <label class="form-check-label">Holidays</label>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <table
-                  class="table"
-                  style="table-layout: fixed; word-wrap: break-word"
-                >
+                <table class="table" style="table-layout: fixed; word-wrap: break-word">
                   <thead>
                     <tr>
                       <th scope="col">Status</th>
@@ -2139,38 +1541,20 @@
       </div>
     </div>
   </div>
-  <div
-    class="modal fade come-from-modal left"
-    id="shopModal"
-    tabindex="-1"
-    aria-labelledby="shopModalLabel"
-    aria-hidden="true"
-  >
+  <div class="modal fade come-from-modal left" id="shopModal" tabindex="-1" aria-labelledby="shopModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="shopModalLabel">Add-ons</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-md-12">
-              <input
-                type="text"
-                class="form-control mb-3"
-                placeholder="Search item"
-                v-model="searchText3"
-              />
+              <input type="text" class="form-control mb-3" placeholder="Search item" v-model="searchText3" />
               <div class="wrapper-content">
-                <table
-                  class="table"
-                  style="table-layout: fixed; word-wrap: break-word"
-                >
+                <table class="table" style="table-layout: fixed; word-wrap: break-word">
                   <thead>
                     <tr>
                       <th style="white-space: nowrap">Item</th>
@@ -2186,19 +1570,11 @@
                         }})
                       </td>
                       <td>
-                        <input
-                          style="width: 75px !important"
-                          class="form-control input-sm"
-                          type="number"
-                          v-model.number="howMany[index]"
-                        />
+                        <input style="width: 75px !important" class="form-control input-sm" type="number"
+                          v-model.number="howMany[index]" />
                       </td>
                       <td>
-                        <button
-                          class="btn btn-primary"
-                          @click="addToCart(item, index)"
-                          :disabled="!item.isAvailable"
-                        >
+                        <button class="btn btn-primary" @click="addToCart(item, index)" :disabled="!item.isAvailable">
                           <i class="fa fa-cart-plus"></i>
                         </button>
                       </td>
@@ -2212,13 +1588,7 @@
       </div>
     </div>
   </div>
-  <div
-    class="modal fade"
-    id="availableRoomsModal"
-    tabindex="-1"
-    aria-labelledby="availableRoomsLabel"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="availableRoomsModal" tabindex="-1" aria-labelledby="availableRoomsLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
@@ -2227,84 +1597,43 @@
             {{ selectionStart.toLocaleDateString() }} to
             {{ selectionEnd.toLocaleDateString() }}
           </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div
-          class="modal-body"
-          style="height: 500px; overflow-y: auto; overflow-x: hidden"
-        >
+        <div class="modal-body" style="height: 500px; overflow-y: auto; overflow-x: hidden">
           <div class="row">
             <div :class="cartItems.length > 0 ? 'col-md-9' : 'col-md-12'">
               <div class="col-md-12">
-                <ul
-                  class="nav bg radius nav-pills nav-fill mb-3 bg mt-3"
-                  role="tablist"
-                >
-                  <li
-                    class="nav-item"
-                    v-for="(category, index) in roomcategories"
-                    :key="category.id"
-                  >
-                    <a
-                      :class="index > 0 ? 'nav-link' : 'nav-link active'"
-                      data-bs-toggle="tab"
-                      @click="activeMainTab = `${category.name}`"
-                      :href="`#roomcategory${index}`"
-                      >{{ category.name }}</a
-                    >
+                <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
+                  <li class="nav-item" v-for="(category, index) in roomcategories" :key="category.id">
+                    <a :class="index > 0 ? 'nav-link' : 'nav-link active'" data-bs-toggle="tab"
+                      @click="activeMainTab = `${category.name}`" :href="`#roomcategory${index}`">{{ category.name }}</a>
                   </li>
                 </ul>
               </div>
               <div class="tab-content" id="myTabContent">
-                <div
-                  v-for="(category, index) in roomcategories"
-                  :key="category.id"
-                  :class="
-                    index > 0 ? 'tab-pane fade' : 'tab-pane fade show active'
-                  "
-                  :id="`roomcategory${index}`"
-                  role="tabpanel"
-                >
+                <div v-for="(category, index) in roomcategories" :key="category.id" :class="index > 0 ? 'tab-pane fade' : 'tab-pane fade show active'
+                  " :id="`roomcategory${index}`" role="tabpanel">
                   <div class="container-fluid">
                     <div class="row">
                       <div class="col-md-12">
-                        <div
-                          class="row row-cols-1"
-                          :class="
-                            cartItems.filter((o) => o.type === category.name)
-                              .length > 0
-                              ? 'row-cols-md-4'
-                              : 'row-cols-md-5'
-                          "
-                        >
-                          <div
-                            class="col mb-6"
-                            v-for="(item, index) in updatedRooms.filter((r) => {
-                              if (r.type) {
-                                const isDataExist = !(
-                                  this.cartItems.findIndex(
-                                    (o) => o.id === r.id
-                                  ) === -1
-                                );
-                                return r.type === category.name && !isDataExist;
-                              }
-                              return true;
-                            })"
-                            :key="item.id"
-                          >
-                            <div
-                              class="card"
-                              style="transition: transform 0.2s ease-in-out"
-                              @click="addToCartItem(item)"
-                            >
-                              <div
-                                class="card-header d-flex justify-content-between align-items-center"
-                              >
+                        <div class="row row-cols-1" :class="cartItems.filter((o) => o.type === category.name)
+                            .length > 0
+                            ? 'row-cols-md-4'
+                            : 'row-cols-md-5'
+                          ">
+                          <div class="col mb-6" v-for="(item, index) in updatedRooms.filter((r) => {
+                            if (r.type) {
+                              const isDataExist = !(
+                                this.cartItems.findIndex(
+                                  (o) => o.id === r.id
+                                ) === -1
+                              );
+                              return r.type === category.name && !isDataExist;
+                            }
+                            return true;
+                          })" :key="item.id">
+                            <div class="card" style="transition: transform 0.2s ease-in-out" @click="addToCartItem(item)">
+                              <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="card-title">
                                   <i class="fas fa-table"></i>
                                   {{ item.name }}
@@ -2325,15 +1654,8 @@
                 </div>
               </div>
             </div>
-            <div
-              v-if="cartItems.length > 0"
-              :class="cartItems.length > 0 ? 'col-md-3' : 'col-md-0'"
-            >
-              <div
-                ref="itemCart"
-                class="card"
-                style="height: 450px; overflow-y: auto; overflow-x: hidden"
-              >
+            <div v-if="cartItems.length > 0" :class="cartItems.length > 0 ? 'col-md-3' : 'col-md-0'">
+              <div ref="itemCart" class="card" style="height: 450px; overflow-y: auto; overflow-x: hidden">
                 <div class="row">
                   <div class="col-md-12 px-3">
                     <table class="table">
@@ -2341,29 +1663,18 @@
                         <tr>
                           <th scope="col">
                             Item
-                            <span
-                              v-if="cartItems.length > 0"
-                              class="badge-pill badge-danger"
-                              >{{ cartItems.length }}</span
-                            >
+                            <span v-if="cartItems.length > 0" class="badge-pill badge-danger">{{ cartItems.length
+                            }}</span>
                           </th>
                           <th scope="col">
                             <span class="d-flex flex-row-reverse">
-                              <button
-                                v-if="cartItems.length > 0"
-                                type="button"
-                                @click="bookAll"
-                                class="btn btn-sm bg-primary text-white"
-                              >
+                              <button v-if="cartItems.length > 0" type="button" @click="bookAll"
+                                class="btn btn-sm bg-primary text-white">
                                 <i class="fas fa-check"></i>
                               </button>
                               &nbsp;
-                              <button
-                                v-if="cartItems.length > 0"
-                                type="button"
-                                @click="clearAll"
-                                class="btn btn-sm btn-danger"
-                              >
+                              <button v-if="cartItems.length > 0" type="button" @click="clearAll"
+                                class="btn btn-sm btn-danger">
                                 <i class="fas fa-trash-alt"></i>
                               </button>
                             </span>
@@ -2377,11 +1688,7 @@
                           </td>
 
                           <td align="right">
-                            <button
-                              class="btn btn-outline-danger btn-sm"
-                              type="button"
-                              @click="removeFromCart(item)"
-                            >
+                            <button class="btn btn-outline-danger btn-sm" type="button" @click="removeFromCart(item)">
                               <i class="fas fa-times"></i>
                             </button>
                           </td>
@@ -2397,57 +1704,34 @@
       </div>
     </div>
   </div>
-  <div
-    class="modal fade"
-    id="dayMenuModal"
-    tabindex="-1"
-    aria-labelledby="dayMenuModalLabel"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="dayMenuModal" tabindex="-1" aria-labelledby="dayMenuModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="dayMenuModalLabel">
             Room Reservation for {{ dayreserve.toLocaleDateString("en-GB") }}
           </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-md-4">
-              <a
-                href="#"
-                @click="clickDay"
-                class="d-flex flex-column align-items-center"
-              >
+              <a href="#" @click="clickDay" class="d-flex flex-column align-items-center">
                 <i class="fa fa-calendar-plus"></i>
                 <span>Create</span>
               </a>
             </div>
             <div class="col-md-4">
-              <a
-                href="#"
-                @click="viewAllReservation"
-                class="d-flex flex-column align-items-center"
-              >
+              <a href="#" @click="viewAllReservation" class="d-flex flex-column align-items-center">
                 <i class="fa fa-calendar-check"></i>
                 <span>History</span>
               </a>
             </div>
             <div class="col-md-4">
-              <a
-                href="#"
-                @click="
-                  toggleRoomsModal();
-                  toggledayMenuModal();
-                "
-                class="d-flex flex-column align-items-center"
-              >
+              <a href="#" @click="
+                toggleRoomsModal();
+              toggledayMenuModal();
+              " class="d-flex flex-column align-items-center">
                 <i class="fa fa-check"></i>
                 <span>Available</span>
               </a>
@@ -2457,26 +1741,13 @@
       </div>
     </div>
   </div>
-  <div
-    class="modal fade show"
-    id="BookDayModal"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="BookDayModalLabel"
-    style="display: none; padding-right: 17px"
-    aria-modal="true"
-    ref="modal"
-  >
+  <div class="modal fade show" id="BookDayModal" tabindex="-1" role="dialog" aria-labelledby="BookDayModalLabel"
+    style="display: none; padding-right: 17px" aria-modal="true" ref="modal">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 id="BookDayModalLabel" class="text-primary">Reservation Info</h4>
-          <button
-            type="button"
-            class="close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          >
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -2490,382 +1761,200 @@
           <form v-else>
             <!-- Client Information -->
             <h5>
-              Booking Details<span class="text-muted" style="font-size: 12px"
-                >*Field required</span
-              >
+              Booking Details<span class="text-muted" style="font-size: 12px">*Field required</span>
             </h5>
             <div class="form-group row">
               <label for="name" class="col-sm-2 col-form-label">Name:*</label>
               <div class="col-sm-4">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="name"
-                  v-model="reservation.clientName"
-                  required
-                  autocomplete="off"
-                />
+                <input type="text" class="form-control" id="name" v-model="reservation.clientName" required
+                  autocomplete="off" />
               </div>
               <label for="email" class="col-sm-2 col-form-label">Email:</label>
               <div class="col-sm-4">
-                <input
-                  type="email"
-                  class="form-control"
-                  id="email"
-                  v-model="reservation.clientEmail"
-                  autocomplete="off"
-                />
+                <input type="email" class="form-control" id="email" v-model="reservation.clientEmail"
+                  autocomplete="off" />
               </div>
             </div>
             <div class="form-group row mt-2">
-              <label for="address" class="col-sm-2 col-form-label"
-                >Address:</label
-              >
+              <label for="address" class="col-sm-2 col-form-label">Address:</label>
               <div class="col-sm-4">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="address"
-                  v-model="reservation.clientAddress"
-                  autocomplete="off"
-                />
+                <input type="text" class="form-control" id="address" v-model="reservation.clientAddress"
+                  autocomplete="off" />
               </div>
               <label for="phone" class="col-sm-2 col-form-label">Phone:</label>
               <div class="col-sm-4">
-                <input
-                  type="tel"
-                  class="form-control"
-                  id="phone"
-                  v-model="reservation.clientPhone"
-                  autocomplete="off"
-                />
+                <input type="tel" class="form-control" id="phone" v-model="reservation.clientPhone" autocomplete="off" />
               </div>
             </div>
             <div class="form-group row mt-2">
-              <label for="nationality" class="col-sm-2 col-form-label"
-                >Nationality:*</label
-              >
+              <label for="nationality" class="col-sm-2 col-form-label">Nationality:*</label>
               <div class="col-sm-4">
-                <select
-                  class="form-control"
-                  id="nationality"
-                  v-model="reservation.clientNationality"
-                  required
-                >
+                <select class="form-control" id="nationality" v-model="reservation.clientNationality" required>
                   <option value="">-- Please select --</option>
                   <option value="Filipino">Filipino</option>
                   <option value="Foreign">Foreign</option>
                 </select>
               </div>
-              <label for="clientType" class="col-sm-2 col-form-label"
-                >Type:*</label
-              >
+              <label for="clientType" class="col-sm-2 col-form-label">Type:*</label>
               <div class="col-sm-4">
-                <select
-                  class="form-control"
-                  id="clientType"
-                  v-model="reservation.clientType"
-                  required
-                >
+                <select class="form-control" id="clientType" v-model="reservation.clientType" required>
                   <option value="">-- Please select --</option>
                   <option value="in-house">In-house</option>
                 </select>
               </div>
             </div>
             <div class="form-group row mt-2">
-              <label for="checkin" class="col-sm-2 col-form-label"
-                >Check-in Date:*</label
-              >
+              <label for="checkin" class="col-sm-2 col-form-label">Check-in Date:*</label>
               <div class="col-sm-4">
-                <input
-                  type="text"
-                  aria-describedby="inputhelp"
-                  class="form-control mb-0"
-                  id="checkin"
-                  v-model="reservation.checkinDate"
-                  required
-                  readonly
-                />
+                <input type="text" aria-describedby="inputhelp" class="form-control mb-0" id="checkin"
+                  v-model="reservation.checkinDate" required readonly />
               </div>
-              <label for="checkout" class="col-sm-2 col-form-label"
-                >Check-out Date:*</label
-              >
+              <label for="checkout" class="col-sm-2 col-form-label">Check-out Date:*</label>
               <div class="col-sm-4">
-                <input
-                  type="text"
-                  aria-describedby="inputhelp"
-                  class="form-control mb-0"
-                  id="checkin"
-                  v-model="reservation.checkoutDate"
-                  required
-                  readonly
-                />
+                <input type="text" aria-describedby="inputhelp" class="form-control mb-0" id="checkin"
+                  v-model="reservation.checkoutDate" required readonly />
               </div>
             </div>
             <div class="form-group row mt-2">
               <label for="room" class="col-sm-2 col-form-label">Room:*</label>
-              <div
-                v-if="reservation.status === 'vacant' || toggleselect"
-                class="col-sm-4"
-              >
-                <v-select
-                  :disabled="roomSelect !== 'ok'"
-                  aria-describedby="inputhelp3"
-                  :multiple="!toggleselect"
-                  :options="updatedRooms"
-                  label="name"
-                  v-model="reservation.roomName"
-                  required
-                >
+              <div v-if="reservation.status === 'vacant' || toggleselect" class="col-sm-4">
+                <v-select :disabled="roomSelect !== 'ok'" aria-describedby="inputhelp3" :multiple="!toggleselect"
+                  :options="updatedRooms" label="name" v-model="reservation.roomName" required>
                   <template #option="{ name, type, price }">
                     <h6 style="margin: 0">{{ name }}</h6>
-                    <em
-                      ><small>{{ type }}</small></em
-                    >
-                    <em
-                      ><small> ({{ price }} units)</small></em
-                    >
+                    <em><small>{{ type }}</small></em>
+                    <em><small> ({{ price }} units)</small></em>
                   </template>
                 </v-select>
-                <small
-                  v-if="toggleselect"
-                  id="inputhelp3"
-                  class="form-text text-muted mt-0"
-                  >Please select a new room.</small
-                >
+                <small v-if="toggleselect" id="inputhelp3" class="form-text text-muted mt-0">Please select a new
+                  room.</small>
               </div>
               <div v-else class="col-sm-4">
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="reservation.roomName"
-                  readonly
-                />
+                <input type="text" class="form-control" v-model="reservation.roomName" readonly />
               </div>
-              <label for="remarks" class="col-sm-2 col-form-label"
-                >Remarks:</label
-              >
+              <label for="remarks" class="col-sm-2 col-form-label">Remarks:</label>
               <div class="col-sm-4">
-                <input
-                  type="text"
-                  class="form-control"
-                  v-model="reservation.remarks"
-                  autocomplete="off"
-                />
+                <input type="text" class="form-control" v-model="reservation.remarks" autocomplete="off" />
               </div>
             </div>
             <div class="form-group row mt-2">
               <div class="mt-3 mb-3 d-flex justify-content-end">
                 <div v-if="reservation.status == 'reserved'">
-                  <button
-                    v-if="reservation.isPaid === 'no'"
-                    v-show="!toggleselect"
-                    type="button"
-                    class="btn btn-primary btn-sm btn-margin rounded"
-                    @click="cancelReservation()"
-                  >
+                  <button v-if="reservation.isPaid === 'no'" v-show="!toggleselect" type="button"
+                    class="btn btn-primary btn-sm btn-margin rounded" @click="cancelReservation()">
                     <i class="fas fa-times"></i> Cancel Reservation
                   </button>
                   <span v-if="userdata.role !== 'reservationist'">
-                    <button
-                      :disabled="disablebutton"
-                      v-show="!toggleselect"
-                      v-if="
-                        reservation.isPaid === '' || reservation.isPaid === 'no'
-                      "
-                      @click="
-                        moveToCart();
-                        disablebutton = true;
-                      "
-                      type="button"
-                      class="btn btn-success btn-sm btn-margin rounded"
-                    >
+                    <button :disabled="disablebutton" v-show="!toggleselect" v-if="reservation.isPaid === '' || reservation.isPaid === 'no'
+                      " @click="
+    moveToCart();
+  disablebutton = true;
+  " type="button" class="btn btn-success btn-sm btn-margin rounded">
                       <i class="fas fa-check"></i> Down Payment
                     </button>
-                    <button
-                      :disabled="disablebutton"
-                      v-show="!toggleselect"
-                      v-else-if="reservation.isPaid === 'partial'"
+                    <button :disabled="disablebutton" v-show="!toggleselect" v-else-if="reservation.isPaid === 'partial'"
                       @click="
                         moveToCart();
-                        disablebutton = true;
-                      "
-                      type="button"
-                      class="btn btn-warning btn-sm btn-margin rounded"
-                    >
+                      disablebutton = true;
+                      " type="button" class="btn btn-warning btn-sm btn-margin rounded">
                       <i class="fas fa-check"></i> Partial Payment
                     </button>
-                    <button
-                      :disabled="disablebutton"
-                      v-show="!toggleselect"
-                      v-else-if="reservation.isPaid === 'yes'"
+                    <button :disabled="disablebutton" v-show="!toggleselect" v-else-if="reservation.isPaid === 'yes'"
                       @click="
                         moveToCart();
-                        disablebutton = true;
-                      "
-                      type="button"
-                      class="btn btn-primary btn-sm btn-margin rounded"
-                    >
+                      disablebutton = true;
+                      " type="button" class="btn btn-primary btn-sm btn-margin rounded">
                       <i class="fas fa-eye"></i> View Summary
                     </button>
-                    <button
-                      :disabled="disablebutton"
-                      v-show="!toggleselect"
-                      v-if="
-                        new Date().setHours(0, 0, 0, 0) ===
-                        parseDate2(reservation.checkinDate)
-                      "
-                      type="button"
-                      class="btn btn-success btn-sm btn-margin rounded"
-                      @click="
-                        checkinGuest();
-                        disablebutton = true;
-                      "
-                    >
+                    <button :disabled="disablebutton" v-show="!toggleselect" v-if="new Date().setHours(0, 0, 0, 0) ===
+                      parseDate2(reservation.checkinDate)
+                      " type="button" class="btn btn-success btn-sm btn-margin rounded" @click="
+    checkinGuest();
+  disablebutton = true;
+  ">
                       <i class="fas fa-sign-in-alt"></i> Check-in
                     </button>
                   </span>
                 </div>
                 <div v-else-if="reservation.status == 'checkedin'">
                   <span v-if="userdata.role !== 'reservationist'">
-                    <div
-                      v-if="
-                        reservation.isPaid === '' || reservation.isPaid === 'no'
-                      "
-                    >
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        @click="
-                          moveToCart();
-                          disablebutton = true;
-                        "
-                        type="button"
-                        class="btn btn-success btn-sm btn-margin rounded"
-                      >
+                    <div v-if="reservation.isPaid === '' || reservation.isPaid === 'no'
+                      ">
+                      <button :disabled="disablebutton" v-show="!toggleselect" @click="
+                        moveToCart();
+                      disablebutton = true;
+                      " type="button" class="btn btn-success btn-sm btn-margin rounded">
                         <i class="fas fa-credit-card"></i> Pay Now
                       </button>
                     </div>
                     <div v-else-if="reservation.isPaid === 'partial'">
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        @click="
-                          moveToCart();
-                          disablebutton = true;
-                        "
-                        type="button"
-                        class="btn btn-success btn-sm btn-margin rounded"
-                      >
+                      <button :disabled="disablebutton" v-show="!toggleselect" @click="
+                        moveToCart();
+                      disablebutton = true;
+                      " type="button" class="btn btn-success btn-sm btn-margin rounded">
                         <i class="fas fa-credit-card"></i> Pay Now
                       </button>
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        type="button"
-                        class="btn btn-primary btn-sm btn-margin rounded"
-                        @click="
+                      <button :disabled="disablebutton" v-show="!toggleselect" type="button"
+                        class="btn btn-primary btn-sm btn-margin rounded" @click="
                           extendBooking();
-                          disablebutton = true;
-                        "
-                      >
+                        disablebutton = true;
+                        ">
                         <i class="fas fa-calendar-plus"></i> Extend (1 day)
                       </button>
                     </div>
                     <div v-else>
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        type="button"
-                        class="btn btn-primary btn-sm btn-margin rounded"
-                        @click="
+                      <button :disabled="disablebutton" v-show="!toggleselect" type="button"
+                        class="btn btn-primary btn-sm btn-margin rounded" @click="
                           viewSummary();
-                          disablebutton = true;
-                        "
-                      >
+                        disablebutton = true;
+                        ">
                         <i class="fas fa-eye"></i> View Summary
                       </button>
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        type="button"
-                        class="btn btn-primary btn-sm btn-margin rounded"
-                        @click="
+                      <button :disabled="disablebutton" v-show="!toggleselect" type="button"
+                        class="btn btn-primary btn-sm btn-margin rounded" @click="
                           extendBooking();
-                          disablebutton = true;
-                        "
-                      >
+                        disablebutton = true;
+                        ">
                         <i class="fas fa-calendar-plus"></i> Extend (1 day)
                       </button>
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        type="button"
-                        class="btn btn-success btn-sm btn-margin rounded"
-                        @click="
+                      <button :disabled="disablebutton" v-show="!toggleselect" type="button"
+                        class="btn btn-success btn-sm btn-margin rounded" @click="
                           checkOutGuest();
-                          disablebutton = true;
-                        "
-                      >
+                        disablebutton = true;
+                        ">
                         <i class="fas fa-sign-out-alt"></i> Check-out
                       </button>
                     </div>
                   </span>
                 </div>
-                <button
-                  :disabled="disablebutton"
-                  @click="
-                    clickTestAddItem();
-                    disablebutton = true;
-                  "
-                  v-else-if="
-                    reservation.status == 'vacant' &&
-                    reservation.clientName !== ''
-                  "
-                  type="button"
-                  class="btn btn-primary btn-sm btn-margin rounded"
-                >
+                <button :disabled="disablebutton" @click="
+                  clickTestAddItem();
+                disablebutton = true;
+                " v-else-if="reservation.status == 'vacant' &&
+  reservation.clientName !== ''
+  " type="button" class="btn btn-primary btn-sm btn-margin rounded">
                   <i class="fas fa-book"></i> Book Now
                 </button>
-                <button
-                  v-if="
-                    new Date().setHours(0, 0, 0, 0) <=
-                      parseDate2(reservation.checkinDate) &&
-                    userdata.role !== 'reservationist' &&
-                    reservation.status !== 'vacant' &&
-                    reservation.status !== 'checkedout' &&
-                    reservation.status !== 'cancelled'
-                  "
-                  @click="transferRoom()"
-                  type="button"
-                  class="btn btn-success btn-sm btn-margin rounded"
-                >
+                <button v-if="new Date().setHours(0, 0, 0, 0) <=
+                  parseDate2(reservation.checkinDate) &&
+                  userdata.role !== 'reservationist' &&
+                  reservation.status !== 'vacant' &&
+                  reservation.status !== 'checkedout' &&
+                  reservation.status !== 'cancelled'
+                  " @click="transferRoom()" type="button" class="btn btn-success btn-sm btn-margin rounded">
                   <i class="fas fa-exchange-alt"></i>
                   {{ toggleselect ? "Save" : "Transfer" }}
                 </button>
-                <button
-                  :disabled="disablebutton"
-                  v-if="
-                    userdata.role !== 'reservationist' &&
-                    reservation.status !== 'vacant'
-                  "
-                  type="button"
-                  @click="
-                    voidBook();
-                    disablebutton = true;
-                  "
-                  class="btn btn-danger btn-sm btn-margin rounded"
-                  v-show="!toggleselect"
-                >
+                <button :disabled="disablebutton" v-if="userdata.role !== 'reservationist' &&
+                  reservation.status !== 'vacant'
+                  " type="button" @click="
+    voidBook();
+  disablebutton = true;
+  " class="btn btn-danger btn-sm btn-margin rounded" v-show="!toggleselect">
                   <i class="fas fa-trash"></i> Void
                 </button>
-                <button
-                  :disabled="disablebutton"
-                  @click="disablebutton = true"
-                  type="button"
-                  class="btn btn-danger btn-sm btn-margin rounded"
-                  data-bs-dismiss="modal"
-                >
+                <button :disabled="disablebutton" @click="disablebutton = true" type="button"
+                  class="btn btn-danger btn-sm btn-margin rounded" data-bs-dismiss="modal">
                   <i class="fas fa-times"></i> Close
                 </button>
               </div>
@@ -2875,12 +1964,8 @@
       </div>
     </div>
   </div>
-  <vue-simple-context-menu
-    element-id="myFirstMenu"
-    :options="optionsArray1"
-    ref="vueSimpleContextMenu1"
-    @option-clicked="optionClicked1"
-  >
+  <vue-simple-context-menu element-id="myFirstMenu" :options="optionsArray1" ref="vueSimpleContextMenu1"
+    @option-clicked="optionClicked1">
   </vue-simple-context-menu>
   <FooterComponent />
 </template>
@@ -3664,7 +2749,7 @@ export default {
         filtered = filtered.filter((transaction) => {
           return (
             parseDate2(transaction.transaction_date) >=
-              parseDate(this.fromDate) &&
+            parseDate(this.fromDate) &&
             parseDate2(transaction.transaction_date) <= parseDate(this.toDate)
           );
         });
@@ -3710,9 +2795,9 @@ export default {
               (item) =>
                 item.status !== "cancelled" &&
                 parseDate(new Date().toLocaleDateString("en-GB")) >=
-                  parseDate(item.checkinDate) &&
+                parseDate(item.checkinDate) &&
                 parseDate(item.checkoutDate) >=
-                  parseDate(new Date().toLocaleDateString("en-GB"))
+                parseDate(new Date().toLocaleDateString("en-GB"))
             )
             .find((booking) => booking.room_name === room.name);
           if (booking) {
@@ -3955,8 +3040,8 @@ export default {
             isPaid === "yes"
               ? "fully-paid"
               : isPaid === "no"
-              ? "not paid"
-              : "partial";
+                ? "not paid"
+                : "partial";
           const searchCode = `${name}~${room_name}~${status}~${paymentStatus}`;
           return {
             ...book,
@@ -4038,8 +3123,8 @@ export default {
       this.selectionStart = d;
       this.dragDayIsSelected = true;
     },
-    handleDragOver(e) {},
-    handledragend(e) {},
+    handleDragOver(e) { },
+    handledragend(e) { },
     handleDragDrop(e, d, r) {
       if (this.dragDayIsSelected) {
         this.selectionEnd = d;
@@ -4117,18 +3202,18 @@ export default {
             booking.room_name === r.name &&
             new Date(
               booking.checkinDate.split("/")[2] +
-                "-" +
-                booking.checkinDate.split("/")[1] +
-                "-" +
-                booking.checkinDate.split("/")[0]
+              "-" +
+              booking.checkinDate.split("/")[1] +
+              "-" +
+              booking.checkinDate.split("/")[0]
             ).setHours(0, 0, 0, 0) <=
-              landingDateCheckout.setHours(0, 0, 0, 0) &&
+            landingDateCheckout.setHours(0, 0, 0, 0) &&
             new Date(
               booking.checkoutDate.split("/")[2] +
-                "-" +
-                booking.checkoutDate.split("/")[1] +
-                "-" +
-                booking.checkoutDate.split("/")[0]
+              "-" +
+              booking.checkoutDate.split("/")[1] +
+              "-" +
+              booking.checkoutDate.split("/")[0]
             ).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0)
         );
         if (filteredBookings.length > 0) {
@@ -4162,7 +3247,7 @@ export default {
                 itemOption: existingTransactionItems.data[0].itemOption,
               }
             );
-          } catch (error) {}
+          } catch (error) { }
           //this.taskRecord(`action:/transfer guest/client:/${item.name}`);
           this.onDrop(o, d);
           item.room_name = newroom.name;
@@ -4623,7 +3708,7 @@ export default {
             }
           );
           transdata_ID = existingTransaction.data[0].id;
-        } catch (error) {}
+        } catch (error) { }
         try {
           const existingTransaction_ITEM = await axios.post(
             `${this.API_URL}transaction/item/filter/`,
@@ -4635,7 +3720,7 @@ export default {
           for (const item of existingTransaction_ITEM.data) {
             axios.get(this.API_URL + `transaction/item/delete/${item.id}/`);
           }
-        } catch (error) {}
+        } catch (error) { }
         try {
           if (transdata_ID) {
             const existingTransaction_RECORD = await axios.post(
@@ -4648,16 +3733,16 @@ export default {
             for (const item of existingTransaction_RECORD.data) {
               axios.get(
                 this.API_URL +
-                  `transaction/record/delete/${item.transactionrecord_id}/`
+                `transaction/record/delete/${item.transactionrecord_id}/`
               );
             }
           }
-        } catch (error) {}
+        } catch (error) { }
         try {
           if (transdata_ID) {
             axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`);
           }
-        } catch (error) {}
+        } catch (error) { }
         if (brute) {
           try {
             const existingBooking = await axios.post(
@@ -4670,7 +3755,7 @@ export default {
             for (const item of existingBooking.data) {
               axios.get(this.API_URL + `bookings/delete/${item.id}/`);
             }
-          } catch (error) {}
+          } catch (error) { }
         }
       } else {
         try {
@@ -4682,7 +3767,7 @@ export default {
             }
           );
           transdata_ID = existingTransaction.data[0].id;
-        } catch (error) {}
+        } catch (error) { }
         try {
           const existingTransaction_ITEM = await axios.post(
             `${this.API_URL}transaction/item/filter/`,
@@ -4694,7 +3779,7 @@ export default {
           for (const item of existingTransaction_ITEM.data) {
             axios.get(this.API_URL + `transaction/item/delete/${item.id}/`);
           }
-        } catch (error) {}
+        } catch (error) { }
         try {
           if (transdata_ID) {
             const existingTransaction_RECORD = await axios.post(
@@ -4707,20 +3792,20 @@ export default {
             for (const item of existingTransaction_RECORD.data) {
               axios.get(
                 this.API_URL +
-                  `transaction/record/delete/${item.transactionrecord_id}/`
+                `transaction/record/delete/${item.transactionrecord_id}/`
               );
             }
           }
-        } catch (error) {}
+        } catch (error) { }
         try {
           if (transdata_ID) {
             axios.get(this.API_URL + `transaction/delete/${transdata_ID}/`);
           }
-        } catch (error) {}
+        } catch (error) { }
         if (brute) {
           try {
             await axios.get(this.API_URL + `bookings/delete/${kid}/`);
-          } catch (error) {}
+          } catch (error) { }
         }
       }
       this.taskRecord(`action:/void/client:/${cname}`);
@@ -4745,7 +3830,7 @@ export default {
           actor: this.userdata.fName + " " + this.userdata.lName,
           task: msg,
         });
-      } catch (error) {}
+      } catch (error) { }
     },
     handleChange() {
       alert();
@@ -4866,7 +3951,7 @@ export default {
             }
             return t;
           });
-        } catch (error) {}
+        } catch (error) { }
       }
     },
     async addWalkInGuest() {
@@ -4881,7 +3966,7 @@ export default {
       try {
         const response = await axios.get(this.API_URL + "transaction/");
         this.billing.bookingID = response.data[response.data.length - 1].id + 1;
-      } catch {}
+      } catch { }
       this.toggleAddAccountModal();
     },
     showShoppingModal() {
@@ -4910,7 +3995,7 @@ export default {
           }
           try {
             gkey = this.bookings[this.itemIndex].groupkey;
-          } catch {}
+          } catch { }
           try {
             const updatedItems = [];
             let isFind = false;
@@ -5108,9 +4193,9 @@ export default {
     changeItemColor(status) {
       let item =
         this.calendarItems[
-          this.calendarItems.findIndex(
-            (o) => o.id === this.bookings[this.itemIndex].itemID
-          )
+        this.calendarItems.findIndex(
+          (o) => o.id === this.bookings[this.itemIndex].itemID
+        )
         ];
       if (status === "checkedin") {
         item.classes = ["custom-date-class-green"];
@@ -5137,8 +4222,8 @@ export default {
             { columnName: "groupkey", columnKey: gkey },
           ]);
           groupbookings = o.data;
-        } catch (error) {}
-      } catch (error) {}
+        } catch (error) { }
+      } catch (error) { }
       if (groupbookings.length > 0) {
         existingTransaction = await axios.post(
           `${this.API_URL}transaction/filter/`,
@@ -5166,7 +4251,7 @@ export default {
             this.alreadyDiscounted = true;
           }
         }
-      } catch (error) {}
+      } catch (error) { }
       const response = await axios.post(
         `${this.API_URL}transaction/item/filter/`,
         [
@@ -5247,7 +4332,7 @@ export default {
         this.cashHistory = response.data;
         this.gbookingscount =
           groupbookings.length === 0 ? 1 : groupbookings.length;
-      } catch (error) {}
+      } catch (error) { }
       this.toggleItemModal();
       $("#others-tab").tab("show");
       this.movetocartFlag = true;
@@ -5295,8 +4380,8 @@ export default {
             { columnName: "groupkey", columnKey: gkey },
           ]);
           groupbookings = o.data;
-        } catch (error) {}
-      } catch (error) {}
+        } catch (error) { }
+      } catch (error) { }
       if (groupbookings.length > 0) {
         existingTransaction = await axios.post(
           `${this.API_URL}transaction/filter/`,
@@ -5324,7 +4409,7 @@ export default {
             this.alreadyDiscounted = true;
           }
         }
-      } catch (error) {}
+      } catch (error) { }
       const response = await axios.post(
         `${this.API_URL}transaction/item/filter/`,
         [
@@ -5338,19 +4423,19 @@ export default {
             const numDays = Math.ceil(
               (new Date(
                 res.checkoutDate.split("/")[2] +
-                  "-" +
-                  res.checkoutDate.split("/")[1] +
-                  "-" +
-                  res.checkoutDate.split("/")[0]
+                "-" +
+                res.checkoutDate.split("/")[1] +
+                "-" +
+                res.checkoutDate.split("/")[0]
               ).setHours(0, 0, 0, 0) -
                 new Date(
                   res.checkinDate.split("/")[2] +
-                    "-" +
-                    res.checkinDate.split("/")[1] +
-                    "-" +
-                    res.checkinDate.split("/")[0]
+                  "-" +
+                  res.checkinDate.split("/")[1] +
+                  "-" +
+                  res.checkinDate.split("/")[0]
                 ).setHours(0, 0, 0, 0)) /
-                (1000 * 60 * 60 * 24)
+              (1000 * 60 * 60 * 24)
             );
             this.itemCart.id = this.cart.length + 1;
             this.itemCart.name = res.room_name;
@@ -5399,19 +4484,19 @@ export default {
           const numDays = Math.ceil(
             (new Date(
               item.checkoutDate.split("/")[2] +
-                "-" +
-                item.checkoutDate.split("/")[1] +
-                "-" +
-                item.checkoutDate.split("/")[0]
+              "-" +
+              item.checkoutDate.split("/")[1] +
+              "-" +
+              item.checkoutDate.split("/")[0]
             ).setHours(0, 0, 0, 0) -
               new Date(
                 item.checkinDate.split("/")[2] +
-                  "-" +
-                  item.checkinDate.split("/")[1] +
-                  "-" +
-                  item.checkinDate.split("/")[0]
+                "-" +
+                item.checkinDate.split("/")[1] +
+                "-" +
+                item.checkinDate.split("/")[0]
               ).setHours(0, 0, 0, 0)) /
-              (1000 * 60 * 60 * 24)
+            (1000 * 60 * 60 * 24)
           );
           this.itemCart.id = this.cart.length + 1;
           this.itemCart.name = item.room_name;
@@ -5519,7 +4604,7 @@ export default {
         this.cashHistory = response.data;
         this.gbookingscount =
           groupbookings.length === 0 ? 1 : groupbookings.length;
-      } catch (error) {}
+      } catch (error) { }
       this.toggleItemModal();
       $("#others-tab").tab("show");
       this.movetocartFlag = true;
@@ -5555,8 +4640,7 @@ export default {
             this.updateBookings(this.bookings[this.itemIndex].id);
             this.changeItemColor("cancelled");
             this.taskRecord(
-              `action:/cancel reservation/client:/${
-                this.bookings[this.itemIndex].name
+              `action:/cancel reservation/client:/${this.bookings[this.itemIndex].name
               }`
             );
             this.toggleItemModal();
@@ -5828,7 +4912,7 @@ export default {
               itemOption: existingTransactionItems.data[0].itemOption,
             }
           );
-        } catch (error) {}
+        } catch (error) { }
         this.toggleItemModal();
         this.taskRecord(`action:/transfer guest/client:/${item.name}`);
         this.bookNowFlag = true;
@@ -5839,7 +4923,7 @@ export default {
             text: "Room transferred successfully.",
             confirmButtonText: "OK",
           })
-          .then((response) => {});
+          .then((response) => { });
       }
     },
     async extendBooking() {
@@ -5965,7 +5049,7 @@ export default {
               category: item.category,
               itemOption: item.itemOption,
             });
-          } catch (error) {}
+          } catch (error) { }
         });
       this.taskRecord(
         `action:/extend guest/client:/${this.bookings[this.itemIndex].name}`
@@ -5979,7 +5063,7 @@ export default {
           text: "Thank you for extending the guest.",
           confirmButtonText: "OK",
         })
-        .then((response) => {});
+        .then((response) => { });
     },
     checkinGuest() {
       this.$swal
@@ -6117,8 +5201,7 @@ export default {
                             //this.changeItemColor("checkedout");
                             this.toggleItemModal();
                             this.taskRecord(
-                              `action:/checked-out guest/client:/${
-                                this.bookings[this.itemIndex].name
+                              `action:/checked-out guest/client:/${this.bookings[this.itemIndex].name
                               }`
                             );
                             // Display success message using SweetAlert
@@ -6297,18 +5380,18 @@ export default {
             booking.room_name === this.bookings[this.itemIndex].room_name &&
             new Date(
               booking.checkinDate.split("/")[2] +
-                "-" +
-                booking.checkinDate.split("/")[1] +
-                "-" +
-                booking.checkinDate.split("/")[0]
+              "-" +
+              booking.checkinDate.split("/")[1] +
+              "-" +
+              booking.checkinDate.split("/")[0]
             ).setHours(0, 0, 0, 0) <=
-              landingDateCheckout.setHours(0, 0, 0, 0) &&
+            landingDateCheckout.setHours(0, 0, 0, 0) &&
             new Date(
               booking.checkoutDate.split("/")[2] +
-                "-" +
-                booking.checkoutDate.split("/")[1] +
-                "-" +
-                booking.checkoutDate.split("/")[0]
+              "-" +
+              booking.checkoutDate.split("/")[1] +
+              "-" +
+              booking.checkoutDate.split("/")[0]
             ).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0)
         );
         if (filteredBookings.length === 0) {
@@ -6351,8 +5434,7 @@ export default {
           // //this.reloadData();
           // this.populateCalendarItems();
           this.taskRecord(
-            `action:/adjust date reservation/client:/${
-              this.bookings[this.itemIndex].name
+            `action:/adjust date reservation/client:/${this.bookings[this.itemIndex].name
             }`
           );
         } else {
@@ -6408,21 +5490,18 @@ export default {
           booking.checkoutDate.split("/")[1] +
           "-" +
           booking.checkoutDate.split("/")[0];
-        const title = `${booking.room_name}-${
-          booking.groupkey === null
+        const title = `${booking.room_name}-${booking.groupkey === null
             ? ""
             : '<span class="text-white">group</span>-'
-        }${booking.name}<span style="display:none">~${booking.itemID}~</span>`;
+          }${booking.name}<span style="display:none">~${booking.itemID}~</span>`;
         const id = booking.itemID;
-        const tooltip = `${booking.room_name}-${booking.name}\n*${
-          booking.status
-        }-${
-          booking.isPaid === "yes"
+        const tooltip = `${booking.room_name}-${booking.name}\n*${booking.status
+          }-${booking.isPaid === "yes"
             ? "fully paid"
             : booking.isPaid === "no"
-            ? "not paid"
-            : "partial"
-        }`;
+              ? "not paid"
+              : "partial"
+          }`;
         let classes = "";
         if (booking.status === "reserved") {
           if (booking.isPaid === "partial" || booking.isPaid === "yes") {
@@ -6531,29 +5610,29 @@ export default {
           const numDays = Math.ceil(
             (new Date(
               this.reservation.checkoutDate.split("/")[2] +
-                "-" +
-                this.reservation.checkoutDate.split("/")[1] +
-                "-" +
-                this.reservation.checkoutDate.split("/")[0]
+              "-" +
+              this.reservation.checkoutDate.split("/")[1] +
+              "-" +
+              this.reservation.checkoutDate.split("/")[0]
             ).setHours(0, 0, 0, 0) -
               new Date(
                 this.reservation.checkinDate.split("/")[2] +
-                  "-" +
-                  this.reservation.checkinDate.split("/")[1] +
-                  "-" +
-                  this.reservation.checkinDate.split("/")[0]
+                "-" +
+                this.reservation.checkinDate.split("/")[1] +
+                "-" +
+                this.reservation.checkinDate.split("/")[0]
               ).setHours(0, 0, 0, 0)) /
-              (1000 * 60 * 60 * 24)
+            (1000 * 60 * 60 * 24)
           );
           const roomPrice =
             this.rooms.findIndex((o) => o.name === res.name) !== -1
               ? this.rooms[this.rooms.findIndex((o) => o.name === res.name)]
-                  .price
+                .price
               : 0;
           const roomType =
             this.rooms.findIndex((o) => o.name === res.name) !== -1
               ? this.rooms[this.rooms.findIndex((o) => o.name === res.name)]
-                  .type
+                .type
               : "";
           const response = await axios.post(this.API_URL + "bookings/", {
             itemID: id,
@@ -6612,7 +5691,7 @@ export default {
 
           try {
             await axios.post(this.API_URL + "transaction/item/", data);
-          } catch (e) {}
+          } catch (e) { }
         });
         this.reloadData();
         this.populateCalendarItems();
@@ -6712,7 +5791,7 @@ export default {
           );
           sumAllowedGuest += roompax;
         }
-      } catch (e) {}
+      } catch (e) { }
       return sumAllowedGuest;
     },
     initializePlaceOrder() {
@@ -6839,8 +5918,8 @@ export default {
               { columnName: "groupkey", columnKey: gkey },
             ]);
             groupbookings = o.data;
-          } catch (error) {}
-        } catch (error) {}
+          } catch (error) { }
+        } catch (error) { }
         if (
           this.walkinStatus &&
           parseFloat(this.cashAmount) < parseFloat(this.total)
@@ -6965,13 +6044,13 @@ export default {
                 parseFloat(this.total) -
                   parseFloat(this.cashAmount) -
                   (this.allowOverPayment ? this.change : 0) <=
-                0
+                  0
                   ? "full"
                   : "partial";
               const updatedcashamount =
                 parseFloat(this.cashAmount) > parseFloat(this.total)
                   ? parseFloat(this.total) +
-                    (this.allowOverPayment ? this.change : 0)
+                  (this.allowOverPayment ? this.change : 0)
                   : parseFloat(this.cashAmount);
               const transactionData = {
                 clientname: this.billing.clientName,
@@ -7031,7 +6110,7 @@ export default {
                   };
                   try {
                     await axios.post(api, data);
-                  } catch (error) {}
+                  } catch (error) { }
                 });
               }
               if (bookid.charAt(0) !== "f") {
@@ -7052,7 +6131,7 @@ export default {
                     try {
                       const response = await axios.put(
                         this.API_URL +
-                          `bookings/${this.bookings[itemIndex].id}/`,
+                        `bookings/${this.bookings[itemIndex].id}/`,
                         {
                           itemID: this.bookings[itemIndex].itemID,
                           status: this.bookings[itemIndex].status,
@@ -7113,7 +6192,7 @@ export default {
                 this.cashHistory = response.data;
                 this.gbookingscount =
                   groupbookings.length === 0 ? 1 : groupbookings.length;
-              } catch (error) {}
+              } catch (error) { }
               this.billing.bookingID = doneTransaction.data.id;
             } else {
               // Update the transaction if it already exists
@@ -7121,7 +6200,7 @@ export default {
                 parseFloat(this.total) -
                   parseFloat(this.cashAmount) -
                   (this.allowOverPayment ? this.change : 0) <=
-                0
+                  0
                   ? "full"
                   : "partial";
               const transaction = existingTransaction.data[0];
@@ -7130,10 +6209,10 @@ export default {
               );
               const newcashAmountPay =
                 existingCashAmountPay + parseFloat(this.cashAmount) <
-                parseFloat(this.subtotal)
+                  parseFloat(this.subtotal)
                   ? existingCashAmountPay + parseFloat(this.cashAmount)
                   : parseFloat(this.subtotal) +
-                    (this.allowOverPayment ? this.change : 0);
+                  (this.allowOverPayment ? this.change : 0);
               const existingbalance = transaction.balance;
               let origCash =
                 parseFloat(this.cashAmount) > parseFloat(this.total)
@@ -7141,9 +6220,9 @@ export default {
                   : parseFloat(this.cashAmount);
               const newbalance =
                 existingCashAmountPay + parseFloat(this.cashAmount) <
-                parseFloat(this.subtotal)
+                  parseFloat(this.subtotal)
                   ? parseFloat(transaction.totalAmountToPay) -
-                    parseFloat(newcashAmountPay)
+                  parseFloat(newcashAmountPay)
                   : 0;
               const origbal = parseFloat(this.subtotal) - newcashAmountPay;
               // const payamountnow = (existingbalance - newbalance <= 0) ? origCash : existingbalance - newbalance;
@@ -7263,7 +6342,7 @@ export default {
                 this.cashHistory = response.data;
                 this.gbookingscount =
                   groupbookings.length === 0 ? 1 : groupbookings.length;
-              } catch (error) {}
+              } catch (error) { }
             }
             this.taskRecord(
               `action:/transaction added/client:/${this.billing.clientName}`

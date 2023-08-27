@@ -56,10 +56,7 @@ const router = createRouter({
     {
       path: "/booking",
       name: "booking",
-      component:
-        import.meta.env.VITE_APP_NAME === "Marilou Resort - Dumaluan Beach"
-          ? Booking2
-          : Booking,
+      component: Booking2,
       meta: {
         requiresAuth: true,
         roles: [
