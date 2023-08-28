@@ -220,7 +220,7 @@
                                         </h5>
                                         <span>
                                             <button class="btn btn-primary"
-                                                v-if="item.category === 'main' && item.name.toLowerCase() === 'general entrance'"
+                                                v-if="item.category === 'main' && item.name.toLowerCase() === 'room guest'"
                                                 type="button" @click="addNewGuest">
                                                 <i class='fas fa-user-plus'></i>
                                             </button>
@@ -367,7 +367,7 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="item in combinedcart" :key="item.id">
-                                                                <td>{{ (item.name.toLowerCase() === 'general entrance') ?
+                                                                <td>{{ (item.name.toLowerCase() === 'room guest') ?
                                                                     item.name + "-" + item.currentroom : item.name }}</td>
                                                                 <td>{{ item.type }}</td>
                                                                 <td>{{ item.priceRate }}</td>
@@ -1681,7 +1681,31 @@
                             <div class="wrapper-content">
                                 <table class="table" style="table-layout: fixed; word-wrap: break-word">
                                     <tbody>
-                                        <tr v-for="(item, index) in filteredItems" :key="index">
+                                        <tr v-for="(item, index) in filteredItems.filter(item => item.type.toLowerCase() === 'entrance')"
+                                            :key="index">
+                                            <td>
+                                                {{ item.item }} ({{ item.priceRate }}/{{
+                                                    item.counter
+                                                }})
+                                            </td>
+                                            <td>
+                                                <input style="width: 75px !important" class="form-control input-sm"
+                                                    type="number" min="0" v-model.number="howMany[index]" />
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-primary" @click="addToCart(item, index)"
+                                                    :disabled="!item.isAvailable">
+                                                    <i class="fa fa-cart-plus"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <hr />
+                                <table class="table" style="table-layout: fixed; word-wrap: break-word">
+                                    <tbody>
+                                        <tr v-for="(item, index) in filteredItems.filter(item => item.type.toLowerCase() !== 'entrance')"
+                                            :key="index">
                                             <td>
                                                 {{ item.item }} ({{ item.priceRate }}/{{
                                                     item.counter
@@ -4328,7 +4352,7 @@ export default {
             const totalGuests = this.cart
                 .filter(
                     (o) =>
-                        o.name.toLowerCase() === "general entrance" && o.category === "main"
+                        o.name.toLowerCase() === "room guest" && o.category === "main"
                 )
                 .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
             return totalGuests;
@@ -4418,11 +4442,11 @@ export default {
                                             o.category === "main"
                                     ).length;
                                     const numGuestsCard = this.cart
-                                        .filter((o) => o.name.toLowerCase() === "general entrance")
+                                        .filter((o) => o.name.toLowerCase() === "room guest")
                                         .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
                                     const entranceFee = parseFloat(
                                         this.items.filter(
-                                            (o) => o.item.toLowerCase() === "general entrance"
+                                            (o) => o.item.toLowerCase() === "room guest"
                                         )[0].priceRate
                                     );
 
@@ -4434,7 +4458,7 @@ export default {
                                     const totalGuestsMain = response.data
                                         .filter(
                                             (o) =>
-                                                o.itemName.toLowerCase() === "general entrance" &&
+                                                o.itemName.toLowerCase() === "room guest" &&
                                                 o.category === "main"
                                         )
                                         .reduce((acc, item) => acc + parseFloat(item.purchaseQty), 0);
@@ -4459,7 +4483,7 @@ export default {
                                                 (parseFloat(data.purchaseQty) > parseFloat(data.totalpax) - totalGuestsMain ? parseFloat(data.totalpax) - totalGuestsMain : parseFloat(data.purchaseQty)) * entranceFee;
                                     }
 
-                                    if (data.itemName.toLowerCase() === "general entrance") {
+                                    if (data.itemName.toLowerCase() === "room guest") {
                                         data.totalCost = (numdays + 1) * data.totalCost;
                                         data.totalguest = totalGuestsMain + data.purchaseQty;
                                     }
@@ -7048,7 +7072,7 @@ export default {
                         totalGuests = response.data
                             .filter(
                                 (o) =>
-                                    o.itemName.toLowerCase() === "general entrance"
+                                    o.itemName.toLowerCase() === "room guest"
                             )
                             .reduce((acc, item) => acc + parseFloat(item.purchaseQty), 0) + data.purchaseQty;
 
@@ -7060,7 +7084,7 @@ export default {
                     }
 
 
-                    if (data.itemName.toLowerCase() === "general entrance" && data.itemType.toLowerCase() === "entrance" && !this.walkinStatus) {
+                    if (data.itemName.toLowerCase() === "room guest" && data.itemType.toLowerCase() === "entrance" && !this.walkinStatus) {
                         data.numdays = (numdays + 1);
                         data.totalpax = roompax;
                         data.totalguest = totalGuests;
