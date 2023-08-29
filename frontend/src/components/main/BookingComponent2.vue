@@ -397,7 +397,11 @@
                     class="card-header d-flex justify-content-between align-items-center"
                   >
                     <h5 class="card-title">
-                      {{ item.name }}
+                      {{
+                        item.name.toLowerCase() === "room guest"
+                          ? "Room Guest-" + item.currentroom
+                          : item.name
+                      }}
                       <span
                         v-html="
                           item.category === 'main'
@@ -614,7 +618,7 @@
                                         `&times;${item.numdays}`
                                       : item.purqty +
                                         (item.itemOption === "room" ||
-                                        item.itemOption === "addons"
+                                        item.name.toLowerCase() !== "room guest"
                                           ? ""
                                           : `&times;${item.numdays}`)
                                   }}
@@ -2325,12 +2329,7 @@
                   style="table-layout: fixed; word-wrap: break-word"
                 >
                   <tbody>
-                    <tr
-                      v-for="(item, index) in filteredItems.filter(
-                        (item) => item.type.toLowerCase() === 'entrance'
-                      )"
-                      :key="index"
-                    >
+                    <tr v-for="(item, index) in filteredItems" :key="index">
                       <td>
                         {{ item.item }} ({{ item.priceRate }}/{{
                           item.counter
@@ -2343,52 +2342,6 @@
                           type="number"
                           min="0"
                           v-model.number="howMany[index]"
-                        />
-                      </td>
-                      <td>
-                        <button
-                          class="btn btn-primary"
-                          @click="addToCart(item, index)"
-                          :disabled="!item.isAvailable"
-                        >
-                          <i class="fa fa-cart-plus"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <hr />
-                <table
-                  class="table"
-                  style="table-layout: fixed; word-wrap: break-word"
-                >
-                  <tbody>
-                    <tr
-                      v-for="(item, index) in filteredItems.filter(
-                        (item) => item.type.toLowerCase() !== 'entrance'
-                      )"
-                      :key="index"
-                    >
-                      <td>
-                        {{ item.item }} ({{ item.priceRate }}/{{
-                          item.counter
-                        }})
-                      </td>
-                      <td>
-                        <input
-                          style="width: 75px !important"
-                          class="form-control input-sm"
-                          type="number"
-                          min="0"
-                          v-model.number="
-                            howMany[
-                              index +
-                                filteredItems.filter(
-                                  (item) =>
-                                    item.type.toLowerCase() === 'entrance'
-                                ).length
-                            ]
-                          "
                         />
                       </td>
                       <td>
@@ -7165,7 +7118,9 @@ export default {
             }
           );
 
-          for (const item of response.data) {
+          for (const item of response.data.filter(
+            (o) => o.bookingID === this.bookings[this.itemIndex].itemID
+          )) {
             const data = {
               bookingID: item.bookingID,
               itemName: item.itemName,
