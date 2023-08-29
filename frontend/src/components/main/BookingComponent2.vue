@@ -1869,6 +1869,7 @@
                             <thead>
                                 <th>Name</th>
                                 <th>Gender</th>
+                                <th>Type</th>
                                 <th>Address</th>
                                 <th>Contact no.</th>
                                 <th>Email</th>
@@ -1880,10 +1881,17 @@
                                     </td>
                                     <td>
                                         <select class="form-control" v-model="guestdetails.genders[index - 1]">
-                                            <option value="">Please select a gender</option>
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>
                                             <option value="lgbtq">LGBTQ+</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-control" v-model="guestdetails.types[index - 1]">
+                                            <option value="Regular Adult" selected>Regular Adult</option>
+                                            <option value="Regular Kid">Regular Kid</option>
+                                            <option value="Senior">Senior</option>
+                                            <option value="PWD">PWD</option>
                                         </select>
                                     </td>
                                     <td>
@@ -2777,6 +2785,7 @@ export default {
             guestdetails: {
                 names: [],
                 genders: [],
+                types: [],
                 addresses: [],
                 contactnos: [],
                 emails: [],
@@ -3385,6 +3394,7 @@ export default {
 
             this.guestdetails.names = [];
             this.guestdetails.genders = [];
+            this.guestdetails.types = [];
             this.guestdetails.addresses = [];
             this.guestdetails.contactnos = [];
             this.guestdetails.emails = [];
@@ -3398,6 +3408,7 @@ export default {
                     for (let i = 0; i < this.currentTotalGuest; i++) {
                         this.guestdetails.names.push(guestinfos[i].name);
                         this.guestdetails.genders.push(guestinfos[i].gender);
+                        this.guestdetails.types.push(guestinfos[i].type);
                         this.guestdetails.addresses.push(guestinfos[i].address);
                         this.guestdetails.contactnos.push(guestinfos[i].contactno);
                         this.guestdetails.emails.push(guestinfos[i].email);
@@ -3417,6 +3428,7 @@ export default {
                 guestinfo.push({
                     name: this.guestdetails.names[i],
                     gender: this.guestdetails.genders[i],
+                    type: this.guestdetails.types[i],
                     address: this.guestdetails.addresses[i],
                     contactno: this.guestdetails.contactnos[i],
                     email: this.guestdetails.emails[i],
