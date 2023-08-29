@@ -2630,7 +2630,7 @@
                         <div class="card p-0">
                           <div class="card-header text-center p-0">
                             <h6 style="font-family: Fantasy">
-                              Marilou Beach Resort - RestoBar
+                              {{ this.APP_NAME }} - RestoBar
                             </h6>
                           </div>
                           <div class="card-body py-0">
