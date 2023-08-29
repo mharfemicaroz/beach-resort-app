@@ -7119,7 +7119,10 @@ export default {
           );
 
           for (const item of response.data.filter(
-            (o) => o.bookingID === this.bookings[this.itemIndex].itemID
+            (o) =>
+              o.bookingID === this.bookings[this.itemIndex].itemID &&
+              (o.itemOption === "room" ||
+                o.itemType.toLowerCase() === "entrance")
           )) {
             const data = {
               bookingID: item.bookingID,
