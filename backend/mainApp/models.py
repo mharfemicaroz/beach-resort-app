@@ -160,6 +160,7 @@ class TransactionItem(models.Model):
     totalpax = models.IntegerField()
     numdays = models.IntegerField()
     currentroom = models.CharField(max_length=255)
+    guestinfo = models.TextField(null=True, blank=True)
 
 
 class StockItem(models.Model):

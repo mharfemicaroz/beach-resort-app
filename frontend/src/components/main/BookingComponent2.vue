@@ -221,7 +221,7 @@
                                         <span>
                                             <button class="btn btn-primary"
                                                 v-if="item.category === 'main' && item.name.toLowerCase() === 'room guest'"
-                                                type="button" @click="addNewGuest">
+                                                type="button" @click="addNewGuest(item)">
                                                 <i class='fas fa-user-plus'></i>
                                             </button>
 
@@ -1872,15 +1872,14 @@
                                 <th>Address</th>
                                 <th>Contact no.</th>
                                 <th>Email</th>
-                                <th></th>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr v-for="index in currentTotalGuest" :key="index">
                                     <td>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control" v-model="guestdetails.names[index - 1]">
                                     </td>
                                     <td>
-                                        <select class="form-control">
+                                        <select class="form-control" v-model="guestdetails.genders[index - 1]">
                                             <option value="">Please select a gender</option>
                                             <option value="male">Male</option>
                                             <option value="female">Female</option>
@@ -1888,25 +1887,32 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <textarea rows="2" class="form-control">
+                                        <textarea rows="2" class="form-control" v-model="guestdetails.addresses[index - 1]">
 
                                         </textarea>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control">
+                                        <input type="text" class="form-control"
+                                            v-model="guestdetails.contactnos[index - 1]">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control">
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-m btn-primary"><i
-                                                class="fas fa-check"></i></button> &nbsp;
-                                        <button type="button" class="btn btn-m btn-danger"><i
-                                                class="fas fa-times"></i></button>
+                                        <input type="text" class="form-control" v-model="guestdetails.emails[index - 1]">
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="form-group row">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary" @click="postGuest">
+                                <span><i class="fa fa-save"></i> Save Guests</span>
+                            </button>
+                            &nbsp;
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                                <span><i class="fa fa-times"></i> Close</span>
+                            </button>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -2305,6 +2311,8 @@ export default {
     },
     data() {
         return {
+            currentGuestsInfo: null,
+            currentTotalGuest: 0,
             cartItems: [],
             periodStart: "",
             periodEnd: "",
@@ -2766,6 +2774,13 @@ export default {
             roomcategories: [],
             rooms: [],
             howMany: [],
+            guestdetails: {
+                names: [],
+                genders: [],
+                addresses: [],
+                contactnos: [],
+                emails: [],
+            },
             choice_room: null,
             items: [],
             inclusionCart: [],
@@ -3365,8 +3380,69 @@ export default {
         },
     },
     methods: {
-        addNewGuest() {
-            this.toggleGuestListModal();
+        async addNewGuest(item) {
+            let guestinfos = [];
+
+            this.guestdetails.names = [];
+            this.guestdetails.genders = [];
+            this.guestdetails.addresses = [];
+            this.guestdetails.contactnos = [];
+            this.guestdetails.emails = [];
+
+            await axios.get(`${this.API_URL}transaction/item/${item.id}/`).then((response) => {
+                this.currentGuestsInfo = response.data;
+                this.currentTotalGuest = response.data.purchaseQty;
+
+                if (this.currentGuestsInfo.guestinfo !== null && this.currentGuestsInfo.guestinfo !== "") {
+                    guestinfos = JSON.parse(this.currentGuestsInfo.guestinfo);
+                    for (let i = 0; i < this.currentTotalGuest; i++) {
+                        this.guestdetails.names.push(guestinfos[i].name);
+                        this.guestdetails.genders.push(guestinfos[i].gender);
+                        this.guestdetails.addresses.push(guestinfos[i].address);
+                        this.guestdetails.contactnos.push(guestinfos[i].contactno);
+                        this.guestdetails.emails.push(guestinfos[i].email);
+                    }
+                }
+
+                this.toggleGuestListModal();
+            })
+
+
+        },
+        async postGuest(n) {
+            const guestinfo = [];
+            const existingArr = JSON.parse(this.currentGuestsInfo.guestinfo)
+
+            for (let i = 0; i < this.currentTotalGuest; i++) {
+                guestinfo.push({
+                    name: this.guestdetails.names[i],
+                    gender: this.guestdetails.genders[i],
+                    address: this.guestdetails.addresses[i],
+                    contactno: this.guestdetails.contactnos[i],
+                    email: this.guestdetails.emails[i],
+                });
+            }
+
+            const data = {
+                bookingID: this.currentGuestsInfo.bookingID,
+                itemName: this.currentGuestsInfo.itemName,
+                itemType: this.currentGuestsInfo.itemType,
+                itemPriceRate: this.currentGuestsInfo.itemPriceRate,
+                purchaseQty: this.currentGuestsInfo.purchaseQty,
+                totalCost: this.currentGuestsInfo.totalCost,
+                category: this.currentGuestsInfo.category,
+                itemOption: this.currentGuestsInfo.itemOption,
+                groupkey: this.currentGuestsInfo.groupkey,
+                totalguest: this.currentGuestsInfo.totalguest,
+                totalpax: this.currentGuestsInfo.totalpax,
+                currentroom: this.currentGuestsInfo.currentroom,
+                numdays: this.currentGuestsInfo.numdays,
+                guestinfo: JSON.stringify(guestinfo),
+            }
+            await axios.put(`${this.API_URL}transaction/item/${this.currentGuestsInfo.id}/`, data).then((response) => {
+                this.currentGuestsInfo = response.data;
+                this.toggleGuestListModal();
+            })
         },
         saveBookingInfo() {
             if (this.reservation.clientName === "") {
@@ -4733,6 +4809,8 @@ export default {
                     response.data.forEach((item) => {
                         let newItem = {
                             id: item.id,
+                            bookingID: item.bookingID,
+                            groupkey: item.groupkey,
                             name: item.itemName,
                             type: item.itemType,
                             priceRate: item.itemPriceRate,
@@ -4753,6 +4831,8 @@ export default {
                             response.data.forEach((item) => {
                                 let newItem = {
                                     id: item.id,
+                                    bookingID: item.bookingID,
+                                    groupkey: item.groupkey,
                                     name: item.itemName,
                                     type: item.itemType,
                                     priceRate: item.itemPriceRate,
@@ -4939,6 +5019,7 @@ export default {
                                 this.itemCart.category = response.data.category;
                                 this.itemCart.itemOption = response.data.itemOption;
                                 this.itemCart.groupkey = response.data.groupkey;
+                                this.itemCart.guestinfo = response.data.guestinfo;
                                 this.cart.push(this.itemCart);
                             })
                             .catch((error) => {
@@ -5013,6 +5094,8 @@ export default {
                     response.data.forEach((item) => {
                         let newItem = {
                             id: item.id,
+                            bookingID: item.bookingID,
+                            groupkey: item.groupkey,
                             name: item.itemName,
                             type: item.itemType,
                             priceRate: item.itemPriceRate,
@@ -5037,6 +5120,8 @@ export default {
                             response.data.forEach((item) => {
                                 let newItem = {
                                     id: item.id,
+                                    bookingID: item.bookingID,
+                                    groupkey: item.groupkey,
                                     name: item.itemName,
                                     type: item.itemType,
                                     priceRate: item.itemPriceRate,
@@ -5048,6 +5133,7 @@ export default {
                                     totalguest: item.totalguest,
                                     totalpax: item.totalpax,
                                     currentroom: item.currentroom,
+                                    guestinfo: item.guestinfo,
                                 };
                                 this.cart.push(newItem);
                             });
