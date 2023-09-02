@@ -294,7 +294,7 @@
                                       : 'nav-link active show'
                                   "
                                   data-bs-toggle="tab"
-                                  @click="activeMainTab = `${category.name}`"
+                                  @click="activeroomtable = `${category.name}`"
                                   role="tab"
                                   :href="`#roomcategory${index}`"
                                 >
@@ -3659,7 +3659,7 @@ export default {
       axios
         .get(`${this.API_URL}rooms/category/`)
         .then((response) => {
-          this.itemarray = response.data;
+          this.roomcategories = response.data;
         })
         .catch((error) => {
           console.log(error);
