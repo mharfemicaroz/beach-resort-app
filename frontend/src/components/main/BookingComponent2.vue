@@ -6825,7 +6825,6 @@ export default {
                   checkTable = this.bookings[this.itemIndex].room_name;
                   restoStatus = "closed";
                 }
-                return;
                 if (checkTable === this.bookings[this.itemIndex].room_name) {
                   if (restoStatus !== "closed") {
                     this.$swal.fire({
