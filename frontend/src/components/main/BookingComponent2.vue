@@ -354,6 +354,7 @@
                   <button
                     type="button"
                     class="btn btn-primary me-2"
+                    v-show="reservation.status !== 'checkedout' || walkinStatus"
                     :class="{ 'wiggle-animation': countInclusion === 0 }"
                     @click="showShoppingModal()"
                   >
@@ -364,6 +365,7 @@
                   </button>
                   <button
                     type="button"
+                    v-show="reservation.status !== 'checkedout' || walkinStatus"
                     class="btn btn-primary"
                     :class="{ 'wiggle-animation': countInclusion > 0 }"
                     @click="moveInclusionCartToMain()"
@@ -420,14 +422,19 @@
                         type="button"
                         @click="addNewGuest(item)"
                       >
-                        <i class="fas fa-user-plus"></i>
+                        <i class="fas fa-user"></i>
                       </button>
-
+                      &nbsp;
                       <button
-                        v-if="item.category === 'inclusion'"
+                        v-if="
+                          item.category === 'inclusions' ||
+                          item.itemOption === 'addons'
+                        "
+                        v-show="
+                          reservation.status !== 'checkedout' || walkinStatus
+                        "
                         type="button"
                         class="btn btn-danger"
-                        aria-label="Close"
                         @click="cancelItem(item)"
                       >
                         <i class="fas fa-times"></i>
@@ -762,6 +769,7 @@
                   <button
                     type="button"
                     class="btn btn-primary"
+                    v-show="reservation.status !== 'checkedout' || walkinStatus"
                     @click="initializePlaceOrder"
                     :disabled="total <= 0 || countInclusion > 0"
                     style="
@@ -828,6 +836,10 @@
                           <button
                             type="button"
                             class="btn btn-primary"
+                            v-show="
+                              reservation.status !== 'checkedout' ||
+                              walkinStatus
+                            "
                             @click="toggleAddAccountModal"
                           >
                             <i
@@ -894,12 +906,24 @@
                               {{ nonCashPayPlatform }} - {{ nonCashReference }}
                             </div>
                           </div>
-                          <div class="row" v-if="paymentMethod === 'agent'">
+                          <div
+                            class="row"
+                            v-if="
+                              paymentMethod === 'agentcredit' ||
+                              paymentMethod === 'agentnocredit'
+                            "
+                          >
                             <div class="col-6">
                               <strong>Reference No.:</strong>
                             </div>
                             <div class="col-6 text-right">
                               {{ agentPayPlatform }} - {{ nonCashReference }}
+                            </div>
+                            <div class="col-6">
+                              <strong>Agent payment:</strong>
+                            </div>
+                            <div class="col-6 text-right">
+                              {{ agentPayment.toFixed(2) }}
                             </div>
                           </div>
                           <div class="row">
@@ -938,13 +962,20 @@
                           <select
                             id="payment-method"
                             v-model="paymentMethod"
+                            v-show="
+                              reservation.status !== 'checkedout' ||
+                              walkinStatus
+                            "
                             class="form-control"
                             style="font-weight: bolder"
                             @change="setNonCash"
                           >
                             <option value="cash">Cash</option>
                             <option value="non-cash">Non-cash</option>
-                            <option value="agent">Agent</option>
+                            <option value="agentcredit">Agent w/ Credit</option>
+                            <option value="agentnocredit">
+                              Agent w/ No Credit
+                            </option>
                           </select>
                           <span class="input-group-text">₱</span>
                           <input
@@ -2317,45 +2348,114 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-md-12">
-              <input
-                type="text"
-                class="form-control mb-3"
-                placeholder="Search item"
-                v-model="searchText3"
-              />
-              <div class="wrapper-content">
-                <table
-                  class="table"
-                  style="table-layout: fixed; word-wrap: break-word"
-                >
-                  <tbody>
-                    <tr v-for="(item, index) in filteredItems" :key="index">
-                      <td>
-                        {{ item.item }} ({{ item.priceRate }}/{{
-                          item.counter
-                        }})
-                      </td>
-                      <td>
-                        <input
-                          style="width: 75px !important"
-                          class="form-control input-sm"
-                          type="number"
-                          min="0"
-                          v-model.number="howMany[index]"
-                        />
-                      </td>
-                      <td>
-                        <button
-                          class="btn btn-primary"
-                          @click="addToCart(item, index)"
-                          :disabled="!item.isAvailable"
-                        >
-                          <i class="fa fa-cart-plus"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <ul class="nav nav-tabs justify-content-left">
+                <li class="nav-item">
+                  <a
+                    class="nav-link active show"
+                    data-bs-toggle="tab"
+                    href="#add_items"
+                  >
+                    Items
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-bs-toggle="tab" href="#add_packages">
+                    Packages
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="tab-content">
+            <div id="add_items" class="tab-pane active">
+              <div class="row">
+                <div class="col-md-12">
+                  <input
+                    type="text"
+                    class="form-control mb-3"
+                    placeholder="Search item"
+                    v-model="searchText3"
+                  />
+                  <div class="wrapper-content">
+                    <table
+                      class="table"
+                      style="table-layout: fixed; word-wrap: break-word"
+                    >
+                      <tbody>
+                        <tr v-for="(item, index) in filteredItems" :key="index">
+                          <td>
+                            {{ item.item }} ({{ item.priceRate }}/{{
+                              item.counter
+                            }})
+                          </td>
+                          <td>
+                            <input
+                              style="width: 75px !important"
+                              class="form-control input-sm"
+                              type="number"
+                              min="0"
+                              v-model.number="howMany[index]"
+                            />
+                          </td>
+                          <td>
+                            <button
+                              class="btn btn-primary"
+                              @click="addToCart(item, index)"
+                              :disabled="!item.isAvailable"
+                            >
+                              <i class="fa fa-cart-plus"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="add_packages" class="tab-pane">
+              <div class="row">
+                <div class="col-md-12">
+                  <input
+                    type="text"
+                    class="form-control mb-3"
+                    placeholder="Search package"
+                    v-model="searchPackage"
+                  />
+                  <div class="wrapper-content">
+                    <div
+                      v-for="item in packages"
+                      v-show="
+                        items.filter((o) => o.package_name == item.id).length >
+                        0
+                      "
+                      :key="item.id"
+                      class="card"
+                      style="transition: transform 0.2s ease-in-out"
+                      @click="loadPackageItems(item)"
+                    >
+                      <div
+                        class="card-header d-flex justify-content-between align-items-center"
+                      >
+                        <h5 class="card-title">
+                          {{ item.name }}
+                        </h5>
+                      </div>
+                      <div class="card-body">
+                        <ul>
+                          <li
+                            v-for="leisure in items.filter(
+                              (o) => o.package_name == item.id
+                            )"
+                          >
+                            {{ leisure.item }}
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -3184,6 +3284,21 @@
                     </div>
                   </span>
                 </div>
+                <div v-else-if="reservation.status == 'checkedout'">
+                  <button
+                    :disabled="disablebutton"
+                    v-show="!toggleselect"
+                    v-if="reservation.isPaid === 'yes'"
+                    @click="
+                      moveToCart();
+                      disablebutton = true;
+                    "
+                    type="button"
+                    class="btn btn-primary btn-sm btn-margin rounded"
+                  >
+                    <i class="fas fa-eye"></i> View Summary
+                  </button>
+                </div>
                 <button
                   :disabled="disablebutton"
                   @click="
@@ -3349,6 +3464,8 @@ export default {
   },
   data() {
     return {
+      agentPayment: 0,
+      packages: [],
       isReadyToPrintStabs: false,
       currentGuestsInfo: null,
       currentMealStabs: [],
@@ -3606,6 +3723,10 @@ export default {
           field: "totalAmountToPay",
         },
         {
+          label: "Agent Payment",
+          field: "agentPayment",
+        },
+        {
           label: "Amount Paid",
           field: "cashAmountPay",
         },
@@ -3812,6 +3933,7 @@ export default {
       clientType: "",
       transactions: [],
       roomcategories: [],
+      agents: [],
       rooms: [],
       howMany: [],
       guestdetails: {
@@ -4421,6 +4543,14 @@ export default {
     },
   },
   methods: {
+    loadPackageItems(item) {
+      const packItems = this.items.filter((o) => o.package_name == item.id);
+      for (const o of packItems) {
+        this.howMany[0] = 1;
+        this.addToCart(o, 0);
+      }
+      this.howMany[0] = null;
+    },
     async addNewGuest(item) {
       let guestinfos = [];
       this.currentMealStabs = [];
@@ -4828,6 +4958,9 @@ export default {
       if (!this.activeAccountFlag) {
         return;
       }
+      if (this.reservation.status === "checkedout") {
+        return;
+      }
       switch (event.key) {
         case "Enter":
           event.preventDefault();
@@ -4959,23 +5092,24 @@ export default {
         this.setAgent();
       }
     },
-    setAgent() {
-      if (this.paymentMethod === "agent") {
+    setAgentNoCredit() {
+      if (this.paymentMethod === "agentnocredit") {
+        let divinputs = "";
+        let currentIndex = 0;
+
+        for (const agent of this.agents.filter((o) => o.type === "nocredit")) {
+          divinputs += `<input type="radio" class="form-check-input" id="cat${currentIndex}" name="agentType" value="${agent.name}" checked><label for="cat${currentIndex}" class="form-check-label">${agent.name}</label> &nbsp;`;
+          currentIndex += 1;
+        }
         this.$swal
           .fire({
             title: "Choose agent",
             html: `
         <div>
-          <input type="radio" class="form-check-input" id="cat1" name="agentType" value="Agoda" checked>
-          <label for="cat1" class="form-check-label">Agoda</label> &nbsp;
-          <input type="radio" class="form-check-input" id="cat2" name="agentType" value="Expedia">
-          <label for="cat2" class="form-check-label">Expedia</label> &nbsp;
-          <input type="radio" class="form-check-input" id="cat3" name="agentType" value="Booking.com">
-          <label for="cat3" class="form-check-label">Booking.com</label> &nbsp;
-          <input type="radio" class="form-check-input" id="cat4" name="agentType" value="AirBNB">
-          <label for="cat4" class="form-check-label">AirBNB</label> &nbsp;
+          ${divinputs}
           <br><br>
-          <input type="text" class="form-control" maxlength=32 id="referenceno" placeholder="Enter reference/transaction no. here after agent payment.">
+          <input type="text" class="form-control" maxlength=32 id="referenceno" placeholder="Enter reference/transaction no. here after agent payment."><br>
+          <input type="number" min=1 step=0.1 class="form-control" maxlength=32 id="actualpay" placeholder="Enter actual item price as credited by the agent.">
         </div>
       `,
             showCancelButton: true,
@@ -4986,16 +5120,17 @@ export default {
               const agentType = document.querySelector(
                 'input[name="agentType"]:checked'
               ).value;
-              const referenceno = document.getElementById("referenceno").value;
-              return { agentType, referenceno };
+              const actualpay = document.getElementById("actualpay").value;
+              return { agentType, referenceno, actualpay };
             },
           })
           .then((result) => {
             if (result.isConfirmed) {
-              const { agentType, referenceno } = result.value;
+              const { agentType, referenceno, actualpay } = result.value;
               if (agentType !== "" || referenceno !== "") {
                 this.agentPayPlatform = agentType;
                 this.nonCashReference = referenceno;
+                this.agentPayment = parseFloat(actualpay);
               } else {
                 this.$swal({
                   title: "Warning",
@@ -5009,6 +5144,64 @@ export default {
       } else {
         this.agentPayPlatform = "";
         this.nonCashReference = "";
+        this.setAgent();
+      }
+    },
+    setAgent() {
+      if (this.paymentMethod === "agentcredit") {
+        let divinputs = "";
+        let currentIndex = 0;
+
+        for (const agent of this.agents.filter((o) => o.type === "credit")) {
+          divinputs += `<input type="radio" class="form-check-input" id="cat${currentIndex}" name="agentType" value="${agent.name}" checked><label for="cat${currentIndex}" class="form-check-label">${agent.name}</label> &nbsp;`;
+          currentIndex += 1;
+        }
+
+        this.$swal
+          .fire({
+            title: "Choose agent",
+            html: `
+        <div>
+          ${divinputs}
+          <br><br>
+          <input type="text" class="form-control" maxlength=32 id="referenceno" placeholder="Enter reference/transaction no. here after agent payment."><br>
+          <input type="number" min=1 step=0.1 class="form-control" maxlength=32 id="actualpay" placeholder="Enter actual item price as credited by the agent.">
+        </div>
+      `,
+            showCancelButton: true,
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
+            allowOutsideClick: false,
+            preConfirm: () => {
+              const agentType = document.querySelector(
+                'input[name="agentType"]:checked'
+              ).value;
+              const referenceno = document.getElementById("referenceno").value;
+              const actualpay = document.getElementById("actualpay").value;
+              return { agentType, referenceno, actualpay };
+            },
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              const { agentType, referenceno, actualpay } = result.value;
+              if (agentType !== "" || referenceno !== "") {
+                this.agentPayPlatform = agentType;
+                this.nonCashReference = referenceno;
+                this.agentPayment = parseFloat(actualpay);
+              } else {
+                this.$swal({
+                  title: "Warning",
+                  text: "Please provide both the agent type and the reference number.",
+                  icon: "warning",
+                });
+                return;
+              }
+            }
+          });
+      } else {
+        this.agentPayPlatform = "";
+        this.nonCashReference = "";
+        this.setAgentNoCredit();
       }
     },
     async deleteTransaction(id) {
@@ -7816,6 +8009,7 @@ export default {
                 discountValue: doneTransaction.data.discountValue,
                 processedBy: this.userdata.fName + " " + this.userdata.lName,
                 payStatus: doneTransaction.data.payStatus,
+                agentPayment: this.agentPayment,
               };
               await axios.post(
                 `${this.API_URL}transaction/record/`,
@@ -7997,6 +8191,7 @@ export default {
                 discountValue: doneTransaction.data.discountValue,
                 processedBy: this.userdata.fName + " " + this.userdata.lName,
                 payStatus: doneTransaction.data.payStatus,
+                agentPayment: this.agentPayment,
               };
               await axios.post(
                 `${this.API_URL}transaction/record/`,
@@ -8178,6 +8373,16 @@ export default {
           (item) => item.isAvailable === true
         );
 
+        const agentsResponse = await axios.get(this.API_URL + "agents/");
+        this.agents = agentsResponse.data.filter(
+          (item) => item.isAvailable === true
+        );
+
+        const packResponse = await axios.get(this.API_URL + "package/");
+        this.packages = packResponse.data.filter(
+          (item) => item.isAvailable === true
+        );
+
         /*
                           this.bookings.filter(booking => booking.room_name === this.bookings[this.itemIndex].room_name );
                                   */
@@ -8221,7 +8426,6 @@ export default {
       return true; // Room is available
     },
     async addToCart(item, index) {
-      console.log(this.cart);
       if (this.billing.clientName !== "") {
         // if (this.isItemAvailableInCart(item.item)) {
         let reserveStatus = null;
@@ -8390,6 +8594,91 @@ export default {
       }
     },
     cancelItem(item) {
+      if (item.category === "main" && item.itemOption === "addons") {
+        this.$swal
+          .fire({
+            title: "Authorization Required",
+            input: "text",
+            showCancelButton: true,
+            allowOutsideClick: false,
+            inputAttributes: {
+              minlength: 6, // Minimum length of 3 characters
+              maxlength: 24, // Maximum length of 24 characters
+              autocomplete: "off",
+              style: "text-security:disc; -webkit-text-security:disc;",
+            },
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
+            inputPlaceholder: "Enter authorization code",
+          })
+          .then(async (result) => {
+            if (result.isConfirmed) {
+              const authorizationCode = result.value;
+              // Validate the authorization code and perform necessary actions
+              if (
+                authorizationCode.toLowerCase() ===
+                this.AUTHORIZATION_KEY.toLowerCase()
+              ) {
+                // Code is correct, proceed with the desired action
+                const confirmMessage =
+                  " If you proceed with voiding, this items will be permanently deleted, and this action cannot be reversed.";
+                const result = await this.$swal.fire({
+                  title: "Are you sure you want to void this?",
+                  text: confirmMessage,
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes, void it!",
+                  cancelButtonText: "Cancel",
+                });
+                if (result.isConfirmed) {
+                  const countdownMessage =
+                    'Item will be voided in <span id="countdown">5</span> seconds. Do you want to cancel?';
+                  let countdownResult;
+                  countdownResult = await this.$swal.fire({
+                    title: "Please wait",
+                    html: countdownMessage,
+                    icon: "info",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Confirm now",
+                    cancelButtonText: "Cancel",
+                    didOpen: () => {
+                      const countdownEl = document.querySelector("#countdown");
+                      let count = 5;
+                      const timerId = setInterval(() => {
+                        countdownEl.textContent = count;
+                        count--;
+                        if (count < 0) {
+                          clearInterval(timerId);
+                          this.$swal.close();
+                        }
+                      }, 1000);
+                    },
+                  });
+                  if (!countdownResult.isConfirmed) {
+                    return;
+                  }
+                  this.handleCancelItem(item);
+                }
+              } else {
+                // Code is incorrect, show an error message or take appropriate action
+                this.$swal.fire({
+                  icon: "error",
+                  title: "Incorrect Passcode",
+                  text: "The entered passcode is incorrect. Please try again.",
+                  allowOutsideClick: false,
+                });
+              }
+            }
+          });
+      } else {
+        this.handleCancelItem(item);
+      }
+    },
+    handleCancelItem(item) {
       this.$swal
         .fire({
           title: "Are you sure?",
@@ -8413,6 +8702,11 @@ export default {
                     "success"
                   );
                   // perform any additional operations after successful delete
+                  this.taskRecord(
+                    `action:/voided booking item/client:/${
+                      this.bookings[this.itemIndex].name
+                    }/item/${item.name}`
+                  );
                 })
                 .catch((error) => {
                   console.log(error);

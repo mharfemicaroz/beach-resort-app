@@ -89,6 +89,19 @@ urlpatterns = [
     re_path(r'^rooms/category/$', roomcategory_list, name='roomcategory-list'),
     re_path(r'^rooms/category/(?P<pk>\d+)/$',
             roomcategory_list, name='roomcategory-detail'),
+
+    re_path(r'^agents/$', agents_list, name='agents-list'),
+    re_path(r'^agents/(?P<pk>\d+)/$', agents_list, name='agents-detail'),
+    re_path(r'^agents/filter/$', agents_filter, name='agents-filter'),
+    re_path(r'^agents/delete/(?P<pk>\d+)/$',
+            agents_delete, name='agents-delete'),
+
+    re_path(r'^package/$', package_list, name='package-list'),
+    re_path(r'^package/(?P<pk>\d+)/$', package_list, name='package-detail'),
+    re_path(r'^package/filter/$', package_filter, name='package-filter'),
+    re_path(r'^package/delete/(?P<pk>\d+)/$',
+            package_delete, name='package-delete'),
+
     re_path(r'^rooms/$', room_list, name='room-list'),
     re_path(r'^rooms/(?P<pk>\d+)/$', room_list, name='room-detail'),
     re_path(r'^rooms/filter/$', rooms_filter, name='rooms-filter'),

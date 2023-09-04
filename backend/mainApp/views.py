@@ -208,6 +208,21 @@ def get_transactions_with_items(request, prevday=0):
 
 
 @csrf_exempt
+def package_list(request, pk=None):
+    return generic_list(request, Package, PackageSerializer, pk)
+
+
+@csrf_exempt
+def package_filter(request):
+    return filter_model(request, Package)
+
+
+@csrf_exempt
+def package_delete(request, pk=None):
+    return generic_delete(request, Package, pk)
+
+
+@csrf_exempt
 def task_list(request, pk=None):
     return generic_list(request, Task, TaskSerializer, pk)
 
@@ -220,6 +235,21 @@ def task_filter(request):
 @csrf_exempt
 def task_delete(request, pk=None):
     return generic_delete(request, Task, pk)
+
+
+@csrf_exempt
+def agents_list(request, pk=None):
+    return generic_list(request, Agents, AgentsSerializer, pk)
+
+
+@csrf_exempt
+def agents_filter(request):
+    return filter_model(request, Agents)
+
+
+@csrf_exempt
+def agents_delete(request, pk=None):
+    return generic_delete(request, Agents, pk)
 
 
 @csrf_exempt

@@ -85,9 +85,24 @@ class Room(models.Model):
     pax = models.IntegerField(default=0)
 
 
+class Agents(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    type = models.CharField(max_length=50)
+    credit = models.DecimalField(max_digits=10, decimal_places=2)
+    isAvailable = models.BooleanField(default=True)
+
+
 class RoomCategory(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
+    isAvailable = models.BooleanField(default=True)
+
+
+class Package(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    desc = models.TextField(null=True, blank=True)
     isAvailable = models.BooleanField(default=True)
 
 
@@ -98,6 +113,8 @@ class LeisureItem(models.Model):
     priceRate = models.DecimalField(max_digits=10, decimal_places=2)
     counter = models.CharField(max_length=32)
     isAvailable = models.BooleanField(default=True)
+    package_name = models.CharField(
+        max_length=100, default='no package', blank=True, null=True)
 
 
 class Transaction(models.Model):
@@ -133,6 +150,8 @@ class TransactionRecord(models.Model):
     transaction_date = models.DateTimeField(auto_now_add=True)
     paymentMethod = models.CharField(max_length=50)
     nonCashReference = models.CharField(max_length=128, null=True, blank=True)
+    agentPayment = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0, null=True, blank=True)
     totalAmountToPay = models.DecimalField(max_digits=10, decimal_places=2)
     cashAmountPay = models.DecimalField(max_digits=10, decimal_places=2)
     balance = models.DecimalField(max_digits=10, decimal_places=2)

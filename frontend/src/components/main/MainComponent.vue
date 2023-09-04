@@ -12,9 +12,9 @@
                 Users
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item text-center">
               <a class="nav-link" data-bs-toggle="tab" href="#roomscategory">
-                <i class="fas fa-door-open fa-2x"></i>
+                <i class="fas fa-building fa-2x"></i>
                 <br />
                 Rooms Category
               </a>
@@ -24,6 +24,17 @@
                 <i class="fas fa-door-open fa-2x"></i>
                 <br />
                 Rooms
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link text-center"
+                data-bs-toggle="tab"
+                href="#package"
+              >
+                <i class="fas fa-archive fa-2x"></i>
+                <br />
+                Package
               </a>
             </li>
             <li class="nav-item">
@@ -42,6 +53,17 @@
                 <i class="fa fa-table fa-2x"></i>
                 <br />
                 Resto Tables
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link text-center"
+                data-bs-toggle="tab"
+                href="#agents"
+              >
+                <i class="fa fa-user-secret fa-2x"></i>
+                <br />
+                Agents
               </a>
             </li>
             <li class="nav-item">
@@ -396,6 +418,94 @@
                 </div>
               </div>
             </div>
+            <div id="package" class="tab-pane">
+              <div id="package" class="tab-pane">
+                <div class="row">
+                  <div class="col-md-3">
+                    <form @submit.prevent="savePackage">
+                      <div class="mb-3">
+                        <label for="name" class="form-label"
+                          >Display Name</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="name"
+                          v-model="package.name"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="name" class="form-label">Description</label>
+                        <textarea
+                          class="form-control"
+                          v-model="package.desc"
+                          rows="3"
+                        ></textarea>
+                      </div>
+                      <div class="mb-3">
+                        <label for="type" class="form-label"
+                          >Availability</label
+                        >
+                        <select
+                          class="form-select"
+                          id="type"
+                          v-model="package.isAvailable"
+                          required
+                        >
+                          <option value="">-- Select --</option>
+                          <option value="true">Yes</option>
+                          <option value="false">No</option>
+                        </select>
+                      </div>
+                      <button type="submit" class="btn btn-primary">
+                        {{ isUpdatingPackage ? "Update" : "Save" }}
+                      </button>
+                    </form>
+                  </div>
+                  <div
+                    class="col-md-9"
+                    style="
+                      height: 550px;
+                      max-height: 550px;
+                      overflow-y: auto;
+                      overflow-x: hidden;
+                      padding-right: 1px;
+                    "
+                  >
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Description</th>
+                          <th>Is Available?</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="item in packages" :key="item.id">
+                          <td>{{ item.name }}</td>
+                          <td>
+                            {{ item.desc }}
+                          </td>
+                          <td v-if="item.isAvailable">Yes</td>
+                          <td v-else>No</td>
+                          <td>
+                            <button
+                              type="button"
+                              class="btn btn-primary btn-sm"
+                              @click="editPackage(item.id)"
+                            >
+                              <i class="fas fa-edit"></i></button
+                            >&nbsp;
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div id="leisures" class="tab-pane">
               <div id="leisures" class="tab-pane">
                 <div class="row">
@@ -459,6 +569,24 @@
                         </select>
                       </div>
                       <div class="mb-3">
+                        <label for="type" class="form-label">Package</label>
+                        <select
+                          class="form-select"
+                          v-model="leisure.package_name"
+                          required
+                        >
+                          <option value="">-- Select Type --</option>
+                          <option value="no package">None</option>
+                          <option
+                            v-for="item in packages"
+                            :key="item.id"
+                            :value="item.id"
+                          >
+                            {{ item.name }}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
                         <label for="is-available" class="form-label"
                           >Availability</label
                         >
@@ -495,6 +623,7 @@
                           <th>Type</th>
                           <th>Price Rate</th>
                           <th>Counter</th>
+                          <th>Package</th>
                           <th>Is Available?</th>
                           <th>Action</th>
                         </tr>
@@ -505,6 +634,15 @@
                           <td>{{ leisure.type }}</td>
                           <td>{{ leisure.priceRate }}</td>
                           <td>{{ leisure.counter }}</td>
+                          <td>
+                            {{
+                              leisure.package_name === "no package"
+                                ? "no package"
+                                : packages.filter(
+                                    (o) => o.id == leisure.package_name
+                                  )[0].name
+                            }}
+                          </td>
                           <td v-if="leisure.isAvailable">Yes</td>
                           <td v-else>No</td>
                           <td>
@@ -614,6 +752,112 @@
                 </div>
               </div>
             </div>
+            <div id="agents" class="tab-pane">
+              <div id="agents" class="tab-pane">
+                <div class="row">
+                  <div class="col-md-3">
+                    <form @submit.prevent="saveAgents">
+                      <div class="mb-3">
+                        <label for="table-name" class="form-label">Name</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="table-name"
+                          v-model="agent.name"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="is-available" class="form-label"
+                          >Type</label
+                        >
+                        <select
+                          class="form-select"
+                          v-model="agent.type"
+                          required
+                        >
+                          <option value="">-- Select --</option>
+                          <option value="credit">Credit</option>
+                          <option value="nocredit">No Credit</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label for="seating-capacity" class="form-label"
+                          >Credit Balance</label
+                        >
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="seating-capacity"
+                          v-model="agent.credit"
+                          min="0"
+                          step="0.1"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="is-available" class="form-label"
+                          >Availability</label
+                        >
+                        <select
+                          class="form-select"
+                          id="is-available"
+                          v-model="agent.isAvailable"
+                          required
+                        >
+                          <option value="">-- Select --</option>
+                          <option value="true">Yes</option>
+                          <option value="false">No</option>
+                        </select>
+                      </div>
+                      <button type="submit" class="btn btn-primary">
+                        {{ isUpdatingAgent ? "Update" : "Save" }}
+                      </button>
+                    </form>
+                  </div>
+                  <div
+                    class="col-md-9"
+                    style="
+                      height: 550px;
+                      max-height: 550px;
+                      overflow-y: auto;
+                      overflow-x: hidden;
+                      padding-right: 1px;
+                    "
+                  >
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Type</th>
+                          <th>Credit Balance</th>
+                          <th>Availability</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="agent in agents" :key="agent.id">
+                          <td>{{ agent.name }}</td>
+                          <td>{{ agent.type }}</td>
+                          <td>{{ agent.credit }}</td>
+                          <td v-if="agent.isAvailable">Yes</td>
+                          <td v-else>No</td>
+                          <td>
+                            <button
+                              type="button"
+                              class="btn btn-primary btn-sm"
+                              @click="editAgent(agent.id)"
+                            >
+                              <i class="fas fa-edit"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div id="logs" class="tab-pane">
               <div id="logs" class="tab-pane">
                 <div class="row">
@@ -668,12 +912,20 @@ export default {
           sortable: true,
         },
       ],
+      agents: [],
       users: [],
       rooms: [],
       roomcategories: [],
+      packages: [],
       leisures: [],
       restaurantTables: [],
       logs: [],
+      agent: {
+        name: "",
+        type: "",
+        credit: "",
+        isAvailable: "",
+      },
       user: {
         username: "",
         password: "",
@@ -697,12 +949,20 @@ export default {
         name: "",
         isAvailable: "",
       },
+      package: {
+        // object representing the current room being edited or added
+        id: null,
+        name: "",
+        desc: "",
+        isAvailable: "",
+      },
       leisure: {
         id: null,
         item: "",
         type: "",
         priceRate: null,
         counter: "",
+        package_name: "no package",
         isAvailable: "",
       },
       restaurantTable: {
@@ -711,6 +971,8 @@ export default {
         capacity: "",
         isAvailable: "",
       },
+      isUpdatingAgent: false,
+      isUpdatingPackage: false,
       isUpdatingUser: false,
       isUpdatingRoomcategory: false,
       isUpdatingRoom: false,
@@ -754,10 +1016,11 @@ export default {
         return;
       }
     }
-
+    this.getAgents();
     this.getUsers();
     this.getRoomcategories();
     this.getRooms();
+    this.getPackages();
     this.getLeisures();
     this.getRestaurantTables();
     this.getLogs();
@@ -791,6 +1054,26 @@ export default {
           title: "Logout error. Please contact your admin for assistance!",
         });
       }
+    },
+    getPackages() {
+      axios
+        .get(`${this.API_URL}package/`)
+        .then((response) => {
+          this.packages = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getAgents() {
+      axios
+        .get(`${this.API_URL}agents/`)
+        .then((response) => {
+          this.agents = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     getLogs() {
       axios
@@ -1005,6 +1288,65 @@ export default {
           });
       }
     },
+    savePackage() {
+      if (this.isUpdatingPackage) {
+        axios
+          .put(`${this.API_URL}package/${this.package.id}/`, this.package)
+          .then((response) => {
+            this.$swal({
+              icon: "success",
+              title: "Package updated successfully",
+            });
+            this.getPackages();
+            this.package = {
+              id: null,
+              name: "",
+              desc: "",
+              isAvailable: "",
+            };
+            this.isUpdatingTable = false;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .post(`${this.API_URL}package/filter/`, {
+            columnName: "name",
+            columnKey: this.package.name,
+          })
+          .then((response) => {
+            if (response.data.length > 0) {
+              this.$swal({
+                icon: "error",
+                title: "Package already exists",
+              });
+            } else {
+              axios
+                .post(`${this.API_URL}package/`, this.package)
+                .then((response) => {
+                  this.$swal({
+                    icon: "success",
+                    title: "Package saved successfully",
+                  });
+                  this.getPackages();
+                  this.package = {
+                    id: null,
+                    name: "",
+                    desc: "",
+                    isAvailable: "",
+                  };
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
     saveRoomcategory() {
       if (this.isUpdatingRoomcategory) {
         axios
@@ -1052,6 +1394,67 @@ export default {
                   this.roomcategory = {
                     id: null,
                     name: "",
+                    isAvailable: "",
+                  };
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    saveAgents() {
+      if (this.isUpdatingAgent) {
+        axios
+          .put(`${this.API_URL}agents/${this.agent.id}/`, this.agent)
+          .then((response) => {
+            this.$swal({
+              icon: "success",
+              title: "Agent updated successfully",
+            });
+            this.getAgents();
+            this.agent = {
+              id: null,
+              name: "",
+              type: "",
+              credit: "",
+              isAvailable: "",
+            };
+            this.isUpdatingAgent = false;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .post(`${this.API_URL}agents/filter/`, {
+            columnName: "name",
+            columnKey: this.agent.name,
+          })
+          .then((response) => {
+            if (response.data.length > 0) {
+              this.$swal({
+                icon: "error",
+                title: "Agent name already exists",
+              });
+            } else {
+              axios
+                .post(`${this.API_URL}agents/`, this.agent)
+                .then((response) => {
+                  this.$swal({
+                    icon: "success",
+                    title: "Agent saved successfully",
+                  });
+                  this.getAgents();
+                  this.agent = {
+                    id: null,
+                    name: "",
+                    type: "",
+                    credit: "",
                     isAvailable: "",
                   };
                 })
@@ -1152,6 +1555,7 @@ export default {
               type: "",
               priceRate: null,
               counter: "",
+              package_name: "no package",
               isAvailable: null,
             };
             this.isUpdatingLeisure = false;
@@ -1186,6 +1590,7 @@ export default {
                     type: "",
                     priceRate: null,
                     counter: "",
+                    package_name: "no package",
                     isAvailable: "",
                   };
                 })
@@ -1229,6 +1634,28 @@ export default {
         });
         this.getUsers();
       }
+    },
+    editAgent(id) {
+      axios
+        .get(`${this.API_URL}agents/${id}/`)
+        .then((response) => {
+          this.agent = response.data;
+          this.isUpdatingAgent = true;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    editPackage(id) {
+      axios
+        .get(`${this.API_URL}package/${id}/`)
+        .then((response) => {
+          this.package = response.data;
+          this.isUpdatingPackage = true;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     editUser(id) {
       axios

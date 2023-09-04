@@ -24,9 +24,21 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class AgentsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Agents
+        fields = '__all__'
+
+
 class RoomCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomCategory
+        fields = '__all__'
+
+
+class PackageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package
         fields = '__all__'
 
 
