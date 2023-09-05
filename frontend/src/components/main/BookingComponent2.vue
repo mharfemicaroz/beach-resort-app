@@ -5098,7 +5098,13 @@ export default {
         let currentIndex = 0;
 
         for (const agent of this.agents.filter((o) => o.type === "nocredit")) {
-          divinputs += `<input type="radio" class="form-check-input" id="cat${currentIndex}" name="agentType" value="${agent.name}" checked><label for="cat${currentIndex}" class="form-check-label">${agent.name}</label> &nbsp;`;
+          divinputs += `<input type="radio" class="form-check-input" id="cat${currentIndex}" name="agentType" value="${
+            agent.name
+          }" ${
+            currentIndex === 0 ? "checked" : ""
+          }><label for="cat${currentIndex}" class="form-check-label">${
+            agent.name
+          }</label> &nbsp;`;
           currentIndex += 1;
         }
         this.$swal
@@ -5120,6 +5126,7 @@ export default {
               const agentType = document.querySelector(
                 'input[name="agentType"]:checked'
               ).value;
+              const referenceno = document.getElementById("referenceno").value;
               const actualpay = document.getElementById("actualpay").value;
               return { agentType, referenceno, actualpay };
             },
@@ -5153,7 +5160,13 @@ export default {
         let currentIndex = 0;
 
         for (const agent of this.agents.filter((o) => o.type === "credit")) {
-          divinputs += `<input type="radio" class="form-check-input" id="cat${currentIndex}" name="agentType" value="${agent.name}" checked><label for="cat${currentIndex}" class="form-check-label">${agent.name}</label> &nbsp;`;
+          divinputs += `<input type="radio" class="form-check-input" id="cat${currentIndex}" name="agentType" value="${
+            agent.name
+          }" ${
+            currentIndex === 0 ? "checked" : ""
+          }><label for="cat${currentIndex}" class="form-check-label">${
+            agent.name
+          }</label> &nbsp;`;
           currentIndex += 1;
         }
 
@@ -7822,6 +7835,35 @@ export default {
       }
     },
     initializePlaceOrder() {
+      if (
+        (this.paymentMethod === "non-cash" ||
+          this.paymentMethod.includes("agent")) &&
+        (this.nonCashReference === "" || this.nonCashReference === null)
+      ) {
+        this.$swal.fire({
+          icon: "error",
+          title: "Please provide a reference number",
+          text: "A reference number is required for non-cash and agent-type payments.",
+          allowOutsideClick: false,
+        });
+        return;
+      }
+      if (
+        this.paymentMethod.includes("agent") &&
+        (isNaN(this.agentPayment) ||
+          this.agentPayment === "" ||
+          this.agentPayment <= 0 ||
+          this.agentPayment === null)
+      ) {
+        this.$swal.fire({
+          icon: "error",
+          title: "Please enter a valid agent's actual price",
+          text: "You need to provide a valid actual price credited by the agent for agent-type payments",
+          allowOutsideClick: false,
+        });
+
+        return;
+      }
       if (this.cashAmount > this.total && !this.walkinStatus) {
         this.$swal({
           title: "Over-Payment Detected!",

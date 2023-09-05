@@ -39,7 +39,9 @@
         <div class="card-body row">
           <div class="col-md-8">
             <h5 class="card-title">Bookings</h5>
-            <p class="card-text">{{ numReservations }}</p>
+            <p class="card-text">
+              {{ numReservations }} / {{ availableRooms }}
+            </p>
           </div>
           <div
             class="col-md-4 d-flex justify-content-center align-items-center"
@@ -50,26 +52,11 @@
       </div>
     </div>
     <div class="col-md-2 m-2">
-      <div class="card x bg-secondary text-white">
-        <div class="card-body row">
-          <div class="col-md-8">
-            <h5 class="card-title">Lodgings</h5>
-            <p class="card-text">{{ availableRooms }} available</p>
-          </div>
-          <div
-            class="col-md-4 d-flex justify-content-center align-items-center"
-          >
-            <i class="fas fa-door-open fa-2x"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-2 m-2">
       <div class="card x bg-success text-white">
         <div class="card-body row">
           <div class="col-md-8">
             <h5 class="card-title">Guests</h5>
-            <p class="card-text">{{ numGuests }} / {{ counter }}</p>
+            <p class="card-text">{{ numGuests }}</p>
           </div>
           <div
             class="col-md-4 d-flex justify-content-center align-items-center"
@@ -90,6 +77,21 @@
             class="col-md-4 d-flex justify-content-center align-items-center"
           >
             <i class="fas fa-money-bill-alt fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2 m-2">
+      <div class="card x bg-secondary text-white">
+        <div class="card-body row">
+          <div class="col-md-8">
+            <h5 class="card-title">Pending</h5>
+            <p class="card-text">{{ pending }}</p>
+          </div>
+          <div
+            class="col-md-4 d-flex justify-content-center align-items-center"
+          >
+            <i class="fas fa-hourglass-start fa-2x"></i>
           </div>
         </div>
       </div>
@@ -198,6 +200,50 @@
       </div>
     </div>
   </div>
+  <div class="row row justify-content-center">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card x">
+          <div class="card-header text-primary text-center">
+            <strong>Approved/Disapproved Agent's Payment Report</strong>
+          </div>
+          <div
+            class="card-body chart"
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <pie-chart
+              :key="componentKey"
+              v-if="loaded[4]"
+              :chartData="pie3Data"
+            />
+            <div v-else class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card x">
+          <div class="card-header text-primary text-center">
+            <strong>Agent Type Transaction Summary</strong>
+          </div>
+          <div
+            class="card-body chart"
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <bar-chart
+              :key="componentKey"
+              v-if="loaded[3]"
+              :chartData="bar4Data"
+            />
+            <div v-else class="spinner-border" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="row justify-content-center">
     <div class="col-md-12 m-2">
       <div
@@ -221,7 +267,7 @@
           >
             <line-chart
               :key="componentKey"
-              v-if="loaded[4]"
+              v-if="loaded[6]"
               :chartData="line1Data"
             />
             <div v-else class="spinner-border" role="status">
@@ -241,7 +287,7 @@
           >
             <bar-chart
               :key="componentKey"
-              v-if="loaded[5]"
+              v-if="loaded[7]"
               :chartData="bar2Data"
             />
             <div v-else class="spinner-border" role="status">
@@ -261,7 +307,7 @@
           >
             <line-chart
               :key="componentKey"
-              v-if="loaded[6]"
+              v-if="loaded[8]"
               :chartData="line2Data"
             />
             <div v-else class="spinner-border" role="status">
@@ -326,6 +372,7 @@ export default {
   },
   data() {
     return {
+      pending: 0,
       chosenDate: null,
       backtrack: 10,
       counter: 0,
@@ -336,6 +383,7 @@ export default {
       prevransItems: [],
       predictions: [],
       roomcategories: [],
+      agents: ["agoda"],
       numReservations: 0,
       numGuests: 0,
       availableRooms: 0,
@@ -352,6 +400,14 @@ export default {
       },
       pie2Data: {
         labels: ["cash", "non-cash", "agent"],
+        datasets: [
+          {
+            data: [],
+          },
+        ],
+      },
+      pie3Data: {
+        labels: ["approved", "pending"],
         datasets: [
           {
             data: [],
@@ -375,6 +431,14 @@ export default {
         ],
       },
       bar3Data: {
+        labels: [],
+        datasets: [
+          {
+            data: [],
+          },
+        ],
+      },
+      bar4Data: {
         labels: [],
         datasets: [
           {
@@ -452,11 +516,27 @@ export default {
           return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
         }, 0);
       const totagent = data
-        .filter((item) => item.paymentMethod === "agent")
+        .filter((item) => item.paymentMethod.includes("agent"))
         .reduce((accumulator, currentValue) => {
           return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
         }, 0);
       this.pie2Data.datasets[0].data = [totcash, totnoncash, totagent];
+    },
+    pie3Datasets(data) {
+      const approved = data
+        .filter((item) => item.agent_isApproved === 1)
+        .reduce((accumulator, currentValue) => {
+          return accumulator + parseFloat(currentValue.agentPayment);
+        }, 0);
+      const pending = data
+        .filter(
+          (item) =>
+            item.agent_isApproved === 0 || item.agent_isApproved === null
+        )
+        .reduce((accumulator, currentValue) => {
+          return accumulator + parseFloat(currentValue.agentPayment);
+        }, 0);
+      this.pie3Data.datasets[0].data = [approved, pending];
     },
     bar1Datasets(data) {
       this.bar1Data.datasets[0].data = this.roomcategories.map((o) => {
@@ -491,6 +571,20 @@ export default {
 
       this.bar3Data.labels = uniqueProcessedByList;
       this.bar3Data.datasets[0].data = collection;
+    },
+    bar4Datasets(data) {
+      let collection = [];
+      for (const agent of this.agents) {
+        const total = data
+          .filter((item) => item.nonCashReference.toLowerCase().includes(agent))
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.agentPayment);
+          }, 0);
+        collection.push(total);
+      }
+
+      this.bar4Data.labels = this.agents;
+      this.bar4Data.datasets[0].data = collection;
     },
     line1Datasets(data) {
       const arr = data.reduce((acc, curr) => {
@@ -597,6 +691,13 @@ export default {
         const roomscatResponse = await axios.get(
           this.API_URL + "rooms/category/"
         );
+
+        const agentsResponse = await axios.get(this.API_URL + "agents/");
+        this.agents = [];
+        for (const agent of agentsResponse.data) {
+          this.agents.push(agent.name.toLowerCase());
+        }
+
         this.roomcategories = roomscatResponse.data
           .filter((item) => item.isAvailable === true)
           .map((o) => {
@@ -613,7 +714,7 @@ export default {
           this.prevBookings = bookingData.data;
           this.prevTransactions = transactionData.data;
           this.prevransItems = transactionItemsData.data;
-          this.loaded = Array(7).fill(false);
+          this.loaded = Array(9).fill(false);
         }
 
         const roomsData = await axios.get(this.API_URL + "rooms/");
@@ -621,14 +722,19 @@ export default {
         this.numReservations = bookingData.data.filter(
           (item) => item.checkinDate === curday.toLocaleDateString("en-GB")
         ).length;
-        this.numGuests = transactionItemsData.data.filter(
-          (item) =>
-            item.itemType === "ENTRANCE" &&
-            new Date(item.dateCreated)
-              .setHours(0, 0, 0, 0)
-              .toLocaleString("en-US") ===
-              curday.setHours(0, 0, 0, 0).toLocaleString("en-US")
-        ).length;
+
+        this.numGuests = transactionItemsData.data
+          .filter(
+            (item) =>
+              item.itemType === "ENTRANCE" &&
+              new Date(item.dateCreated)
+                .setHours(0, 0, 0, 0)
+                .toLocaleString("en-US") ===
+                curday.setHours(0, 0, 0, 0).toLocaleString("en-US")
+          )
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.purchaseQty);
+          }, 0);
         this.availableRooms = roomsData.data.filter((room) => {
           // Check if there are any bookings for this room that overlap with the specified date range
           const overlappingBookings = bookingData.data.filter((booking) => {
@@ -684,6 +790,7 @@ export default {
           .reduce((accumulator, currentValue) => {
             return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
           }, 0);
+
         const approvedAgentPayment = transactionRecordsData.data
           .filter((item) => {
             const transactionDate = new Date(item.transaction_date);
@@ -707,12 +814,17 @@ export default {
           .reduce((accumulator, currentValue) => {
             return accumulator + parseFloat(currentValue.agentPayment);
           }, 0);
+
         this.grossIncome = nonAgentIncome + approvedAgentPayment;
 
-        this.collectibles = transactionData.data
+        const nonAgentBalance = trans_itemizer_data.data
           .filter((item) => {
             const transactionDate = new Date(item.transaction_date);
+            const isAgentRecord =
+              item.items2.filter((o) => o.paymentMethod.includes("agent"))
+                .length > 0;
             return (
+              !isAgentRecord &&
               transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
               transactionDate <
                 new Date(
@@ -729,10 +841,58 @@ export default {
             return accumulator + parseFloat(currentValue.balance);
           }, 0);
 
+        const notApprovedAgentPayment = transactionRecordsData.data
+          .filter((item) => {
+            const transactionDate = new Date(item.transaction_date);
+            const isAgentType = item.paymentMethod.includes("agentnocredit");
+            const isApproved = item.agent_isApproved;
+            return (
+              isAgentType &&
+              !isApproved &&
+              transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
+              transactionDate <
+                new Date(
+                  new Date(new Date(curday.getTime() + 86400000)).setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                  )
+                )
+            );
+          })
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.agentPayment);
+          }, 0);
+
+        this.pending = notApprovedAgentPayment;
+
+        this.collectibles = nonAgentBalance + notApprovedAgentPayment;
+
         this.pie2Datasets(
           trans_itemizer_data.data.filter((item) => {
             const transactionDate = new Date(item.transaction_date);
             return (
+              transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
+              transactionDate <
+                new Date(
+                  new Date(new Date(curday.getTime() + 86400000)).setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                  )
+                )
+            );
+          })
+        );
+
+        this.pie3Datasets(
+          transactionRecordsData.data.filter((item) => {
+            const transactionDate = new Date(item.transaction_date);
+            const isAgentType = item.paymentMethod.includes("agent");
+            return (
+              isAgentType &&
               transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
               transactionDate <
                 new Date(
@@ -765,13 +925,33 @@ export default {
           })
         );
 
-        this.loaded = Array(7).fill(true);
+        this.bar4Datasets(
+          transactionRecordsData.data.filter((item) => {
+            const transactionDate = new Date(item.transaction_date);
+            const isAgentType = item.paymentMethod.includes("agent");
+            return (
+              isAgentType &&
+              transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
+              transactionDate <
+                new Date(
+                  new Date(new Date(curday.getTime() + 86400000)).setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                  )
+                )
+            );
+          })
+        );
+
+        this.loaded = Array(9).fill(true);
       } catch (error) {}
     },
   },
   async mounted() {
     // initialize loaded array
-    this.loaded = Array(6).fill(false);
+    this.loaded = Array(7).fill(false);
 
     // load data
     await this.loadData();
