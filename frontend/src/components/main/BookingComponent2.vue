@@ -5891,6 +5891,7 @@ export default {
                 } catch (error) {}
               });
             // Wait for all PUT requests to finish before updating the local cart
+
             await Promise.all(
               this.cart
                 .filter((item) => item.category === "inclusion")
@@ -5907,9 +5908,19 @@ export default {
                   }
                 })
             );
+
+            let totalinclusionprice = this.cart
+              .filter((item) => item.category === "inclusion")
+              .reduce((accumulator, currentValue) => {
+                return accumulator + parseFloat(currentValue.totalCartPrice);
+              }, 0);
+
             if (bId !== "walkin") {
               const resId = this.bookings[this.itemIndex].id;
-              this.bookings[this.itemIndex].isPaid = "partial";
+              if (totalinclusionprice > 0) {
+                this.bookings[this.itemIndex].isPaid = "partial";
+              }
+
               this.updateBookings(resId);
               this.populateCalendarItems();
             }
