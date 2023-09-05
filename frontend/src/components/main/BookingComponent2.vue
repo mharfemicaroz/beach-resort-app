@@ -5779,117 +5779,221 @@ export default {
               }
             } catch (e) {}
 
-            this.cart
-              .filter((item) => item.category === "inclusion")
-              .forEach(async (item, index) => {
-                // Define the API endpoint and data for the PUT request
-                const api = `${this.API_URL}transaction/item/${item.id}/`;
-                const data = {
-                  itemName: item.name,
-                  itemType: item.type,
-                  itemPriceRate: item.priceRate,
-                  purchaseQty: item.purqty,
-                  totalCost: item.totalCartPrice,
-                  category: "main",
-                  itemOption: "addons",
-                  numdays: item.numdays,
-                  totalguest: item.totalguest,
-                  totalpax: item.totalpax,
-                  currentroom: item.currentroom,
-                };
+            let inclusionprice = 0;
 
-                if (!this.walkinStatus) {
-                  const numBookedRooms = this.cart.filter(
+            for (const item of this.cart.filter(
+              (item) => item.category === "inclusion"
+            )) {
+              // Define the API endpoint and data for the PUT request
+              const api = `${this.API_URL}transaction/item/${item.id}/`;
+              const data = {
+                itemName: item.name,
+                itemType: item.type,
+                itemPriceRate: item.priceRate,
+                purchaseQty: item.purqty,
+                totalCost: item.totalCartPrice,
+                category: "main",
+                itemOption: "addons",
+                numdays: item.numdays,
+                totalguest: item.totalguest,
+                totalpax: item.totalpax,
+                currentroom: item.currentroom,
+              };
+
+              if (!this.walkinStatus) {
+                const numBookedRooms = this.cart.filter(
+                  (o) =>
+                    (o.type.toLowerCase().includes("room") ||
+                      o.type.toLowerCase() === "leisures") &&
+                    o.category === "main"
+                ).length;
+                const numGuestsCard = this.cart
+                  .filter((o) => o.name.toLowerCase() === "room guest")
+                  .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
+                const entranceFee = parseFloat(
+                  this.items.filter(
+                    (o) => o.item.toLowerCase() === "room guest"
+                  )[0].priceRate
+                );
+
+                const response = await axios.post(
+                  this.API_URL + "transaction/item/filter/",
+                  {
+                    columnName: "bookingID",
+                    columnKey: this.bookings[this.itemIndex].itemID,
+                  }
+                );
+
+                const totalGuestsMain = response.data
+                  .filter(
                     (o) =>
-                      (o.type.toLowerCase().includes("room") ||
-                        o.type.toLowerCase() === "leisures") &&
+                      o.itemName.toLowerCase() === "room guest" &&
                       o.category === "main"
-                  ).length;
-                  const numGuestsCard = this.cart
-                    .filter((o) => o.name.toLowerCase() === "room guest")
-                    .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
-                  const entranceFee = parseFloat(
-                    this.items.filter(
-                      (o) => o.item.toLowerCase() === "room guest"
-                    )[0].priceRate
-                  );
+                  )
+                  .reduce((acc, item) => acc + parseFloat(item.purchaseQty), 0);
 
-                  const response = await axios.post(
-                    this.API_URL + "transaction/item/filter/",
-                    {
-                      columnName: "bookingID",
-                      columnKey: this.bookings[this.itemIndex].itemID,
-                    }
-                  );
+                const checkInDate = parseDate(
+                  this.bookings[this.itemIndex].checkinDate
+                );
+                const checkOutDate = parseDate(
+                  this.bookings[this.itemIndex].checkoutDate
+                );
+                const numdays =
+                  (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
 
-                  const totalGuestsMain = response.data
-                    .filter(
-                      (o) =>
-                        o.itemName.toLowerCase() === "room guest" &&
-                        o.category === "main"
-                    )
-                    .reduce(
-                      (acc, item) => acc + parseFloat(item.purchaseQty),
-                      0
-                    );
+                if (totalGuestsMain <= data.totalpax) {
+                  // if (totalGuestsMain <= totalGuests) {
 
-                  const checkInDate = parseDate(
-                    this.bookings[this.itemIndex].checkinDate
-                  );
-                  const checkOutDate = parseDate(
-                    this.bookings[this.itemIndex].checkoutDate
-                  );
-                  const numdays =
-                    (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
-
-                  if (totalGuestsMain <= data.totalpax) {
-                    // if (totalGuestsMain <= totalGuests) {
-
-                    data.totalCost =
-                      parseFloat(data.totalCost) -
+                  data.totalCost =
+                    parseFloat(data.totalCost) -
+                      (parseFloat(data.purchaseQty) >
+                      parseFloat(data.totalpax) - totalGuestsMain
+                        ? parseFloat(data.totalpax) - totalGuestsMain
+                        : parseFloat(data.purchaseQty)) *
+                        entranceFee <
+                    0
+                      ? 0
+                      : parseFloat(data.totalCost) -
                         (parseFloat(data.purchaseQty) >
                         parseFloat(data.totalpax) - totalGuestsMain
                           ? parseFloat(data.totalpax) - totalGuestsMain
                           : parseFloat(data.purchaseQty)) *
-                          entranceFee <
-                      0
-                        ? 0
-                        : parseFloat(data.totalCost) -
-                          (parseFloat(data.purchaseQty) >
-                          parseFloat(data.totalpax) - totalGuestsMain
-                            ? parseFloat(data.totalpax) - totalGuestsMain
-                            : parseFloat(data.purchaseQty)) *
-                            entranceFee;
-                  }
-
-                  if (data.itemName.toLowerCase() === "room guest") {
-                    data.totalCost = (numdays + 1) * data.totalCost;
-                    data.totalguest = totalGuestsMain + data.purchaseQty;
-                  }
+                          entranceFee;
                 }
 
-                item.totalCartPrice = data.totalCost;
-                item.totalguest = data.totalguest;
-                item.totalpax = data.totalpax;
-                item.numdays = data.numdays;
-                item.currentroom = data.currentroom;
+                if (data.itemName.toLowerCase() === "room guest") {
+                  data.totalCost = (numdays + 1) * data.totalCost;
+                  data.totalguest = totalGuestsMain + data.purchaseQty;
+                }
+              }
 
-                try {
-                  if (!this.walkinStatus) {
-                    data.bookingID = bId;
-                    data.groupkey = gkey;
-                    // Send PUT request to update the item
-                    const response = await axios.put(api, data);
-                    updatedItems.push(response.data);
-                  } else {
-                    data.bookingID = this.walkinID;
-                    data.currentroom = "walkin";
-                    bId = data.bookingID;
-                    const response = await axios.post(api, data);
-                    updatedItems.push(response.data);
-                  }
-                } catch (error) {}
-              });
+              item.totalCartPrice = data.totalCost;
+              item.totalguest = data.totalguest;
+              item.totalpax = data.totalpax;
+              item.numdays = data.numdays;
+              item.currentroom = data.currentroom;
+
+              inclusionprice += item.totalCartPrice;
+
+              try {
+                if (!this.walkinStatus) {
+                  data.bookingID = bId;
+                  data.groupkey = gkey;
+                  // Send PUT request to update the item
+                  const response = await axios.put(api, data);
+                  updatedItems.push(response.data);
+                } else {
+                  data.bookingID = this.walkinID;
+                  data.currentroom = "walkin";
+                  bId = data.bookingID;
+                  const response = await axios.post(api, data);
+                  updatedItems.push(response.data);
+                }
+              } catch (error) {}
+            }
+
+            // this.cart
+            //   .filter((item) => item.category === "inclusion")
+            //   .forEach(async (item, index) => {
+            //     // Define the API endpoint and data for the PUT request
+            //     const api = `${this.API_URL}transaction/item/${item.id}/`;
+            //     const data = {
+            //       itemName: item.name,
+            //       itemType: item.type,
+            //       itemPriceRate: item.priceRate,
+            //       purchaseQty: item.purqty,
+            //       totalCost: item.totalCartPrice,
+            //       category: "main",
+            //       itemOption: "addons",
+            //       numdays: item.numdays,
+            //       totalguest: item.totalguest,
+            //       totalpax: item.totalpax,
+            //       currentroom: item.currentroom,
+            //     };
+            //     if (!this.walkinStatus) {
+            //       const numBookedRooms = this.cart.filter(
+            //         (o) =>
+            //           (o.type.toLowerCase().includes("room") ||
+            //             o.type.toLowerCase() === "leisures") &&
+            //           o.category === "main"
+            //       ).length;
+            //       const numGuestsCard = this.cart
+            //         .filter((o) => o.name.toLowerCase() === "room guest")
+            //         .reduce((acc, item) => acc + parseFloat(item.purqty), 0);
+            //       const entranceFee = parseFloat(
+            //         this.items.filter(
+            //           (o) => o.item.toLowerCase() === "room guest"
+            //         )[0].priceRate
+            //       );
+            //       const response = await axios.post(
+            //         this.API_URL + "transaction/item/filter/",
+            //         {
+            //           columnName: "bookingID",
+            //           columnKey: this.bookings[this.itemIndex].itemID,
+            //         }
+            //       );
+            //       const totalGuestsMain = response.data
+            //         .filter(
+            //           (o) =>
+            //             o.itemName.toLowerCase() === "room guest" &&
+            //             o.category === "main"
+            //         )
+            //         .reduce(
+            //           (acc, item) => acc + parseFloat(item.purchaseQty),
+            //           0
+            //         );
+            //       const checkInDate = parseDate(
+            //         this.bookings[this.itemIndex].checkinDate
+            //       );
+            //       const checkOutDate = parseDate(
+            //         this.bookings[this.itemIndex].checkoutDate
+            //       );
+            //       const numdays =
+            //         (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
+            //       if (totalGuestsMain <= data.totalpax) {
+            //         // if (totalGuestsMain <= totalGuests) {
+            //         data.totalCost =
+            //           parseFloat(data.totalCost) -
+            //             (parseFloat(data.purchaseQty) >
+            //             parseFloat(data.totalpax) - totalGuestsMain
+            //               ? parseFloat(data.totalpax) - totalGuestsMain
+            //               : parseFloat(data.purchaseQty)) *
+            //               entranceFee <
+            //           0
+            //             ? 0
+            //             : parseFloat(data.totalCost) -
+            //               (parseFloat(data.purchaseQty) >
+            //               parseFloat(data.totalpax) - totalGuestsMain
+            //                 ? parseFloat(data.totalpax) - totalGuestsMain
+            //                 : parseFloat(data.purchaseQty)) *
+            //                 entranceFee;
+            //       }
+            //       if (data.itemName.toLowerCase() === "room guest") {
+            //         data.totalCost = (numdays + 1) * data.totalCost;
+            //         data.totalguest = totalGuestsMain + data.purchaseQty;
+            //       }
+            //     }
+            //     item.totalCartPrice = data.totalCost;
+            //     item.totalguest = data.totalguest;
+            //     item.totalpax = data.totalpax;
+            //     item.numdays = data.numdays;
+            //     item.currentroom = data.currentroom;
+            //     try {
+            //       if (!this.walkinStatus) {
+            //         data.bookingID = bId;
+            //         data.groupkey = gkey;
+            //         // Send PUT request to update the item
+            //         const response = await axios.put(api, data);
+            //         updatedItems.push(response.data);
+            //       } else {
+            //         data.bookingID = this.walkinID;
+            //         data.currentroom = "walkin";
+            //         bId = data.bookingID;
+            //         const response = await axios.post(api, data);
+            //         updatedItems.push(response.data);
+            //       }
+            //     } catch (error) {}
+            //   });
             // Wait for all PUT requests to finish before updating the local cart
 
             await Promise.all(
@@ -5909,15 +6013,9 @@ export default {
                 })
             );
 
-            let totalinclusionprice = this.cart
-              .filter((item) => item.category === "inclusion")
-              .reduce((accumulator, currentValue) => {
-                return accumulator + parseFloat(currentValue.totalCartPrice);
-              }, 0);
-
             if (bId !== "walkin") {
               const resId = this.bookings[this.itemIndex].id;
-              if (totalinclusionprice > 0) {
+              if (inclusionprice > 0) {
                 this.bookings[this.itemIndex].isPaid = "partial";
               }
 
