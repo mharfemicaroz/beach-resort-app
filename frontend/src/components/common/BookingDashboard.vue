@@ -661,10 +661,14 @@ export default {
           this.API_URL + `transactions_itemizer/${daycount}/`
         );
 
-        this.grossIncome = trans_itemizer_data.data
+        const nonAgentIncome = trans_itemizer_data.data
           .filter((item) => {
             const transactionDate = new Date(item.transaction_date);
+            const isAgentRecord =
+              item.items2.filter((o) => o.paymentMethod.includes("agent"))
+                .length > 0;
             return (
+              !isAgentRecord &&
               transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
               transactionDate <
                 new Date(
@@ -680,6 +684,31 @@ export default {
           .reduce((accumulator, currentValue) => {
             return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
           }, 0);
+        const approvedAgentPayment = transactionRecordsData.data
+          .filter((item) => {
+            const transactionDate = new Date(item.transaction_date);
+            const isAgentType = item.paymentMethod.includes("agent");
+            const isApproved = item.agent_isApproved;
+            return (
+              isAgentType &&
+              isApproved &&
+              transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
+              transactionDate <
+                new Date(
+                  new Date(new Date(curday.getTime() + 86400000)).setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                  )
+                )
+            );
+          })
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.agentPayment);
+          }, 0);
+        this.grossIncome = nonAgentIncome + approvedAgentPayment;
+
         this.collectibles = transactionData.data
           .filter((item) => {
             const transactionDate = new Date(item.transaction_date);

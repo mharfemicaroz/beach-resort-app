@@ -38,10 +38,14 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" data-bs-toggle="tab" href="#leisures">
+              <a
+                class="nav-link text-center"
+                data-bs-toggle="tab"
+                href="#leisures"
+              >
                 <i class="fas fa-swimming-pool fa-2x"></i>
                 <br />
-                Leisures
+                Leisures/Add-ons
               </a>
             </li>
             <li class="nav-item">

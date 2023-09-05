@@ -139,9 +139,6 @@ class Transaction(models.Model):
     processedBy = models.CharField(max_length=128)
     groupkey = models.CharField(max_length=128, null=True, blank=True)
     cashRemarks = models.CharField(max_length=255, null=True, blank=True)
-    agent_isApproved = models.BooleanField(default=False)
-    agent_approvalDate = models.CharField(
-        max_length=255, null=True, blank=True)
 
 
 class TransactionRecord(models.Model):
@@ -160,6 +157,9 @@ class TransactionRecord(models.Model):
         max_digits=10, decimal_places=2, null=True, blank=True)
     processedBy = models.CharField(max_length=128)
     payStatus = models.CharField(max_length=50)
+    agent_isApproved = models.BooleanField(default=False)
+    agent_approvalDate = models.CharField(
+        max_length=255, null=True, blank=True)
 
 
 class TransactionItem(models.Model):
