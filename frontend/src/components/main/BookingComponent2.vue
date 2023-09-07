@@ -1194,18 +1194,6 @@
                     <div class="row">
                       <div class="col-md-2">
                         <div>
-                          <!-- <div class="form-group">
-                              <label for="search">Search Transaction:</label>
-                              <div class="input-group">
-                                <div class="input-group-append">
-                                  <button class="btn btn-outline-secondary" type="button">
-                                    <i class="fa fa-search"></i>
-                                  </button>
-                                </div>
-                                <input type="text" class="form-control" placeholder="Search transaction"
-                                  v-model="searchTerm" id="search">
-                              </div>
-                            </div> -->
                           <div class="form-group">
                             <label for="date-filter">Date Filter:</label>
                             <select

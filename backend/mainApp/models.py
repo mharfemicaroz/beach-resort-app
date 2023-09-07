@@ -142,7 +142,7 @@ class Transaction(models.Model):
 
 
 class TransactionRecord(models.Model):
-    transactionrecord_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     transaction = models.IntegerField()
     transaction_date = models.DateTimeField(auto_now_add=True)
     paymentMethod = models.CharField(max_length=50)

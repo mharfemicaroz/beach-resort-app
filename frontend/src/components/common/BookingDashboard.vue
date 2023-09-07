@@ -405,16 +405,121 @@
     <div class="tab-pane fade" id="workflowstab" role="tabpanel">
       <div class="container-fluid">
         <div class="row row justify-content-center">
-          <div class="col-md-2"></div>
+          <div class="col-md-2">
+            <div>
+              <div class="form-group">
+                <label for="date-filter">Date Filter:</label>
+                <select
+                  class="form-control"
+                  id="date-filter"
+                  v-model="dateFilter"
+                >
+                  <option value="">Any</option>
+                  <option value="range">Date Range</option>
+                </select>
+                <div v-if="dateFilter === 'range'">
+                  <div class="form-group">
+                    <input
+                      type="date"
+                      class="form-control"
+                      v-model="fromDate"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input type="date" class="form-control" v-model="toDate" />
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="payment-method-filter">Payment Method:</label>
+                <select
+                  class="form-control"
+                  id="payment-method-filter"
+                  v-model="paymentMethodFilter"
+                >
+                  <option value="">Any</option>
+                  <option value="agentcredit">Agent w/ Credit</option>
+                  <option value="agentnocredit">Agent w/ no Credit</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="agent-filter">Agent:</label>
+                <select
+                  class="form-control"
+                  id="agent-filter"
+                  v-model="agentFilter"
+                >
+                  <option value="">Any</option>
+                  <option v-for="agent in agents" :value="agent">
+                    {{ agent }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="actor-filter">Processed by:</label>
+                <select
+                  class="form-control"
+                  id="actor-filter"
+                  v-model="actorFilter"
+                >
+                  <option value="">Any</option>
+                  <option v-for="actor in actors" :value="actor">
+                    {{ actor }}
+                  </option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="status-filter">Status:</label>
+                <select
+                  class="form-control"
+                  id="status-filter"
+                  v-model="statusFilter"
+                >
+                  <option value="">Any</option>
+                  <option value="0">Pending</option>
+                  <option value="1">Approved</option>
+                </select>
+              </div>
+            </div>
+          </div>
           <div class="col-md-10">
             <table-component
               :mainHeaders="transrecordOptions"
               :mainItems="filteredtransrecord"
               :editable="false"
               :toggleable="false"
-              :custombtn="true"
               @custombtn-action="viewRecord"
-            />
+              :selectable="true"
+              :batchAction="true"
+              @batch-action="batchAction"
+            >
+              <template #content="data">
+                <span
+                  class="badge badge-success rounded-pill d-inline text-white"
+                  :class="
+                    data.data.dt.agent_payStatus ? 'bg-success' : 'bg-warning'
+                  "
+                  >{{
+                    data.data.dt.agent_payStatus ? "approved" : "pending"
+                  }}</span
+                >
+              </template>
+              <template #custombtn="data">
+                <button
+                  type="button"
+                  class="btn btn-lg badge rounded-pill d-inline"
+                  :class="
+                    data.data.dt.agent_payStatus ? 'btn-danger' : 'btn-primary'
+                  "
+                  v-html="
+                    data.data.dt.agent_payStatus
+                      ? `<i class='fa fa-times'></i>`
+                      : `<i class='fa fa-check'></i>`
+                  "
+                  @click="approveAction(data.data.dt.status, data.data.dt.id)"
+                ></button>
+              </template>
+            </table-component>
           </div>
         </div>
         <div class="row row justify-content-center">
@@ -433,6 +538,7 @@ import PieChart from "./charts/PieChart.vue";
 import BarChart from "./charts/BarChart.vue";
 import LineChart from "./charts/LineChart.vue";
 import axios from "axios";
+import async from "arima/async";
 
 function formatdate(currentDate) {
   const year = currentDate.getFullYear();
@@ -461,6 +567,17 @@ function formatDate2(dateString) {
   return `${year}-${month}-${day}`;
 }
 
+function xparseDate(dateString) {
+  const [day, month, year] = dateString.split("/");
+  return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
+}
+function xparseDate2(dateString) {
+  const index = dateString.indexOf("T");
+  const result = dateString.substring(0, index);
+  const [year, month, day] = result.split("-");
+  return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
+}
+
 export default {
   components: {
     TableComponent,
@@ -478,8 +595,13 @@ export default {
     return {
       transrecordOptions: [
         {
+          label: "",
+          field: "checkbox",
+          sortable: false,
+        },
+        {
           label: "ID",
-          field: "transactionrecord_id",
+          field: "id",
           sortable: true,
         },
         {
@@ -501,16 +623,19 @@ export default {
           label: "Bill amount",
           field: "totalAmountToPay",
           sortable: true,
+          reducible: true,
         },
         {
           label: "Cash Payment",
           field: "cashAmountPay",
           sortable: true,
+          reducible: true,
         },
         {
           label: "Agent Payment",
           field: "agentPayment",
           sortable: true,
+          reducible: true,
         },
         {
           label: "Discount",
@@ -526,13 +651,22 @@ export default {
           label: "Status",
           field: "status",
           sortable: true,
+          slot: true,
         },
         {
-          label: "",
+          label: "Action",
           field: "action",
           sortable: false,
+          slot: true,
         },
       ],
+      dateFilter: "",
+      paymentMethodFilter: "",
+      agentFilter: "",
+      actorFilter: "",
+      statusFilter: "",
+      fromDate: null,
+      toDate: null,
       pending: 0,
       chosenDate: null,
       backtrack: 10,
@@ -545,6 +679,7 @@ export default {
       predictions: [],
       roomcategories: [],
       transrecords: [],
+      actors: [],
       agents: ["agoda"],
       numReservations: 0,
       numGuests: 0,
@@ -628,27 +763,124 @@ export default {
   },
   computed: {
     filteredtransrecord() {
-      return this.transrecords
+      let filtered = this.transrecords
         .filter(
           (o) =>
             o.paymentMethod.includes("agent") &&
             o.paymentMethod.includes("credit")
         )
         .map((o) => {
+          const p = { ...o };
           const discount =
             parseFloat(o.discountValue) === 0
               ? "none"
-              : o.discountMode + "-" + o.discountValue;
-          const status = o.agent_isApproved == 0 ? "pending" : "approved";
+              : p.discountMode + "-" + p.discountValue;
+          const status = p.agent_isApproved == 0 ? "pending" : "approved";
+          p.agent_payStatus = o.agent_isApproved;
+          p.agent_dateConfirmed = o.agent_approvalDate;
+          delete p.agent_isApproved;
+          delete p.agent_approvalDate;
           return {
             status,
             discount,
-            ...o,
+            ...p,
           };
         });
+      if (this.dateFilter === "range" && this.fromDate && this.toDate) {
+        filtered = filtered.filter((transaction) => {
+          return (
+            xparseDate2(transaction.transaction_date) >=
+              xparseDate(this.fromDate) &&
+            xparseDate2(transaction.transaction_date) <= xparseDate(this.toDate)
+          );
+        });
+      }
+      if (this.paymentMethodFilter) {
+        filtered = filtered.filter((transaction) => {
+          return transaction.paymentMethod === this.paymentMethodFilter;
+        });
+      }
+      if (this.statusFilter) {
+        filtered = filtered.filter((transaction) => {
+          return transaction.agent_payStatus == this.statusFilter;
+        });
+      }
+      if (this.agentFilter) {
+        filtered = filtered.filter((transaction) => {
+          return transaction.nonCashReference
+            .toLowerCase()
+            .includes(this.agentFilter);
+        });
+      }
+      if (this.actorFilter) {
+        filtered = filtered.filter((transaction) => {
+          return transaction.processedBy
+            .toLowerCase()
+            .includes(this.actorFilter.toLowerCase());
+        });
+      }
+      return filtered;
     },
   },
   methods: {
+    async batchAction(arr) {
+      for (const id of arr) {
+        await axios
+          .get(`${this.API_URL}transaction/record/${id}/`)
+          .then(async (response) => {
+            const record = response.data;
+            await axios
+              .put(`${this.API_URL}transaction/record/${id}/`, {
+                transaction: record.transaction,
+                paymentMethod: record.paymentMethod,
+                nonCashReference: record.nonCashReference,
+                totalAmountToPay: record.totalAmountToPay,
+                cashAmountPay: record.cashAmountPay,
+                balance: record.balance,
+                discountMode: record.discountMode,
+                discountValue: record.discountValue,
+                processedBy: record.processedBy,
+                payStatus: record.payStatus,
+                agentPayment: record.agentPayment,
+                agent_approvalDate: new Date(),
+                agent_isApproved: record.agent_isApproved == 0 ? 1 : 0,
+              })
+              .then((result) => {
+                const index = this.transrecords.findIndex((o) => o.id === id);
+                this.transrecords[index] = result.data;
+              });
+          });
+      }
+      this.loadData();
+    },
+    async approveAction(status, id) {
+      await axios
+        .get(`${this.API_URL}transaction/record/${id}/`)
+        .then(async (response) => {
+          const record = response.data;
+          await axios
+            .put(`${this.API_URL}transaction/record/${id}/`, {
+              transaction: record.transaction,
+              paymentMethod: record.paymentMethod,
+              nonCashReference: record.nonCashReference,
+              totalAmountToPay: record.totalAmountToPay,
+              cashAmountPay: record.cashAmountPay,
+              balance: record.balance,
+              discountMode: record.discountMode,
+              discountValue: record.discountValue,
+              processedBy: record.processedBy,
+              payStatus: record.payStatus,
+              agentPayment: record.agentPayment,
+              agent_approvalDate: new Date(),
+              agent_isApproved: status === "pending" ? 1 : 0,
+            })
+            .then((result) => {
+              const index = this.transrecords.findIndex((o) => o.id === id);
+              this.transrecords[index] = result.data;
+              this.loadData();
+            });
+        });
+    },
     parseDate(dateString) {
       const [day, month, year] = dateString.split("/");
       const options = {
@@ -880,6 +1112,18 @@ export default {
         );
 
         this.transrecords = transactionRecordsData.data;
+
+        const processedByList = this.transrecords
+          .filter(
+            (o) =>
+              o.paymentMethod.includes("agent") &&
+              o.paymentMethod.includes("credit")
+          )
+          .map((record) => record.processedBy);
+        const uniqueProcessedByList = [...new Set(processedByList)].filter(
+          (name) => name !== ""
+        );
+        this.actors = uniqueProcessedByList;
 
         const roomscatResponse = await axios.get(
           this.API_URL + "rooms/category/"
