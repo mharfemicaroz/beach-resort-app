@@ -1,330 +1,433 @@
 <template>
-  <div class="row justify-content-center">
-    <div class="col-md-12 m-2">
-      <div
-        class="card-body bg-success text-white h3"
-        style="display: flex; justify-content: center; align-items: center"
-      >
-        Daily Reports
-      </div>
+  <div class="row">
+    <div class="col-md-3">
+      <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
+        <li class="nav-item">
+          <a
+            class="nav-link active show"
+            data-bs-toggle="tab"
+            @click=""
+            role="tab"
+            href="#reportstab"
+          >
+            <i class="fa fa-tags"></i>Reports</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            role="tab"
+            @click=""
+            href="#workflowstab"
+          >
+            <i class="fa fa-tags"></i>Work Flows</a
+          >
+        </li>
+      </ul>
     </div>
   </div>
-  <div class="row justify-content-center">
-    <div class="col-md-12 m-2">
-      <label for="customRange3" class="form-label"
-        >Showing
-        {{
-          10 - backtrack === 0
-            ? " today..."
-            : `${10 - backtrack} day${10 - backtrack === 1 ? "" : "s"} ago...`
-        }}
-        ({{ this.chosenDate }})</label
-      >
-      <input
-        type="range"
-        :disabled="!loaded[0]"
-        class="form-range"
-        @change="scrollRecord"
-        min="0"
-        max="10"
-        step="1"
-        v-model="backtrack"
-        id="customRange3"
-      />
-    </div>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-md-2 m-2">
-      <div class="card x bg-primary text-white">
-        <div class="card-body row">
-          <div class="col-md-8">
-            <h5 class="card-title">Bookings</h5>
-            <p class="card-text">
-              {{ numReservations }} / {{ availableRooms }}
-            </p>
-          </div>
-          <div
-            class="col-md-4 d-flex justify-content-center align-items-center"
-          >
-            <i class="fas fa-book-open fa-2x"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-2 m-2">
-      <div class="card x bg-success text-white">
-        <div class="card-body row">
-          <div class="col-md-8">
-            <h5 class="card-title">Guests</h5>
-            <p class="card-text">{{ numGuests }}</p>
-          </div>
-          <div
-            class="col-md-4 d-flex justify-content-center align-items-center"
-          >
-            <i class="fas fa-users fa-2x"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-2 m-2">
-      <div class="card x bg-danger text-white">
-        <div class="card-body row">
-          <div class="col-md-8">
-            <h5 class="card-title">Gross</h5>
-            <p class="card-text">{{ grossIncome }}</p>
-          </div>
-          <div
-            class="col-md-4 d-flex justify-content-center align-items-center"
-          >
-            <i class="fas fa-money-bill-alt fa-2x"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-2 m-2">
-      <div class="card x bg-secondary text-white">
-        <div class="card-body row">
-          <div class="col-md-8">
-            <h5 class="card-title">Pending</h5>
-            <p class="card-text">{{ pending }}</p>
-          </div>
-          <div
-            class="col-md-4 d-flex justify-content-center align-items-center"
-          >
-            <i class="fas fa-hourglass-start fa-2x"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-2 m-2">
-      <div class="card x bg-warning text-white">
-        <div class="card-body row">
-          <div class="col-md-8">
-            <h5 class="card-title">Collectibles</h5>
-            <p class="card-text">{{ collectibles }}</p>
-          </div>
-          <div
-            class="col-md-4 d-flex justify-content-center align-items-center"
-          >
-            <i class="fas fa-times-circle fa-2x"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row row justify-content-center">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card x">
-          <div class="card-header text-primary text-center">
-            <strong>Reservation Summary</strong>
-          </div>
-          <div
-            class="card-body chart"
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <pie-chart
-              :key="componentKey"
-              v-if="loaded[0]"
-              :chartData="pie1Data"
-            />
-            <div v-else class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="reportstab" role="tabpanel">
+      <div class="container-fluid">
+        <div class="row justify-content-center">
+          <div class="col-md-12 m-2">
+            <div
+              class="card-body bg-success text-white h3"
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              Daily Reports
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card x">
-          <div class="card-header text-primary text-center">
-            <strong>Current Occupancy</strong>
-          </div>
-          <div
-            class="card-body chart"
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <bar-chart
-              :key="componentKey"
-              v-if="loaded[1]"
-              :chartData="bar1Data"
+        <div class="row justify-content-center">
+          <div class="col-md-12 m-2">
+            <label for="customRange3" class="form-label"
+              >Showing
+              {{
+                10 - backtrack === 0
+                  ? " today..."
+                  : `${10 - backtrack} day${
+                      10 - backtrack === 1 ? "" : "s"
+                    } ago...`
+              }}
+              ({{ this.chosenDate }})</label
+            >
+            <input
+              type="range"
+              :disabled="!loaded[0]"
+              class="form-range"
+              @change="scrollRecord"
+              min="0"
+              max="10"
+              step="1"
+              v-model="backtrack"
+              id="customRange3"
             />
-            <div v-else class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-md-2 m-2">
+            <div class="card x bg-primary text-white">
+              <div class="card-body row">
+                <div class="col-md-8">
+                  <h5 class="card-title">Bookings</h5>
+                  <p class="card-text">
+                    {{ numReservations }} / {{ availableRooms }}
+                  </p>
+                </div>
+                <div
+                  class="col-md-4 d-flex justify-content-center align-items-center"
+                >
+                  <i class="fas fa-book-open fa-2x"></i>
+                </div>
+              </div>
             </div>
+          </div>
+          <div class="col-md-2 m-2">
+            <div class="card x bg-success text-white">
+              <div class="card-body row">
+                <div class="col-md-8">
+                  <h5 class="card-title">Guests</h5>
+                  <p class="card-text">{{ numGuests }}</p>
+                </div>
+                <div
+                  class="col-md-4 d-flex justify-content-center align-items-center"
+                >
+                  <i class="fas fa-users fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 m-2">
+            <div class="card x bg-danger text-white">
+              <div class="card-body row">
+                <div class="col-md-8">
+                  <h5 class="card-title">Gross</h5>
+                  <p class="card-text">{{ grossIncome }}</p>
+                </div>
+                <div
+                  class="col-md-4 d-flex justify-content-center align-items-center"
+                >
+                  <i class="fas fa-money-bill-alt fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 m-2">
+            <div class="card x bg-secondary text-white">
+              <div class="card-body row">
+                <div class="col-md-8">
+                  <h5 class="card-title">Pending</h5>
+                  <p class="card-text">{{ pending }}</p>
+                </div>
+                <div
+                  class="col-md-4 d-flex justify-content-center align-items-center"
+                >
+                  <i class="fas fa-hourglass-start fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 m-2">
+            <div class="card x bg-warning text-white">
+              <div class="card-body row">
+                <div class="col-md-8">
+                  <h5 class="card-title">Collectibles</h5>
+                  <p class="card-text">{{ collectibles }}</p>
+                </div>
+                <div
+                  class="col-md-4 d-flex justify-content-center align-items-center"
+                >
+                  <i class="fas fa-times-circle fa-2x"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row row justify-content-center">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card x">
+                <div class="card-header text-primary text-center">
+                  <strong>Reservation Summary</strong>
+                </div>
+                <div
+                  class="card-body chart"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <pie-chart
+                    :key="componentKey"
+                    v-if="loaded[0]"
+                    :chartData="pie1Data"
+                  />
+                  <div v-else class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card x">
+                <div class="card-header text-primary text-center">
+                  <strong>Current Occupancy</strong>
+                </div>
+                <div
+                  class="card-body chart"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <bar-chart
+                    :key="componentKey"
+                    v-if="loaded[1]"
+                    :chartData="bar1Data"
+                  />
+                  <div v-else class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row row justify-content-center">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card x">
+                <div class="card-header text-primary text-center">
+                  <strong>Collection Summary Report</strong>
+                </div>
+                <div
+                  class="card-body chart"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <bar-chart
+                    :key="componentKey"
+                    v-if="loaded[3]"
+                    :chartData="bar3Data"
+                  />
+                  <div v-else class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card x">
+                <div class="card-header text-primary text-center">
+                  <strong>Transaction Type</strong>
+                </div>
+                <div
+                  class="card-body chart"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <pie-chart
+                    :key="componentKey"
+                    v-if="loaded[2]"
+                    :chartData="pie2Data"
+                  />
+                  <div v-else class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row row justify-content-center">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card x">
+                <div class="card-header text-primary text-center">
+                  <strong>Approved/Disapproved Agent's Payment Report</strong>
+                </div>
+                <div
+                  class="card-body chart"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <pie-chart
+                    :key="componentKey"
+                    v-if="loaded[3]"
+                    :chartData="pie3Data"
+                  />
+                  <div v-else class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card x">
+                <div class="card-header text-primary text-center">
+                  <strong>Agent Type Transaction Summary</strong>
+                </div>
+                <div
+                  class="card-body chart"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <bar-chart
+                    :key="componentKey"
+                    v-if="loaded[3]"
+                    :chartData="bar4Data"
+                  />
+                  <div v-else class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-md-12 m-2">
+            <div
+              class="card-body bg-success text-white h3"
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              Overall Reports
+            </div>
+          </div>
+        </div>
+        <div class="row row justify-content-center">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card x">
+                <div class="card-header text-primary text-center">
+                  <strong>Reservation Trend</strong>
+                </div>
+                <div
+                  class="card-body chart"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <line-chart
+                    :key="componentKey"
+                    v-if="loaded[6]"
+                    :chartData="line1Data"
+                  />
+                  <div v-else class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card x">
+                <div class="card-header text-primary text-center">
+                  <strong>Total Revenue</strong>
+                </div>
+                <div
+                  class="card-body chart"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <bar-chart
+                    :key="componentKey"
+                    v-if="loaded[7]"
+                    :chartData="bar2Data"
+                  />
+                  <div v-else class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card x">
+                <div class="card-header text-primary text-center">
+                  <strong>Sales Trend</strong>
+                </div>
+                <div
+                  class="card-body chart"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <line-chart
+                    :key="componentKey"
+                    v-if="loaded[8]"
+                    :chartData="line2Data"
+                  />
+                  <div v-else class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row row justify-content-center">
+          <div class="col-md-4">
+            <div class="card x">----------------</div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="row row justify-content-center">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card x">
-          <div class="card-header text-primary text-center">
-            <strong>Collection Summary Report</strong>
-          </div>
-          <div
-            class="card-body chart"
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <bar-chart
-              :key="componentKey"
-              v-if="loaded[3]"
-              :chartData="bar3Data"
+    <div class="tab-pane fade" id="workflowstab" role="tabpanel">
+      <div class="container-fluid">
+        <div class="row row justify-content-center">
+          <div class="col-md-2"></div>
+          <div class="col-md-10">
+            <table-component
+              :mainHeaders="transrecordOptions"
+              :mainItems="filteredtransrecord"
+              :editable="false"
+              :toggleable="false"
+              :custombtn="true"
+              @custombtn-action="viewRecord"
             />
-            <div v-else class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
+          </div>
+        </div>
+        <div class="row row justify-content-center">
+          <div class="col-md-12">
+            <div class="card x" style="height: 50px">----------------</div>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
-        <div class="card x">
-          <div class="card-header text-primary text-center">
-            <strong>Transaction Type</strong>
-          </div>
-          <div
-            class="card-body chart"
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <pie-chart
-              :key="componentKey"
-              v-if="loaded[2]"
-              :chartData="pie2Data"
-            />
-            <div v-else class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row row justify-content-center">
-    <div class="row">
-      <div class="col-md-6">
-        <div class="card x">
-          <div class="card-header text-primary text-center">
-            <strong>Approved/Disapproved Agent's Payment Report</strong>
-          </div>
-          <div
-            class="card-body chart"
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <pie-chart
-              :key="componentKey"
-              v-if="loaded[4]"
-              :chartData="pie3Data"
-            />
-            <div v-else class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card x">
-          <div class="card-header text-primary text-center">
-            <strong>Agent Type Transaction Summary</strong>
-          </div>
-          <div
-            class="card-body chart"
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <bar-chart
-              :key="componentKey"
-              v-if="loaded[3]"
-              :chartData="bar4Data"
-            />
-            <div v-else class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-md-12 m-2">
-      <div
-        class="card-body bg-success text-white h3"
-        style="display: flex; justify-content: center; align-items: center"
-      >
-        Overall Reports
-      </div>
-    </div>
-  </div>
-  <div class="row row justify-content-center">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card x">
-          <div class="card-header text-primary text-center">
-            <strong>Reservation Trend</strong>
-          </div>
-          <div
-            class="card-body chart"
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <line-chart
-              :key="componentKey"
-              v-if="loaded[6]"
-              :chartData="line1Data"
-            />
-            <div v-else class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card x">
-          <div class="card-header text-primary text-center">
-            <strong>Total Revenue</strong>
-          </div>
-          <div
-            class="card-body chart"
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <bar-chart
-              :key="componentKey"
-              v-if="loaded[7]"
-              :chartData="bar2Data"
-            />
-            <div v-else class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card x">
-          <div class="card-header text-primary text-center">
-            <strong>Sales Trend</strong>
-          </div>
-          <div
-            class="card-body chart"
-            style="display: flex; justify-content: center; align-items: center"
-          >
-            <line-chart
-              :key="componentKey"
-              v-if="loaded[8]"
-              :chartData="line2Data"
-            />
-            <div v-else class="spinner-border" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row row justify-content-center">
-    <div class="col-md-4">
-      <div class="card x">----------------</div>
     </div>
   </div>
 </template>
 <script>
+import TableComponent from "@/components/common/GenericTable.vue";
 import arima from "arima/async";
 import PieChart from "./charts/PieChart.vue";
 import BarChart from "./charts/BarChart.vue";
@@ -360,6 +463,7 @@ function formatDate2(dateString) {
 
 export default {
   components: {
+    TableComponent,
     PieChart,
     BarChart,
     LineChart,
@@ -372,6 +476,63 @@ export default {
   },
   data() {
     return {
+      transrecordOptions: [
+        {
+          label: "ID",
+          field: "transactionrecord_id",
+          sortable: true,
+        },
+        {
+          label: "Date",
+          field: "transaction_date",
+          sortable: true,
+        },
+        {
+          label: "Method",
+          field: "paymentMethod",
+          sortable: true,
+        },
+        {
+          label: "Reference",
+          field: "nonCashReference",
+          sortable: true,
+        },
+        {
+          label: "Bill amount",
+          field: "totalAmountToPay",
+          sortable: true,
+        },
+        {
+          label: "Cash Payment",
+          field: "cashAmountPay",
+          sortable: true,
+        },
+        {
+          label: "Agent Payment",
+          field: "agentPayment",
+          sortable: true,
+        },
+        {
+          label: "Discount",
+          field: "discount",
+          sortable: true,
+        },
+        {
+          label: "Processed by",
+          field: "processedBy",
+          sortable: true,
+        },
+        {
+          label: "Status",
+          field: "status",
+          sortable: true,
+        },
+        {
+          label: "",
+          field: "action",
+          sortable: false,
+        },
+      ],
       pending: 0,
       chosenDate: null,
       backtrack: 10,
@@ -383,6 +544,7 @@ export default {
       prevransItems: [],
       predictions: [],
       roomcategories: [],
+      transrecords: [],
       agents: ["agoda"],
       numReservations: 0,
       numGuests: 0,
@@ -464,6 +626,28 @@ export default {
       },
     };
   },
+  computed: {
+    filteredtransrecord() {
+      return this.transrecords
+        .filter(
+          (o) =>
+            o.paymentMethod.includes("agent") &&
+            o.paymentMethod.includes("credit")
+        )
+        .map((o) => {
+          const discount =
+            parseFloat(o.discountValue) === 0
+              ? "none"
+              : o.discountMode + "-" + o.discountValue;
+          const status = o.agent_isApproved == 0 ? "pending" : "approved";
+          return {
+            status,
+            discount,
+            ...o,
+          };
+        });
+    },
+  },
   methods: {
     parseDate(dateString) {
       const [day, month, year] = dateString.split("/");
@@ -524,14 +708,13 @@ export default {
     },
     pie3Datasets(data) {
       const approved = data
-        .filter((item) => item.agent_isApproved === 1)
+        .filter((item) => item.agent_isApproved == 1)
         .reduce((accumulator, currentValue) => {
           return accumulator + parseFloat(currentValue.agentPayment);
         }, 0);
       const pending = data
         .filter(
-          (item) =>
-            item.agent_isApproved === 0 || item.agent_isApproved === null
+          (item) => item.agent_isApproved == 0 || item.agent_isApproved == null
         )
         .reduce((accumulator, currentValue) => {
           return accumulator + parseFloat(currentValue.agentPayment);
@@ -562,7 +745,10 @@ export default {
       let collection = [];
       for (const name of uniqueProcessedByList) {
         const total = data
-          .filter((item) => item.processedBy === name)
+          .filter(
+            (item) =>
+              item.processedBy === name && !item.paymentMethod.includes("agent")
+          )
           .reduce((accumulator, currentValue) => {
             return accumulator + parseFloat(currentValue.cashAmountPay);
           }, 0);
@@ -635,7 +821,11 @@ export default {
       result.totalCashAmountPay.unshift(0);
 
       this.line2Data.labels = result.dates;
+
       this.line2Data.datasets[0].data = result.totalCashAmountPay;
+      // this.line2Data.datasets[0].data = this.forecast(
+      //   result.totalCashAmountPay
+      // );
     },
     forecast(data) {
       let vm = this;
@@ -653,6 +843,7 @@ export default {
         const [pred, errors] = arima.predict(data.length);
         vm.forecastedData = pred;
       });
+      return this.forecastedData;
     },
     scrollRecord() {
       this.loaded.fill(false, 0, 4);
@@ -687,6 +878,8 @@ export default {
         const transactionRecordsData = await axios.get(
           this.API_URL + "transaction/record/"
         );
+
+        this.transrecords = transactionRecordsData.data;
 
         const roomscatResponse = await axios.get(
           this.API_URL + "rooms/category/"
@@ -865,9 +1058,33 @@ export default {
             return accumulator + parseFloat(currentValue.agentPayment);
           }, 0);
 
-        this.pending = notApprovedAgentPayment;
-
         this.collectibles = nonAgentBalance + notApprovedAgentPayment;
+
+        const notApprovedAllAgentPayment = transactionRecordsData.data
+          .filter((item) => {
+            const transactionDate = new Date(item.transaction_date);
+            const isAgentType = item.paymentMethod.includes("agent");
+            const isApproved = item.agent_isApproved;
+            return (
+              isAgentType &&
+              !isApproved &&
+              transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
+              transactionDate <
+                new Date(
+                  new Date(new Date(curday.getTime() + 86400000)).setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                  )
+                )
+            );
+          })
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.agentPayment);
+          }, 0);
+
+        this.pending = notApprovedAllAgentPayment;
 
         this.pie2Datasets(
           trans_itemizer_data.data.filter((item) => {
