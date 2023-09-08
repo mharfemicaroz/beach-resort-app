@@ -4964,6 +4964,9 @@ export default {
                   $("#linkview1").tab("show");
                 });
             }
+          } else {
+            this.reportview = 1;
+            $("#linkview1").tab("show");
           }
         });
     },
