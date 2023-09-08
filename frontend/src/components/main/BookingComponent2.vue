@@ -485,9 +485,54 @@
                 </div>
               </div> -->
             <div class="col-md-6">
-              <div class="d-flex align-items-center">
-                <h2 class="position-relative">Registration Form (preview)</h2>
-                <div class="ms-auto d-flex align-items-center">
+              <div class="mt-0 mb-1 d-flex justify-content-between">
+                <div class="col-md-3">
+                  <ul class="nav bg radius nav-pills nav-fill" role="tablist">
+                    <li class="nav-item">
+                      <a
+                        class="nav-link active show"
+                        id="linkview1"
+                        data-bs-toggle="tab"
+                        @click="reportview = 1"
+                        role="tab"
+                        href="#view1"
+                      >
+                        <i class="fa fa-tags"></i>1</a
+                      >
+                    </li>
+                    <li class="nav-item">
+                      <a
+                        class="nav-link"
+                        id="linkview2"
+                        data-bs-toggle="tab"
+                        role="tab"
+                        @click="
+                          reportview = 2;
+                          passwordProtectTab(2);
+                        "
+                        href="#view2"
+                      >
+                        <i class="fa fa-tags"></i>2</a
+                      >
+                    </li>
+                    <li class="nav-item">
+                      <a
+                        class="nav-link"
+                        id="linkview3"
+                        data-bs-toggle="tab"
+                        role="tab"
+                        @click="
+                          reportview = 3;
+                          passwordProtectTab(3);
+                        "
+                        href="#view3"
+                      >
+                        <i class="fa fa-tags"></i>3</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <div class="d-flex align-items-center">
                   <!-- Wrap the buttons in a flex container -->
                   <button
                     type="button"
@@ -503,254 +548,599 @@
                   </button>
                 </div>
               </div>
-              <!-- <div class="card">
-                    <div class="card-body">
-                      <span><strong>Name:</strong> {{ billing.clientName }}</span><br />
-                      <span><strong>Email:</strong> {{ billing.clientEmail }}</span><br />
-                      <span><strong>Phone:</strong> {{ billing.clientPhone }}</span><br />
-                      <span><strong>Address:</strong> {{ billing.clientAddress }}</span>
-                    </div>
-                  </div> -->
-              <div
-                id="billing-details-preview"
-                class="bg-light"
-                :style="`height:${calcMeasure.height3}!important;overflow-y: auto;overflow-x: hidden;font-size: 100%;padding: 20px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);`"
-              >
-                <div class="container">
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="row justify-content-between">
-                        <div class="col-4">
-                          <img
-                            :src="`/src/assets/${this.APP_LOGO_NAME}`"
-                            width="60"
-                            height="60"
-                            alt="Company Logo"
-                            class="logo"
-                          />
-                        </div>
-                        <div class="col-4 text-center">
-                          <span class="h4">Registration Form</span>
-                        </div>
-                        <div class="col-3 text-right">
-                          <span style="font-size: small"
-                            >Registration No.:
-                            {{ this.billing.bookingID }}</span
-                          >
+              <div class="tab-content" id="myTabContent">
+                <div
+                  class="tab-pane fade show active"
+                  id="view1"
+                  role="tabpanel"
+                >
+                  <div
+                    id="rview1"
+                    class="bg-light"
+                    :style="`height:${calcMeasure.height3}!important;overflow-y: auto;overflow-x: hidden;font-size: 100%;padding: 20px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);`"
+                  >
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="row justify-content-between">
+                            <div class="col-4">
+                              <img
+                                :src="`/src/assets/${this.APP_LOGO_NAME}`"
+                                width="60"
+                                height="60"
+                                alt="Company Logo"
+                                class="logo"
+                              />
+                            </div>
+                            <div class="col-4 text-center">
+                              <span class="h4">Registration Form</span>
+                            </div>
+                            <div class="col-3 text-right">
+                              <span style="font-size: small"
+                                >Registration No.:
+                                {{ this.billing.bookingID }}</span
+                              >
+                            </div>
+                          </div>
+                          <hr style="margin-bottom: 0px; margin-top: 0px" />
                         </div>
                       </div>
-                      <hr style="margin-bottom: 0px; margin-top: 0px" />
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="row">
+                            <div class="col-6">
+                              <span style="font-size: small"
+                                >Client Details:</span
+                              >
+                              <p style="margin-bottom: 0px">
+                                Name: {{ this.billing.clientName }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Email: {{ this.billing.clientEmail }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Contact No.: {{ this.billing.clientPhone }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Address: {{ this.billing.clientAddress }}
+                              </p>
+                            </div>
+                            <div class="col-6" v-if="!walkinStatus">
+                              <span style="font-size: small"
+                                >Booking Details:</span
+                              >
+                              <p style="margin-bottom: 0px">
+                                Checkin Date: {{ this.reservation.checkinDate }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Checkout Date: {{ setCheckoutDate() }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Total Pax: {{ sumtotalPax() }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Total Guest(s): {{ sumTotalGuests() }}
+                              </p>
+                            </div>
+                          </div>
+                          <hr style="margin-bottom: 0px; margin-top: 0px" />
+                          <div id="billing-details-preview-view1">
+                            <div class="row">
+                              <div class="col-12">
+                                <span style="font-size: small"
+                                  >Order Details:</span
+                                >
+                                <table class="table">
+                                  <thead>
+                                    <tr>
+                                      <th>Item Name</th>
+                                      <th>Category</th>
+                                      <th>Qty</th>
+                                      <th>Pax</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr
+                                      v-for="item in combinedcart"
+                                      :key="item.id"
+                                    >
+                                      <td>
+                                        {{
+                                          item.name.toLowerCase() ===
+                                          "room guest"
+                                            ? (parseFloat(item.totalguest) <=
+                                              parseFloat(item.totalpax)
+                                                ? item.name
+                                                : "Excess Person") +
+                                              "-" +
+                                              item.currentroom
+                                            : item.name
+                                        }}
+                                      </td>
+                                      <td>{{ item.type }}</td>
+                                      <td>
+                                        {{ item.purqty }}
+                                      </td>
+                                      <td>
+                                        {{
+                                          item.totalCartPrice <
+                                            item.purqty *
+                                              parseFloat(
+                                                item.priceRate.split("/")[0]
+                                              ) *
+                                              item.numdays &&
+                                          item.itemOption !== "room"
+                                            ? "(free " +
+                                              (parseFloat(item.totalpax) -
+                                                parseFloat(item.totalguest) +
+                                                parseFloat(item.purqty)) +
+                                              ")=" +
+                                              (item.totalguest < item.totalpax
+                                                ? 0
+                                                : item.totalguest -
+                                                  item.totalpax)
+                                            : item.itemOption === "room"
+                                            ? "Good for " + item.purqty
+                                            : ""
+                                        }}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col-12">
-                      <div class="row">
-                        <div class="col-6">
-                          <span style="font-size: small">Client Details:</span>
-                          <p style="margin-bottom: 0px">
-                            Name: {{ this.billing.clientName }}
-                          </p>
-                          <p style="margin-bottom: 0px">
-                            Email: {{ this.billing.clientEmail }}
-                          </p>
-                          <p style="margin-bottom: 0px">
-                            Contact No.: {{ this.billing.clientPhone }}
-                          </p>
-                          <p style="margin-bottom: 0px">
-                            Address: {{ this.billing.clientAddress }}
-                          </p>
-                        </div>
-                        <div class="col-6" v-if="!walkinStatus">
-                          <span style="font-size: small">Booking Details:</span>
-                          <p style="margin-bottom: 0px">
-                            Checkin Date: {{ this.reservation.checkinDate }}
-                          </p>
-                          <p style="margin-bottom: 0px">
-                            Checkout Date: {{ setCheckoutDate() }}
-                          </p>
-                          <p style="margin-bottom: 0px">
-                            Total Pax: {{ sumtotalPax() }}
-                          </p>
-                          <p style="margin-bottom: 0px">
-                            Total Guest(s): {{ sumTotalGuests() }}
-                          </p>
-                        </div>
-                      </div>
-                      <hr style="margin-bottom: 0px; margin-top: 0px" />
+                </div>
+                <div class="tab-pane fade" id="view2" role="tabpanel">
+                  <div
+                    id="rview2"
+                    class="bg-light"
+                    :style="`height:${calcMeasure.height3}!important;overflow-y: auto;overflow-x: hidden;font-size: 100%;padding: 20px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);`"
+                  >
+                    <div class="container">
                       <div class="row">
                         <div class="col-12">
-                          <span style="font-size: small">Order Details:</span>
-                          <table class="table">
-                            <thead>
-                              <tr>
-                                <th>Item Name</th>
-                                <th>Category</th>
-                                <th>Rate</th>
-                                <th>Qty</th>
-                                <th>Total Cost</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr v-for="item in combinedcart" :key="item.id">
-                                <td>
-                                  {{
-                                    item.name.toLowerCase() === "room guest"
-                                      ? (parseFloat(item.totalguest) <=
-                                        parseFloat(item.totalpax)
-                                          ? item.name
-                                          : "Excess Person") +
-                                        "-" +
-                                        item.currentroom
-                                      : item.name
-                                  }}
-                                </td>
-                                <td>{{ item.type }}</td>
-                                <td>{{ item.priceRate }}</td>
-                                <td>
-                                  {{
-                                    item.totalCartPrice <
-                                      item.purqty *
-                                        parseFloat(
-                                          item.priceRate.split("/")[0]
-                                        ) *
-                                        item.numdays &&
-                                    item.itemOption !== "room"
-                                      ? item.purqty +
-                                        "(free " +
-                                        item.totalpax +
-                                        ")=" +
-                                        (item.purqty < item.totalpax
-                                          ? 0
-                                          : item.purqty - item.totalpax) +
-                                        `&times;${item.numdays}`
-                                      : item.purqty +
-                                        (item.itemOption === "room" ||
-                                        item.name.toLowerCase() !== "room guest"
-                                          ? ""
-                                          : `&times;${item.numdays}`)
-                                  }}
-                                </td>
-                                <td v-if="item.itemOption !== 'room'">
-                                  {{ item.totalCartPrice }}
-                                </td>
-                                <td v-else>
-                                  <span
-                                    v-if="!isNaN(subroom.discountValue)"
-                                    v-html="
-                                      `${
-                                        item.totalCartPrice
-                                      } <sup class='text-danger font-weight-bold'>${
-                                        subroom.discountMode === 'percentage'
-                                          ? subroom.discountValue + '%'
-                                          : (
-                                              subroom.discountValue /
-                                              combinedcart.filter(
-                                                (o) => o.itemOption === 'room'
-                                              ).length
-                                            ).toFixed(2)
-                                      } off</sup> <span class='text-success font-weight-bold'>${
-                                        subroom.discountMode === 'percentage'
-                                          ? item.totalCartPrice *
-                                            (1 -
-                                              parseFloat(
-                                                subroom.discountValue / 100
-                                              ))
-                                          : item.totalCartPrice -
-                                            (
-                                              subroom.discountValue /
-                                              combinedcart.filter(
-                                                (o) => o.itemOption === 'room'
-                                              ).length
-                                            ).toFixed(2)
-                                      }</span>`
-                                    "
-                                  ></span>
-                                  <span
-                                    v-else
-                                    v-html="`${item.totalCartPrice}`"
-                                  ></span>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td colspan="4" class="text-right">
-                                  <strong>Partial Payment:</strong>
-                                </td>
-                                <td class="text-danger">
-                                  <strong>-Php {{ partialPayment }}</strong>
-                                </td>
-                              </tr>
-                              <tr>
-                                <td colspan="4" class="text-right">
-                                  <strong>Total Due:</strong>
-                                </td>
-                                <td>
-                                  <strong>Php {{ total }}</strong>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                      <hr style="margin-bottom: 0px; margin-top: 0px" />
-                      <div class="row">
-                        <div class="col-12">
-                          <span style="font-size: small">Account History:</span>
-                          <table class="table">
-                            <thead>
-                              <tr>
-                                <th>Date</th>
-                                <th>Type</th>
-                                <th>Reference #</th>
-                                <th>Description</th>
-                                <th>Amount</th>
-                                <th>Balance</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr
-                                v-for="(item, index) in cashHistory"
-                                :key="item.id"
+                          <div class="row justify-content-between">
+                            <div class="col-4">
+                              <img
+                                :src="`/src/assets/${this.APP_LOGO_NAME}`"
+                                width="60"
+                                height="60"
+                                alt="Company Logo"
+                                class="logo"
+                              />
+                            </div>
+                            <div class="col-4 text-center">
+                              <span class="h4">Billing Form</span>
+                            </div>
+                            <div class="col-3 text-right">
+                              <span style="font-size: small"
+                                >Tracking No.:
+                                {{ this.billing.bookingID }}</span
                               >
-                                <td>
-                                  {{
-                                    new Date(
-                                      item.transaction_date
-                                    ).toLocaleDateString()
-                                  }},
-                                  {{ getTime(new Date(item.transaction_date)) }}
-                                </td>
-                                <td>
-                                  {{ item.paymentMethod }}
-                                </td>
-                                <td>
-                                  {{
-                                    item.nonCashReference
-                                      .toString()
-                                      .replace("-", "") === ""
-                                      ? item.transactionrecord_id
-                                      : item.transactionrecord_id +
-                                        "-" +
-                                        item.nonCashReference
-                                  }}
-                                </td>
-                                <td>
-                                  {{
-                                    index === 0
-                                      ? "Init/DP"
-                                      : parseFloat(item.balance) === 0
-                                      ? "Full"
-                                      : "Partial"
-                                  }}
-                                </td>
-                                <td>
-                                  {{ item.cashAmountPay }}
-                                </td>
-                                <td>
-                                  {{ item.balance }}
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                            </div>
+                          </div>
+                          <hr style="margin-bottom: 0px; margin-top: 0px" />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="row">
+                            <div class="col-6">
+                              <span style="font-size: small"
+                                >Client Details:</span
+                              >
+                              <p style="margin-bottom: 0px">
+                                Name: {{ this.billing.clientName }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Email: {{ this.billing.clientEmail }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Contact No.: {{ this.billing.clientPhone }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Address: {{ this.billing.clientAddress }}
+                              </p>
+                            </div>
+                            <div class="col-6" v-if="!walkinStatus">
+                              <span style="font-size: small"
+                                >Booking Details:</span
+                              >
+                              <p style="margin-bottom: 0px">
+                                Checkin Date: {{ this.reservation.checkinDate }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Checkout Date: {{ setCheckoutDate() }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Total Pax: {{ sumtotalPax() }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Total Guest(s): {{ sumTotalGuests() }}
+                              </p>
+                            </div>
+                          </div>
+                          <hr style="margin-bottom: 0px; margin-top: 0px" />
+                          <div id="billing-details-preview-view2">
+                            <div class="row">
+                              <div class="col-12">
+                                <span style="font-size: small"
+                                  >Account History:</span
+                                >
+                                <table class="table">
+                                  <tr>
+                                    <td class="">
+                                      <strong>Sub-total:</strong>
+                                    </td>
+                                    <td class="d-flex flex-row-reverse">
+                                      Php
+                                      {{ subtotal }}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td class="">
+                                      <strong>Partial Payment:</strong>
+                                    </td>
+                                    <td class="d-flex flex-row-reverse">
+                                      -Php
+                                      {{ partialPayment }}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td class="">
+                                      <strong>Total Due:</strong>
+                                    </td>
+                                    <td class="d-flex flex-row-reverse">
+                                      Php
+                                      {{ total }}
+                                    </td>
+                                  </tr>
+                                </table>
+                                <table class="table">
+                                  <thead>
+                                    <tr>
+                                      <th>Date</th>
+                                      <th>Type</th>
+                                      <th>Reference #</th>
+                                      <th>Description</th>
+                                      <th>Amount</th>
+                                      <th>Balance</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr
+                                      v-for="(item, index) in cashHistory"
+                                      :key="item.id"
+                                    >
+                                      <td>
+                                        {{
+                                          new Date(
+                                            item.transaction_date
+                                          ).toLocaleDateString()
+                                        }},
+                                        {{
+                                          getTime(
+                                            new Date(item.transaction_date)
+                                          )
+                                        }}
+                                      </td>
+                                      <td>
+                                        {{ item.paymentMethod }}
+                                      </td>
+                                      <td>
+                                        {{
+                                          item.nonCashReference
+                                            .toString()
+                                            .replace("-", "") === ""
+                                            ? item.id
+                                            : item.id +
+                                              "-" +
+                                              item.nonCashReference
+                                        }}
+                                      </td>
+                                      <td>
+                                        {{
+                                          index === 0
+                                            ? "Init/DP"
+                                            : parseFloat(item.balance) === 0
+                                            ? "Full"
+                                            : "Partial"
+                                        }}
+                                      </td>
+                                      <td>
+                                        {{ item.cashAmountPay }}
+                                      </td>
+                                      <td>
+                                        {{ item.balance }}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="view3" role="tabpanel">
+                  <div
+                    id="rview3"
+                    class="bg-light"
+                    :style="`height:${calcMeasure.height3}!important;overflow-y: auto;overflow-x: hidden;font-size: 100%;padding: 20px;box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);`"
+                  >
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="row justify-content-between">
+                            <div class="col-4">
+                              <img
+                                :src="`/src/assets/${this.APP_LOGO_NAME}`"
+                                width="60"
+                                height="60"
+                                alt="Company Logo"
+                                class="logo"
+                              />
+                            </div>
+                            <div class="col-4 text-center">
+                              <span class="h4"
+                                >Registration & Billing Form</span
+                              >
+                            </div>
+                            <div class="col-3 text-right">
+                              <span style="font-size: small"
+                                >Registration No.:
+                                {{ this.billing.bookingID }}</span
+                              >
+                            </div>
+                          </div>
+                          <hr style="margin-bottom: 0px; margin-top: 0px" />
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="row">
+                            <div class="col-6">
+                              <span style="font-size: small"
+                                >Client Details:</span
+                              >
+                              <p style="margin-bottom: 0px">
+                                Name: {{ this.billing.clientName }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Email: {{ this.billing.clientEmail }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Contact No.: {{ this.billing.clientPhone }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Address: {{ this.billing.clientAddress }}
+                              </p>
+                            </div>
+                            <div class="col-6" v-if="!walkinStatus">
+                              <span style="font-size: small"
+                                >Booking Details:</span
+                              >
+                              <p style="margin-bottom: 0px">
+                                Checkin Date: {{ this.reservation.checkinDate }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Checkout Date: {{ setCheckoutDate() }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Total Pax: {{ sumtotalPax() }}
+                              </p>
+                              <p style="margin-bottom: 0px">
+                                Total Guest(s): {{ sumTotalGuests() }}
+                              </p>
+                            </div>
+                          </div>
+                          <hr style="margin-bottom: 0px; margin-top: 0px" />
+                          <div id="billing-details-preview-view3">
+                            <div class="row">
+                              <div class="col-12">
+                                <span style="font-size: small"
+                                  >Order Details:</span
+                                >
+                                <table class="table">
+                                  <thead>
+                                    <tr>
+                                      <th>Item Name</th>
+                                      <th>Category</th>
+                                      <th>Rate</th>
+                                      <th>Qty</th>
+                                      <th>Total Cost</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr
+                                      v-for="item in combinedcart"
+                                      :key="item.id"
+                                    >
+                                      <td>
+                                        {{
+                                          item.name.toLowerCase() ===
+                                          "room guest"
+                                            ? (parseFloat(item.totalguest) <=
+                                              parseFloat(item.totalpax)
+                                                ? item.name
+                                                : "Excess Person") +
+                                              "-" +
+                                              item.currentroom
+                                            : item.name
+                                        }}
+                                      </td>
+                                      <td>{{ item.type }}</td>
+                                      <td>{{ item.priceRate }}</td>
+                                      <td>
+                                        {{
+                                          item.totalCartPrice <
+                                            item.purqty *
+                                              parseFloat(
+                                                item.priceRate.split("/")[0]
+                                              ) *
+                                              item.numdays &&
+                                          item.itemOption !== "room"
+                                            ? item.purqty +
+                                              "(free " +
+                                              item.totalpax +
+                                              ")=" +
+                                              (item.totalguest < item.totalpax
+                                                ? 0
+                                                : item.totalguest -
+                                                  item.totalpax) +
+                                              `&times;${item.numdays}`
+                                            : item.purqty +
+                                              (item.itemOption === "room" ||
+                                              item.name.toLowerCase() !==
+                                                "room guest"
+                                                ? ""
+                                                : `&times;${item.numdays}`)
+                                        }}
+                                      </td>
+                                      <td v-if="item.itemOption !== 'room'">
+                                        {{ item.totalCartPrice }}
+                                      </td>
+                                      <td v-else>
+                                        <span
+                                          v-if="!isNaN(subroom.discountValue)"
+                                          v-html="
+                                            `${
+                                              item.totalCartPrice
+                                            } <sup class='text-danger font-weight-bold'>${
+                                              subroom.discountMode ===
+                                              'percentage'
+                                                ? subroom.discountValue + '%'
+                                                : (
+                                                    subroom.discountValue /
+                                                    combinedcart.filter(
+                                                      (o) =>
+                                                        o.itemOption === 'room'
+                                                    ).length
+                                                  ).toFixed(2)
+                                            } off</sup> <span class='text-success font-weight-bold'>${
+                                              subroom.discountMode ===
+                                              'percentage'
+                                                ? item.totalCartPrice *
+                                                  (1 -
+                                                    parseFloat(
+                                                      subroom.discountValue /
+                                                        100
+                                                    ))
+                                                : item.totalCartPrice -
+                                                  (
+                                                    subroom.discountValue /
+                                                    combinedcart.filter(
+                                                      (o) =>
+                                                        o.itemOption === 'room'
+                                                    ).length
+                                                  ).toFixed(2)
+                                            }</span>`
+                                          "
+                                        ></span>
+                                        <span
+                                          v-else
+                                          v-html="`${item.totalCartPrice}`"
+                                        ></span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td colspan="4" class="text-right">
+                                        <strong>Partial Payment:</strong>
+                                      </td>
+                                      <td class="text-danger">
+                                        <strong
+                                          >-Php {{ partialPayment }}</strong
+                                        >
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td colspan="4" class="text-right">
+                                        <strong>Total Due:</strong>
+                                      </td>
+                                      <td>
+                                        <strong>Php {{ total }}</strong>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                            <hr style="margin-bottom: 0px; margin-top: 0px" />
+                            <div class="row">
+                              <div class="col-12">
+                                <span style="font-size: small"
+                                  >Account History:</span
+                                >
+                                <table class="table">
+                                  <thead>
+                                    <tr>
+                                      <th>Date</th>
+                                      <th>Type</th>
+                                      <th>Reference #</th>
+                                      <th>Description</th>
+                                      <th>Amount</th>
+                                      <th>Balance</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr
+                                      v-for="(item, index) in cashHistory"
+                                      :key="item.id"
+                                    >
+                                      <td>
+                                        {{
+                                          new Date(
+                                            item.transaction_date
+                                          ).toLocaleDateString()
+                                        }},
+                                        {{
+                                          getTime(
+                                            new Date(item.transaction_date)
+                                          )
+                                        }}
+                                      </td>
+                                      <td>
+                                        {{ item.paymentMethod }}
+                                      </td>
+                                      <td>
+                                        {{
+                                          item.nonCashReference
+                                            .toString()
+                                            .replace("-", "") === ""
+                                            ? item.id
+                                            : item.id +
+                                              "-" +
+                                              item.nonCashReference
+                                        }}
+                                      </td>
+                                      <td>
+                                        {{
+                                          index === 0
+                                            ? "Init/DP"
+                                            : parseFloat(item.balance) === 0
+                                            ? "Full"
+                                            : "Partial"
+                                        }}
+                                      </td>
+                                      <td>
+                                        {{ item.cashAmountPay }}
+                                      </td>
+                                      <td>
+                                        {{ item.balance }}
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1363,7 +1753,8 @@
               </div>
             </div>
             <hr />
-            <div class="row">
+            <div id="reportGenerator"></div>
+            <!-- <div class="row">
               <div class="col-12">
                 <span style="font-size: small">Order Details:</span>
                 <table border="1">
@@ -1495,10 +1886,8 @@
                         {{
                           item.nonCashReference.toString().replace("-", "") ===
                           ""
-                            ? item.transactionrecord_id
-                            : item.transactionrecord_id +
-                              "-" +
-                              item.nonCashReference
+                            ? item.id
+                            : item.id + "-" + item.nonCashReference
                         }}
                       </td>
                       <td>
@@ -1520,7 +1909,8 @@
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> -->
+
             <hr />
             <div class="row">
               <div class="col-12">
@@ -3452,6 +3842,7 @@ export default {
   },
   data() {
     return {
+      reportview: 1,
       agentPayment: 0,
       packages: [],
       isReadyToPrintStabs: false,
@@ -4531,6 +4922,51 @@ export default {
     },
   },
   methods: {
+    passwordProtectTab(n) {
+      document.getElementById(`rview${n}`).style.display = "none";
+      this.$swal
+        .fire({
+          title: "Authorization Required",
+          input: "text",
+          showCancelButton: true,
+          allowOutsideClick: false,
+          inputAttributes: {
+            minlength: 6, // Minimum length of 3 characters
+            maxlength: 24, // Maximum length of 24 characters
+            autocomplete: "off",
+            style: "text-security:disc; -webkit-text-security:disc;",
+          },
+          confirmButtonText: "Submit",
+          cancelButtonText: "Cancel",
+          inputPlaceholder: "Enter authorization code",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            const authorizationCode = result.value;
+            // Validate the authorization code and perform necessary actions
+            if (
+              authorizationCode.toLowerCase() ===
+              this.AUTHORIZATION_KEY.toLowerCase()
+            ) {
+              // Code is correct, proceed with the desired action
+              document.getElementById(`rview${n}`).style.display = "block";
+            } else {
+              // Code is incorrect, show an error message or take appropriate action
+              this.$swal
+                .fire({
+                  icon: "error",
+                  title: "Incorrect Passcode",
+                  text: "The entered passcode is incorrect. Please try again.",
+                  allowOutsideClick: false,
+                })
+                .then((result) => {
+                  this.reportview = 1;
+                  $("#linkview1").tab("show");
+                });
+            }
+          }
+        });
+    },
     loadPackageItems(item) {
       const packItems = this.items.filter((o) => o.package_name == item.id);
       for (const o of packItems) {
@@ -5455,10 +5891,7 @@ export default {
               }
             );
             for (const item of existingTransaction_RECORD.data) {
-              axios.get(
-                this.API_URL +
-                  `transaction/record/delete/${item.transactionrecord_id}/`
-              );
+              axios.get(this.API_URL + `transaction/record/delete/${item.id}/`);
             }
           }
         } catch (error) {}
@@ -5514,10 +5947,7 @@ export default {
               }
             );
             for (const item of existingTransaction_RECORD.data) {
-              axios.get(
-                this.API_URL +
-                  `transaction/record/delete/${item.transactionrecord_id}/`
-              );
+              axios.get(this.API_URL + `transaction/record/delete/${item.id}/`);
             }
           }
         } catch (error) {}
@@ -8479,6 +8909,10 @@ export default {
     async generateBillingStatement() {
       // const response = await axios.get(this.API_URL + "transaction/");
       // this.billing.bookingID = response.data.length.toString()
+      document.getElementById(`reportGenerator`).innerHTML =
+        document.getElementById(
+          `billing-details-preview-view${this.reportview}`
+        ).innerHTML;
       this.printSection("billing-details", 1300, 850, false);
     },
     // printReservationHistory() {
