@@ -1706,7 +1706,13 @@
                 />
               </div>
               <div class="col-4 text-center">
-                <span class="h2">Registration Form</span>
+                <span class="h2">{{
+                  reportview === 1
+                    ? "Registration Form"
+                    : reportview === 2
+                    ? "Billing Form"
+                    : "Registration & Billing Form"
+                }}</span>
               </div>
               <div class="col-4 text-right">
                 <span style="font-size: small"
@@ -2132,6 +2138,23 @@
               </div>
             </div>
             <hr style="border-bottom: dotted" />
+          </div>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col-12">
+            <span style="font-size: small; font-weight: bold"
+              >Disclaimer: This Form is Not an Official Receipt</span
+            ><br />
+            <span
+              style="font-size: smaller"
+              class="text-muted d-flex justify-content-between"
+              >This document is not an official receipt. It is provided for
+              reference and informational purposes only and does not represent a
+              formal acknowledgment of payment. For official transactions or
+              receipts, please obtain the appropriate documentation from the
+              authorized source.</span
+            >
           </div>
         </div>
       </div>
