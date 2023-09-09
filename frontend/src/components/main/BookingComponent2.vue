@@ -573,13 +573,7 @@
                               />
                             </div>
                             <div class="col-4 text-center">
-                              <span class="h4">Registration Form</span>
-                            </div>
-                            <div class="col-3 text-right">
-                              <span style="font-size: small"
-                                >Registration No.:
-                                {{ this.billing.bookingID }}</span
-                              >
+                              <span class="h4">Guest Folio</span>
                             </div>
                           </div>
                           <hr style="margin-bottom: 0px; margin-top: 0px" />
@@ -715,7 +709,7 @@
                               />
                             </div>
                             <div class="col-4 text-center">
-                              <span class="h4">Billing Form</span>
+                              <span class="h4">Guest Folio</span>
                             </div>
                             <div class="col-3 text-right">
                               <span style="font-size: small"
@@ -889,9 +883,7 @@
                               />
                             </div>
                             <div class="col-4 text-center">
-                              <span class="h4"
-                                >Registration & Billing Form</span
-                              >
+                              <span class="h4">Guest Folio</span>
                             </div>
                             <div class="col-3 text-right">
                               <span style="font-size: small"
@@ -1706,13 +1698,7 @@
                 />
               </div>
               <div class="col-4 text-center">
-                <span class="h2">{{
-                  reportview === 1
-                    ? "Registration Form"
-                    : reportview === 2
-                    ? "Billing Form"
-                    : "Registration & Billing Form"
-                }}</span>
+                <span class="h2">Guest Folio</span>
               </div>
               <div class="col-4 text-right">
                 <span style="font-size: small"
