@@ -14,6 +14,7 @@ const app = createApp(App);
 //note fix bug in summary collection report
 app.config.globalProperties = {
   AUTHORIZATION_KEY: import.meta.env.VITE_AUTHORIZATION_KEY,
+  AUTHORIZATION_KEY2: import.meta.env.VITE_AUTHORIZATION_KEY2,
   APP_NAME: import.meta.env.VITE_APP_NAME,
   APP_LOGO_NAME: import.meta.env.VITE_APP_LOGO_NAME,
   SITE_ADDRESS: import.meta.env.VITE_SITE_ADDRESS,

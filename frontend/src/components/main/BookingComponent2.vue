@@ -684,8 +684,10 @@
                                                 ? 0
                                                 : item.totalguest -
                                                   item.totalpax)
-                                            : item.itemOption === "room"
-                                            ? "Good for " + item.totalpax
+                                            : item.itemOption === "room" &&
+                                              howmanyPax(item.name) > 0
+                                            ? "Good for " +
+                                              howmanyPax(item.name)
                                             : ""
                                         }}
                                       </td>
@@ -4963,6 +4965,9 @@ export default {
     },
   },
   methods: {
+    howmanyPax(name) {
+      return this.rooms.filter((o) => o.name === name)[0].pax;
+    },
     passwordProtectTab(n) {
       document.getElementById(`rview${n}`).style.display = "none";
       this.$swal
@@ -4987,7 +4992,7 @@ export default {
             // Validate the authorization code and perform necessary actions
             if (
               authorizationCode.toLowerCase() ===
-              this.AUTHORIZATION_KEY.toLowerCase()
+              this.AUTHORIZATION_KEY2.toLowerCase()
             ) {
               // Code is correct, proceed with the desired action
               document.getElementById(`rview${n}`).style.display = "block";
