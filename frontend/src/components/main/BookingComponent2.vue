@@ -537,7 +537,7 @@
                   <button
                     type="button"
                     class="btn btn-primary"
-                    v-show="this.isItNew && countInclusion === 0"
+                    v-show="countInclusion === 0"
                     v-if="!this.walkinStatus && !this.justDiscounted"
                     @click="generateBillingStatement()"
                   >
@@ -1701,7 +1701,7 @@
                 <span class="h2">Guest Folio</span>
               </div>
               <div class="col-4 text-right">
-                <span style="font-size: small"
+                <span style="font-size: small" v-if="reportview === 3"
                   >Registration No.: {{ this.billing.bookingID }}</span
                 >
               </div>
