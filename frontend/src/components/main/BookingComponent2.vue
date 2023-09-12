@@ -354,7 +354,10 @@
                   <button
                     type="button"
                     class="btn btn-primary me-2"
-                    v-show="reservation.status !== 'checkedout' || walkinStatus"
+                    v-show="
+                      (reservation.status !== 'checkedout' || walkinStatus) &&
+                      !walkinview
+                    "
                     :class="{ 'wiggle-animation': countInclusion === 0 }"
                     @click="showShoppingModal()"
                   >
@@ -365,7 +368,10 @@
                   </button>
                   <button
                     type="button"
-                    v-show="reservation.status !== 'checkedout' || walkinStatus"
+                    v-show="
+                      (reservation.status !== 'checkedout' || walkinStatus) &&
+                      !walkinview
+                    "
                     class="btn btn-primary"
                     :class="{ 'wiggle-animation': countInclusion > 0 }"
                     @click="moveInclusionCartToMain()"
@@ -431,7 +437,9 @@
                           item.itemOption === 'addons'
                         "
                         v-show="
-                          reservation.status !== 'checkedout' || walkinStatus
+                          (reservation.status !== 'checkedout' ||
+                            walkinStatus) &&
+                          !walkinview
                         "
                         type="button"
                         class="btn btn-danger"
@@ -538,7 +546,10 @@
                     type="button"
                     class="btn btn-primary"
                     v-show="countInclusion === 0"
-                    v-if="!this.walkinStatus && !this.justDiscounted"
+                    v-if="
+                      (!this.walkinStatus || this.walkinview) &&
+                      !this.justDiscounted
+                    "
                     @click="generateBillingStatement()"
                   >
                     <i class="fas fa-print"
@@ -1151,7 +1162,10 @@
                   <button
                     type="button"
                     class="btn btn-primary"
-                    v-show="reservation.status !== 'checkedout' || walkinStatus"
+                    v-show="
+                      (reservation.status !== 'checkedout' || walkinStatus) &&
+                      !walkinview
+                    "
                     @click="initializePlaceOrder"
                     :disabled="total <= 0 || countInclusion > 0"
                     style="
@@ -1643,11 +1657,27 @@
                             :mainItems="filteredTransactions"
                             :subHeaders2="transactionhistory"
                             :subHeaders="transactionitem"
-                            @delete-action="deleteTransaction"
-                            :deletable="true"
                             :editable="false"
                             :toggleable="true"
-                          />
+                          >
+                            <template #custombtn="data">
+                              <button
+                                type="button"
+                                class="btn btn-lg badge rounded-pill d-inline btn-danger"
+                                @click="deleteTransaction(data.data.dt.id)"
+                              >
+                                <i class="fa fa-times"></i>
+                              </button>
+                              &nbsp;
+                              <button
+                                type="button"
+                                class="btn btn-lg badge rounded-pill d-inline btn-primary"
+                                @click="openToCart(data.data.dt.id)"
+                              >
+                                <i class="fa fa-share"></i>
+                              </button>
+                            </template>
+                          </table-component>
                         </div>
                       </div>
                     </div>
@@ -4092,9 +4122,10 @@ export default {
           sortable: true,
         },
         {
-          label: "",
+          label: "Action",
           field: "action",
           sortable: false,
+          slot: true,
         },
       ],
       transactionhistory: [
@@ -4173,6 +4204,7 @@ export default {
           field: "dateCreated",
         },
       ],
+      walkinview: false,
       hoveredDay: null,
       dayreserve: new Date(),
       showTable: {},
@@ -6521,6 +6553,7 @@ export default {
       this.alreadyDiscounted = false;
       this.itemIndex = -1;
       this.walkinStatus = false;
+      this.walkinview = false;
       this.isItNew = false;
       if (no === 1) {
         this.$refs.searchQuery.focus();
@@ -6727,7 +6760,9 @@ export default {
         this.gbookingscount =
           groupbookings.length === 0 ? 1 : groupbookings.length;
       } catch (error) {}
-      this.toggleItemModal();
+      if (!$("#BookDayModal").hasClass("show")) {
+        this.toggleItemModal();
+      }
       $("#others-tab").tab("show");
       this.movetocartFlag = true;
       this.activeAccountFlag = true;
@@ -6757,8 +6792,125 @@ export default {
       });
       return uniqueBookings;
     },
-    async moveToCart() {
+    async openToCart(trans_id) {
+      try {
+        const response = await axios.get(
+          this.API_URL + `transaction/${trans_id}/`
+        );
+        const transaction = response.data;
+        const bookingID = transaction.bookingID;
+        if (bookingID.charAt(0) === "e") {
+          this.itemIndex = this.bookings.findIndex(
+            (o) => o.itemID === bookingID
+          );
+          this.reservation.checkinDate =
+            this.bookings[this.itemIndex].checkinDate;
+          this.reservation.checkoutDate =
+            this.bookings[this.itemIndex].checkoutDate;
+          this.reservation.status = this.bookings[this.itemIndex].status;
+          this.movecartAction();
+        } else if (bookingID.charAt(0) === "f") {
+          this.walkinStatus = true;
+          this.walkinview = true;
+          let existingTransaction = null;
+          existingTransaction = await axios.post(
+            `${this.API_URL}transaction/filter/`,
+            {
+              columnName: "bookingID",
+              columnKey: bookingID,
+            }
+          );
+          try {
+            if (existingTransaction.length !== 0) {
+              const trans = existingTransaction.data[0];
+              this.discountMode = trans.discountMode;
+              this.discountValue = trans.discountValue;
+              this.cashRemarks = trans.cashRemarks;
+              if (trans.discountValue > 0) {
+                this.alreadyDiscounted = true;
+              }
+            }
+            const response = await axios.post(
+              `${this.API_URL}transaction/item/filter/`,
+              [{ columnName: "bookingID", columnKey: bookingID }]
+            );
+            if (response.data.length > 0) {
+              try {
+                response.data.forEach((item) => {
+                  let newItem = {
+                    id: item.id,
+                    bookingID: item.bookingID,
+                    groupkey: item.groupkey,
+                    name: item.itemName,
+                    type: item.itemType,
+                    priceRate: item.itemPriceRate,
+                    purqty: item.purchaseQty,
+                    totalCartPrice: item.totalCost,
+                    category: item.category,
+                    itemOption: item.itemOption,
+                    numdays: item.numdays,
+                    totalguest: item.totalguest,
+                    totalpax: item.totalpax,
+                    currentroom: item.currentroom,
+                    guestinfo: item.guestinfo,
+                  };
+                  this.cart.push(newItem);
+                });
+              } catch (error) {
+                console.log(error);
+              }
+            }
+            this.billing.clientName = transaction.clientname;
+            this.billing.clientAddress = transaction.clientaddress;
+            this.billing.clientPhone = transaction.clientcontact;
+            this.billing.clientEmail = transaction.clientemail;
+            this.billing.clientNationality = transaction.clientnationality;
+            this.billing.clientType = transaction.clientType;
+            if (existingTransaction.data[0] !== undefined) {
+              this.billing.bookingID = existingTransaction.data[0].id;
+              this.newbillingbalance = existingTransaction.data[0].balance;
+              this.isItNew = true;
+            } else {
+              this.billing.bookingID = "";
+            }
+            try {
+              this.partialPayment = transaction.cashAmountPay;
+              const response = await axios.post(
+                `${this.API_URL}transaction/record/filter/`,
+                [{ columnName: "transaction", columnKey: transaction.id }]
+              );
+              this.cashHistory = response.data;
+            } catch (error) {
+              console.error(error);
+            }
+            $("#others-tab").tab("show");
+            this.movetocartFlag = true;
+            this.activeAccountFlag = true;
+            this.itemCart = {
+              id: 0,
+              name: "",
+              priceRate: "",
+              rate: "",
+              counter: "",
+              purqty: "",
+              totalCartPrice: "",
+              category: "",
+              groupkey: "",
+            };
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    moveToCart() {
       this.movetocartFlag = false;
+      this.movecartAction();
+    },
+    async movecartAction() {
       const item = this.bookings[this.itemIndex];
       const bookingID = item.itemID;
       let existingTransaction = null;
@@ -6963,6 +7115,7 @@ export default {
             this.cart.push(newItem);
           });
         } else {
+          //starthere
           const response = await axios.post(
             `${this.API_URL}transaction/item/filter/`,
             [{ columnName: "bookingID", columnKey: bookingID }]
@@ -7021,7 +7174,9 @@ export default {
         this.gbookingscount =
           groupbookings.length === 0 ? 1 : groupbookings.length;
       } catch (error) {}
-      this.toggleItemModal();
+      if (!this.movetocartFlag) {
+        this.toggleItemModal();
+      }
       $("#others-tab").tab("show");
       this.movetocartFlag = true;
       this.activeAccountFlag = true;
