@@ -989,6 +989,7 @@ export default {
 
       this.bar3Data.labels = uniqueProcessedByList;
       this.bar3Data.datasets[0].data = collection;
+      console.log(data);
     },
     bar4Datasets(data) {
       let collection = [];
@@ -1204,12 +1205,34 @@ export default {
           this.API_URL + `transactions_itemizer/${daycount}/`
         );
 
-        const nonAgentIncome = trans_itemizer_data.data
+        // const nonAgentIncome = trans_itemizer_data.data
+        //   .filter((item) => {
+        //     const transactionDate = new Date(item.transaction_date);
+        //     const isAgentRecord =
+        //       item.items2.filter((o) => o.paymentMethod.includes("agent"))
+        //         .length > 0;
+        //     return (
+        //       !isAgentRecord &&
+        //       transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
+        //       transactionDate <
+        //         new Date(
+        //           new Date(new Date(curday.getTime() + 86400000)).setHours(
+        //             0,
+        //             0,
+        //             0,
+        //             0
+        //           )
+        //         )
+        //     );
+        //   })
+        //   .reduce((accumulator, currentValue) => {
+        //     return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
+        //   }, 0);
+
+        const nonAgentIncome = transactionRecordsData.data
           .filter((item) => {
             const transactionDate = new Date(item.transaction_date);
-            const isAgentRecord =
-              item.items2.filter((o) => o.paymentMethod.includes("agent"))
-                .length > 0;
+            const isAgentRecord = item.paymentMethod.includes("agent");
             return (
               !isAgentRecord &&
               transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
@@ -1225,7 +1248,7 @@ export default {
             );
           })
           .reduce((accumulator, currentValue) => {
-            return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
+            return accumulator + parseFloat(currentValue.cashAmountPay);
           }, 0);
 
         const approvedAgentPayment = transactionRecordsData.data
