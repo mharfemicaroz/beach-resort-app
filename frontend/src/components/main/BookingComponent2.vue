@@ -3733,7 +3733,7 @@
                 >
                   <i class="fas fa-book"></i> Book Now
                 </button>
-                <button
+                <!-- <button
                   v-if="
                     new Date().setHours(0, 0, 0, 0) <=
                       parseDate2(reservation.checkinDate) &&
@@ -3748,7 +3748,7 @@
                 >
                   <i class="fas fa-exchange-alt"></i>
                   {{ toggleselect ? "Save" : "Transfer" }}
-                </button>
+                </button> -->
                 <button
                   :disabled="disablebutton"
                   v-if="
@@ -7855,15 +7855,15 @@ export default {
       this.toggledayMenuModal();
     },
     onClickItem(e) {
-      if (this.booksearchtext !== "") {
-        this.$swal.fire({
-          icon: "error",
-          title: "Calendar Item Selection Restricted",
-          text: "Unable to select an item on the calendar when the search query is not empty.",
-          confirmButtonText: "OK",
-        });
-        return;
-      }
+      // if (this.booksearchtext !== "") {
+      //   this.$swal.fire({
+      //     icon: "error",
+      //     title: "Calendar Item Selection Restricted",
+      //     text: "Unable to select an item on the calendar when the search query is not empty.",
+      //     confirmButtonText: "OK",
+      //   });
+      //   return;
+      // }
       this.itemIndex = this.bookings.findIndex((o) => o.itemID === e.id);
       this.showReservation();
     },
@@ -7940,6 +7940,15 @@ export default {
       this.toggledayMenuModal();
     },
     async onDrop(item, date) {
+      if (this.booksearchtext !== "") {
+        this.$swal.fire({
+          icon: "error",
+          title: "Calendar Item Selection Restricted",
+          text: "Unable to select an item on the calendar when the search query is not empty.",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
       const currentDate = new Date(); // get current date
       if (date.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
         // check if start date is before current date

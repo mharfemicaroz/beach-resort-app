@@ -321,7 +321,7 @@
         </div>
         <div class="row row justify-content-center">
           <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12">
               <div class="card x">
                 <div class="card-header text-primary text-center">
                   <strong>Reservation Trend</strong>
@@ -345,50 +345,54 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="card x">
-                <div class="card-header text-primary text-center">
-                  <strong>Total Revenue</strong>
-                </div>
-                <div
-                  class="card-body chart"
-                  style="
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                  "
-                >
-                  <bar-chart
-                    :key="componentKey"
-                    v-if="loaded[7]"
-                    :chartData="bar2Data"
-                  />
-                  <div v-else class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card x">
+                  <div class="card-header text-primary text-center">
+                    <strong>Total Revenue</strong>
+                  </div>
+                  <div
+                    class="card-body chart"
+                    style="
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                    "
+                  >
+                    <bar-chart
+                      :key="componentKey"
+                      v-if="loaded[7]"
+                      :chartData="bar2Data"
+                    />
+                    <div v-else class="spinner-border" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-md-4">
-              <div class="card x">
-                <div class="card-header text-primary text-center">
-                  <strong>Sales Trend</strong>
-                </div>
-                <div
-                  class="card-body chart"
-                  style="
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                  "
-                >
-                  <line-chart
-                    :key="componentKey"
-                    v-if="loaded[8]"
-                    :chartData="line2Data"
-                  />
-                  <div v-else class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card x">
+                  <div class="card-header text-primary text-center">
+                    <strong>Sales Trend</strong>
+                  </div>
+                  <div
+                    class="card-body chart"
+                    style="
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
+                    "
+                  >
+                    <line-chart
+                      :key="componentKey"
+                      v-if="loaded[8]"
+                      :chartData="line2Data"
+                    />
+                    <div v-else class="spinner-border" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
                   </div>
                 </div>
               </div>
