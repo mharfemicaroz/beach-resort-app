@@ -685,7 +685,7 @@
                                                 : item.totalguest -
                                                   item.totalpax)
                                             : item.itemOption === "room"
-                                            ? "Good for " + item.purqty
+                                            ? "Good for " + item.totalpax
                                             : ""
                                         }}
                                       </td>
