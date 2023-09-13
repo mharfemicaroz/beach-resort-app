@@ -3733,7 +3733,7 @@
                 >
                   <i class="fas fa-book"></i> Book Now
                 </button>
-                <!-- <button
+                <button
                   v-if="
                     new Date().setHours(0, 0, 0, 0) <=
                       parseDate2(reservation.checkinDate) &&
@@ -3748,7 +3748,7 @@
                 >
                   <i class="fas fa-exchange-alt"></i>
                   {{ toggleselect ? "Save" : "Transfer" }}
-                </button> -->
+                </button>
                 <button
                   :disabled="disablebutton"
                   v-if="
@@ -7422,42 +7422,42 @@ export default {
         if (!result.isConfirmed) {
           return;
         }
-        if (oldroom.type !== newroom.type) {
-          this.$swal({
-            title: "Transfer Error",
-            text: "Room types do not match. Unable to transfer room.",
-            icon: "error",
-            buttons: {
-              confirm: {
-                text: "OK",
-                value: true,
-                visible: true,
-                className: "confirm-button",
-                closeModal: true,
-              },
-            },
-          });
-          this.toggleItemModal();
-          return;
-        }
-        if (oldroom.price !== newroom.price) {
-          this.$swal({
-            title: "Transfer Error",
-            text: "Room prices do not match. Unable to transfer room.",
-            icon: "error",
-            buttons: {
-              confirm: {
-                text: "OK",
-                value: true,
-                visible: true,
-                className: "confirm-button",
-                closeModal: true,
-              },
-            },
-          });
-          this.toggleItemModal();
-          return;
-        }
+        // if (oldroom.type !== newroom.type) {
+        //   this.$swal({
+        //     title: "Transfer Error",
+        //     text: "Room types do not match. Unable to transfer room.",
+        //     icon: "error",
+        //     buttons: {
+        //       confirm: {
+        //         text: "OK",
+        //         value: true,
+        //         visible: true,
+        //         className: "confirm-button",
+        //         closeModal: true,
+        //       },
+        //     },
+        //   });
+        //   this.toggleItemModal();
+        //   return;
+        // }
+        // if (oldroom.price !== newroom.price) {
+        //   this.$swal({
+        //     title: "Transfer Error",
+        //     text: "Room prices do not match. Unable to transfer room.",
+        //     icon: "error",
+        //     buttons: {
+        //       confirm: {
+        //         text: "OK",
+        //         value: true,
+        //         visible: true,
+        //         className: "confirm-button",
+        //         closeModal: true,
+        //       },
+        //     },
+        //   });
+        //   this.toggleItemModal();
+        //   return;
+        // }
         item.room_name = newroom.name;
         item.room_price = newroom.price;
         item.room_type = newroom.type;
@@ -7472,20 +7472,32 @@ export default {
           }
         );
         try {
-          await axios.put(
-            `${this.API_URL}transaction/item/${existingTransactionItems.data[0].id}/`,
-            {
-              bookingID: existingTransactionItems.data[0].bookingID,
-              itemName: newroom.name,
-              itemType: existingTransactionItems.data[0].itemType,
-              itemPriceRate: existingTransactionItems.data[0].itemPriceRate,
-              purchaseQty: existingTransactionItems.data[0].purchaseQty,
-              totalCost: existingTransactionItems.data[0].totalCost,
-              category: existingTransactionItems.data[0].category,
-              itemOption: existingTransactionItems.data[0].itemOption,
-            }
-          );
-        } catch (error) {}
+          for (const o of existingTransactionItems.data) {
+            await axios.put(`${this.API_URL}transaction/item/${o.id}/`, {
+              bookingID: o.bookingID,
+              itemName: o.itemOption === "room" ? newroom.name : o.itemName,
+              itemType: o.itemOption === "room" ? newroom.type : o.itemType,
+              itemPriceRate:
+                o.itemOption === "room"
+                  ? newroom.price + "/" + o.itemPriceRate.split("/")[1].trim()
+                  : o.itemPriceRate,
+              purchaseQty: o.purchaseQty,
+              totalCost:
+                o.itemOption === "room"
+                  ? parseFloat(newroom.price) * parseFloat(o.purchaseQty)
+                  : o.totalCost,
+              category: o.category,
+              itemOption: o.itemOption,
+              totalguest: o.totalguest,
+              totalpax: o.totalpax,
+              currentroom: newroom.name,
+              numdays: o.numdays,
+              guestinfo: o.guestinfo,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+        }
         this.toggleItemModal();
         this.taskRecord(`action:/transfer guest/client:/${item.name}`);
         this.bookNowFlag = true;
