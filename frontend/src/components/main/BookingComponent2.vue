@@ -266,6 +266,16 @@
                   role="tabpanel"
                 >
                   <div class="container-fluid">
+                    <div class="row" style="margin-left: 0.5%">
+                      <div class="col-md-3">
+                        <button
+                          class="btn btn-primary"
+                          @click="generateAllStabs"
+                        >
+                          <i class="fa fa-cutlery"></i> &nbsp;Generate Mealstabs
+                        </button>
+                      </div>
+                    </div>
                     <div class="row">
                       <div class="col-md-12">
                         <CardBookingsVue
@@ -3258,17 +3268,19 @@
                                 <span style="font-size: smaller" class="mb-0"
                                   >Breakfast Buffet Meal Stab</span
                                 ><br />
-                                <span style="font-size: smaller" class="mb-0"
+                                <span
+                                  style="font-size: smaller"
+                                  class="mb-0 mt-0"
                                   >{{ item.validdate }} (7-9am)</span
                                 ><br />
-                                <div class="row mb-0">
+                                <div class="row mb-0 mt-0">
                                   <div class="col-md-12">
                                     <span style="font-size: smaller"
                                       >Guest: {{ item.person }}</span
                                     >
                                   </div>
                                 </div>
-                                <div class="row mb-0">
+                                <div class="row mb-0 mt-0">
                                   <div class="col-md-12">
                                     <span style="font-size: smaller"
                                       >Ticket No: {{ item.ticketno }}</span
@@ -5154,6 +5166,44 @@ export default {
     },
   },
   methods: {
+    async generateAllStabs() {
+      let reservations = this.roomsjoinbookings;
+      this.currentMealStabs = [];
+      for (const item of reservations) {
+        if ("itemID" in item) {
+          const itemCheckinDate = item.checkinDate;
+          await axios
+            .post(`${this.API_URL}transaction/item/filter/`, [
+              { columnName: "bookingID", columnKey: item.itemID },
+              { columnName: "itemName", columnKey: "Room Guest" },
+            ])
+            .then(async (response) => {
+              try {
+                for (const o of response.data) {
+                  const numdays = o.numdays;
+                  const total = o.purchaseQty;
+                  const guestarr = JSON.parse(o.guestinfo);
+                  for (let i = 0; i < total; i++) {
+                    for (let j = 0; j < numdays; j++) {
+                      let checkinDate = new Date(parseDate(itemCheckinDate));
+                      checkinDate.setDate(checkinDate.getDate() + 1 + j);
+                      this.currentMealStabs.push({
+                        person: guestarr[i].name,
+                        validdate: checkinDate.toDateString(),
+                        ticketno: i + "" + j + "" + guestarr[i].id,
+                      });
+                    }
+                  }
+                }
+              } catch (error) {}
+            });
+        }
+      }
+      // console.log(this.currentMealStabs);
+      setTimeout(() => {
+        this.printSection("printstab", 425, 1300, false, 1);
+      }, 1000);
+    },
     howmanyPax(name) {
       return this.rooms.filter((o) => o.name === name)[0].pax;
     },
@@ -9292,7 +9342,7 @@ export default {
       const footerContent = `<p class="text-right">Total = ${this.filteredTransactionsTotal}</p><p class="text-right">Collectibles = ${this.filteredTransactionsBalance}</p>`;
       const footerSummary = ft ? footerContent : "";
       const pagePortrait = `<style>.highlight {background-color: yellow;}body {font-family: Arial, sans-serif;line-height: 1.25;padding: 0.5in;font-size:16px} hr {margin-top: 0.5px;;margin-bottom: 0.5px;} p {margin-top: 0.5px;;margin-bottom: 0.5px;} table {table-layout: auto;width:100%;margin:0 auto;border-collapse:collapse;margin-top: 1px;margin-bottom: 1px;} tr td:last-child{width:1%;white-space:nowrap;} .container {width: ${pWidth}px;height: ${pLength}px;padding-top: 0.25in;padding-bottom: 0.25in;background-color: #fff;box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);margin: auto;}.text-center {text-align: center;}.text-right {text-align: right;}@media print {.no-print {display: none;}}html, body {width: ${pWidth}px;height: ${pLength}px;margin: 0;padding: 0;}}</style>`;
-      const pageLandscape = `<style>html,body{display:none;}.no-print{display: none;} @media print{@page {size: legal landscape; margin:auto} html,body{display: block;} tr{page-break-inside: auto;} .no-print{display: none;}}</style>`;
+      const pageLandscape = `<style>html,body{display:none;}.no-print{display: none;} @media print{@page {size: legal landscape; margin:auto} html,body{display: block;zoom: 95%;} tr{page-break-inside: auto;} .no-print{display: none;}}</style>`;
       const bootstrapCSS = `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.0/css/bootstrap.min.css">${
         !orientation ? pagePortrait : pageLandscape
       }`;
