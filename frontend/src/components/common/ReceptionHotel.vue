@@ -1,6 +1,14 @@
 <template>
-  <div class="row">
-    <div class="cv-header mb-0 p-1" style="background-color: #f0f0f0">
+  <div class="row" style="position: relative">
+    <div
+      class="cv-header mb-0 p-1"
+      style="
+        background-color: #f0f0f0;
+        position: fixed;
+        width: 97.35%;
+        z-index: 100;
+      "
+    >
       <div class="cv-header-nav">
         <button
           @click="prevYear"
@@ -48,6 +56,7 @@
           <option selected disabled value="Select Room Type">
             Select Room Type
           </option>
+          <option value="all">All</option>
           <option
             v-for="(category, index) in roomcategoriesdata.filter((o) =>
               o.name.toLowerCase().includes('room')
@@ -61,26 +70,51 @@
       </div>
     </div>
 
-    <table class="table table-bordered" ref="table">
+    <table
+      class="table table-bordered"
+      style="position: fixed; width: 97.35%; margin-top: 50px; z-index: 100"
+    >
       <thead>
         <tr>
-          <th style="width: 80px">Room</th>
-          <th style="width: 60px">Status</th>
+          <th style="width: 80px" class="bg-gray">Room</th>
+          <th style="width: 60px" class="bg-gray">Status</th>
           <th
             style="width: 60px; font-size: smaller"
             class="text-center"
             v-for="day in days"
             :key="day"
-            :class="{ 'bg-def': isCurrentDate(day) }"
+            :class="{
+              'bg-def': isCurrentDate(day),
+              'bg-gray': !isCurrentDate(day),
+            }"
           >
             <span>{{ day.toLocaleDateString() }}</span>
           </th>
         </tr>
       </thead>
+    </table>
+
+    <table class="table table-bordered" ref="table" style="margin-top: 72px">
+      <thead>
+        <tr>
+          <th style="width: 80px" class="bg-gray"></th>
+          <th style="width: 60px" class="bg-gray"></th>
+          <th
+            style="width: 60px; font-size: smaller"
+            class="text-center"
+            v-for="day in days"
+            :key="day"
+            :class="{
+              'bg-def': isCurrentDate(day),
+              'bg-gray': !isCurrentDate(day),
+            }"
+          ></th>
+        </tr>
+      </thead>
       <tbody>
         <tr v-for="(room, roomIndex) in filteredRooms" :key="roomIndex">
-          <td>{{ room.name }}</td>
-          <td>
+          <td style="width: 80px">{{ room.name }}</td>
+          <td style="width: 60px">
             <span
               style="height: 40px; max-height: 40px"
               class="d-flex justify-content-center align-items-center btn-item text-white"
@@ -94,7 +128,11 @@
             v-for="(day, dayIndex) in daysWithColspan[roomIndex]"
             :key="dayIndex"
           >
-            <td v-if="day.bookings.length > 0" :colspan="day.colspan">
+            <td
+              v-if="day.bookings.length > 0"
+              :colspan="day.colspan"
+              style="width: 60px; font-size: smaller"
+            >
               <div class="d-flex justify-content-between align-items-center">
                 <span
                   style="height: 40px; max-height: 40px"
@@ -125,6 +163,7 @@
               </div>
             </td>
             <td
+              style="width: 60px; font-size: smaller"
               v-else
               draggable="true"
               @dragstart="
@@ -142,6 +181,11 @@
         </tr>
       </tbody>
     </table>
+  </div>
+  <div class="row row justify-content-center">
+    <div class="col-md-12">
+      <div class="card x" style="height: 50px">----------------</div>
+    </div>
   </div>
 </template>
 
@@ -178,7 +222,7 @@ export default {
       currentDay: new Date(),
       draggedBooking: null,
       dropTarget: null,
-      currentRoomType: "",
+      currentRoomType: "all",
       draggedBookingIndex: null,
       draggedRoomIndex: null,
     };
@@ -276,9 +320,18 @@ export default {
   },
   computed: {
     filteredRooms() {
+      if (this.currentRoomType === "all") {
+        return this.roomsdata.filter(
+          (item) =>
+            item.type.toLowerCase().includes("room") &&
+            item.isAvailable === true
+        );
+      }
       return this.roomsdata.filter(
         (item) =>
-          item.type === this.currentRoomType && item.isAvailable === true
+          item.type.toLowerCase().includes("room") &&
+          item.type === this.currentRoomType &&
+          item.isAvailable === true
       );
     },
     bookings() {
@@ -419,6 +472,10 @@ table {
   background-color: #fff3cd;
 }
 
+.bg-gray {
+  background-color: rgb(240, 240, 240);
+}
+
 .cv-item.hotel-reserved {
   background-color: #5c6bc0;
   /* adjust the color as needed */
@@ -479,6 +536,7 @@ table {
   transform: translateY(-5px);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
+
 /* .pen-border {
     position: relative;
     padding-right: 20px; 

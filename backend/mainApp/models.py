@@ -96,6 +96,9 @@ class Agents(models.Model):
 class RoomCategory(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
+    bedtypes = models.CharField(max_length=100, null=True, blank=True)
+    nearat = models.CharField(max_length=100, null=True, blank=True)
+    desc = models.CharField(max_length=512, null=True, blank=True)
     isAvailable = models.BooleanField(default=True)
 
 

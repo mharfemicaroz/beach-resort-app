@@ -234,13 +234,22 @@
                 id="propertyTab"
                 role="tablist"
               >
+                <li class="nav-item">
+                  <a
+                    class="nav-link active"
+                    data-bs-toggle="tab"
+                    @click="activeMainTab = 'all'"
+                    href="#roomcategoryall"
+                    >All</a
+                  >
+                </li>
                 <li
                   class="nav-item"
                   v-for="(category, index) in roomcategories"
                   :key="category.id"
                 >
                   <a
-                    :class="index > 0 ? 'nav-link' : 'nav-link active'"
+                    class="nav-link"
                     data-bs-toggle="tab"
                     @click="activeMainTab = `${category.name}`"
                     :href="`#roomcategory${index}`"
@@ -252,11 +261,25 @@
             <div class="col-sm-10">
               <div class="tab-content mt-3" id="propertyTabContent">
                 <div
+                  class="tab-pane fade show active"
+                  id="#roomcategoryall"
+                  role="tabpanel"
+                >
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <CardBookingsVue
+                          :roomData="roomsjoinbookings"
+                          v-on:click-action="cardAction"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
                   v-for="(category, index) in roomcategories"
                   :key="category.id"
-                  :class="
-                    index > 0 ? 'tab-pane fade' : 'tab-pane fade show active'
-                  "
+                  class="tab-pane fade"
                   :id="`#roomcategory${index}`"
                   role="tabpanel"
                 >
@@ -2908,6 +2931,47 @@
           class="modal-body"
           style="height: 500px; overflow-y: auto; overflow-x: hidden"
         >
+          <div class="row d-flex justify-content-start">
+            <div class="col-md-3">
+              <select class="form-select" id="type" v-model="filter.roompax">
+                <option value="">How many Room pax?</option>
+                <option value="2">2 pax</option>
+                <option value="3">3 pax</option>
+                <option value="4">4 pax</option>
+                <option value="5">5 pax</option>
+                <option value="10">10 pax</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="type" v-model="filter.bedtype">
+                <option value="">Which Bed Type?</option>
+                <option value="King Size">King Size</option>
+                <option value="Queen Size">Queen Size</option>
+                <option value="Twin Beds">Twin Beds</option>
+                <option value="Mix">Mix</option>
+                <option value="N/A">Not Applicable</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="form-select" id="type" v-model="filter.nearat">
+                <option value="">Near At?</option>
+                <option value="Beach">Near at the Beach</option>
+                <option value="Restaurant">Near at the Restaurant</option>
+                <option value="Pool">Near at the Pool</option>
+                <option value="Garden">Near at the Garden</option>
+                <option value="Scenery">Near at the Scenery</option>
+                <option value="Parking Space">Near at the Parking Space</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <input
+                placeholder="Specific details?"
+                type="text"
+                class="form-control"
+                v-model="filter.desc"
+              />
+            </div>
+          </div>
           <div class="row">
             <div :class="cartItems.length > 0 ? 'col-md-9' : 'col-md-12'">
               <div class="col-md-12">
@@ -2915,15 +2979,22 @@
                   class="nav bg radius nav-pills nav-fill mb-3 bg mt-3"
                   role="tablist"
                 >
+                  <li class="nav-item">
+                    <a
+                      class="nav-link active"
+                      data-bs-toggle="tab"
+                      href="#roomcategoryallops"
+                      >All</a
+                    >
+                  </li>
                   <li
                     class="nav-item"
                     v-for="(category, index) in roomcategories"
                     :key="category.id"
                   >
                     <a
-                      :class="index > 0 ? 'nav-link' : 'nav-link active'"
+                      class="nav-link"
                       data-bs-toggle="tab"
-                      @click="activeMainTab = `${category.name}`"
                       :href="`#roomcategory${index}`"
                       >{{ category.name }}</a
                     >
@@ -2932,11 +3003,71 @@
               </div>
               <div class="tab-content" id="myTabContent">
                 <div
+                  class="tab-pane fade show active"
+                  id="roomcategoryallops"
+                  role="tabpanel"
+                >
+                  <div class="container-fluid">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div
+                          class="row row-cols-1"
+                          :class="
+                            cartItems.length > 0
+                              ? 'row-cols-md-4'
+                              : 'row-cols-md-5'
+                          "
+                        >
+                          <div
+                            class="col mb-6"
+                            v-for="(item, index) in filteredupdatedRooms.filter(
+                              (r) => {
+                                if (r.type) {
+                                  const isDataExist = !(
+                                    this.cartItems.findIndex(
+                                      (o) => o.id === r.id
+                                    ) === -1
+                                  );
+                                  return !isDataExist;
+                                }
+                                return true;
+                              }
+                            )"
+                            :key="item.id"
+                          >
+                            <div
+                              class="card"
+                              style="transition: transform 0.2s ease-in-out"
+                              @click="addToCartItem(item)"
+                            >
+                              <div
+                                class="card-header d-flex justify-content-between align-items-center"
+                              >
+                                <h5 class="card-title">
+                                  <i class="fas fa-table"></i>
+                                  {{ item.name }}
+                                </h5>
+                                <h5>
+                                  <i>pax:{{ item.pax }}</i>
+                                </h5>
+                              </div>
+                              <div class="card-body">
+                                <h6 class="text-dark">
+                                  <i class="fas fa-info-circle"></i>
+                                  available
+                                </h6>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
                   v-for="(category, index) in roomcategories"
                   :key="category.id"
-                  :class="
-                    index > 0 ? 'tab-pane fade' : 'tab-pane fade show active'
-                  "
+                  class="tab-pane fade"
                   :id="`roomcategory${index}`"
                   role="tabpanel"
                 >
@@ -2954,17 +3085,21 @@
                         >
                           <div
                             class="col mb-6"
-                            v-for="(item, index) in updatedRooms.filter((r) => {
-                              if (r.type) {
-                                const isDataExist = !(
-                                  this.cartItems.findIndex(
-                                    (o) => o.id === r.id
-                                  ) === -1
-                                );
-                                return r.type === category.name && !isDataExist;
+                            v-for="(item, index) in filteredupdatedRooms.filter(
+                              (r) => {
+                                if (r.type) {
+                                  const isDataExist = !(
+                                    this.cartItems.findIndex(
+                                      (o) => o.id === r.id
+                                    ) === -1
+                                  );
+                                  return (
+                                    r.type === category.name && !isDataExist
+                                  );
+                                }
+                                return true;
                               }
-                              return true;
-                            })"
+                            )"
                             :key="item.id"
                           >
                             <div
@@ -3883,6 +4018,12 @@ export default {
   },
   data() {
     return {
+      filter: {
+        bedtype: "",
+        roompax: "",
+        nearat: "",
+        desc: "",
+      },
       reportview: 1,
       agentPayment: 0,
       packages: [],
@@ -3908,7 +4049,7 @@ export default {
       dashboardStatus: true,
       bookingComponentStatus: true,
       componentKey: 0,
-      activeMainTab: "STANDARD ROOM",
+      activeMainTab: "all",
       roomSelect: "ok",
       toggleselect: false,
       isItNew: false,
@@ -4632,43 +4773,46 @@ export default {
         );
     },
     roomsjoinbookings() {
-      return this.rooms
-        .filter((item) => item.type === this.activeMainTab)
-        .filter((item) => item.type === this.activeMainTab.toString())
-        .map((room) => {
-          const booking = this.bookings
-            .filter((item) => item.status !== "checkedout")
-            .filter(
-              (item) =>
-                item.status !== "cancelled" &&
-                parseDate(new Date().toLocaleDateString("en-GB")) >=
-                  parseDate(item.checkinDate) &&
-                parseDate(item.checkoutDate) >=
-                  parseDate(new Date().toLocaleDateString("en-GB"))
-            )
-            .find((booking) => booking.room_name === room.name);
-          if (booking) {
-            return {
-              ...room,
-              clientName: booking.name,
-              clientEmail: booking.clientemail,
-              clientAddress: booking.clientaddress,
-              contactNumber: booking.contactNumber,
-              checkinDate: booking.checkinDate,
-              checkoutDate: booking.checkoutDate,
-              status: booking.status,
-              itemID: booking.itemID,
-              groupkey: booking.groupkey,
-              totalPrice: booking.totalPrice,
-              partialPayment: booking.partialPayment,
-              status: booking.status,
-              isPaid: booking.isPaid,
-              selected: false,
-            };
-          } else {
-            return room;
-          }
-        });
+      let filtered =
+        this.activeMainTab === "all"
+          ? this.rooms
+          : this.rooms.filter(
+              (item) => item.type === this.activeMainTab.toString()
+            );
+      return filtered.map((room) => {
+        const booking = this.bookings
+          .filter((item) => item.status !== "checkedout")
+          .filter(
+            (item) =>
+              item.status !== "cancelled" &&
+              parseDate(new Date().toLocaleDateString("en-GB")) >=
+                parseDate(item.checkinDate) &&
+              parseDate(item.checkoutDate) >=
+                parseDate(new Date().toLocaleDateString("en-GB"))
+          )
+          .find((booking) => booking.room_name === room.name);
+        if (booking) {
+          return {
+            ...room,
+            clientName: booking.name,
+            clientEmail: booking.clientemail,
+            clientAddress: booking.clientaddress,
+            contactNumber: booking.contactNumber,
+            checkinDate: booking.checkinDate,
+            checkoutDate: booking.checkoutDate,
+            status: booking.status,
+            itemID: booking.itemID,
+            groupkey: booking.groupkey,
+            totalPrice: booking.totalPrice,
+            partialPayment: booking.partialPayment,
+            status: booking.status,
+            isPaid: booking.isPaid,
+            selected: false,
+          };
+        } else {
+          return room;
+        }
+      });
     },
     filteredRoomBookings() {
       const isCancelled = this.activeTab === "cancelled";
@@ -4705,6 +4849,51 @@ export default {
             ...o,
             balance,
           };
+        });
+    },
+    filteredupdatedRooms() {
+      return this.updatedRooms
+        .filter((room) => {
+          if (this.filter.roompax) {
+            return room.pax === parseFloat(this.filter.roompax);
+          }
+          return true;
+        })
+        .filter((room) => {
+          if (this.filter.bedtype) {
+            const category = room.type;
+            const item = this.roomcategories.filter(
+              (o) => o.name === category
+            )[0];
+            return item.bedtypes === this.filter.bedtype;
+          }
+          return true;
+        })
+        .filter((room) => {
+          if (this.filter.nearat) {
+            const category = room.type;
+            const item = this.roomcategories.filter(
+              (o) => o.name === category
+            )[0];
+            return item.nearat === this.filter.nearat;
+          }
+          return true;
+        })
+        .filter((room) => {
+          if (this.filter.desc) {
+            const category = room.type;
+            const item = this.roomcategories.filter(
+              (o) => o.name === category
+            )[0];
+            if (item.desc !== null) {
+              return item.desc
+                .toLowerCase()
+                .includes(this.filter.desc.toLowerCase());
+            } else {
+              return false;
+            }
+          }
+          return true;
         });
     },
     updatedRooms() {
@@ -5197,6 +5386,21 @@ export default {
       this.draggedItem = this.origbookings.filter(
         (o) => o.itemID === book.itemID
       );
+      // this.itemIndex = this.bookings.findIndex((o) => o.itemID === book.itemID);
+
+      // const checkindate = new Date(
+      //   parseDate(this.origbookings[this.itemIndex].checkinDate)
+      // );
+      // checkindate.setDate(checkindate.getDate() + 1);
+
+      // const checkoutdate = new Date(
+      //   parseDate(this.origbookings[this.itemIndex].checkoutDate)
+      // );
+      // checkoutdate.setDate(checkoutdate.getDate() + 1);
+
+      // this.origbookings[this.itemIndex].checkinDate = formatDate2(checkindate);
+      // this.origbookings[this.itemIndex].checkoutDate =
+      //   formatDate2(checkoutdate);
       this.draggedRoom = room;
     },
     handledragstartday(e, d, r) {
@@ -5252,23 +5456,23 @@ export default {
         type: room.type,
         price: room.price,
       };
-      if (oldroom.price !== newroom.price) {
-        this.$swal({
-          title: "Transfer Error",
-          text: "Room prices do not match. Unable to transfer room.",
-          icon: "error",
-          buttons: {
-            confirm: {
-              text: "OK",
-              value: true,
-              visible: true,
-              className: "confirm-button",
-              closeModal: true,
-            },
-          },
-        });
-        return;
-      }
+      // if (oldroom.price !== newroom.price) {
+      //   this.$swal({
+      //     title: "Transfer Error",
+      //     text: "Room prices do not match. Unable to transfer room.",
+      //     icon: "error",
+      //     buttons: {
+      //       confirm: {
+      //         text: "OK",
+      //         value: true,
+      //         visible: true,
+      //         className: "confirm-button",
+      //         closeModal: true,
+      //       },
+      //     },
+      //   });
+      //   return;
+      // }
       //fix error here
       const itemStatus = this.bookings[this.itemIndex].status;
       if (itemStatus === "reserved") {
@@ -5312,22 +5516,34 @@ export default {
           columnName: "bookingID",
           columnKey: item.itemID,
         })
-        .then((response) => {
+        .then(async (response) => {
           try {
-            axios.put(
-              `${this.API_URL}transaction/item/${existingTransactionItems.data[0].id}/`,
-              {
-                bookingID: existingTransactionItems.data[0].bookingID,
-                itemName: newroom.name,
-                itemType: existingTransactionItems.data[0].itemType,
-                itemPriceRate: existingTransactionItems.data[0].itemPriceRate,
-                purchaseQty: existingTransactionItems.data[0].purchaseQty,
-                totalCost: existingTransactionItems.data[0].totalCost,
-                category: existingTransactionItems.data[0].category,
-                itemOption: existingTransactionItems.data[0].itemOption,
-              }
-            );
-          } catch (error) {}
+            for (const o of response.data) {
+              await axios.put(`${this.API_URL}transaction/item/${o.id}/`, {
+                bookingID: o.bookingID,
+                itemName: o.itemOption === "room" ? newroom.name : o.itemName,
+                itemType: o.itemOption === "room" ? newroom.type : o.itemType,
+                itemPriceRate:
+                  o.itemOption === "room"
+                    ? newroom.price + "/" + o.itemPriceRate.split("/")[1].trim()
+                    : o.itemPriceRate,
+                purchaseQty: o.purchaseQty,
+                totalCost:
+                  o.itemOption === "room"
+                    ? parseFloat(newroom.price) * parseFloat(o.purchaseQty)
+                    : o.totalCost,
+                category: o.category,
+                itemOption: o.itemOption,
+                totalguest: o.totalguest,
+                totalpax: o.totalpax,
+                currentroom: newroom.name,
+                numdays: o.numdays,
+                guestinfo: o.guestinfo,
+              });
+            }
+          } catch (error) {
+            console.error(error);
+          }
 
           //this.onDrop(o, d);
           item.room_name = newroom.name;

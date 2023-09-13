@@ -240,6 +240,49 @@
                         />
                       </div>
                       <div class="mb-3">
+                        <label for="type" class="form-label">Bed Types</label>
+                        <select
+                          class="form-select"
+                          id="type"
+                          v-model="roomcategory.bedtypes"
+                          required
+                        >
+                          <option value="">-- Select --</option>
+                          <option value="King Size">King Size</option>
+                          <option value="Queen Size">Queen Size</option>
+                          <option value="Twin Beds">Twin Beds</option>
+                          <option value="Mix">Mix</option>
+                          <option value="N/A">Not Applicable</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label for="type" class="form-label">Near at</label>
+                        <select
+                          class="form-select"
+                          id="type"
+                          v-model="roomcategory.nearat"
+                          required
+                        >
+                          <option value="">-- Select --</option>
+                          <option value="Beach">Beach</option>
+                          <option value="Restaurant">Restaurant</option>
+                          <option value="Pool">Pool</option>
+                          <option value="Garden">Garden</option>
+                          <option value="Scenery">Scenery</option>
+                          <option value="Parking Space">Parking Space</option>
+                          <option value="N/A">Not Applicable</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label for="name" class="form-label">Description</label>
+                        <textarea
+                          class="form-control"
+                          v-model="roomcategory.desc"
+                          rows="4"
+                          required
+                        ></textarea>
+                      </div>
+                      <div class="mb-3">
                         <label for="type" class="form-label"
                           >Availability</label
                         >
@@ -273,6 +316,9 @@
                       <thead>
                         <tr>
                           <th>Name</th>
+                          <th>Bed Types</th>
+                          <th>Near at</th>
+                          <th>Description</th>
                           <th>Is Available?</th>
                           <th>Action</th>
                         </tr>
@@ -283,6 +329,9 @@
                           :key="category.id"
                         >
                           <td>{{ category.name }}</td>
+                          <td>{{ category.bedtypes }}</td>
+                          <td>{{ category.nearat }}</td>
+                          <td>{{ category.desc }}</td>
                           <td v-if="category.isAvailable">Yes</td>
                           <td v-else>No</td>
                           <td>
@@ -951,6 +1000,9 @@ export default {
         // object representing the current room being edited or added
         id: null,
         name: "",
+        bedtypes: "",
+        nearat: "",
+        desc: "",
         isAvailable: "",
       },
       package: {
@@ -1367,6 +1419,9 @@ export default {
             this.roomcategory = {
               id: null,
               name: "",
+              nearat: "",
+              bedtypes: "",
+              desc: "",
               isAvailable: "",
             };
             this.isUpdatingRoomcategory = false;
@@ -1398,6 +1453,9 @@ export default {
                   this.roomcategory = {
                     id: null,
                     name: "",
+                    nearat: "",
+                    bedtypes: "",
+                    desc: "",
                     isAvailable: "",
                   };
                 })
