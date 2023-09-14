@@ -525,7 +525,7 @@
                   </div>
                 </div>
               </div> -->
-            <div :class="isExtended ? 'col-md-9' : 'col-md-6'">
+            <div class="col-md-9 printform">
               <div class="mt-0 mb-1 d-flex justify-content-between">
                 <div class="col-md-3">
                   <ul class="nav bg radius nav-pills nav-fill" role="tablist">
@@ -4006,7 +4006,7 @@ export default {
         nearat: "",
         desc: "",
       },
-      isExtended: true,
+      isExtended: false,
       reportview: 1,
       agentPayment: 0,
       packages: [],
@@ -5138,8 +5138,14 @@ export default {
   },
   methods: {
     extendView() {
-      $(".paymentmodal").toggle(1000);
       this.isExtended = !this.isExtended;
+      if (!this.isExtended) {
+        $(".printform").removeClass("col-md-9").addClass("col-md-6");
+        $(".paymentmodal").show(1000);
+      } else {
+        $(".printform").removeClass("col-md-6").addClass("col-md-9");
+        $(".paymentmodal").hide(1000);
+      }
     },
     async generateAllStabs() {
       let reservations = this.roomsjoinbookings;
@@ -6784,7 +6790,8 @@ export default {
       this.nonCashPayPlatform = "";
       this.agentPayPlatform = "";
       this.nonCashReference = "";
-      this.isExtended = true;
+      this.isExtended = false;
+      this.extendView();
       this.itemCart = {
         id: 0,
         name: "",
@@ -9800,7 +9807,7 @@ export default {
       vm.loadAlldata();
       vm.componentKey += 1;
     };
-    $(".paymentmodal").toggle(1000);
+    this.extendView();
   },
 };
 </script>
@@ -10086,6 +10093,13 @@ img {
 .loading-text {
   margin-top: 10px;
   /* Adjust the margin as needed */
+}
+
+.printform {
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
 }
 
 .autosuggestions {
