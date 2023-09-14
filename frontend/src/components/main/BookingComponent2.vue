@@ -525,7 +525,7 @@
                   </div>
                 </div>
               </div> -->
-            <div class="col-md-6">
+            <div :class="isExtended ? 'col-md-9' : 'col-md-6'">
               <div class="mt-0 mb-1 d-flex justify-content-between">
                 <div class="col-md-3">
                   <ul class="nav bg radius nav-pills nav-fill" role="tablist">
@@ -588,6 +588,17 @@
                     <i class="fas fa-print"
                       ><br />
                       <span style="font-size: 8px">[F10]</span></i
+                    >
+                  </button>
+                  &nbsp;
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="extendView"
+                  >
+                    <i :class="isExtended ? 'fas fa-compress' : 'fas fa-expand'"
+                      ><br />
+                      <span style="font-size: 8px">[F11]</span></i
                     >
                   </button>
                 </div>
@@ -1186,8 +1197,9 @@
                 </div>
               </div>
             </div>
+
             <div
-              class="col-md-3"
+              class="paymentmodal col-md-3"
               :style="`height:${calcMeasure.height4}!important;overflow-y: auto;overflow-x: hidden;`"
             >
               <div class="d-flex align-items-center" style="padding: 10px">
@@ -1218,44 +1230,6 @@
                 <div class="row">
                   <div class="col-12">
                     <form>
-                      <!-- <div class="form-group">
-                      <label for="paymentMethod">Payment method:</label>
-                      <select class="form-control" id="paymentMethod" v-model="paymentMethod">
-                        <option value="cash">Cash</option>
-                        <option value="non-cash">Non-cash</option>
-                      </select>
-                    </div> -->
-                      <!-- <div v-if="paymentMethod === 'non-cash'" class="form-group">
-                      <label for="nonCashReference">Reference No.:</label>
-                      <div class="input-group">
-                        <div class="input-group-prepend">
-                          <select class="form-control selectpicker" data-style="btn-primary" data-width="fit"
-                            v-model="nonCashPayPlatform">
-                            <option value="">-- Please select --</option>
-                            <option>GCash</option>
-                            <option>PayMaya</option>
-                            <option>Debit Card</option>
-                            <option>Credit Card</option>
-                            <option>Bank</option>
-                          </select>
-                        </div>
-                        <input type="text" class="form-control" id="nonCashReference" v-model="nonCashReference">
-                      </div>
-                    </div> -->
-                      <!-- <div class="form-group row mt-2">
-                      <label for="name" class="col-sm-4 col-form-label">Dicount:</label>
-                      <div class="col-sm-4">
-                        <div v-if="alreadyDiscounted === false">
-                          <select style="width: 100px;" class="form-control" id="discountMode" v-model="discountMode">
-                            <option value="percentage">Percentage</option>
-                            <option value="fixed">Fixed amount</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div class="col-sm-4">
-                        <input type="number" class="form-control" id="discountValue" v-model="discountValue">
-                      </div>
-                    </div> -->
                       <div class="form-group mb-2 mt-0">
                         <div class="input-group">
                           <input
@@ -1382,10 +1356,6 @@
                               >
                             </div>
                           </div>
-                          <!-- <div class="row">
-                          <div class="col-6"><strong style="font-size: 18px;">Change:</strong></div>
-                          <div class="col-6 text-right text-danger" style="font-size: 18px;">{{ change }}</div>
-                        </div> -->
                         </div>
                       </div>
                       <div class="form-group">
@@ -4036,6 +4006,7 @@ export default {
         nearat: "",
         desc: "",
       },
+      isExtended: true,
       reportview: 1,
       agentPayment: 0,
       packages: [],
@@ -5166,6 +5137,10 @@ export default {
     },
   },
   methods: {
+    extendView() {
+      $(".paymentmodal").toggle(1000);
+      this.isExtended = !this.isExtended;
+    },
     async generateAllStabs() {
       let reservations = this.roomsjoinbookings;
       this.currentMealStabs = [];
@@ -9872,6 +9847,7 @@ export default {
       vm.loadAlldata();
       vm.componentKey += 1;
     };
+    $(".paymentmodal").toggle(1000);
   },
 };
 </script>
