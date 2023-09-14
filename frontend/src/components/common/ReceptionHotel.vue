@@ -5,7 +5,7 @@
       style="
         background-color: #f0f0f0;
         position: fixed;
-        width: 97.35%;
+        width: 97.05%;
         z-index: 100;
       "
     >
@@ -72,7 +72,7 @@
 
     <table
       class="table table-bordered"
-      style="position: fixed; width: 97.35%; margin-top: 50px; z-index: 100"
+      style="position: fixed; width: 97.05%; margin-top: 50px; z-index: 100"
     >
       <thead>
         <tr>
