@@ -6784,6 +6784,7 @@ export default {
       this.nonCashPayPlatform = "";
       this.agentPayPlatform = "";
       this.nonCashReference = "";
+      this.isExtended = true;
       this.itemCart = {
         id: 0,
         name: "",
