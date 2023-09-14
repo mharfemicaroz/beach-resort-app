@@ -7772,26 +7772,7 @@ export default {
       const roomPrice = parseFloat(item.room_price);
       let groupbookings = [];
       let existingTransactionItems = [];
-      // if (groupkey.length > 0) {
-      //   try {
-      //     const o = await axios.post(`${this.API_URL}bookings/filter/`, [
-      //       { "columnName": "groupkey", "columnKey": groupkey },
-      //     ])
-      //     groupbookings = o.data;
-      //   } catch (error) {
-      //   }
-      // }
-      // if (groupbookings.length > 0) {
-      //   existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-      //     columnName: 'groupkey',
-      //     columnKey: groupkey
-      //   });
-      // } else {
-      //   existingTransactionItems = await axios.post(`${this.API_URL}transaction/item/filter/`, {
-      //     columnName: 'bookingID',
-      //     columnKey: bookingID
-      //   });
-      // }
+
       existingTransactionItems = await axios.post(
         `${this.API_URL}transaction/item/filter/`,
         {
@@ -7799,55 +7780,6 @@ export default {
           columnKey: bookingID,
         }
       );
-      // if (groupbookings.length > 0) {
-      //   groupbookings.forEach(async item => {
-      //     let itemIndex = this.bookings.findIndex(
-      //       o => o.itemID === item.itemID
-      //     );
-      //     const bookingData = null;
-      //     const itemCheckout = new Date(parseDate(item.checkoutDate));
-      //     const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
-      //     const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
-      //     const newTotalPrice = parseFloat(this.bookings[itemIndex].totalPrice) + parseFloat(this.bookings[itemIndex].room_price);
-      //     try {
-      //       bookingData = {
-      //         itemID: this.bookings[itemIndex].itemID,
-      //         status: this.bookings[itemIndex].status,
-      //         name: this.bookings[itemIndex].name,
-      //         clientemail: this.bookings[itemIndex].clientemail,
-      //         clientaddress: this.bookings[itemIndex].clientaddress,
-      //         clientnationality: this.bookings[itemIndex].clientnationality,
-      //         clientType: this.bookings[itemIndex].clientType,
-      //         checkinDate: this.bookings[itemIndex].checkinDate,
-      //         checkoutDate: newCheckoutString,
-      //         room_name: this.bookings[itemIndex].room_name,
-      //         room_price: this.bookings[itemIndex].room_price,
-      //         room_type: this.bookings[itemIndex].room_type,
-      //         remarks: this.bookings[itemIndex].remarks,
-      //         contactNumber: this.bookings[itemIndex].contactNumber,
-      //         actualCheckoutDate: this.bookings[itemIndex].actualCheckoutDate,
-      //         cancellationDate: this.bookings[itemIndex].cancellationDate,
-      //         isPaid: "partial",
-      //         totalPrice: newTotalPrice,
-      //         partialPayment: this.bookings[itemIndex].partialPayment,
-      //         processedBy: this.userdata.fName + " " + this.userdata.lName,
-      //         groupkey: this.bookings[itemIndex].groupkey,
-      //       };
-      //       await axios.put(this.API_URL + `bookings/${this.bookings[itemIndex].id}/`, bookingData);
-      //     } catch (error) {
-      //       console.log(error);
-      //     }
-      //   })
-      // } else {
-      //   const itemCheckout = new Date(parseDate(this.bookings[this.itemIndex].checkoutDate));
-      //   const extendItemCheckout = new Date(itemCheckout.setDate(itemCheckout.getDate() + 1))
-      //   const newCheckoutString = extendItemCheckout.toLocaleDateString("en-GB")
-      //   const newTotalPrice = parseFloat(this.bookings[this.itemIndex].totalPrice) + parseFloat(this.bookings[this.itemIndex].room_price);
-      //   this.bookings[this.itemIndex].checkoutDate = newCheckoutString;
-      //   this.bookings[this.itemIndex].isPaid = "partial";
-      //   this.bookings[this.itemIndex].totalPrice = newTotalPrice;
-      //   this.updateBookings(bId);
-      // }
       const itemCheckout = new Date(
         parseDate(this.bookings[this.itemIndex].checkoutDate)
       );
@@ -7862,19 +7794,39 @@ export default {
       this.bookings[this.itemIndex].isPaid = "partial";
       this.bookings[this.itemIndex].totalPrice = newTotalPrice;
       this.updateBookings(bId);
+
       existingTransactionItems.data
-        .filter((o) => o.itemOption === "room")
+        .filter(
+          (o) =>
+            o.bookingID === this.bookings[this.itemIndex].itemID &&
+            (o.itemOption === "room" || o.itemType.toLowerCase() === "entrance")
+        )
         .forEach(async (item) => {
           try {
+            const numdays = item.purchaseQty;
             await axios.put(`${this.API_URL}transaction/item/${item.id}/`, {
               bookingID: item.bookingID,
               itemName: item.itemName,
               itemType: item.itemType,
               itemPriceRate: item.itemPriceRate,
-              purchaseQty: parseFloat(item.purchaseQty) + 1,
-              totalCost: parseFloat(item.totalCost) + roomPrice,
+              purchaseQty: item.itemOption === "room" ? numdays + 1 : numdays,
+              totalCost:
+                item.itemOption === "room"
+                  ? (numdays + 1) * parseFloat(item.itemPriceRate.split("/")[0])
+                  : (numdays + 1) *
+                    (item.totalguest - item.totalpax) *
+                    parseFloat(item.itemPriceRate.split("/")[0]),
               category: item.category,
               itemOption: item.itemOption,
+              dateCreated: new Date(), // Set the dateCreated field to the current date and time
+              numdays:
+                item.itemType.toLowerCase() === "entrance" ||
+                item.itemOption === "room"
+                  ? item.numdays + 1
+                  : item.numdays,
+              totalguest: item.totalguest,
+              totalpax: item.totalpax,
+              currentroom: item.currentroom,
             });
           } catch (error) {}
         });
