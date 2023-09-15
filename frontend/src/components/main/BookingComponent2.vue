@@ -52,7 +52,7 @@
           aria-selected="false"
           @click="resetSummary(4)"
         >
-          Room Reservations
+          Front Desk
         </button>
       </li>
       <li
@@ -71,7 +71,7 @@
           aria-selected="false"
           @click="resetSummary(5)"
         >
-          Reception
+          Reservation Chart
         </button>
       </li>
       <li
@@ -266,7 +266,7 @@
                   role="tabpanel"
                 >
                   <div class="container-fluid">
-                    <div class="row" style="margin-left: 0.5%">
+                    <div class="row" style="margin-left: 0.1%">
                       <div class="col-md-3">
                         <button
                           class="btn btn-primary"
@@ -276,10 +276,11 @@
                         </button>
                       </div>
                     </div>
-                    <div class="row">
+                    <div class="row mt-2">
                       <div class="col-md-12">
-                        <CardBookingsVue
+                        <CardBookings2Vue
                           :roomData="roomsjoinbookings"
+                          :departingRoomData="roomsjoinbookingsfordeparting"
                           v-on:click-action="cardAction"
                         />
                       </div>
@@ -3915,6 +3916,7 @@ import FooterComponent from "../common/FooterComponent.vue";
 import TableComponent from "@/components/common/GenericTable.vue";
 import BookingDashboard from "@/components/common/BookingDashboard.vue";
 import CardBookingsVue from "../common/CardBookings.vue";
+import CardBookings2Vue from "../common/CardBookings2.vue";
 import ReceptionHotel from "../common/ReceptionHotel.vue";
 import "/node_modules/vue-simple-calendar/dist/style.css";
 import "/node_modules/vue-simple-calendar/dist/css/default.css";
@@ -3996,6 +3998,7 @@ export default {
     TableComponent,
     BookingDashboard,
     CardBookingsVue,
+    CardBookings2Vue,
     ReceptionHotel,
   },
   data() {
@@ -4754,6 +4757,50 @@ export default {
             .toLowerCase()
             .includes(this.searchTerm.toLowerCase())
         );
+    },
+    roomsjoinbookingsfordeparting() {
+      let filtered =
+        this.activeMainTab === "all"
+          ? this.rooms
+          : this.rooms.filter(
+              (item) => item.type === this.activeMainTab.toString()
+            );
+      return filtered.map((room) => {
+        const booking = this.bookings
+          .filter((item) => item.status !== "checkedout")
+          .filter((item) => item.status !== "cancelled")
+          .filter((item) => {
+            const isCheckedin = item.status === "checkedin";
+            const today = new Date().setHours(0, 0, 0, 0);
+            let checkoutDate = new Date(parseDate(item.checkoutDate));
+            checkoutDate.setDate(checkoutDate.getDate() + 1);
+            checkoutDate = checkoutDate.setHours(0, 0, 0, 0);
+            const isStaying = checkoutDate === today;
+            return isCheckedin && isStaying;
+          })
+          .find((booking) => booking.room_name === room.name);
+        if (booking) {
+          return {
+            ...room,
+            clientName: booking.name,
+            clientEmail: booking.clientemail,
+            clientAddress: booking.clientaddress,
+            contactNumber: booking.contactNumber,
+            checkinDate: booking.checkinDate,
+            checkoutDate: booking.checkoutDate,
+            status: booking.status,
+            itemID: booking.itemID,
+            groupkey: booking.groupkey,
+            totalPrice: booking.totalPrice,
+            partialPayment: booking.partialPayment,
+            status: booking.status,
+            isPaid: booking.isPaid,
+            selected: false,
+          };
+        } else {
+          return room;
+        }
+      });
     },
     roomsjoinbookings() {
       let filtered =
