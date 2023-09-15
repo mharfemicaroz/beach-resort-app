@@ -13,6 +13,11 @@
               aria-controls="collapseOne"
             >
               Arriving
+              <span
+                v-if="arrivingRoomData.length > 0"
+                class="badge-pill badge-danger"
+                >{{ arrivingRoomData.length }}</span
+              >
             </button>
           </h2>
           <div
@@ -167,6 +172,11 @@
               aria-controls="collapseTwo"
             >
               Staying
+              <span
+                v-if="stayRoomData.length > 0"
+                class="badge-pill badge-danger"
+                >{{ stayRoomData.length }}</span
+              >
             </button>
           </h2>
           <div
@@ -321,6 +331,11 @@
               aria-controls="collapseThree"
             >
               Departing
+              <span
+                v-if="departRoomData.length > 0"
+                class="badge-pill badge-danger"
+                >{{ departRoomData.length }}</span
+              >
             </button>
           </h2>
           <div
@@ -475,6 +490,11 @@
               aria-controls="collapse4"
             >
               Vacant
+              <span
+                v-if="vacantRoomData.length > 0"
+                class="badge-pill badge-danger"
+                >{{ vacantRoomData.length }}</span
+              >
             </button>
           </h2>
           <div
@@ -685,4 +705,25 @@ export default {
   },
 };
 </script>
-<style></style>
+<style>
+.badge-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.badge-pill {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  font-size: 75%;
+  font-weight: 700;
+  vertical-align: top;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 10rem;
+  position: relative;
+  top: -0.75em;
+  left: -0.25em;
+}
+</style>
