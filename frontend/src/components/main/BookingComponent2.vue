@@ -8816,12 +8816,12 @@ export default {
         ).length;
         if (bookid === "f") {
           if (numGuests === 0) {
-            await this.$swal.fire({
-              title: "Error",
-              text: "Kindly specify the number of guests by providing the quantity within the general/pool entrance fee.",
-              icon: "error",
-            });
-            return false;
+            // await this.$swal.fire({
+            //   title: "Error",
+            //   text: "Kindly specify the number of guests by providing the quantity within the general/pool entrance fee.",
+            //   icon: "error",
+            // });
+            // return false;
           }
         } else {
           if (
