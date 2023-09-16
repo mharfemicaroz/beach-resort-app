@@ -324,7 +324,36 @@
             <div class="col-md-12">
               <div class="card x">
                 <div class="card-header text-primary text-center">
-                  <strong>Reservation Trend</strong>
+                  <strong>Total Revenue</strong>
+                </div>
+                <div
+                  class="card-body chart"
+                  style="
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <bar-chart
+                    :key="componentKey"
+                    v-if="loaded[7]"
+                    :chartData="bar2Data"
+                  />
+                  <div v-else class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card x">
+                <div class="card-header text-primary text-center">
+                  <strong
+                    >Reservation Historical Data & 30-point period
+                    Forecast</strong
+                  >
                 </div>
                 <div
                   class="card-body chart"
@@ -336,7 +365,9 @@
                 >
                   <line-chart
                     :key="componentKey"
-                    v-if="loaded[6]"
+                    v-if="
+                      loaded[6] && (line1Data.datasets[0].data || []).length > 0
+                    "
                     :chartData="line1Data"
                   />
                   <div v-else class="spinner-border" role="status">
@@ -349,7 +380,9 @@
               <div class="col-md-12">
                 <div class="card x">
                   <div class="card-header text-primary text-center">
-                    <strong>Total Revenue</strong>
+                    <strong
+                      >Sales Historical Data & 30-point period Forecast</strong
+                    >
                   </div>
                   <div
                     class="card-body chart"
@@ -359,10 +392,13 @@
                       align-items: center;
                     "
                   >
-                    <bar-chart
+                    <line-chart
                       :key="componentKey"
-                      v-if="loaded[7]"
-                      :chartData="bar2Data"
+                      v-if="
+                        loaded[8] &&
+                        (line2Data.datasets[0].data || []).length > 0
+                      "
+                      :chartData="line2Data"
                     />
                     <div v-else class="spinner-border" role="status">
                       <span class="sr-only">Loading...</span>
@@ -375,7 +411,9 @@
               <div class="col-md-12">
                 <div class="card x">
                   <div class="card-header text-primary text-center">
-                    <strong>Sales Trend</strong>
+                    <strong
+                      >Guests Historical Data & 30-point period Forecast</strong
+                    >
                   </div>
                   <div
                     class="card-body chart"
@@ -387,8 +425,11 @@
                   >
                     <line-chart
                       :key="componentKey"
-                      v-if="loaded[8]"
-                      :chartData="line2Data"
+                      v-if="
+                        loaded[9] &&
+                        (line3Data.datasets[0].data || []).length > 0
+                      "
+                      :chartData="line3Data"
                     />
                     <div v-else class="spinner-border" role="status">
                       <span class="sr-only">Loading...</span>
@@ -676,6 +717,7 @@ export default {
       backtrack: 10,
       counter: 0,
       forecastedData: null,
+      forecastedData2: null,
       componentKey: 0,
       prevBookings: [],
       prevTransactions: [],
@@ -752,6 +794,12 @@ export default {
         datasets: [
           {
             data: [],
+            borderDash: [10, 5],
+            borderColor: "#36A2EB",
+          },
+          {
+            data: [],
+            borderColor: "#36A2EB",
           },
         ],
       },
@@ -760,6 +808,26 @@ export default {
         datasets: [
           {
             data: [],
+            borderDash: [10, 5],
+            borderColor: "#FF6384",
+          },
+          {
+            data: [],
+            borderColor: "#FF6384",
+          },
+        ],
+      },
+      line3Data: {
+        labels: [],
+        datasets: [
+          {
+            data: [],
+            borderDash: [10, 5],
+            borderColor: "#FFCE56",
+          },
+          {
+            data: [],
+            borderColor: "#FFCE56",
           },
         ],
       },
@@ -1020,10 +1088,36 @@ export default {
       const frequency = dates.map((date) => arr[date]);
       dates.unshift("");
       frequency.unshift(0);
-      this.line1Data.labels = dates;
-      this.line1Data.datasets[0].data = frequency;
+      const actualdata = frequency;
+      const actualdates = dates;
+
+      arima.then((ARIMA) => {
+        const arima = new ARIMA({
+          p: 2,
+          d: 1,
+          q: 2,
+          P: 2,
+          D: 1,
+          Q: 2,
+          s: 12,
+          verbose: false,
+        }).train(actualdata);
+        const [pred, errors] = arima.predict(30);
+        if (pred.length > 0) {
+          let dummydates = [...actualdates];
+          let forecastdata = [...actualdata];
+          for (const item of pred) {
+            dummydates.push("");
+            forecastdata.push(item);
+          }
+          this.line1Data.labels = dummydates;
+          this.line1Data.datasets[0].data = forecastdata;
+        }
+      });
+      this.line1Data.labels = actualdates;
+      this.line1Data.datasets[1].data = actualdata;
     },
-    async line2Datasets(data) {
+    line2Datasets(data) {
       const summary = data.reduce(
         (acc, curr) => {
           const index = acc.dates.indexOf(
@@ -1056,31 +1150,92 @@ export default {
       result.dates.sort((a, b) => new Date(a) - new Date(b));
       result.dates.unshift("");
       result.totalCashAmountPay.unshift(0);
-
-      this.line2Data.labels = result.dates;
-
-      this.line2Data.datasets[0].data = result.totalCashAmountPay;
-      // this.line2Data.datasets[0].data = this.forecast(
-      //   result.totalCashAmountPay
-      // );
-    },
-    forecast(data) {
-      let vm = this;
+      const actualdata = result.totalCashAmountPay;
+      const actualdates = result.dates;
       arima.then((ARIMA) => {
         const arima = new ARIMA({
           p: 2,
           d: 1,
           q: 2,
-          P: 0,
-          D: 0,
-          Q: 0,
-          S: 0,
+          P: 2,
+          D: 1,
+          Q: 2,
+          s: 12,
           verbose: false,
-        }).train(data);
-        const [pred, errors] = arima.predict(data.length);
-        vm.forecastedData = pred;
+        }).train(actualdata);
+        const [pred, errors] = arima.predict(30);
+        if (pred.length > 0) {
+          let dummydates = [...actualdates];
+          let forecastdata = [...actualdata];
+          for (const item of pred) {
+            dummydates.push("");
+            forecastdata.push(item);
+          }
+          this.line2Data.labels = dummydates;
+          this.line2Data.datasets[0].data = forecastdata;
+        }
       });
-      return this.forecastedData;
+      this.line2Data.labels = actualdates;
+      this.line2Data.datasets[1].data = actualdata;
+    },
+    line3Datasets(data) {
+      const summary = data.reduce(
+        (acc, curr) => {
+          const index = acc.dates.indexOf(this.parseDate3(curr.dateCreated));
+
+          if (index === -1) {
+            acc.dates.push(this.parseDate3(curr.dateCreated));
+            acc.totals.push(parseFloat(curr.purchaseQty));
+          } else {
+            acc.totals[index] += parseFloat(curr.purchaseQty);
+          }
+
+          return acc;
+        },
+        { dates: [], totals: [] }
+      );
+
+      const result = {
+        dates: summary.dates,
+        frequency: summary.totals,
+      };
+
+      const o = result.dates.map((date, index) => ({
+        date,
+        frequency: result.frequency[index],
+      }));
+      o.sort((a, b) => new Date(a.date) - new Date(b.date));
+      result.frequency = o.map((item) => item.frequency);
+      result.dates.sort((a, b) => new Date(a) - new Date(b));
+      result.dates.unshift("");
+      result.frequency.unshift(0);
+      const actualdata = result.frequency;
+      const actualdates = result.dates;
+      arima.then((ARIMA) => {
+        const arima = new ARIMA({
+          p: 2,
+          d: 1,
+          q: 2,
+          P: 2,
+          D: 1,
+          Q: 2,
+          s: 12,
+          verbose: false,
+        }).train(actualdata);
+        const [pred, errors] = arima.predict(30);
+        if (pred.length > 0) {
+          let dummydates = [...actualdates];
+          let forecastdata = [...actualdata];
+          for (const item of pred) {
+            dummydates.push("");
+            forecastdata.push(item);
+          }
+          this.line3Data.labels = dummydates;
+          this.line3Data.datasets[0].data = forecastdata;
+        }
+      });
+      this.line3Data.labels = actualdates;
+      this.line3Data.datasets[1].data = actualdata;
     },
     scrollRecord() {
       this.loaded.fill(false, 0, 4);
@@ -1156,7 +1311,7 @@ export default {
           this.prevBookings = bookingData.data;
           this.prevTransactions = transactionData.data;
           this.prevransItems = transactionItemsData.data;
-          this.loaded = Array(9).fill(false);
+          this.loaded = Array(10).fill(false);
         }
 
         const roomsData = await axios.get(this.API_URL + "rooms/");
@@ -1177,6 +1332,7 @@ export default {
           .reduce((accumulator, currentValue) => {
             return accumulator + parseFloat(currentValue.purchaseQty);
           }, 0);
+
         this.availableRooms = roomsData.data.filter((room) => {
           // Check if there are any bookings for this room that overlap with the specified date range
           const overlappingBookings = bookingData.data.filter((booking) => {
@@ -1202,9 +1358,13 @@ export default {
           )
         );
         this.bar2Datasets(transactionItemsData.data);
-        this.line1Datasets(bookingData.data);
+        this.line1Datasets(
+          bookingData.data.filter((o) => o.status === "checkedout")
+        );
         this.line2Datasets(transactionData.data);
-
+        this.line3Datasets(
+          transactionItemsData.data.filter((o) => o.itemType === "ENTRANCE")
+        );
         const trans_itemizer_data = await axios.get(
           this.API_URL + `transactions_itemizer/${daycount}/`
         );
@@ -1433,13 +1593,13 @@ export default {
           })
         );
 
-        this.loaded = Array(9).fill(true);
+        this.loaded = Array(10).fill(true);
       } catch (error) {}
     },
   },
   async mounted() {
     // initialize loaded array
-    this.loaded = Array(7).fill(false);
+    this.loaded = Array(10).fill(false);
 
     // load data
     await this.loadData();
