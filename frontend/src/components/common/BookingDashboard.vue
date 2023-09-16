@@ -351,7 +351,7 @@
               <div class="card x">
                 <div class="card-header text-primary text-center">
                   <strong
-                    >Reservation Historical Data & 15-point period
+                    >Reservation Historical Data & 30-point period
                     Forecast</strong
                   >
                 </div>
@@ -381,7 +381,7 @@
                 <div class="card x">
                   <div class="card-header text-primary text-center">
                     <strong
-                      >Sales Historical Data & 15-point period Forecast</strong
+                      >Sales Historical Data & 30-point period Forecast</strong
                     >
                   </div>
                   <div
@@ -412,7 +412,7 @@
                 <div class="card x">
                   <div class="card-header text-primary text-center">
                     <strong
-                      >Guests Historical Data & 15-point period Forecast</strong
+                      >Guests Historical Data & 30-point period Forecast</strong
                     >
                   </div>
                   <div
@@ -1094,16 +1094,16 @@ export default {
 
       arima.then((ARIMA) => {
         const arima = new ARIMA({
-          p: 1,
-          d: 2,
+          p: 0,
+          d: 1,
           q: 1,
           P: 0,
-          D: 0,
+          D: 1,
           Q: 1,
           s: 12,
           verbose: false,
         }).train(actualdata);
-        const [pred, errors] = arima.predict(15);
+        const [pred, errors] = arima.predict(30);
         if (pred.length > 0) {
           let dummydates = [...actualdates];
           let forecastdata = [...actualdata];
@@ -1155,16 +1155,16 @@ export default {
       const actualdates = result.dates;
       arima.then((ARIMA) => {
         const arima = new ARIMA({
-          p: 1,
-          d: 2,
+          p: 0,
+          d: 1,
           q: 1,
           P: 0,
-          D: 0,
+          D: 1,
           Q: 1,
           s: 12,
           verbose: false,
         }).train(actualdata);
-        const [pred, errors] = arima.predict(15);
+        const [pred, errors] = arima.predict(30);
         if (pred.length > 0) {
           let dummydates = [...actualdates];
           let forecastdata = [...actualdata];
@@ -1214,16 +1214,16 @@ export default {
       const actualdates = result.dates;
       arima.then((ARIMA) => {
         const arima = new ARIMA({
-          p: 1,
-          d: 2,
+          p: 0,
+          d: 1,
           q: 1,
           P: 0,
-          D: 0,
+          D: 1,
           Q: 1,
           s: 12,
           verbose: false,
         }).train(actualdata);
-        const [pred, errors] = arima.predict(15);
+        const [pred, errors] = arima.predict(30);
         if (pred.length > 0) {
           let dummydates = [...actualdates];
           let forecastdata = [...actualdata];
