@@ -1084,7 +1084,8 @@ export default {
         return acc;
       }, {});
 
-      const dates = Object.keys(arr).sort();
+      let dates = Object.keys(arr).sort();
+
       const frequency = dates.map((date) => arr[date]);
       dates.unshift("");
       frequency.unshift(0);
@@ -1093,16 +1094,16 @@ export default {
 
       arima.then((ARIMA) => {
         const arima = new ARIMA({
-          p: 0,
-          d: 1,
+          p: 1,
+          d: 2,
           q: 1,
           P: 0,
-          D: 1,
+          D: 0,
           Q: 1,
           s: 12,
           verbose: false,
         }).train(actualdata);
-        const [pred, errors] = arima.predict(30);
+        const [pred, errors] = arima.predict(15);
         if (pred.length > 0) {
           let dummydates = [...actualdates];
           let forecastdata = [...actualdata];
@@ -1154,16 +1155,16 @@ export default {
       const actualdates = result.dates;
       arima.then((ARIMA) => {
         const arima = new ARIMA({
-          p: 0,
-          d: 1,
+          p: 1,
+          d: 2,
           q: 1,
           P: 0,
-          D: 1,
+          D: 0,
           Q: 1,
           s: 12,
           verbose: false,
         }).train(actualdata);
-        const [pred, errors] = arima.predict(30);
+        const [pred, errors] = arima.predict(15);
         if (pred.length > 0) {
           let dummydates = [...actualdates];
           let forecastdata = [...actualdata];
@@ -1213,16 +1214,16 @@ export default {
       const actualdates = result.dates;
       arima.then((ARIMA) => {
         const arima = new ARIMA({
-          p: 0,
-          d: 1,
+          p: 1,
+          d: 2,
           q: 1,
           P: 0,
-          D: 1,
+          D: 0,
           Q: 1,
           s: 12,
           verbose: false,
         }).train(actualdata);
-        const [pred, errors] = arima.predict(30);
+        const [pred, errors] = arima.predict(15);
         if (pred.length > 0) {
           let dummydates = [...actualdates];
           let forecastdata = [...actualdata];
