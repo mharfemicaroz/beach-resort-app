@@ -1093,13 +1093,13 @@ export default {
 
       arima.then((ARIMA) => {
         const arima = new ARIMA({
-          p: 2,
+          p: 0,
           d: 1,
           q: 1,
           P: 0,
           D: 1,
           Q: 1,
-          s: 4,
+          s: 12,
           verbose: false,
         }).train(actualdata);
         const [pred, errors] = arima.predict(30);
@@ -1154,13 +1154,13 @@ export default {
       const actualdates = result.dates;
       arima.then((ARIMA) => {
         const arima = new ARIMA({
-          p: 2,
+          p: 0,
           d: 1,
           q: 1,
           P: 0,
           D: 1,
           Q: 1,
-          s: 4,
+          s: 12,
           verbose: false,
         }).train(actualdata);
         const [pred, errors] = arima.predict(30);
@@ -1213,13 +1213,13 @@ export default {
       const actualdates = result.dates;
       arima.then((ARIMA) => {
         const arima = new ARIMA({
-          p: 2,
+          p: 0,
           d: 1,
           q: 1,
           P: 0,
           D: 1,
           Q: 1,
-          s: 4,
+          s: 12,
           verbose: false,
         }).train(actualdata);
         const [pred, errors] = arima.predict(30);
