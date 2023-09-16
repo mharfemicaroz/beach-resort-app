@@ -1095,11 +1095,11 @@ export default {
         const arima = new ARIMA({
           p: 2,
           d: 1,
-          q: 2,
-          P: 2,
-          D: 1,
-          Q: 2,
-          s: 12,
+          q: 1,
+          P: 0,
+          D: 0,
+          Q: 0,
+          s: 0,
           verbose: false,
         }).train(actualdata);
         const [pred, errors] = arima.predict(30);
@@ -1156,11 +1156,11 @@ export default {
         const arima = new ARIMA({
           p: 2,
           d: 1,
-          q: 2,
-          P: 2,
-          D: 1,
-          Q: 2,
-          s: 12,
+          q: 1,
+          P: 0,
+          D: 0,
+          Q: 0,
+          s: 0,
           verbose: false,
         }).train(actualdata);
         const [pred, errors] = arima.predict(30);
@@ -1215,11 +1215,11 @@ export default {
         const arima = new ARIMA({
           p: 2,
           d: 1,
-          q: 2,
-          P: 2,
-          D: 1,
-          Q: 2,
-          s: 12,
+          q: 1,
+          P: 0,
+          D: 0,
+          Q: 0,
+          s: 0,
           verbose: false,
         }).train(actualdata);
         const [pred, errors] = arima.predict(30);
