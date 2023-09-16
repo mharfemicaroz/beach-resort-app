@@ -351,7 +351,7 @@
               <div class="card x">
                 <div class="card-header text-primary text-center">
                   <strong
-                    >Reservation Historical Data & 30-point period
+                    >Reservation Historical Data & 15-point period
                     Forecast</strong
                   >
                 </div>
@@ -381,7 +381,7 @@
                 <div class="card x">
                   <div class="card-header text-primary text-center">
                     <strong
-                      >Sales Historical Data & 30-point period Forecast</strong
+                      >Sales Historical Data & 15-point period Forecast</strong
                     >
                   </div>
                   <div
@@ -412,7 +412,7 @@
                 <div class="card x">
                   <div class="card-header text-primary text-center">
                     <strong
-                      >Guests Historical Data & 30-point period Forecast</strong
+                      >Guests Historical Data & 15-point period Forecast</strong
                     >
                   </div>
                   <div
