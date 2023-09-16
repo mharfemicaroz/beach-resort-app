@@ -1097,9 +1097,9 @@ export default {
           d: 1,
           q: 1,
           P: 0,
-          D: 0,
-          Q: 0,
-          s: 0,
+          D: 1,
+          Q: 1,
+          s: 4,
           verbose: false,
         }).train(actualdata);
         const [pred, errors] = arima.predict(30);
@@ -1158,9 +1158,9 @@ export default {
           d: 1,
           q: 1,
           P: 0,
-          D: 0,
-          Q: 0,
-          s: 0,
+          D: 1,
+          Q: 1,
+          s: 4,
           verbose: false,
         }).train(actualdata);
         const [pred, errors] = arima.predict(30);
@@ -1217,9 +1217,9 @@ export default {
           d: 1,
           q: 1,
           P: 0,
-          D: 0,
-          Q: 0,
-          s: 0,
+          D: 1,
+          Q: 1,
+          s: 4,
           verbose: false,
         }).train(actualdata);
         const [pred, errors] = arima.predict(30);
