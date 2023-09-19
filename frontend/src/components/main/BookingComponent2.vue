@@ -5492,7 +5492,19 @@ export default {
         });
     },
     saveBookingInfo() {
-      if (this.reservation.clientName === "") {
+      if (this.bookings[this.itemIndex].status === "checkedout") {
+        return;
+      }
+      if (
+        (this.reservation.clientName === "" ||
+          this.reservation.clientName === this.bookings[this.itemIndex].name) &&
+        this.reservation.clientEmail ===
+          this.bookings[this.itemIndex].clientemail &&
+        this.reservation.clientAddress ===
+          this.bookings[this.itemIndex].clientaddress &&
+        this.reservation.clientPhone ===
+          this.bookings[this.itemIndex].contactNumber
+      ) {
         return;
       }
       this.$swal
@@ -5506,6 +5518,40 @@ export default {
         })
         .then(async (result) => {
           if (result.isConfirmed) {
+            this.actionRecorder(
+              `record?type=updateinfo&bookingID=${
+                this.bookings[this.itemIndex].itemID
+              }&groupkey=${this.bookings[this.itemIndex].groupkey}&remarks=${
+                this.reservation.clientName ===
+                this.bookings[this.itemIndex].name
+                  ? ""
+                  : `name: from ${this.bookings[this.itemIndex].name} to ${
+                      this.reservation.clientName
+                    }; `
+              }${
+                this.reservation.clientEmail ===
+                this.bookings[this.itemIndex].clientemail
+                  ? ""
+                  : `email: from ${
+                      this.bookings[this.itemIndex].clientemail
+                    } to ${this.reservation.clientEmail};`
+              }${
+                this.reservation.clientAddress ===
+                this.bookings[this.itemIndex].clientaddress
+                  ? ""
+                  : `address: from ${
+                      this.bookings[this.itemIndex].clientaddress
+                    } to ${this.reservation.clientAddress};`
+              }${
+                this.reservation.clientPhone ===
+                this.bookings[this.itemIndex].contactNumber
+                  ? ""
+                  : `contact: from ${
+                      this.bookings[this.itemIndex].contactNumber
+                    } to ${this.reservation.clientPhone};`
+              }`
+            );
+
             const response = await axios.put(
               this.API_URL + `bookings/${this.bookings[this.itemIndex].id}/`,
               {
@@ -5525,7 +5571,7 @@ export default {
                   this.reservation.remarks +
                   "\n" +
                   this.bookings[this.itemIndex].remarks,
-                contactNumber: this.bookings[this.itemIndex].contactNumber,
+                contactNumber: this.reservation.clientPhone,
                 isPaid: this.bookings[this.itemIndex].isPaid,
                 totalPrice: this.bookings[this.itemIndex].totalPrice,
                 partialPayment: this.bookings[this.itemIndex].partialPayment,
