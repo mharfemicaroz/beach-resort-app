@@ -120,7 +120,7 @@
                               ><i class="fas fa-calendar-check"></i> Check-out
                               Date:</strong
                             >
-                            {{ item.checkoutDate }}
+                            {{ item.checkoutDate2 }}
                           </li>
                           <li>
                             <strong
@@ -279,7 +279,7 @@
                               ><i class="fas fa-calendar-check"></i> Check-out
                               Date:</strong
                             >
-                            {{ item.checkoutDate }}
+                            {{ item.checkoutDate2 }}
                           </li>
                           <li>
                             <strong
@@ -438,7 +438,7 @@
                               ><i class="fas fa-calendar-check"></i> Check-out
                               Date:</strong
                             >
-                            {{ item.checkoutDate }}
+                            {{ item.checkoutDate2 }}
                           </li>
                           <li>
                             <strong
@@ -597,7 +597,7 @@
                               ><i class="fas fa-calendar-check"></i> Check-out
                               Date:</strong
                             >
-                            {{ item.checkoutDate }}
+                            {{ item.checkoutDate2 }}
                           </li>
                           <li>
                             <strong
@@ -652,6 +652,15 @@ function parseDate(dateString) {
   const [day, month, year] = dateString.split("/");
   return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
 }
+function formatDate(date = new Date()) {
+  let inputDate = date;
+  let dateObj = new Date(inputDate);
+  let day = dateObj.getDate().toString().padStart(2, "0");
+  let month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+  let year = dateObj.getFullYear().toString();
+  let outputDate = `${day}/${month}/${year}`;
+  return outputDate;
+}
 export default {
   props: {
     roomData: {
@@ -672,6 +681,15 @@ export default {
     arrivingRoomData() {
       return this.roomData
         .filter((o) => o.status === "reserved")
+        .map((o) => {
+          let checkoutDate = new Date(parseDate(o.checkoutDate));
+          checkoutDate.setDate(checkoutDate.getDate() + 1);
+          const checkoutDate2 = formatDate(checkoutDate.setHours(0, 0, 0, 0));
+          return {
+            checkoutDate2,
+            ...o,
+          };
+        })
         .sort(function (a, b) {
           return a.isPaid.localeCompare(b.isPaid);
         });
@@ -688,6 +706,15 @@ export default {
           const isStaying = checkoutDate > today;
           return isCheckedin && isStaying;
         })
+        .map((o) => {
+          let checkoutDate = new Date(parseDate(o.checkoutDate));
+          checkoutDate.setDate(checkoutDate.getDate() + 1);
+          const checkoutDate2 = formatDate(checkoutDate.setHours(0, 0, 0, 0));
+          return {
+            checkoutDate2,
+            ...o,
+          };
+        })
         .sort(function (a, b) {
           return a.isPaid.localeCompare(b.isPaid);
         });
@@ -695,6 +722,15 @@ export default {
     departRoomData() {
       return this.departingRoomData
         .filter((o) => "itemID" in o)
+        .map((o) => {
+          let checkoutDate = new Date(parseDate(o.checkoutDate));
+          checkoutDate.setDate(checkoutDate.getDate() + 1);
+          const checkoutDate2 = formatDate(checkoutDate.setHours(0, 0, 0, 0));
+          return {
+            checkoutDate2,
+            ...o,
+          };
+        })
         .sort(function (a, b) {
           return a.isPaid.localeCompare(b.isPaid);
         });

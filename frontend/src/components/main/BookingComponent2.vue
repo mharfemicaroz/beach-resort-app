@@ -3479,7 +3479,7 @@
             </div>
             <p class="loading-text h5">Loading...(Do not click anywhere!)</p>
           </div>
-          <form v-else>
+          <form @submit.prevent="clickTestAddItem" v-else>
             <!-- Client Information -->
             <h5>
               Booking Details<span class="text-muted" style="font-size: 12px"
@@ -3491,7 +3491,7 @@
               <div class="col-sm-4">
                 <input
                   type="text"
-                  class="form-control"
+                  class="form-control book-form"
                   id="name"
                   v-model="reservation.clientName"
                   required
@@ -3502,7 +3502,7 @@
               <div class="col-sm-4">
                 <input
                   type="email"
-                  class="form-control"
+                  class="form-control book-form"
                   id="email"
                   v-model="reservation.clientEmail"
                   autocomplete="off"
@@ -3514,19 +3514,28 @@
                 >Address:</label
               >
               <div class="col-sm-4">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="address"
-                  v-model="reservation.clientAddress"
+                <form
+                  id="address-form"
+                  action=""
+                  method="get"
                   autocomplete="off"
-                />
+                >
+                  <input
+                    id="loc-address"
+                    name="loc-address"
+                    ref="address1Field"
+                    v-on:focus="initAutocomplete"
+                    class="address"
+                    autocomplete="off"
+                    required
+                  />
+                </form>
               </div>
               <label for="phone" class="col-sm-2 col-form-label">Phone:</label>
               <div class="col-sm-4">
                 <input
                   type="tel"
-                  class="form-control"
+                  class="form-control book-form"
                   id="phone"
                   v-model="reservation.clientPhone"
                   autocomplete="off"
@@ -3539,7 +3548,7 @@
               >
               <div class="col-sm-4">
                 <select
-                  class="form-control"
+                  class="form-control book-form"
                   id="nationality"
                   v-model="reservation.clientNationality"
                   required
@@ -3554,7 +3563,7 @@
               >
               <div class="col-sm-4">
                 <select
-                  class="form-control"
+                  class="form-control book-form"
                   id="clientType"
                   v-model="reservation.clientType"
                   required
@@ -3572,7 +3581,7 @@
                 <input
                   type="text"
                   aria-describedby="inputhelp"
-                  class="form-control mb-0"
+                  class="form-control mb-0 book-form"
                   id="checkin"
                   v-model="reservation.checkinDate"
                   required
@@ -3593,7 +3602,7 @@
                   "
                   type="text"
                   aria-describedby="inputhelp"
-                  class="form-control mb-0"
+                  class="form-control mb-0 book-form"
                   id="checkin"
                   v-model="reservation.checkoutDate"
                   required
@@ -3603,7 +3612,7 @@
                   v-else
                   type="text"
                   aria-describedby="inputhelp"
-                  class="form-control mb-0"
+                  class="form-control mb-0 book-form"
                   id="checkin"
                   :value="setCheckoutDate()"
                   required
@@ -3646,7 +3655,7 @@
               <div v-else class="col-sm-4">
                 <input
                   type="text"
-                  class="form-control"
+                  class="form-control book-form"
                   v-model="reservation.roomName"
                   readonly
                 />
@@ -3656,7 +3665,7 @@
               >
               <div class="col-sm-4">
                 <textarea
-                  class="form-control"
+                  class="form-control book-form"
                   v-model="reservation.remarks"
                   autocomplete="off"
                   rows="4"
@@ -3838,15 +3847,11 @@
                 </div>
                 <button
                   :disabled="disablebutton"
-                  @click="
-                    clickTestAddItem();
-                    disablebutton = true;
-                  "
                   v-else-if="
                     reservation.status == 'vacant' &&
                     reservation.clientName !== ''
                   "
-                  type="button"
+                  type="submit"
                   class="btn btn-primary btn-sm btn-margin rounded"
                 >
                   <i class="fas fa-book"></i> Book Now
@@ -4003,6 +4008,7 @@ export default {
   },
   data() {
     return {
+      autocomplete: null,
       filter: {
         bedtype: "",
         roompax: "",
@@ -5184,6 +5190,23 @@ export default {
     },
   },
   methods: {
+    initAutocomplete() {
+      const address1Field = this.$refs.address1Field;
+
+      // Create the autocomplete object, restricting the search predictions to
+      // addresses in the Philippines (PH).
+      this.autocomplete = new google.maps.places.Autocomplete(address1Field, {
+        componentRestrictions: { country: ["ph"] },
+        fields: ["address_components", "geometry"],
+        types: ["geocode"],
+      });
+
+      address1Field.focus();
+
+      this.autocomplete.addListener("place_changed", () => {
+        this.reservation.clientAddress = this.$refs.address1Field.value;
+      });
+    },
     extendView() {
       this.isExtended = !this.isExtended;
       if (!this.isExtended) {
@@ -8078,6 +8101,7 @@ export default {
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
         this.reservation.clientAddress = "";
+        this.$refs.address1Field.value = "";
         this.reservation.clientNationality = "Filipino";
         this.reservation.clientType = "in-house";
         this.reservation.roomName = "";
@@ -8134,6 +8158,7 @@ export default {
       this.reservation.clientEmail = this.bookings[this.itemIndex].clientemail;
       this.reservation.clientAddress =
         this.bookings[this.itemIndex].clientaddress;
+      this.$refs.address1Field.value = this.reservation.clientAddress;
       this.reservation.clientNationality =
         this.bookings[this.itemIndex].clientnationality;
       this.reservation.clientType = this.bookings[this.itemIndex].clientType;
@@ -8453,7 +8478,20 @@ export default {
       return randomString;
     },
     async clickTestAddItem() {
+      // if (
+      //   this.reservation.clientAddress === "" ||
+      //   this.reservation.clientAddress === null
+      // ) {
+      //   this.$swal.fire({
+      //     title: "error",
+      //     text: "Please fill out the address field.",
+      //     icon: "error",
+      //   });
+      //   this.$refs.address1Field.focus();
+      //   return false;
+      // }
       this.bookNowFlag = false;
+      this.disablebutton = true;
       const checkin = parseDate(this.reservation.checkinDate);
       const checkout = parseDate(this.reservation.checkoutDate);
       if (checkout < checkin) {
@@ -9854,6 +9892,9 @@ export default {
       vm.loadAlldata();
       vm.componentKey += 1;
     };
+    if (typeof google !== "undefined") {
+      this.initAutocomplete();
+    }
     this.extendView();
   },
 };
@@ -10264,5 +10305,34 @@ img {
   position: relative;
   top: -0.75em;
   left: -0.25em;
+}
+
+.address {
+  width: 100%;
+  height: 2.5rem;
+  margin-top: 0;
+  padding: 0.5em;
+  border: 0;
+  border-bottom: 2px solid gray;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+}
+
+.book-form {
+  width: 100%;
+  margin-top: 0;
+  padding: 0.5em;
+  border: 0;
+  border-bottom: 2px solid gray;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+}
+
+.address:focus {
+  border-bottom: 4px solid black;
+}
+
+.pac-container {
+  z-index: 999999;
 }
 </style>
