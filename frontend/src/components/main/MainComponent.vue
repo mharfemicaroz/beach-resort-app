@@ -1135,7 +1135,9 @@ export default {
       axios
         .get(`${this.API_URL}task/record/`)
         .then((response) => {
-          this.logs = response.data;
+          this.logs = response.data.filter(
+            (o) => !o.task.includes("record?type=")
+          );
         })
         .catch((error) => {
           console.log(error);

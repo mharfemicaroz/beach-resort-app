@@ -116,7 +116,7 @@ def generic_deleter(request, o, pk=None):
     if request.method == 'GET':
         if pk is not None:
             try:
-                dt = o.objects.get(transactionrecord_id=pk)
+                dt = o.objects.get(id=pk)
             except o.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
             dt.delete()
@@ -271,7 +271,7 @@ def guestcounter_list(request, pk=None):
 
 @csrf_exempt
 def transactionrecord_delete(request, pk=None):
-    return generic_deleter(request, TransactionRecord, pk)
+    return generic_delete(request, TransactionRecord, pk)
 
 
 @csrf_exempt

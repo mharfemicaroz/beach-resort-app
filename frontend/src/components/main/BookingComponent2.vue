@@ -3453,7 +3453,11 @@
     aria-modal="true"
     ref="modal"
   >
-    <div class="modal-dialog modal-lg" role="document">
+    <div
+      class="modal-dialog"
+      :class="filteredhistlogs.length > 0 ? 'modal-xl' : 'modal-lg'"
+      role="document"
+    >
       <div class="modal-content" style="">
         <div class="modal-header">
           <h4 id="BookDayModalLabel" class="text-primary">Reservation Info</h4>
@@ -3479,362 +3483,287 @@
             </div>
             <p class="loading-text h5">Loading...(Do not click anywhere!)</p>
           </div>
-          <form @submit.prevent="clickTestAddItem" v-else>
-            <!-- Client Information -->
-            <h5>
-              Booking Details<span class="text-muted" style="font-size: 12px"
-                >*Field required</span
-              >
-            </h5>
-            <div class="form-group row">
-              <label for="name" class="col-sm-2 col-form-label">Name:*</label>
-              <div class="col-sm-4">
-                <input
-                  type="text"
-                  class="form-control book-form"
-                  id="name"
-                  v-model="reservation.clientName"
-                  required
-                  autocomplete="off"
-                />
-              </div>
-              <label for="email" class="col-sm-2 col-form-label">Email:</label>
-              <div class="col-sm-4">
-                <input
-                  type="email"
-                  class="form-control book-form"
-                  id="email"
-                  v-model="reservation.clientEmail"
-                  autocomplete="off"
-                />
-              </div>
-            </div>
-            <div class="form-group row mt-2">
-              <label for="address" class="col-sm-2 col-form-label"
-                >Address:</label
-              >
-              <div class="col-sm-4">
-                <form
-                  id="address-form"
-                  action=""
-                  method="get"
-                  autocomplete="off"
+          <div class="row" v-else>
+            <div
+              :class="filteredhistlogs.length > 0 ? 'col-md-8' : 'col-md-12'"
+            >
+              <h5>
+                Booking Details<span class="text-muted" style="font-size: 12px"
+                  >*Field required</span
                 >
+              </h5>
+              <div class="form-group row">
+                <label for="name" class="col-sm-2 col-form-label">Name:*</label>
+                <div class="col-sm-4">
                   <input
-                    id="loc-address"
-                    name="loc-address"
-                    ref="address1Field"
-                    v-on:focus="initAutocomplete"
-                    class="address"
-                    autocomplete="off"
+                    type="text"
+                    class="form-control book-form"
+                    id="name"
+                    v-model="reservation.clientName"
                     required
+                    autocomplete="off"
                   />
-                </form>
-              </div>
-              <label for="phone" class="col-sm-2 col-form-label">Phone:</label>
-              <div class="col-sm-4">
-                <input
-                  type="tel"
-                  class="form-control book-form"
-                  id="phone"
-                  v-model="reservation.clientPhone"
-                  autocomplete="off"
-                />
-              </div>
-            </div>
-            <div class="form-group row mt-2">
-              <label for="nationality" class="col-sm-2 col-form-label"
-                >Nationality:*</label
-              >
-              <div class="col-sm-4">
-                <select
-                  class="form-control book-form"
-                  id="nationality"
-                  v-model="reservation.clientNationality"
-                  required
+                </div>
+                <label for="email" class="col-sm-2 col-form-label"
+                  >Email:</label
                 >
-                  <option value="">-- Please select --</option>
-                  <option value="Filipino">Filipino</option>
-                  <option value="Foreign">Foreign</option>
-                </select>
+                <div class="col-sm-4">
+                  <input
+                    type="email"
+                    class="form-control book-form"
+                    id="email"
+                    v-model="reservation.clientEmail"
+                    autocomplete="off"
+                  />
+                </div>
               </div>
-              <label for="clientType" class="col-sm-2 col-form-label"
-                >Type:*</label
-              >
-              <div class="col-sm-4">
-                <select
-                  class="form-control book-form"
-                  id="clientType"
-                  v-model="reservation.clientType"
-                  required
+              <div class="form-group row mt-2">
+                <label for="address" class="col-sm-2 col-form-label"
+                  >Address:</label
                 >
-                  <option value="">-- Please select --</option>
-                  <option value="in-house">In-house</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row mt-2">
-              <label for="checkin" class="col-sm-2 col-form-label"
-                >Check-in Date:*</label
-              >
-              <div class="col-sm-4">
-                <input
-                  type="text"
-                  aria-describedby="inputhelp"
-                  class="form-control mb-0 book-form"
-                  id="checkin"
-                  v-model="reservation.checkinDate"
-                  required
-                  readonly
-                />
-              </div>
-              <label for="checkout" class="col-sm-2 col-form-label"
-                >Check-out Date:*</label
-              >
-              <div class="col-sm-4">
-                <input
-                  v-if="
-                    reservation.status !== 'vacant' &&
-                    reservation.status !== 'reserved' &&
-                    reservation.status !== 'checkedin' &&
-                    reservation.status !== 'checkedout' &&
-                    reservation.status !== 'cancelled'
-                  "
-                  type="text"
-                  aria-describedby="inputhelp"
-                  class="form-control mb-0 book-form"
-                  id="checkin"
-                  v-model="reservation.checkoutDate"
-                  required
-                  readonly
-                />
-                <input
-                  v-else
-                  type="text"
-                  aria-describedby="inputhelp"
-                  class="form-control mb-0 book-form"
-                  id="checkin"
-                  :value="setCheckoutDate()"
-                  required
-                  readonly
-                />
-              </div>
-            </div>
-            <div class="form-group row mt-2">
-              <label for="room" class="col-sm-2 col-form-label">Room:*</label>
-              <div
-                v-if="reservation.status === 'vacant' || toggleselect"
-                class="col-sm-4"
-              >
-                <v-select
-                  :disabled="roomSelect !== 'ok'"
-                  aria-describedby="inputhelp3"
-                  :multiple="!toggleselect"
-                  :options="updatedRooms"
-                  label="name"
-                  v-model="reservation.roomName"
-                  required
-                >
-                  <template #option="{ name, type, price, pax }">
-                    <h6 style="margin: 0">{{ name }} &nbsp; pax:{{ pax }}</h6>
-                    <em
-                      ><small>{{ type }}</small></em
-                    >
-                    <em
-                      ><small> ({{ price }} units)</small></em
-                    >
-                  </template>
-                </v-select>
-                <small
-                  v-if="toggleselect"
-                  id="inputhelp3"
-                  class="form-text text-muted mt-0"
-                  >Please select a new room.</small
-                >
-              </div>
-              <div v-else class="col-sm-4">
-                <input
-                  type="text"
-                  class="form-control book-form"
-                  v-model="reservation.roomName"
-                  readonly
-                />
-              </div>
-              <label for="remarks" class="col-sm-2 col-form-label"
-                >Remarks:</label
-              >
-              <div class="col-sm-4">
-                <textarea
-                  class="form-control book-form"
-                  v-model="reservation.remarks"
-                  autocomplete="off"
-                  rows="4"
-                ></textarea>
-              </div>
-            </div>
-            <div class="form-group row mt-2">
-              <div class="mt-3 mb-3 d-flex justify-content-end">
-                <div v-if="reservation.status == 'reserved'">
-                  <button
-                    v-if="reservation.isPaid === 'no'"
-                    v-show="!toggleselect"
-                    type="button"
-                    class="btn btn-primary btn-sm btn-margin rounded"
-                    @click="cancelReservation()"
+                <div class="col-sm-4">
+                  <form
+                    id="address-form"
+                    action=""
+                    method="get"
+                    autocomplete="off"
                   >
-                    <i class="fas fa-times"></i> Cancel Reservation
-                  </button>
-                  <span v-if="userdata.role !== 'reservationist'">
-                    <button
-                      :disabled="disablebutton"
-                      v-show="!toggleselect"
-                      v-if="
-                        reservation.isPaid === '' || reservation.isPaid === 'no'
-                      "
-                      @click="
-                        moveToCart();
-                        disablebutton = true;
-                      "
-                      type="button"
-                      class="btn btn-success btn-sm btn-margin rounded"
-                    >
-                      <i class="fas fa-check"></i> Down Payment
-                    </button>
-                    <button
-                      :disabled="disablebutton"
-                      v-show="!toggleselect"
-                      v-else-if="reservation.isPaid === 'partial'"
-                      @click="
-                        moveToCart();
-                        disablebutton = true;
-                      "
-                      type="button"
-                      class="btn btn-warning btn-sm btn-margin rounded"
-                    >
-                      <i class="fas fa-check"></i> Partial Payment
-                    </button>
-                    <button
-                      :disabled="disablebutton"
-                      v-show="!toggleselect"
-                      v-else-if="reservation.isPaid === 'yes'"
-                      @click="
-                        moveToCart();
-                        disablebutton = true;
-                      "
-                      type="button"
-                      class="btn btn-primary btn-sm btn-margin rounded"
-                    >
-                      <i class="fas fa-eye"></i> View Summary
-                    </button>
-                    <button
-                      :disabled="disablebutton"
-                      v-show="!toggleselect"
-                      v-if="
-                        new Date().setHours(0, 0, 0, 0) ===
-                        parseDate2(reservation.checkinDate)
-                      "
-                      type="button"
-                      class="btn btn-success btn-sm btn-margin rounded"
-                      @click="
-                        checkinGuest();
-                        disablebutton = true;
-                      "
-                    >
-                      <i class="fas fa-sign-in-alt"></i> Check-in
-                    </button>
-                  </span>
+                    <input
+                      id="loc-address"
+                      name="loc-address"
+                      ref="address1Field"
+                      v-on:focus="initAutocomplete"
+                      class="address"
+                      autocomplete="off"
+                      required
+                    />
+                  </form>
                 </div>
-                <div v-else-if="reservation.status == 'checkedin'">
-                  <span v-if="userdata.role !== 'reservationist'">
-                    <div
-                      v-if="
-                        reservation.isPaid === '' || reservation.isPaid === 'no'
-                      "
-                    >
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        @click="
-                          moveToCart();
-                          disablebutton = true;
-                        "
-                        type="button"
-                        class="btn btn-success btn-sm btn-margin rounded"
-                      >
-                        <i class="fas fa-credit-card"></i> Pay Now
-                      </button>
-                    </div>
-                    <div v-else-if="reservation.isPaid === 'partial'">
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        @click="
-                          moveToCart();
-                          disablebutton = true;
-                        "
-                        type="button"
-                        class="btn btn-success btn-sm btn-margin rounded"
-                      >
-                        <i class="fas fa-credit-card"></i> Pay Now
-                      </button>
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        type="button"
-                        class="btn btn-primary btn-sm btn-margin rounded"
-                        @click="
-                          extendBooking();
-                          disablebutton = true;
-                        "
-                      >
-                        <i class="fas fa-calendar-plus"></i> Extend (1 day)
-                      </button>
-                    </div>
-                    <div v-else>
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        type="button"
-                        class="btn btn-primary btn-sm btn-margin rounded"
-                        @click="
-                          moveToCart();
-                          disablebutton = true;
-                        "
-                      >
-                        <i class="fas fa-eye"></i> View Summary
-                      </button>
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        type="button"
-                        class="btn btn-primary btn-sm btn-margin rounded"
-                        @click="
-                          extendBooking();
-                          disablebutton = true;
-                        "
-                      >
-                        <i class="fas fa-calendar-plus"></i> Extend (1 day)
-                      </button>
-                      <button
-                        :disabled="disablebutton"
-                        v-show="!toggleselect"
-                        type="button"
-                        class="btn btn-success btn-sm btn-margin rounded"
-                        @click="
-                          checkOutGuest();
-                          disablebutton = true;
-                        "
-                      >
-                        <i class="fas fa-sign-out-alt"></i> Check-out
-                      </button>
-                    </div>
-                  </span>
+                <label for="phone" class="col-sm-2 col-form-label"
+                  >Phone:</label
+                >
+                <div class="col-sm-4">
+                  <input
+                    type="tel"
+                    class="form-control book-form"
+                    id="phone"
+                    v-model="reservation.clientPhone"
+                    autocomplete="off"
+                  />
                 </div>
-                <div v-else-if="reservation.status == 'checkedout'">
+              </div>
+              <div class="form-group row mt-2">
+                <label for="nationality" class="col-sm-2 col-form-label"
+                  >Nationality:*</label
+                >
+                <div class="col-sm-4">
+                  <select
+                    class="form-control book-form"
+                    id="nationality"
+                    v-model="reservation.clientNationality"
+                    required
+                  >
+                    <option value="">-- Please select --</option>
+                    <option value="Filipino">Filipino</option>
+                    <option value="Foreign">Foreign</option>
+                  </select>
+                </div>
+                <label for="clientType" class="col-sm-2 col-form-label"
+                  >Type:*</label
+                >
+                <div class="col-sm-4">
+                  <select
+                    class="form-control book-form"
+                    id="clientType"
+                    v-model="reservation.clientType"
+                    required
+                  >
+                    <option value="">-- Please select --</option>
+                    <option value="in-house">In-house</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row mt-2">
+                <label for="checkin" class="col-sm-2 col-form-label"
+                  >Check-in Date:*</label
+                >
+                <div class="col-sm-4">
+                  <input
+                    type="text"
+                    aria-describedby="inputhelp"
+                    class="form-control mb-0 book-form"
+                    id="checkin"
+                    v-model="reservation.checkinDate"
+                    required
+                    readonly
+                  />
+                </div>
+                <label for="checkout" class="col-sm-2 col-form-label"
+                  >Check-out Date:*</label
+                >
+                <div class="col-sm-4">
+                  <input
+                    v-if="
+                      reservation.status !== 'vacant' &&
+                      reservation.status !== 'reserved' &&
+                      reservation.status !== 'checkedin' &&
+                      reservation.status !== 'checkedout' &&
+                      reservation.status !== 'cancelled'
+                    "
+                    type="text"
+                    aria-describedby="inputhelp"
+                    class="form-control mb-0 book-form"
+                    id="checkin"
+                    v-model="reservation.checkoutDate"
+                    required
+                    readonly
+                  />
+                  <input
+                    v-else
+                    type="text"
+                    aria-describedby="inputhelp"
+                    class="form-control mb-0 book-form"
+                    id="checkin"
+                    :value="setCheckoutDate()"
+                    required
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="form-group row mt-2">
+                <label for="room" class="col-sm-2 col-form-label">Room:*</label>
+                <div
+                  v-if="reservation.status === 'vacant' || toggleselect"
+                  class="col-sm-4"
+                >
+                  <v-select
+                    :disabled="roomSelect !== 'ok'"
+                    aria-describedby="inputhelp3"
+                    :multiple="!toggleselect"
+                    :options="updatedRooms"
+                    label="name"
+                    v-model="reservation.roomName"
+                    required
+                  >
+                    <template #option="{ name, type, price, pax }">
+                      <h6 style="margin: 0">{{ name }} &nbsp; pax:{{ pax }}</h6>
+                      <em
+                        ><small>{{ type }}</small></em
+                      >
+                      <em
+                        ><small> ({{ price }} units)</small></em
+                      >
+                    </template>
+                  </v-select>
+                  <small
+                    v-if="toggleselect"
+                    id="inputhelp3"
+                    class="form-text text-muted mt-0"
+                    >Please select a new room.</small
+                  >
+                </div>
+                <div v-else class="col-sm-4">
+                  <input
+                    type="text"
+                    class="form-control book-form"
+                    v-model="reservation.roomName"
+                    readonly
+                  />
+                </div>
+                <label for="remarks" class="col-sm-2 col-form-label"
+                  >Remarks:</label
+                >
+                <div class="col-sm-4">
+                  <textarea
+                    class="form-control book-form"
+                    v-model="reservation.remarks"
+                    autocomplete="off"
+                    rows="4"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+            <div v-if="filteredhistlogs.length > 0" class="col-md-4">
+              <h5>History Logs</h5>
+              <div
+                class="row"
+                style="
+                  max-height: 300px !important;
+                  overflow-y: auto;
+                  overflow-x: auto;
+                "
+              >
+                <table
+                  class="table table-hover table-sm"
+                  style="font-family: Roboto; font-size: 12px"
+                >
+                  <thead>
+                    <tr>
+                      <th>type</th>
+                      <th>actor</th>
+                      <th>details</th>
+                      <th>date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in filteredhistlogs" style="height:">
+                      <td>{{ item.type }}</td>
+                      <td>{{ item.actor }}</td>
+                      <td>{{ item.details }}</td>
+                      <td>{{ item.date }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer p-2">
+          <div class="form-group row">
+            <div class="d-flex justify-content-end">
+              <div v-if="reservation.status == 'reserved'">
+                <button
+                  v-if="reservation.isPaid === 'no'"
+                  v-show="!toggleselect"
+                  type="button"
+                  class="btn btn-primary btn-sm btn-margin rounded"
+                  @click="cancelReservation()"
+                >
+                  <i class="fas fa-times"></i> Cancel Reservation
+                </button>
+                <span v-if="userdata.role !== 'reservationist'">
                   <button
                     :disabled="disablebutton"
                     v-show="!toggleselect"
-                    v-if="reservation.isPaid === 'yes'"
+                    v-if="
+                      reservation.isPaid === '' || reservation.isPaid === 'no'
+                    "
+                    @click="
+                      moveToCart();
+                      disablebutton = true;
+                    "
+                    type="button"
+                    class="btn btn-success btn-sm btn-margin rounded"
+                  >
+                    <i class="fas fa-check"></i> Down Payment
+                  </button>
+                  <button
+                    :disabled="disablebutton"
+                    v-show="!toggleselect"
+                    v-else-if="reservation.isPaid === 'partial'"
+                    @click="
+                      moveToCart();
+                      disablebutton = true;
+                    "
+                    type="button"
+                    class="btn btn-warning btn-sm btn-margin rounded"
+                  >
+                    <i class="fas fa-check"></i> Partial Payment
+                  </button>
+                  <button
+                    :disabled="disablebutton"
+                    v-show="!toggleselect"
+                    v-else-if="reservation.isPaid === 'yes'"
                     @click="
                       moveToCart();
                       disablebutton = true;
@@ -3844,62 +3773,180 @@
                   >
                     <i class="fas fa-eye"></i> View Summary
                   </button>
-                </div>
+                  <button
+                    :disabled="disablebutton"
+                    v-show="!toggleselect"
+                    v-if="
+                      new Date().setHours(0, 0, 0, 0) ===
+                      parseDate2(reservation.checkinDate)
+                    "
+                    type="button"
+                    class="btn btn-success btn-sm btn-margin rounded"
+                    @click="
+                      checkinGuest();
+                      disablebutton = true;
+                    "
+                  >
+                    <i class="fas fa-sign-in-alt"></i> Check-in
+                  </button>
+                </span>
+              </div>
+              <div v-else-if="reservation.status == 'checkedin'">
+                <span v-if="userdata.role !== 'reservationist'">
+                  <div
+                    v-if="
+                      reservation.isPaid === '' || reservation.isPaid === 'no'
+                    "
+                  >
+                    <button
+                      :disabled="disablebutton"
+                      v-show="!toggleselect"
+                      @click="
+                        moveToCart();
+                        disablebutton = true;
+                      "
+                      type="button"
+                      class="btn btn-success btn-sm btn-margin rounded"
+                    >
+                      <i class="fas fa-credit-card"></i> Pay Now
+                    </button>
+                  </div>
+                  <div v-else-if="reservation.isPaid === 'partial'">
+                    <button
+                      :disabled="disablebutton"
+                      v-show="!toggleselect"
+                      @click="
+                        moveToCart();
+                        disablebutton = true;
+                      "
+                      type="button"
+                      class="btn btn-success btn-sm btn-margin rounded"
+                    >
+                      <i class="fas fa-credit-card"></i> Pay Now
+                    </button>
+                    <button
+                      :disabled="disablebutton"
+                      v-show="!toggleselect"
+                      type="button"
+                      class="btn btn-primary btn-sm btn-margin rounded"
+                      @click="
+                        extendBooking();
+                        disablebutton = true;
+                      "
+                    >
+                      <i class="fas fa-calendar-plus"></i> Extend (1 day)
+                    </button>
+                  </div>
+                  <div v-else>
+                    <button
+                      :disabled="disablebutton"
+                      v-show="!toggleselect"
+                      type="button"
+                      class="btn btn-primary btn-sm btn-margin rounded"
+                      @click="
+                        moveToCart();
+                        disablebutton = true;
+                      "
+                    >
+                      <i class="fas fa-eye"></i> View Summary
+                    </button>
+                    <button
+                      :disabled="disablebutton"
+                      v-show="!toggleselect"
+                      type="button"
+                      class="btn btn-primary btn-sm btn-margin rounded"
+                      @click="
+                        extendBooking();
+                        disablebutton = true;
+                      "
+                    >
+                      <i class="fas fa-calendar-plus"></i> Extend (1 day)
+                    </button>
+                    <button
+                      :disabled="disablebutton"
+                      v-show="!toggleselect"
+                      type="button"
+                      class="btn btn-success btn-sm btn-margin rounded"
+                      @click="
+                        checkOutGuest();
+                        disablebutton = true;
+                      "
+                    >
+                      <i class="fas fa-sign-out-alt"></i> Check-out
+                    </button>
+                  </div>
+                </span>
+              </div>
+              <div v-else-if="reservation.status == 'checkedout'">
                 <button
                   :disabled="disablebutton"
-                  v-else-if="
-                    reservation.status == 'vacant' &&
-                    reservation.clientName !== ''
-                  "
-                  type="submit"
-                  class="btn btn-primary btn-sm btn-margin rounded"
-                >
-                  <i class="fas fa-book"></i> Book Now
-                </button>
-                <button
-                  v-if="
-                    new Date().setHours(0, 0, 0, 0) <=
-                      parseDate2(reservation.checkinDate) &&
-                    userdata.role !== 'reservationist' &&
-                    reservation.status !== 'vacant' &&
-                    reservation.status !== 'checkedout' &&
-                    reservation.status !== 'cancelled'
-                  "
-                  @click="transferRoom()"
-                  type="button"
-                  class="btn btn-success btn-sm btn-margin rounded"
-                >
-                  <i class="fas fa-exchange-alt"></i>
-                  {{ toggleselect ? "Save" : "Transfer" }}
-                </button>
-                <button
-                  :disabled="disablebutton"
-                  v-if="
-                    userdata.role !== 'reservationist' &&
-                    reservation.status !== 'vacant'
-                  "
-                  type="button"
+                  v-show="!toggleselect"
+                  v-if="reservation.isPaid === 'yes'"
                   @click="
-                    voidBook();
+                    moveToCart();
                     disablebutton = true;
                   "
-                  class="btn btn-danger btn-sm btn-margin rounded"
-                  v-show="!toggleselect"
-                >
-                  <i class="fas fa-trash"></i> Void
-                </button>
-                <button
-                  :disabled="disablebutton"
-                  @click="disablebutton = true"
                   type="button"
-                  class="btn btn-danger btn-sm btn-margin rounded"
-                  data-bs-dismiss="modal"
+                  class="btn btn-primary btn-sm btn-margin rounded"
                 >
-                  <i class="fas fa-times"></i> Close
+                  <i class="fas fa-eye"></i> View Summary
                 </button>
               </div>
+              <button
+                :disabled="disablebutton"
+                v-else-if="
+                  reservation.status == 'vacant' &&
+                  reservation.clientName !== ''
+                "
+                @click="clickTestAddItem"
+                type="button"
+                class="btn btn-primary btn-sm btn-margin rounded"
+              >
+                <i class="fas fa-book"></i> Book Now
+              </button>
+              <button
+                v-if="
+                  new Date().setHours(0, 0, 0, 0) <=
+                    parseDate2(reservation.checkinDate) &&
+                  userdata.role !== 'reservationist' &&
+                  reservation.status !== 'vacant' &&
+                  reservation.status !== 'checkedout' &&
+                  reservation.status !== 'cancelled'
+                "
+                @click="transferRoom()"
+                type="button"
+                class="btn btn-success btn-sm btn-margin rounded"
+              >
+                <i class="fas fa-exchange-alt"></i>
+                {{ toggleselect ? "Save" : "Transfer" }}
+              </button>
+              <button
+                :disabled="disablebutton"
+                v-if="
+                  userdata.role !== 'reservationist' &&
+                  reservation.status !== 'vacant'
+                "
+                type="button"
+                @click="
+                  voidBook();
+                  disablebutton = true;
+                "
+                class="btn btn-danger btn-sm btn-margin rounded"
+                v-show="!toggleselect"
+              >
+                <i class="fas fa-trash"></i> Void
+              </button>
+              <button
+                :disabled="disablebutton"
+                @click="disablebutton = true"
+                type="button"
+                class="btn btn-danger btn-sm btn-margin rounded"
+                data-bs-dismiss="modal"
+              >
+                <i class="fas fa-times"></i> Close
+              </button>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>
@@ -3993,6 +4040,17 @@ function formatDate2(date = new Date()) {
   let outputDate = `${day}/${month}/${year}`;
   return outputDate;
 }
+function formatDate3(date) {
+  const options = {
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  };
+  return new Intl.DateTimeFormat("en-US", options).format(date);
+}
 export default {
   components: {
     Line,
@@ -4008,6 +4066,8 @@ export default {
   },
   data() {
     return {
+      filteredhistlogs: [],
+      histlogs: [],
       autocomplete: null,
       filter: {
         bedtype: "",
@@ -5654,6 +5714,9 @@ export default {
             "transferred from: " + oldroom.name + " on " + formatDate();
 
           this.updateBookings(item.id);
+          this.actionRecorder(
+            `record?type=transfer&bookingID=${item.itemID}&groupkey=${item.groupkey}&remarks=from ${oldroom.name} to ${newroom.name}`
+          );
           this.taskRecord(`action:/transfer guest/client:/${item.name}`);
           this.draggedItem = null;
           this.draggedRoom = null;
@@ -6336,15 +6399,18 @@ export default {
           icon: "success",
         })
         .then((response) => {
-          document.location.reload();
+          //document.location.reload();
         });
     },
-    async taskRecord(msg) {
+    taskRecord(msg) {
       this.socket.send(
         JSON.stringify({
           message: msg,
         })
       );
+      this.actionRecorder(msg);
+    },
+    async actionRecorder(msg) {
       try {
         await axios.post(`${this.API_URL}task/record/`, {
           actor: this.userdata.fName + " " + this.userdata.lName,
@@ -6687,6 +6753,14 @@ export default {
                   updatedItems.push(response.data);
                 }
               } catch (error) {}
+
+              this.actionRecorder(
+                `record?type=additem&bookingID=${
+                  this.bookings[this.itemIndex].itemID
+                }&groupkey=${
+                  this.bookings[this.itemIndex].groupkey
+                }&remarks=added ${data.itemName}`
+              );
             }
 
             // this.cart
@@ -7534,6 +7608,11 @@ export default {
             this.bookings[this.itemIndex].cancellationDate = new Date();
             this.updateBookings(this.bookings[this.itemIndex].id);
             this.changeItemColor("cancelled");
+            this.actionRecorder(
+              `record?type=transfer&bookingID=${
+                this.bookings[this.itemIndex].itemID
+              }&groupkey=${this.bookings[this.itemIndex].groupkey}`
+            );
             this.taskRecord(
               `action:/cancel reservation/client:/${
                 this.bookings[this.itemIndex].name
@@ -7818,6 +7897,9 @@ export default {
           console.error(error);
         }
         this.toggleItemModal();
+        this.actionRecorder(
+          `record?type=transfer&bookingID=${item.itemID}&groupkey=${item.groupkey}&remarks=from ${oldroom.name} to ${newroom.name}`
+        );
         this.taskRecord(`action:/transfer guest/client:/${item.name}`);
         this.bookNowFlag = true;
         this.$swal
@@ -7886,13 +7968,19 @@ export default {
               itemName: item.itemName,
               itemType: item.itemType,
               itemPriceRate: item.itemPriceRate,
-              purchaseQty: item.itemOption === "room" ? numdays + 1 : numdays,
+              purchaseQty:
+                item.itemOption === "room"
+                  ? item.purchaseQty + 1
+                  : item.purchaseQty,
               totalCost:
                 item.itemOption === "room"
-                  ? (numdays + 1) * parseFloat(item.itemPriceRate.split("/")[0])
-                  : (numdays + 1) *
+                  ? (item.purchaseQty + 1) *
+                    parseFloat(item.itemPriceRate.split("/")[0])
+                  : item.itemType.toLowerCase() === "entrance"
+                  ? (item.numdays + 1) *
                     (item.totalguest - item.totalpax) *
-                    parseFloat(item.itemPriceRate.split("/")[0]),
+                    parseFloat(item.itemPriceRate.split("/")[0])
+                  : item.totalCost,
               category: item.category,
               itemOption: item.itemOption,
               dateCreated: new Date(), // Set the dateCreated field to the current date and time
@@ -7907,6 +7995,11 @@ export default {
             });
           } catch (error) {}
         });
+      this.actionRecorder(
+        `record?type=extend&bookingID=${
+          this.bookings[this.itemIndex].itemID
+        }&groupkey=${this.bookings[this.itemIndex].groupkey}`
+      );
       this.taskRecord(
         `action:/extend guest/client:/${this.bookings[this.itemIndex].name}`
       );
@@ -7960,6 +8053,9 @@ export default {
                   this.populateCalendarItems();
                   //this.changeItemColor("checkedin");
                   this.toggleItemModal();
+                  this.actionRecorder(
+                    `record?type=checkin&bookingID=${item.itemID}&groupkey=${item.groupkey}`
+                  );
                   this.taskRecord(
                     `action:/checked-in guest/client:/${item.name}`
                   );
@@ -8052,6 +8148,13 @@ export default {
                             this.populateCalendarItems();
                             //this.changeItemColor("checkedout");
                             this.toggleItemModal();
+                            this.actionRecorder(
+                              `record?type=checkout&bookingID=${
+                                this.bookings[this.itemIndex].itemID
+                              }&groupkey=${
+                                this.bookings[this.itemIndex].groupkey
+                              }`
+                            );
                             this.taskRecord(
                               `action:/checked-out guest/client:/${
                                 this.bookings[this.itemIndex].name
@@ -8106,6 +8209,7 @@ export default {
         this.reservation.clientType = "in-house";
         this.reservation.roomName = "";
         this.reservation.remarks = "";
+        this.filteredhistlogs = [];
         // this.reservation.numguests = "";
         this.reservation.clientPhone = "";
         // this.reservation.checkinDate =
@@ -8177,6 +8281,31 @@ export default {
       this.reservation.status = this.bookings[this.itemIndex].status;
       this.reservation.isPaid = this.bookings[this.itemIndex].isPaid;
       // this.reservation.numguests = this.bookings[this.itemIndex].numguests;
+
+      this.filteredhistlogs = this.histlogs
+        .filter(
+          (o) =>
+            o.task.includes("record?type=") &&
+            o.task.includes(this.bookings[this.itemIndex].itemID)
+        )
+        .map((o) => {
+          const comp = o.task.replace("record?", "").split("&");
+          const result = {};
+          for (const pair of comp) {
+            const [key, value] = pair.split("=");
+            result[key] = value;
+          }
+          const type = result.type;
+          const actor = o.actor;
+          const details = result.remarks;
+          const date = formatDate3(new Date(o.date_created));
+          return {
+            type,
+            actor,
+            details,
+            date,
+          };
+        });
       this.toggleItemModal();
     },
     setShowDate(d) {
@@ -8247,6 +8376,8 @@ export default {
         const eLength = CalendarMath.dayDiff(item.startDate, date);
         let landingDateCheckin = CalendarMath.addDays(item.startDate, eLength);
         let landingDateCheckout = CalendarMath.addDays(item.endDate, eLength);
+        const originalStart = item.startDate.toLocaleDateString("en-GB");
+        const originalEnd = item.endDate.toLocaleDateString("en-GB");
         let filteredBookings = this.bookings.filter(
           (booking) =>
             (booking.status === "reserved" || booking.status === "checkedin") &&
@@ -8353,6 +8484,33 @@ export default {
           this.updateBookings(this.bookings[this.itemIndex].id);
           //this.reloadData();
           //this.populateCalendarItems();
+
+          let newcheckoutdate = new Date(
+            parseDate(this.bookings[this.itemIndex].checkoutDate)
+          );
+          newcheckoutdate.setDate(newcheckoutdate.getDate() + 1);
+          newcheckoutdate = formatDate2(newcheckoutdate);
+
+          let newcheckoutdate2 = new Date(parseDate(originalEnd));
+          newcheckoutdate2.setDate(newcheckoutdate2.getDate() + 1);
+          newcheckoutdate2 = formatDate2(newcheckoutdate2);
+
+          this.actionRecorder(
+            `record?type=changedate&bookingID=${
+              this.bookings[this.itemIndex].itemID
+            }&groupkey=${this.bookings[this.itemIndex].groupkey}&remarks=${
+              originalStart === this.bookings[this.itemIndex].checkinDate
+                ? ""
+                : `Checkin date: from ${originalStart} to ${
+                    this.bookings[this.itemIndex].checkinDate
+                  }; `
+            }${
+              originalEnd === this.bookings[this.itemIndex].checkoutDate
+                ? ""
+                : `Checkout date: from ${newcheckoutdate2} to ${newcheckoutdate}`
+            }`
+          );
+
           this.taskRecord(
             `action:/adjust date reservation/client:/${
               this.bookings[this.itemIndex].name
@@ -8646,11 +8804,14 @@ export default {
           try {
             await axios.post(this.API_URL + "transaction/item/", data);
           } catch (e) {}
+          this.actionRecorder(
+            `record?type=book&bookingID=${id}&groupkey=${gkey}`
+          );
         });
         this.reloadData();
         this.populateCalendarItems();
         this.taskRecord(
-          `action:/added reservation/client:/${this.reservation.clientName}`
+          `action:/added reservation/client:/${this.reservation.clientName}/`
         );
         this.toggleItemModal();
         this.reservation.clientName = "";
@@ -8865,6 +9026,7 @@ export default {
       if (parseFloat(this.cashAmount) > 0) {
         let bookid = null;
         let groupid = null;
+        let transactid = null;
         const item = this.bookings[this.itemIndex];
         let reserveStatus = null;
         try {
@@ -9059,7 +9221,7 @@ export default {
                 payStatus: doneTransaction.data.payStatus,
                 agentPayment: this.agentPayment,
               };
-              await axios.post(
+              let doneTransactionRecord = await axios.post(
                 `${this.API_URL}transaction/record/`,
                 transactionRecordData
               );
@@ -9163,6 +9325,8 @@ export default {
                   groupbookings.length === 0 ? 1 : groupbookings.length;
               } catch (error) {}
               this.billing.bookingID = doneTransaction.data.id;
+              transactid =
+                doneTransaction.data.id + "-" + doneTransactionRecord.data.id;
             } else {
               // Update the transaction if it already exists
               payStatus =
@@ -9241,7 +9405,7 @@ export default {
                 payStatus: doneTransaction.data.payStatus,
                 agentPayment: this.agentPayment,
               };
-              await axios.post(
+              let doneTransactionRecord = await axios.post(
                 `${this.API_URL}transaction/record/`,
                 transactionRecordData
               );
@@ -9319,7 +9483,16 @@ export default {
                 this.gbookingscount =
                   groupbookings.length === 0 ? 1 : groupbookings.length;
               } catch (error) {}
+              transactid =
+                doneTransaction.data.id + "-" + doneTransactionRecord.data.id;
             }
+            this.actionRecorder(
+              `record?type=transact&bookingID=${
+                this.bookings[this.itemIndex].itemID
+              }&groupkey=${
+                this.bookings[this.itemIndex].groupkey
+              }&remarks=id:${transactid}`
+            );
             this.taskRecord(
               `action:/transaction added/client:/${this.billing.clientName}`
             );
@@ -9433,6 +9606,11 @@ export default {
         const packResponse = await axios.get(this.API_URL + "package/");
         this.packages = packResponse.data.filter(
           (item) => item.isAvailable === true
+        );
+
+        const histlogsResponse = await axios.get(this.API_URL + "task/record/");
+        this.histlogs = histlogsResponse.data.filter((item) =>
+          item.task.includes("record?type=")
         );
 
         /*
@@ -9745,6 +9923,13 @@ export default {
           if (result.isConfirmed) {
             this.cart = this.cart.filter((o) => o.id !== item.id);
             if (this.itemIndex !== -1) {
+              this.actionRecorder(
+                `record?type=deleteitem&bookingID=${
+                  this.bookings[this.itemIndex].itemID
+                }&groupkey=${
+                  this.bookings[this.itemIndex].groupkey
+                }&remarks=deleted ${item.name}`
+              );
               axios
                 .get(this.API_URL + `transaction/item/delete/${item.id}/`)
                 .then((response) => {
