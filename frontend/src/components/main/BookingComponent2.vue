@@ -5503,7 +5503,8 @@ export default {
         this.reservation.clientAddress ===
           this.bookings[this.itemIndex].clientaddress &&
         this.reservation.clientPhone ===
-          this.bookings[this.itemIndex].contactNumber
+          this.bookings[this.itemIndex].contactNumber &&
+        this.reservation.remarks === this.bookings[this.itemIndex].remarks
       ) {
         return;
       }
