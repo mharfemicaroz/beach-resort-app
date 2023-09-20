@@ -7658,7 +7658,7 @@ export default {
             this.updateBookings(this.bookings[this.itemIndex].id);
             this.changeItemColor("cancelled");
             this.actionRecorder(
-              `record?type=transfer&bookingID=${
+              `record?type=cancel&bookingID=${
                 this.bookings[this.itemIndex].itemID
               }&groupkey=${this.bookings[this.itemIndex].groupkey}`
             );
