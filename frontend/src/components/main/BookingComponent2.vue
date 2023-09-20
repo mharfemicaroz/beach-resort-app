@@ -6800,13 +6800,15 @@ export default {
                 }
               } catch (error) {}
 
-              this.actionRecorder(
-                `record?type=additem&bookingID=${
-                  this.bookings[this.itemIndex].itemID
-                }&groupkey=${
-                  this.bookings[this.itemIndex].groupkey
-                }&remarks=added ${data.itemName}`
-              );
+              if (bId.charAt(0) !== "f") {
+                this.actionRecorder(
+                  `record?type=additem&bookingID=${
+                    this.bookings[this.itemIndex].itemID
+                  }&groupkey=${
+                    this.bookings[this.itemIndex].groupkey
+                  }&remarks=added ${data.itemName}`
+                );
+              }
             }
 
             // this.cart
@@ -9532,13 +9534,15 @@ export default {
               transactid =
                 doneTransaction.data.id + "-" + doneTransactionRecord.data.id;
             }
-            this.actionRecorder(
-              `record?type=transact&bookingID=${
-                this.bookings[this.itemIndex].itemID
-              }&groupkey=${
-                this.bookings[this.itemIndex].groupkey
-              }&remarks=id:${transactid}`
-            );
+            if (bookid.charAt(0) !== "f") {
+              this.actionRecorder(
+                `record?type=transact&bookingID=${
+                  this.bookings[this.itemIndex].itemID
+                }&groupkey=${
+                  this.bookings[this.itemIndex].groupkey
+                }&remarks=id:${transactid}`
+              );
+            }
             this.taskRecord(
               `action:/transaction added/client:/${this.billing.clientName}`
             );
