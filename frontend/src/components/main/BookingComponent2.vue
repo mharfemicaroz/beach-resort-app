@@ -3588,15 +3588,27 @@
                   >Check-in Date:*</label
                 >
                 <div class="col-sm-4">
-                  <input
-                    type="text"
-                    aria-describedby="inputhelp"
-                    class="form-control mb-0 book-form"
-                    id="checkin"
-                    v-model="reservation.checkinDate"
-                    required
-                    readonly
-                  />
+                  <div class="row d-flex justify-content-between">
+                    <div class="col-sm-10">
+                      <input
+                        type="text"
+                        aria-describedby="inputhelp"
+                        class="form-control mb-0 book-form"
+                        id="checkin"
+                        v-model="reservation.checkinDate"
+                        required
+                        readonly
+                      />
+                    </div>
+                    <div class="col-sm-2">
+                      <button
+                        type="button"
+                        class="btn btn-lg badge rounded-pill d-inline btn-primary"
+                      >
+                        <i class="fas fa-pencil-alt text-white"></i>
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 <label for="checkout" class="col-sm-2 col-form-label"
                   >Check-out Date:*</label
@@ -5664,24 +5676,10 @@ export default {
         type: room.type,
         price: room.price,
       };
-      // if (oldroom.price !== newroom.price) {
-      //   this.$swal({
-      //     title: "Transfer Error",
-      //     text: "Room prices do not match. Unable to transfer room.",
-      //     icon: "error",
-      //     buttons: {
-      //       confirm: {
-      //         text: "OK",
-      //         value: true,
-      //         visible: true,
-      //         className: "confirm-button",
-      //         closeModal: true,
-      //       },
-      //     },
-      //   });
-      //   return;
-      // }
-      //fix error here
+      const pax = this.rooms.filter((o) => o.name === newroom.name)[0].pax;
+      const roomprice = this.items.filter(
+        (o) => o.item === "Room Guest" && o.type.toLowerCase() === "entrance"
+      )[0].priceRate;
       const itemStatus = this.bookings[this.itemIndex].status;
       if (itemStatus === "reserved") {
         const eLength = CalendarMath.dayDiff(o.startDate, d);
@@ -5739,11 +5737,20 @@ export default {
                 totalCost:
                   o.itemOption === "room"
                     ? parseFloat(newroom.price) * parseFloat(o.purchaseQty)
+                    : o.itemType.toLowerCase() === "entrance"
+                    ? roomprice * o.numdays * o.purchaseQty
                     : o.totalCost,
-                category: o.category,
+                category:
+                  o.itemType.toLowerCase() === "entrance"
+                    ? "inclusion"
+                    : o.category,
                 itemOption: o.itemOption,
                 totalguest: o.totalguest,
-                totalpax: o.totalpax,
+                totalpax:
+                  o.itemOption === "room" ||
+                  o.itemType.toLowerCase() === "entrance"
+                    ? pax
+                    : o.totalpax,
                 currentroom: newroom.name,
                 numdays: o.numdays,
                 guestinfo: o.guestinfo,
@@ -7853,6 +7860,10 @@ export default {
           type: room.type,
           price: room.price,
         };
+        const pax = this.rooms.filter((o) => o.name === newroom.name)[0].pax;
+        const roomprice = this.items.filter(
+          (o) => o.item === "Room Guest" && o.type.toLowerCase() === "entrance"
+        )[0].priceRate;
         const result = await this.$swal.fire({
           icon: "warning",
           title: "Are you sure?",
@@ -7869,42 +7880,6 @@ export default {
         if (!result.isConfirmed) {
           return;
         }
-        // if (oldroom.type !== newroom.type) {
-        //   this.$swal({
-        //     title: "Transfer Error",
-        //     text: "Room types do not match. Unable to transfer room.",
-        //     icon: "error",
-        //     buttons: {
-        //       confirm: {
-        //         text: "OK",
-        //         value: true,
-        //         visible: true,
-        //         className: "confirm-button",
-        //         closeModal: true,
-        //       },
-        //     },
-        //   });
-        //   this.toggleItemModal();
-        //   return;
-        // }
-        // if (oldroom.price !== newroom.price) {
-        //   this.$swal({
-        //     title: "Transfer Error",
-        //     text: "Room prices do not match. Unable to transfer room.",
-        //     icon: "error",
-        //     buttons: {
-        //       confirm: {
-        //         text: "OK",
-        //         value: true,
-        //         visible: true,
-        //         className: "confirm-button",
-        //         closeModal: true,
-        //       },
-        //     },
-        //   });
-        //   this.toggleItemModal();
-        //   return;
-        // }
         item.room_name = newroom.name;
         item.room_price = newroom.price;
         item.room_type = newroom.type;
@@ -7932,11 +7907,20 @@ export default {
               totalCost:
                 o.itemOption === "room"
                   ? parseFloat(newroom.price) * parseFloat(o.purchaseQty)
+                  : o.itemType.toLowerCase() === "entrance"
+                  ? roomprice * o.numdays * o.purchaseQty
                   : o.totalCost,
-              category: o.category,
+              category:
+                o.itemType.toLowerCase() === "entrance"
+                  ? "inclusion"
+                  : o.category,
               itemOption: o.itemOption,
               totalguest: o.totalguest,
-              totalpax: o.totalpax,
+              totalpax:
+                o.itemOption === "room" ||
+                o.itemType.toLowerCase() === "entrance"
+                  ? pax
+                  : o.totalpax,
               currentroom: newroom.name,
               numdays: o.numdays,
               guestinfo: o.guestinfo,
