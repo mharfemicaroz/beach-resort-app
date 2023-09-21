@@ -3591,21 +3591,34 @@
                   <div class="row d-flex justify-content-between">
                     <div class="col-sm-10">
                       <input
+                        v-if="!isCheckinToggle"
                         type="text"
-                        aria-describedby="inputhelp"
+                        aria-describedby="inputhelp1"
                         class="form-control mb-0 book-form"
-                        id="checkin"
                         v-model="reservation.checkinDate"
                         required
                         readonly
+                      />
+                      <input
+                        v-else
+                        type="date"
+                        aria-describedby="inputhelp1"
+                        class="form-control mb-0 book-form"
+                        v-model="reservation.checkinDate"
+                        required
                       />
                     </div>
                     <div class="col-sm-2">
                       <button
                         type="button"
+                        @click="toggleCheckin"
                         class="btn btn-lg badge rounded-pill d-inline btn-primary"
                       >
-                        <i class="fas fa-pencil-alt text-white"></i>
+                        <i
+                          v-if="!isCheckinToggle"
+                          class="fas fa-pencil-alt text-white"
+                        ></i>
+                        <i v-else class="fas fa-save text-white"></i>
                       </button>
                     </div>
                   </div>
@@ -3614,32 +3627,63 @@
                   >Check-out Date:*</label
                 >
                 <div class="col-sm-4">
-                  <input
-                    v-if="
-                      reservation.status !== 'vacant' &&
-                      reservation.status !== 'reserved' &&
-                      reservation.status !== 'checkedin' &&
-                      reservation.status !== 'checkedout' &&
-                      reservation.status !== 'cancelled'
-                    "
-                    type="text"
-                    aria-describedby="inputhelp"
-                    class="form-control mb-0 book-form"
-                    id="checkin"
-                    v-model="reservation.checkoutDate"
-                    required
-                    readonly
-                  />
-                  <input
-                    v-else
-                    type="text"
-                    aria-describedby="inputhelp"
-                    class="form-control mb-0 book-form"
-                    id="checkin"
-                    :value="setCheckoutDate()"
-                    required
-                    readonly
-                  />
+                  <div class="row d-flex justify-content-between">
+                    <div class="col-sm-10">
+                      <input
+                        v-if="
+                          reservation.status !== 'vacant' &&
+                          reservation.status !== 'reserved' &&
+                          reservation.status !== 'checkedin' &&
+                          reservation.status !== 'checkedout' &&
+                          reservation.status !== 'cancelled'
+                        "
+                        type="text"
+                        aria-describedby="inputhelp0"
+                        class="form-control mb-0 book-form"
+                        v-model="reservation.checkoutDate"
+                        required
+                        readonly
+                      />
+                      <template v-else>
+                        <input
+                          v-if="!isCheckoutToggle"
+                          type="text"
+                          aria-describedby="inputhelp0"
+                          class="form-control mb-0 book-form"
+                          :value="setCheckoutDate()"
+                          required
+                          readonly
+                        />
+                        <input
+                          v-else
+                          type="date"
+                          aria-describedby="inputhelp0"
+                          class="form-control mb-0 book-form"
+                          v-model="reservation.checkoutDate"
+                          required
+                        />
+                      </template>
+                      <small
+                        v-if="isCheckoutToggle"
+                        id="inputhelp0"
+                        class="form-text text-muted mt-0"
+                        >Check-out date is day +1.</small
+                      >
+                    </div>
+                    <div class="col-sm-2">
+                      <button
+                        type="button"
+                        @click="toggleCheckout"
+                        class="btn btn-lg badge rounded-pill d-inline btn-primary"
+                      >
+                        <i
+                          v-if="!isCheckoutToggle"
+                          class="fas fa-pencil-alt text-white"
+                        ></i>
+                        <i v-else class="fas fa-save text-white"></i>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="form-group row mt-2">
@@ -4087,6 +4131,9 @@ export default {
         nearat: "",
         desc: "",
       },
+      isCheckinToggle: false,
+      isCheckoutToggle: false,
+      simulCtrl: false,
       isExtended: false,
       reportview: 1,
       agentPayment: 0,
@@ -5262,6 +5309,66 @@ export default {
     },
   },
   methods: {
+    toggleCheckin() {
+      this.isCheckinToggle = !this.isCheckinToggle;
+      if (this.isCheckinToggle) {
+        this.reservation.checkinDate = formatDate(
+          new Date(parseDateOrig(this.reservation.checkinDate))
+        );
+      } else {
+        const newstartdate = new Date(
+          parseDateOrig(this.reservation.checkinDate)
+        );
+        const item = {
+          originalItem: {
+            startDate: parseDateOrig(this.bookings[this.itemIndex].checkinDate),
+            endDate: parseDateOrig(this.bookings[this.itemIndex].checkoutDate),
+          },
+          id: this.bookings[this.itemIndex].itemID,
+          startDate: new Date(
+            parseDateOrig(this.bookings[this.itemIndex].checkinDate)
+          ),
+          endDate: new Date(
+            parseDateOrig(this.bookings[this.itemIndex].checkoutDate)
+          ),
+        };
+        const dateselection = newstartdate;
+        this.onDrop(item, dateselection);
+        this.toggleItemModal();
+        this.isCheckinToggle = !this.isCheckinToggle;
+      }
+    },
+    toggleCheckout() {
+      this.isCheckoutToggle = !this.isCheckoutToggle;
+      this.simulCtrl = true;
+      if (this.isCheckoutToggle) {
+        this.reservation.checkoutDate = formatDate(
+          new Date(parseDateOrig(this.reservation.checkoutDate))
+        );
+      } else {
+        const newenddate = new Date(
+          parseDateOrig(this.reservation.checkoutDate)
+        );
+        const item = {
+          originalItem: {
+            startDate: parseDateOrig(this.bookings[this.itemIndex].checkinDate),
+            endDate: parseDateOrig(this.bookings[this.itemIndex].checkoutDate),
+          },
+          id: this.bookings[this.itemIndex].itemID,
+          startDate: new Date(
+            parseDateOrig(this.bookings[this.itemIndex].checkinDate)
+          ),
+          endDate: new Date(
+            parseDateOrig(this.bookings[this.itemIndex].checkoutDate)
+          ),
+        };
+        const dateselection = newenddate;
+        this.onDrop(item, dateselection);
+        this.toggleItemModal();
+        this.isCheckoutToggle = !this.isCheckoutToggle;
+        this.simulCtrl = false;
+      }
+    },
     initAutocomplete() {
       const address1Field = this.$refs.address1Field;
 
@@ -6990,6 +7097,9 @@ export default {
       this.nonCashPayPlatform = "";
       this.agentPayPlatform = "";
       this.nonCashReference = "";
+      this.isCheckinToggle = false;
+      this.isCheckoutToggle = false;
+      this.simulCtrl = false;
       this.isExtended = false;
       this.extendView();
       this.itemCart = {
@@ -8238,6 +8348,9 @@ export default {
         this.reservation.clientEmail = "";
         this.reservation.clientAddress = "";
         this.$refs.address1Field.value = "";
+        this.isCheckinToggle = false;
+        this.isCheckoutToggle = false;
+        this.simulCtrl = false;
         this.reservation.clientNationality = "Filipino";
         this.reservation.clientType = "in-house";
         this.reservation.roomName = "";
@@ -8289,6 +8402,9 @@ export default {
       this.showReservation();
     },
     showReservation() {
+      this.isCheckinToggle = false;
+      this.isCheckoutToggle = false;
+      this.simulCtrl = false;
       this.toggleselect = false;
       this.roomSelect = "ok";
       this.reservation.clientName = this.bookings[this.itemIndex].name;
@@ -8433,7 +8549,7 @@ export default {
             ).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0)
         );
         if (filteredBookings.length === 0) {
-          if (event.ctrlKey) {
+          if (event.ctrlKey || this.simulCtrl) {
             let sd = CalendarMath.addDays(item.startDate, 0);
             let ed = CalendarMath.addDays(
               item.endDate,
