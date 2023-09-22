@@ -3880,18 +3880,6 @@
                     >
                       <i class="fas fa-credit-card"></i> Pay Now
                     </button>
-                    <button
-                      :disabled="disablebutton"
-                      v-show="!toggleselect"
-                      type="button"
-                      class="btn btn-primary btn-sm btn-margin rounded"
-                      @click="
-                        extendBooking();
-                        disablebutton = true;
-                      "
-                    >
-                      <i class="fas fa-calendar-plus"></i> Extend (1 day)
-                    </button>
                   </div>
                   <div v-else>
                     <button
@@ -3905,18 +3893,6 @@
                       "
                     >
                       <i class="fas fa-eye"></i> View Summary
-                    </button>
-                    <button
-                      :disabled="disablebutton"
-                      v-show="!toggleselect"
-                      type="button"
-                      class="btn btn-primary btn-sm btn-margin rounded"
-                      @click="
-                        extendBooking();
-                        disablebutton = true;
-                      "
-                    >
-                      <i class="fas fa-calendar-plus"></i> Extend (1 day)
                     </button>
                     <button
                       :disabled="disablebutton"
@@ -3961,9 +3937,25 @@
                 <i class="fas fa-book"></i> Book Now
               </button>
               <button
+                :disabled="disablebutton"
                 v-if="
-                  new Date().setHours(0, 0, 0, 0) <=
-                    parseDate2(reservation.checkinDate) &&
+                  userdata.role !== 'reservationist' &&
+                  reservation.status !== 'vacant' &&
+                  reservation.status !== 'checkedout' &&
+                  reservation.status !== 'cancelled'
+                "
+                v-show="!toggleselect"
+                type="button"
+                class="btn btn-primary btn-sm btn-margin rounded"
+                @click="
+                  extendBooking();
+                  disablebutton = true;
+                "
+              >
+                <i class="fas fa-calendar-plus"></i> Extend (1 day)
+              </button>
+              <button
+                v-if="
                   userdata.role !== 'reservationist' &&
                   reservation.status !== 'vacant' &&
                   reservation.status !== 'checkedout' &&
