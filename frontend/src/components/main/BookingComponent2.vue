@@ -7941,6 +7941,16 @@ export default {
         });
     },
     async transferRoom() {
+      if (this.booksearchtext !== "") {
+        this.$swal.fire({
+          icon: "error",
+          title: "Transfer Restricted",
+          text: "Unable to transfer when the search query is not empty.",
+          confirmButtonText: "OK",
+        });
+        this.toggleItemModal();
+        return;
+      }
       if (this.toggleselect === false) {
         this.reservation.roomName = "";
         this.toggleselect = true;
@@ -8048,6 +8058,16 @@ export default {
       }
     },
     async extendBooking() {
+      if (this.booksearchtext !== "") {
+        this.$swal.fire({
+          icon: "error",
+          title: "Extend booking Restricted",
+          text: "Unable to extend when the search query is not empty.",
+          confirmButtonText: "OK",
+        });
+        this.toggleItemModal();
+        return;
+      }
       const result = await this.$swal.fire({
         icon: "warning",
         title: "Are you sure?",
@@ -8150,6 +8170,7 @@ export default {
         .then((response) => {});
     },
     checkinGuest() {
+      this.toggleItemModal();
       this.$swal
         .fire({
           icon: "warning",
@@ -8187,7 +8208,6 @@ export default {
                   this.updateBookings(item.id);
                   this.populateCalendarItems();
                   //this.changeItemColor("checkedin");
-                  this.toggleItemModal();
                   this.actionRecorder(
                     `record?type=checkin&bookingID=${item.itemID}&groupkey=${item.groupkey}`
                   );
@@ -8210,6 +8230,7 @@ export default {
         });
     },
     checkOutGuest() {
+      this.toggleItemModal();
       this.$swal
         .fire({
           icon: "warning",
@@ -8282,7 +8303,6 @@ export default {
                             );
                             this.populateCalendarItems();
                             //this.changeItemColor("checkedout");
-                            this.toggleItemModal();
                             this.actionRecorder(
                               `record?type=checkout&bookingID=${
                                 this.bookings[this.itemIndex].itemID
