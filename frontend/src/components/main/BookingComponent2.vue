@@ -1766,7 +1766,7 @@
                   Address: {{ this.billing.clientAddress }}
                 </p>
               </div>
-              <div class="col-6" v-if="walkinStatus">
+              <div class="col-6" v-if="!walkinStatus">
                 <span style="font-size: small">Booking Details:</span>
                 <p style="margin-bottom: 0px">
                   Checkin Date: {{ this.reservation.checkinDate }}
