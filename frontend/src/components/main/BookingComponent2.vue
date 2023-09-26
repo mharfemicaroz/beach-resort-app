@@ -3610,6 +3610,7 @@
                     </div>
                     <div class="col-sm-2">
                       <button
+                        v-if="!toggleselect && !toggleselect2"
                         type="button"
                         @click="toggleCheckin"
                         class="btn btn-lg badge rounded-pill d-inline btn-primary"
@@ -3672,6 +3673,7 @@
                     </div>
                     <div class="col-sm-2">
                       <button
+                        v-if="!toggleselect && !toggleselect2"
                         type="button"
                         @click="toggleCheckout"
                         class="btn btn-lg badge rounded-pill d-inline btn-primary"
@@ -3959,7 +3961,23 @@
                   userdata.role !== 'reservationist' &&
                   reservation.status !== 'vacant' &&
                   reservation.status !== 'checkedout' &&
-                  reservation.status !== 'cancelled'
+                  reservation.status !== 'cancelled' &&
+                  (!toggleselect || toggleselect2)
+                "
+                @click="addRoom()"
+                type="button"
+                class="btn btn-success btn-sm btn-margin rounded"
+              >
+                <i class="fas fa-square-plus"></i>
+                {{ toggleselect2 ? "Save New Room" : "Add New Room" }}
+              </button>
+              <button
+                v-if="
+                  userdata.role !== 'reservationist' &&
+                  reservation.status !== 'vacant' &&
+                  reservation.status !== 'checkedout' &&
+                  reservation.status !== 'cancelled' &&
+                  !toggleselect2
                 "
                 @click="transferRoom()"
                 type="button"
@@ -4155,6 +4173,7 @@ export default {
       activeMainTab: "all",
       roomSelect: "ok",
       toggleselect: false,
+      toggleselect2: false,
       isItNew: false,
       disablebutton: false,
       bookingsOptions: [
@@ -5734,6 +5753,7 @@ export default {
         this.finishSelection([this.selectionStart, this.selectionEnd]);
         this.dragDayIsSelected = false;
         this.toggleselect = false;
+        this.toggleselect2 = false;
         this.roomSelect = "no";
         this.reservation.roomName = [r];
       } else {
@@ -7940,6 +7960,207 @@ export default {
             });
         });
     },
+    async addRoom() {
+      if (this.booksearchtext !== "") {
+        this.$swal.fire({
+          icon: "error",
+          title: "Transfer Restricted",
+          text: "Unable to transfer when the search query is not empty.",
+          confirmButtonText: "OK",
+        });
+        this.toggleItemModal();
+        return;
+      }
+      if (this.toggleselect2 === false) {
+        this.reservation.roomName = "";
+        this.toggleselect2 = true;
+        this.toggleselect = true;
+        this.roomSelect = "ok";
+      } else {
+        this.bookNowFlag = false;
+        const room = this.reservation.roomName;
+        if (room.name === undefined) {
+          return;
+        }
+        const newroom = {
+          name: room.name,
+          type: room.type,
+          price: room.price,
+        };
+        const item = this.bookings[this.itemIndex];
+        const pax = this.rooms.filter((o) => o.name === newroom.name)[0].pax;
+        const result = await this.$swal.fire({
+          icon: "warning",
+          title: "Are you sure?",
+          text: "Are you sure you want to add " + newroom.name + "?",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          showCancelButton: true,
+        });
+        if (!result.isConfirmed) {
+          return;
+        }
+        const existingTransactionItems = await axios.post(
+          `${this.API_URL}transaction/item/filter/`,
+          [
+            {
+              columnName: "bookingID",
+              columnKey: item.itemID,
+            },
+            {
+              columnName: "itemOption",
+              columnKey: "room",
+            },
+          ]
+        );
+        let id =
+          "e" + new Date().getTime().toString() + this.generateUniqueString();
+        let startDate =
+          this.reservation.checkinDate.split("/")[2] +
+          "-" +
+          this.reservation.checkinDate.split("/")[1] +
+          "-" +
+          this.reservation.checkinDate.split("/")[0];
+        let endDate =
+          this.reservation.checkoutDate.split("/")[2] +
+          "-" +
+          this.reservation.checkoutDate.split("/")[1] +
+          "-" +
+          this.reservation.checkoutDate.split("/")[0];
+        let title = newroom.name + "-" + this.reservation.clientName;
+        const numDays = Math.ceil(
+          (new Date(
+            this.reservation.checkoutDate.split("/")[2] +
+              "-" +
+              this.reservation.checkoutDate.split("/")[1] +
+              "-" +
+              this.reservation.checkoutDate.split("/")[0]
+          ).setHours(0, 0, 0, 0) -
+            new Date(
+              this.reservation.checkinDate.split("/")[2] +
+                "-" +
+                this.reservation.checkinDate.split("/")[1] +
+                "-" +
+                this.reservation.checkinDate.split("/")[0]
+            ).setHours(0, 0, 0, 0)) /
+            (1000 * 60 * 60 * 24)
+        );
+        let gkey = existingTransactionItems.data[0].groupkey;
+        if (
+          existingTransactionItems.data[0].groupkey === null ||
+          existingTransactionItems.data[0].groupkey === ""
+        ) {
+          gkey = "group-" + this.generateUniqueString();
+          item.groupkey = gkey;
+          this.updateBookings(item.id);
+
+          await axios.put(
+            `${this.API_URL}transaction/item/${existingTransactionItems.data[0].id}/`,
+            {
+              bookingID: existingTransactionItems.data[0].bookingID,
+              itemName: existingTransactionItems.data[0].itemName,
+              itemType: existingTransactionItems.data[0].itemType,
+              itemPriceRate: existingTransactionItems.data[0].itemPriceRate,
+              purchaseQty: existingTransactionItems.data[0].purchaseQty,
+              totalCost: existingTransactionItems.data[0].totalCost,
+              category: existingTransactionItems.data[0].category,
+              itemOption: existingTransactionItems.data[0].itemOption,
+              totalguest: existingTransactionItems.data[0].totalguest,
+              totalpax: existingTransactionItems.data[0].totalpax,
+              currentroom: existingTransactionItems.data[0].currentroom,
+              numdays: existingTransactionItems.data[0].numdays,
+              guestinfo: existingTransactionItems.data[0].guestinfo,
+              groupkey: gkey,
+            }
+          );
+        }
+        await axios
+          .post(this.API_URL + "bookings/", {
+            itemID: id,
+            status: "reserved",
+            name: this.reservation.clientName,
+            clientemail: this.reservation.clientEmail,
+            clientaddress: this.reservation.clientAddress,
+            clientnationality: this.reservation.clientNationality,
+            clientType: this.reservation.clientType,
+            checkinDate: this.reservation.checkinDate,
+            checkoutDate: this.reservation.checkoutDate,
+            room_name: newroom.name,
+            room_price: newroom.price,
+            room_type: newroom.type,
+            remarks: "",
+            // numguests: this.reservation.numguests,
+            contactNumber: this.reservation.clientPhone,
+            isPaid: "no",
+            created_at: moment().format("YYYY-MM-DD hh:mm:ss"),
+            totalPrice: (numDays + 1) * parseFloat(newroom.price),
+            partialPayment: 0,
+            processedBy: this.userdata.fName + " " + this.userdata.lName,
+            groupkey: gkey,
+          })
+          .then(async (response) => {
+            this.bookings.push({
+              itemID: id,
+              status: "reserved",
+              name: this.reservation.clientName,
+              clientemail: this.reservation.clientEmail,
+              clientaddress: this.reservation.clientAddress,
+              clientnationality: this.reservation.clientNationality,
+              clienttype: this.reservation.clientType,
+              checkinDate: this.reservation.checkinDate,
+              checkoutDate: this.reservation.checkoutDate,
+              room_name: newroom.name,
+              room_price: newroom.price,
+              room_type: newroom.type,
+              remarks: "",
+              contactNumber: this.reservation.clientPhone,
+              isPaid: "no",
+              created_at: moment().format("YYYY-MM-DD hh:mm:ss"),
+              totalPrice: (numDays + 1) * parseFloat(newroom.price),
+              partialPayment: 0,
+              // numguests: this.reservation.numguests,
+              processedBy: this.userdata.fName + " " + this.userdata.lName,
+              groupkey: gkey,
+            });
+            await axios
+              .post(`${this.API_URL}transaction/item/`, {
+                bookingID: id,
+                itemName: newroom.name,
+                itemType: newroom.type,
+                itemPriceRate: newroom.price + "/check-in",
+                purchaseQty: numDays + 1,
+                totalCost: parseFloat(newroom.price) * (numDays + 1),
+                category: "main",
+                itemOption: "room",
+                totalguest: 0,
+                totalpax: pax,
+                currentroom: newroom.name,
+                numdays: numDays + 1,
+                guestinfo: "",
+                groupkey: gkey,
+                dateCreated: new Date(),
+              })
+              .then(async (response) => {
+                this.actionRecorder(
+                  `record?type=book&bookingID=${id}&groupkey=${gkey}`
+                );
+                this.taskRecord(
+                  `action:/added reservation/client:/${this.reservation.clientName}/`
+                );
+                this.toggleItemModal();
+                this.bookNowFlag = true;
+                this.toggleselect = false;
+                this.toggleselect2 = false;
+                this.roomSelect = "no";
+                this.$swal.fire({
+                  title: "Success!",
+                  text: "Successfully added a room!",
+                  icon: "success",
+                });
+              });
+          });
+      }
+    },
     async transferRoom() {
       if (this.booksearchtext !== "") {
         this.$swal.fire({
@@ -8355,6 +8576,7 @@ export default {
         this.toggledayMenuModal();
         this.toggleItemModal();
         this.toggleselect = false;
+        this.toggleselect2 = false;
         this.roomSelect = "ok";
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
@@ -8418,6 +8640,7 @@ export default {
       this.isCheckoutToggle = false;
       this.simulCtrl = false;
       this.toggleselect = false;
+      this.toggleselect2 = false;
       this.roomSelect = "ok";
       this.reservation.clientName = this.bookings[this.itemIndex].name;
       this.reservation.clientEmail = this.bookings[this.itemIndex].clientemail;
@@ -8489,6 +8712,7 @@ export default {
       this.setSelection(dateRange);
       this.message = `You selected: ${this.selectionStart.toLocaleDateString()} -${this.selectionEnd.toLocaleDateString()}`;
       this.toggleselect = false;
+      this.toggleselect2 = false;
       this.roomSelect = "ok";
       this.reservation.status = "vacant";
       this.reservation.clientName = "";
