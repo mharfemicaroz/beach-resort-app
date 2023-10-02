@@ -3610,7 +3610,7 @@
                     </div>
                     <div class="col-sm-2">
                       <button
-                        v-if="!toggleselect && !toggleselect2"
+                        v-if="!toggleselect && !toggleselect2 && !notoggle"
                         type="button"
                         @click="toggleCheckin"
                         class="btn btn-lg badge rounded-pill d-inline btn-primary"
@@ -3673,7 +3673,7 @@
                     </div>
                     <div class="col-sm-2">
                       <button
-                        v-if="!toggleselect && !toggleselect2"
+                        v-if="!toggleselect && !toggleselect2 && !notoggle"
                         type="button"
                         @click="toggleCheckout"
                         class="btn btn-lg badge rounded-pill d-inline btn-primary"
@@ -4141,6 +4141,7 @@ export default {
         nearat: "",
         desc: "",
       },
+      notoggle: false,
       isCheckinToggle: false,
       isCheckoutToggle: false,
       simulCtrl: false,
@@ -5754,6 +5755,7 @@ export default {
         this.dragDayIsSelected = false;
         this.toggleselect = false;
         this.toggleselect2 = false;
+        this.notoggle = false;
         this.roomSelect = "no";
         this.reservation.roomName = [r];
       } else {
@@ -7964,7 +7966,7 @@ export default {
       if (this.booksearchtext !== "") {
         this.$swal.fire({
           icon: "error",
-          title: "Transfer Restricted",
+          title: "Add room Restricted",
           text: "Unable to transfer when the search query is not empty.",
           confirmButtonText: "OK",
         });
@@ -7975,6 +7977,7 @@ export default {
         this.reservation.roomName = "";
         this.toggleselect2 = true;
         this.toggleselect = true;
+        this.notoggle = false;
         this.roomSelect = "ok";
       } else {
         this.bookNowFlag = false;
@@ -8089,7 +8092,6 @@ export default {
             room_price: newroom.price,
             room_type: newroom.type,
             remarks: "",
-            // numguests: this.reservation.numguests,
             contactNumber: this.reservation.clientPhone,
             isPaid: "no",
             created_at: moment().format("YYYY-MM-DD hh:mm:ss"),
@@ -8151,6 +8153,7 @@ export default {
                 this.bookNowFlag = true;
                 this.toggleselect = false;
                 this.toggleselect2 = false;
+                this.notoggle = false;
                 this.roomSelect = "no";
                 this.$swal.fire({
                   title: "Success!",
@@ -8577,6 +8580,7 @@ export default {
         this.toggleItemModal();
         this.toggleselect = false;
         this.toggleselect2 = false;
+        this.notoggle = true;
         this.roomSelect = "ok";
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
@@ -8641,6 +8645,7 @@ export default {
       this.simulCtrl = false;
       this.toggleselect = false;
       this.toggleselect2 = false;
+      this.notoggle = false;
       this.roomSelect = "ok";
       this.reservation.clientName = this.bookings[this.itemIndex].name;
       this.reservation.clientEmail = this.bookings[this.itemIndex].clientemail;
@@ -8713,6 +8718,7 @@ export default {
       this.message = `You selected: ${this.selectionStart.toLocaleDateString()} -${this.selectionEnd.toLocaleDateString()}`;
       this.toggleselect = false;
       this.toggleselect2 = false;
+      this.notoggle = false;
       this.roomSelect = "ok";
       this.reservation.status = "vacant";
       this.reservation.clientName = "";
