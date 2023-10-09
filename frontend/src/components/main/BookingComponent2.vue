@@ -4736,6 +4736,14 @@ export default {
     }
     this.loadAlldata();
   },
+  watch: {
+    "reservation.checkinDate": function (newPrice, oldPrice) {
+      this.reservation.roomName = "";
+    },
+    "reservation.checkoutDate": function (newPrice, oldPrice) {
+      this.reservation.roomName = "";
+    },
+  },
   computed: {
     currentRouteName() {
       return this.$route.name;
@@ -7770,7 +7778,7 @@ export default {
         groupkey: "",
       };
     },
-    cancelReservation() {
+    async cancelReservation() {
       this.$swal
         .fire({
           icon: "warning",
@@ -7780,13 +7788,41 @@ export default {
           cancelButtonText: "No",
           showCancelButton: true,
         })
-        .then((result) => {
+        .then(async (result) => {
           // Check if user confirmed the cancellation
           if (result.isConfirmed) {
             // Perform reservation cancellation logic here
             this.bookings[this.itemIndex].status = "cancelled";
+            this.bookings[this.itemIndex].groupkey = null;
             this.bookings[this.itemIndex].cancellationDate = new Date();
             this.updateBookings(this.bookings[this.itemIndex].id);
+            const existingTransactionItems = await axios.post(
+              `${this.API_URL}transaction/item/filter/`,
+
+              {
+                columnName: "bookingID",
+                columnKey: this.bookings[this.itemIndex].itemID,
+              }
+            );
+            await axios.put(
+              `${this.API_URL}transaction/item/${existingTransactionItems.data[0].id}/`,
+              {
+                bookingID: existingTransactionItems.data[0].bookingID,
+                itemName: existingTransactionItems.data[0].itemName,
+                itemType: existingTransactionItems.data[0].itemType,
+                itemPriceRate: existingTransactionItems.data[0].itemPriceRate,
+                purchaseQty: existingTransactionItems.data[0].purchaseQty,
+                totalCost: existingTransactionItems.data[0].totalCost,
+                category: existingTransactionItems.data[0].category,
+                itemOption: existingTransactionItems.data[0].itemOption,
+                totalguest: existingTransactionItems.data[0].totalguest,
+                totalpax: existingTransactionItems.data[0].totalpax,
+                currentroom: existingTransactionItems.data[0].currentroom,
+                numdays: existingTransactionItems.data[0].numdays,
+                guestinfo: existingTransactionItems.data[0].guestinfo,
+                groupkey: null,
+              }
+            );
             this.changeItemColor("cancelled");
             this.actionRecorder(
               `record?type=cancel&bookingID=${
@@ -7808,7 +7844,7 @@ export default {
                 confirmButtonText: "OK",
               })
               .then((response) => {
-                document.location.reload();
+                //document.location.reload();
               });
           }
         });
@@ -7979,7 +8015,25 @@ export default {
         this.toggleselect = true;
         this.notoggle = false;
         this.roomSelect = "ok";
+        this.isCheckinToggle = true;
+        this.isCheckoutToggle = true;
+        this.reservation.checkinDate = parseDateOrig(
+          this.bookings[this.itemIndex].checkinDate
+        );
+        this.reservation.checkoutDate = parseDateOrig(
+          this.bookings[this.itemIndex].checkoutDate
+        );
       } else {
+        const checkin = parseDate(this.reservation.checkinDate);
+        const checkout = parseDate(this.reservation.checkoutDate);
+        if (checkout < checkin) {
+          this.$swal.fire({
+            title: "error",
+            text: "Check-out date ≥ Check-in date.",
+            icon: "error",
+          });
+          return false;
+        }
         this.bookNowFlag = false;
         const room = this.reservation.roomName;
         if (room.name === undefined) {
@@ -8018,33 +8072,22 @@ export default {
         );
         let id =
           "e" + new Date().getTime().toString() + this.generateUniqueString();
-        let startDate =
-          this.reservation.checkinDate.split("/")[2] +
-          "-" +
-          this.reservation.checkinDate.split("/")[1] +
-          "-" +
-          this.reservation.checkinDate.split("/")[0];
-        let endDate =
-          this.reservation.checkoutDate.split("/")[2] +
-          "-" +
-          this.reservation.checkoutDate.split("/")[1] +
-          "-" +
-          this.reservation.checkoutDate.split("/")[0];
         let title = newroom.name + "-" + this.reservation.clientName;
+
         const numDays = Math.ceil(
           (new Date(
-            this.reservation.checkoutDate.split("/")[2] +
+            formatDate2(this.reservation.checkoutDate).split("/")[2] +
               "-" +
-              this.reservation.checkoutDate.split("/")[1] +
+              formatDate2(this.reservation.checkoutDate).split("/")[1] +
               "-" +
-              this.reservation.checkoutDate.split("/")[0]
+              formatDate2(this.reservation.checkoutDate).split("/")[0]
           ).setHours(0, 0, 0, 0) -
             new Date(
-              this.reservation.checkinDate.split("/")[2] +
+              formatDate2(this.reservation.checkinDate).split("/")[2] +
                 "-" +
-                this.reservation.checkinDate.split("/")[1] +
+                formatDate2(this.reservation.checkinDate).split("/")[1] +
                 "-" +
-                this.reservation.checkinDate.split("/")[0]
+                formatDate2(this.reservation.checkinDate).split("/")[0]
             ).setHours(0, 0, 0, 0)) /
             (1000 * 60 * 60 * 24)
         );
@@ -8086,8 +8129,8 @@ export default {
             clientaddress: this.reservation.clientAddress,
             clientnationality: this.reservation.clientNationality,
             clientType: this.reservation.clientType,
-            checkinDate: this.reservation.checkinDate,
-            checkoutDate: this.reservation.checkoutDate,
+            checkinDate: formatDate2(this.reservation.checkinDate),
+            checkoutDate: formatDate2(this.reservation.checkoutDate),
             room_name: newroom.name,
             room_price: newroom.price,
             room_type: newroom.type,
