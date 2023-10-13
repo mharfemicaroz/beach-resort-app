@@ -8798,11 +8798,11 @@ export default {
         return;
       }
       const currentDate = new Date(); // get current date
-      if (date.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
-        // check if start date is before current date
-        // prompt user to select a valid start date
-        return;
-      }
+      // if (date.setHours(0, 0, 0, 0) < currentDate.setHours(0, 0, 0, 0)) {
+      //   // check if start date is before current date
+      //   // prompt user to select a valid start date
+      //   return;
+      // }
       this.itemIndex = this.bookings.findIndex((o) => o.itemID === item.id);
       //issue in reloading
       const itemStatus = this.bookings[this.itemIndex].status;
@@ -8833,6 +8833,7 @@ export default {
                 booking.checkoutDate.split("/")[0]
             ).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0)
         );
+        console.log([landingDateCheckin, landingDateCheckout]);
         if (filteredBookings.length === 0) {
           if (event.ctrlKey || this.simulCtrl) {
             let sd = CalendarMath.addDays(item.startDate, 0);
