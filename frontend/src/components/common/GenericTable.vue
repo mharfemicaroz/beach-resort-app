@@ -435,35 +435,35 @@ export default {
     },
     subHeaders: {
       type: Array,
-      required: true,
+      required: false,
     },
     subHeaders2: {
       type: Array,
-      required: true,
+      required: false,
     },
     editable: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     custombtn: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     deletable: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     toggleable: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     selectable: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     slotsub: {
       type: Boolean,
-      required: true,
+      required: false,
     },
     batchAction: {
       type: Boolean,

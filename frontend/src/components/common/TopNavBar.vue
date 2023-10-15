@@ -262,6 +262,9 @@ export default {
       currentTime: new Date(),
       backgroundIndex: 0,
       backgrounds: this.LOGIN_BG,
+      newpass: "",
+      conpass: "",
+      oldpass: "",
       transactionrecord: [],
       user: {
         username: "",

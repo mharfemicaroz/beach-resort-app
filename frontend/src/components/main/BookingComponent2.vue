@@ -4141,6 +4141,7 @@ export default {
         nearat: "",
         desc: "",
       },
+      searchPackage: "",
       notoggle: false,
       isCheckinToggle: false,
       isCheckoutToggle: false,
@@ -5329,7 +5330,7 @@ export default {
     },
   },
   methods: {
-    toggleCheckin() {
+    async toggleCheckin() {
       this.isCheckinToggle = !this.isCheckinToggle;
       if (this.isCheckinToggle) {
         this.reservation.checkinDate = formatDate(
@@ -5353,12 +5354,133 @@ export default {
           ),
         };
         const dateselection = newstartdate;
-        this.onDrop(item, dateselection);
+
+        let filteredBookings = this.bookings.filter(
+          (booking) =>
+            (booking.status === "reserved" || booking.status === "checkedin") &&
+            booking.itemID !== this.bookings[this.itemIndex].itemID &&
+            booking.room_name === this.bookings[this.itemIndex].room_name &&
+            new Date(parseDateOrig(booking.checkinDate)).setHours(0, 0, 0, 0) <=
+              item.endDate.setHours(0, 0, 0, 0) &&
+            new Date(parseDateOrig(booking.checkoutDate)).setHours(
+              0,
+              0,
+              0,
+              0
+            ) >= newstartdate.setHours(0, 0, 0, 0)
+        );
+
+        if (
+          newstartdate.setHours(0, 0, 0, 0) > item.endDate.setHours(0, 0, 0, 0)
+        ) {
+          this.isCheckinToggle = !this.isCheckinToggle;
+          return false;
+        }
+
+        if (filteredBookings.length === 0) {
+          this.bookings[this.itemIndex].checkinDate = formatDate2(
+            this.reservation.checkinDate
+          );
+          this.populateCalendarItems();
+
+          const numdays =
+            (parseDate(this.bookings[this.itemIndex].checkoutDate) -
+              parseDate(this.reservation.checkinDate)) /
+            (1000 * 60 * 60 * 24);
+
+          const response = await axios.post(
+            this.API_URL + "transaction/item/filter/",
+            {
+              columnName: "bookingID",
+              columnKey: this.bookings[this.itemIndex].itemID,
+            }
+          );
+
+          for (const item of response.data.filter(
+            (o) =>
+              o.bookingID === this.bookings[this.itemIndex].itemID &&
+              (o.itemOption === "room" ||
+                o.itemType.toLowerCase() === "entrance")
+          )) {
+            const data = {
+              bookingID: item.bookingID,
+              itemName: item.itemName,
+              itemType: item.itemType,
+              itemPriceRate: item.itemPriceRate,
+              purchaseQty:
+                item.itemOption === "room" ? numdays + 1 : item.purchaseQty,
+              totalCost:
+                item.itemOption === "room"
+                  ? (numdays + 1) * parseFloat(item.itemPriceRate.split("/")[0])
+                  : (numdays + 1) *
+                    (item.totalguest - item.totalpax) *
+                    parseFloat(item.itemPriceRate.split("/")[0]),
+              category: item.category,
+              itemOption: item.itemOption,
+              dateCreated: new Date(), // Set the dateCreated field to the current date and time
+              numdays: numdays + 1,
+              totalguest: item.totalguest,
+              totalpax: item.totalpax,
+              currentroom: item.currentroom,
+            };
+            await axios.put(
+              this.API_URL + `transaction/item/${item.id}/`,
+              data
+            );
+          }
+
+          this.updateBookings(this.bookings[this.itemIndex].id);
+
+          const originalStart = item.startDate.toLocaleDateString("en-GB");
+          const originalEnd = item.endDate.toLocaleDateString("en-GB");
+
+          let newcheckoutdate = new Date(
+            parseDate(this.bookings[this.itemIndex].checkoutDate)
+          );
+          newcheckoutdate.setDate(newcheckoutdate.getDate() + 1);
+          newcheckoutdate = formatDate2(newcheckoutdate);
+
+          let newcheckoutdate2 = new Date(parseDate(originalEnd));
+          newcheckoutdate2.setDate(newcheckoutdate2.getDate() + 1);
+          newcheckoutdate2 = formatDate2(newcheckoutdate2);
+
+          this.actionRecorder(
+            `record?type=changedate&bookingID=${
+              this.bookings[this.itemIndex].itemID
+            }&groupkey=${this.bookings[this.itemIndex].groupkey}&remarks=${
+              originalStart === this.bookings[this.itemIndex].checkinDate
+                ? ""
+                : `Checkin date: from ${originalStart} to ${
+                    this.bookings[this.itemIndex].checkinDate
+                  }; `
+            }${
+              originalEnd === this.bookings[this.itemIndex].checkoutDate
+                ? ""
+                : `Checkout date: from ${newcheckoutdate2} to ${newcheckoutdate}`
+            }`
+          );
+
+          this.taskRecord(
+            `action:/adjust date reservation/client:/${
+              this.bookings[this.itemIndex].name
+            }`
+          );
+        } else {
+          this.$swal.fire({
+            icon: "error",
+            title: "Cannot Adjust Reservation",
+            text: "Dates conflict with an existing room reservation.",
+            confirmButtonText: "OK",
+          });
+          return false;
+        }
+
+        // this.onDrop(item, dateselection);
         this.toggleItemModal();
         this.isCheckinToggle = !this.isCheckinToggle;
       }
     },
-    toggleCheckout() {
+    async toggleCheckout() {
       this.isCheckoutToggle = !this.isCheckoutToggle;
       this.simulCtrl = true;
       if (this.isCheckoutToggle) {
@@ -5383,7 +5505,129 @@ export default {
           ),
         };
         const dateselection = newenddate;
-        this.onDrop(item, dateselection);
+
+        let filteredBookings = this.bookings.filter(
+          (booking) =>
+            (booking.status === "reserved" || booking.status === "checkedin") &&
+            booking.itemID !== this.bookings[this.itemIndex].itemID &&
+            booking.room_name === this.bookings[this.itemIndex].room_name &&
+            new Date(parseDateOrig(booking.checkinDate)).setHours(0, 0, 0, 0) <=
+              newenddate.setHours(0, 0, 0, 0) &&
+            new Date(parseDateOrig(booking.checkoutDate)).setHours(
+              0,
+              0,
+              0,
+              0
+            ) >= item.startDate.setHours(0, 0, 0, 0)
+        );
+
+        if (
+          newenddate.setHours(0, 0, 0, 0) < item.startDate.setHours(0, 0, 0, 0)
+        ) {
+          this.isCheckoutToggle = !this.isCheckoutToggle;
+          this.simulCtrl = false;
+          return false;
+        }
+
+        if (filteredBookings.length === 0) {
+          this.bookings[this.itemIndex].checkoutDate = formatDate2(
+            this.reservation.checkoutDate
+          );
+          this.populateCalendarItems();
+
+          const numdays =
+            (parseDate(this.reservation.checkoutDate) -
+              parseDate(this.bookings[this.itemIndex].checkinDate)) /
+            (1000 * 60 * 60 * 24);
+
+          const response = await axios.post(
+            this.API_URL + "transaction/item/filter/",
+            {
+              columnName: "bookingID",
+              columnKey: this.bookings[this.itemIndex].itemID,
+            }
+          );
+
+          for (const item of response.data.filter(
+            (o) =>
+              o.bookingID === this.bookings[this.itemIndex].itemID &&
+              (o.itemOption === "room" ||
+                o.itemType.toLowerCase() === "entrance")
+          )) {
+            const data = {
+              bookingID: item.bookingID,
+              itemName: item.itemName,
+              itemType: item.itemType,
+              itemPriceRate: item.itemPriceRate,
+              purchaseQty:
+                item.itemOption === "room" ? numdays + 1 : item.purchaseQty,
+              totalCost:
+                item.itemOption === "room"
+                  ? (numdays + 1) * parseFloat(item.itemPriceRate.split("/")[0])
+                  : (numdays + 1) *
+                    (item.totalguest - item.totalpax) *
+                    parseFloat(item.itemPriceRate.split("/")[0]),
+              category: item.category,
+              itemOption: item.itemOption,
+              dateCreated: new Date(), // Set the dateCreated field to the current date and time
+              numdays: numdays + 1,
+              totalguest: item.totalguest,
+              totalpax: item.totalpax,
+              currentroom: item.currentroom,
+            };
+            await axios.put(
+              this.API_URL + `transaction/item/${item.id}/`,
+              data
+            );
+          }
+
+          this.updateBookings(this.bookings[this.itemIndex].id);
+
+          const originalStart = item.startDate.toLocaleDateString("en-GB");
+          const originalEnd = item.endDate.toLocaleDateString("en-GB");
+
+          let newcheckoutdate = new Date(
+            parseDate(this.bookings[this.itemIndex].checkoutDate)
+          );
+          newcheckoutdate.setDate(newcheckoutdate.getDate() + 1);
+          newcheckoutdate = formatDate2(newcheckoutdate);
+
+          let newcheckoutdate2 = new Date(parseDate(originalEnd));
+          newcheckoutdate2.setDate(newcheckoutdate2.getDate() + 1);
+          newcheckoutdate2 = formatDate2(newcheckoutdate2);
+
+          this.actionRecorder(
+            `record?type=changedate&bookingID=${
+              this.bookings[this.itemIndex].itemID
+            }&groupkey=${this.bookings[this.itemIndex].groupkey}&remarks=${
+              originalStart === this.bookings[this.itemIndex].checkinDate
+                ? ""
+                : `Checkin date: from ${originalStart} to ${
+                    this.bookings[this.itemIndex].checkinDate
+                  }; `
+            }${
+              originalEnd === this.bookings[this.itemIndex].checkoutDate
+                ? ""
+                : `Checkout date: from ${newcheckoutdate2} to ${newcheckoutdate}`
+            }`
+          );
+
+          this.taskRecord(
+            `action:/adjust date reservation/client:/${
+              this.bookings[this.itemIndex].name
+            }`
+          );
+        } else {
+          this.$swal.fire({
+            icon: "error",
+            title: "Cannot Adjust Reservation",
+            text: "Dates conflict with an existing room reservation.",
+            confirmButtonText: "OK",
+          });
+          return false;
+        }
+
+        // this.onDrop(item, dateselection);
         this.toggleItemModal();
         this.isCheckoutToggle = !this.isCheckoutToggle;
         this.simulCtrl = false;
@@ -8833,7 +9077,6 @@ export default {
                 booking.checkoutDate.split("/")[0]
             ).setHours(0, 0, 0, 0) >= landingDateCheckin.setHours(0, 0, 0, 0)
         );
-        console.log([landingDateCheckin, landingDateCheckout]);
         if (filteredBookings.length === 0) {
           if (event.ctrlKey || this.simulCtrl) {
             let sd = CalendarMath.addDays(item.startDate, 0);

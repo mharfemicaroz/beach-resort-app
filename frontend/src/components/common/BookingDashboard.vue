@@ -533,7 +533,6 @@
               :mainItems="filteredtransrecord"
               :editable="false"
               :toggleable="false"
-              @custombtn-action="viewRecord"
               :selectable="true"
               :batchAction="true"
               @batch-action="batchAction"
