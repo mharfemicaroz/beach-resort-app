@@ -9590,7 +9590,6 @@ export default {
             //document.location.reload();
           });
       } catch (error) {
-        console.log(error);
         this.$swal.fire({
           title: "error",
           text: "There is an error!",
@@ -10805,8 +10804,8 @@ export default {
     // },
   },
   async mounted() {
-    this.$refs.searchQuery.focus();
-    this.$refs.searchQuery.blur();
+    // this.$refs.searchQuery.focus();
+    // this.$refs.searchQuery.blur();
     $(".currentPeriod").click();
     $("#suglist").hide();
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today());

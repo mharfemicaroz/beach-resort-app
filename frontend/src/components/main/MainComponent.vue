@@ -586,6 +586,7 @@
                         >
                           <option value="">-- Select Type --</option>
                           <option value="ENTRANCE">Entrance</option>
+                          <option value="TRANSPO">Transportation</option>
                           <option value="SPORTS">Sports</option>
                           <option value="LEISURES">Leisures</option>
                           <option value="ITEMS">Items</option>
