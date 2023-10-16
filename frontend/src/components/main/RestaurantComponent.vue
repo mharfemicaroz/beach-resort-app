@@ -1205,13 +1205,17 @@
                   <dd class="text-right h4 b">₱{{ totalCost }}</dd>
                 </div>
               </div>
-              <div class="row p-0 m-0" v-if="payMethod === 'noncash'">
+              <div class="row p-0 m-0">
                 <div class="col-md-6">
                   <dt>Reference no.:</dt>
                 </div>
                 <div class="col-md-6 d-flex flex-row-reverse">
                   <dd class="text-right">
-                    {{ noncashType }} - {{ referenceno }}
+                    <input
+                      type="text"
+                      v-model="referenceno"
+                      class="form-control"
+                    />
                   </dd>
                 </div>
               </div>
@@ -3449,8 +3453,6 @@ export default {
         <label for="cat4" class="form-check-label">Credit Card</label> &nbsp;
         <input type="radio" class="form-check-input" id="cat5" name="noncashType" value="bank">
         <label for="cat5" class="form-check-label">Bank</label> &nbsp;
-        <br><br>
-        <input type="text" class="form-control" maxlength=32 id="referenceno" placeholder="Enter reference/transaction no. here after non-cash payment.">
       </div>
     `,
             showCancelButton: true,
@@ -3461,16 +3463,14 @@ export default {
               const noncashType = document.querySelector(
                 'input[name="noncashType"]:checked'
               ).value;
-              const referenceno = document.getElementById("referenceno").value;
-              return { noncashType, referenceno };
+              return { noncashType };
             },
           })
           .then((result) => {
             if (result.isConfirmed) {
-              const { noncashType, referenceno } = result.value;
-              if (noncashType !== "" || referenceno !== "") {
+              const { noncashType } = result.value;
+              if (noncashType !== "") {
                 this.noncashType = noncashType;
-                this.referenceno = referenceno;
               } else {
                 this.$swal({
                   title: "Warning",
@@ -3483,7 +3483,6 @@ export default {
           });
       } else {
         this.noncashType = "";
-        this.referenceno = "";
       }
     },
     resetCounter() {
@@ -3630,7 +3629,10 @@ export default {
             totalCharge: this.totalCost,
             totalPay: this.totalCost,
             payMethod: this.payMethod,
-            nonCashref: this.noncashType + "-" + this.referenceno,
+            nonCashref:
+              this.noncashType !== ""
+                ? this.noncashType + "-" + this.referenceno
+                : this.referenceno,
             items: JSON.stringify(this.cartItems),
             processedBy: this.userdata.fName + " " + this.userdata.lName,
           })
