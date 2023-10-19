@@ -6188,7 +6188,12 @@ export default {
           item.room_price = newroom.price;
           item.room_type = newroom.type;
           item.remarks =
-            "transferred from: " + oldroom.name + " on " + formatDate();
+            item.remarks +
+            "\n" +
+            "transferred from: " +
+            oldroom.name +
+            " on " +
+            formatDate();
 
           this.updateBookings(item.id);
           this.actionRecorder(
@@ -8557,7 +8562,12 @@ export default {
         item.room_price = newroom.price;
         item.room_type = newroom.type;
         item.remarks =
-          "transferred from: " + oldroom.name + " on " + formatDate();
+          item.remarks +
+          "\n" +
+          "transferred from: " +
+          oldroom.name +
+          " on " +
+          formatDate();
         this.updateBookings(item.id);
         const existingTransactionItems = await axios.post(
           `${this.API_URL}transaction/item/filter/`,
