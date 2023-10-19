@@ -2641,6 +2641,7 @@ export default {
     viewStock(id) {
       const stock = this.itemarray.find((item) => item.id === id);
       this.stock = stock;
+      this.imageFileName = this.stock.imageFileName;
       $("#stockModal").modal("toggle");
     },
     async saveImageFile() {
@@ -3935,6 +3936,7 @@ export default {
         .get(`${this.API_URL}restoitem/${id}/`)
         .then((response) => {
           this.stock = response.data;
+          this.imageFileName = this.stock.imageFileName;
           this.isUpdatingInventory = true;
         })
         .catch((error) => {
