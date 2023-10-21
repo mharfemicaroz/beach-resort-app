@@ -315,6 +315,11 @@ def restotables_list(request, pk=None):
 
 
 @csrf_exempt
+def restotransaction_filter(request):
+    return filter_model(request, RestoTransaction)
+
+
+@csrf_exempt
 def restotransaction_delete(request, pk=None):
     return generic_delete(request, RestoTransaction, pk)
 

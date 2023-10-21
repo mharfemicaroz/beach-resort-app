@@ -498,26 +498,35 @@ export default {
       sortedItems.sort((a, b) => {
         const aValue = a[this.sortColumn];
         const bValue = b[this.sortColumn];
-        let bool = this.sortDirection === 1 ? true : false;
+
+        if (aValue === undefined || bValue === undefined) return 0;
+
+        const isAscending = this.sortDirection === 1;
+
         const aDate = Date.parse(aValue);
         const bDate = Date.parse(bValue);
 
+        // Sort dates
         if (!isNaN(aDate) && !isNaN(bDate)) {
-          // Sort dates
-          return bool ? aDate - bDate : bDate - aDate;
-        } else if (!isNaN(parseFloat(aValue)) && !isNaN(parseFloat(bValue))) {
-          // Sort numbers numerically
-          return bool
-            ? parseFloat(aValue) - parseFloat(bValue)
-            : parseFloat(bValue) - parseFloat(aValue);
+          return isAscending ? aDate - bDate : bDate - aDate;
+        }
+
+        const aString = aValue.toString().toLowerCase();
+        const bString = bValue.toString().toLowerCase();
+
+        if (parseFloat(aString) == aString && parseFloat(bString) == bString) {
+          if (parseFloat(aString) < parseFloat(bString)) {
+            return isAscending ? -1 : 1;
+          } else if (parseFloat(aString) > parseFloat(bString)) {
+            return isAscending ? 1 : -1;
+          } else {
+            return 0;
+          }
         } else {
-          // Sort strings alphabetically
-          const aString = (aValue || "").toString().toLowerCase(); // Add check for undefined
-          const bString = (bValue || "").toString().toLowerCase(); // Add check for undefined
           if (aString < bString) {
-            return bool ? -1 : 1;
+            return isAscending ? -1 : 1;
           } else if (aString > bString) {
-            return bool ? 1 : -1;
+            return isAscending ? 1 : -1;
           } else {
             return 0;
           }

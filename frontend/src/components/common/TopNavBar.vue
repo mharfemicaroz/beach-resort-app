@@ -344,28 +344,100 @@ export default {
   },
   methods: {
     async loadData() {
-      const response = await axios.post(
-        this.API_URL + `transaction/record/filter/`,
-        {
-          columnName: "processedBy",
-          columnKey: this.userdata.fName + " " + this.userdata.lName,
-        }
-      );
-      this.transactionrecord = response.data.filter((item) => {
-        const transactionDate = new Date(item.transaction_date);
-        return (
-          transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
-          transactionDate <
-            new Date(
-              new Date(new Date(new Date().getTime() + 86400000)).setHours(
-                0,
-                0,
-                0,
-                0
-              )
-            )
+      if (this.userdata.role === "cashier") {
+        const response = await axios.post(
+          this.API_URL + `restotransaction/filter/`,
+          {
+            columnName: "processedBy",
+            columnKey: this.userdata.fName + " " + this.userdata.lName,
+          }
         );
-      });
+        this.transactionhistory = [
+          {
+            label: "Trans ID",
+            field: "id",
+          },
+          {
+            label: "Method",
+            field: "payMethod",
+          },
+          {
+            label: "Ref. No.",
+            field: "nonCashref",
+          },
+          {
+            label: "Total",
+            field: "totalPay",
+          },
+          {
+            label: "Amount Paid",
+            field: "totalCharge",
+          },
+          {
+            label: "Discount Mode",
+            field: "discountType",
+          },
+          {
+            label: "Discount Value",
+            field: "discountValue",
+          },
+          {
+            label: "Processed by",
+            field: "processedBy",
+          },
+          {
+            label: "Date",
+            field: "date_created",
+          },
+        ];
+        this.transactionrecord = response.data
+          .filter((item) => {
+            const transactionDate = new Date(item.date_created);
+            return (
+              transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
+              transactionDate <
+                new Date(
+                  new Date(new Date(new Date().getTime() + 86400000)).setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                  )
+                )
+            );
+          })
+          .map((o) => {
+            const items = JSON.parse(o.items);
+            return {
+              ...o,
+              items,
+            };
+          });
+      } else {
+        const response = await axios.post(
+          this.API_URL + `transaction/record/filter/`,
+          {
+            columnName: "processedBy",
+            columnKey: this.userdata.fName + " " + this.userdata.lName,
+          }
+        );
+
+        this.transactionrecord = response.data.filter((item) => {
+          const transactionDate = new Date(item.transaction_date);
+          return (
+            transactionDate >= new Date(new Date().setHours(0, 0, 0, 0)) &&
+            transactionDate <
+              new Date(
+                new Date(new Date(new Date().getTime() + 86400000)).setHours(
+                  0,
+                  0,
+                  0,
+                  0
+                )
+              )
+          );
+        });
+      }
     },
     async changePassword() {
       if (this.newpass !== this.conpass) {

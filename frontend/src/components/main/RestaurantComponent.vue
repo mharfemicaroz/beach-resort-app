@@ -945,7 +945,7 @@
               </div>
             </div>
 
-            <div class="row mt-3">
+            <div class="row mt-3 d-flex justify-content-center">
               <button
                 :disabled="cartItems.length < 1"
                 class="btn btn-outline-primary btn-block btn-box btn-gap"
@@ -1178,7 +1178,9 @@
               </div>
               <div class="row p-0 m-0">
                 <div class="col-md-6">
-                  <dt>Discount:</dt>
+                  <dt>
+                    Discount: ({{ this.discountOpt }}-{{ this.discountRef }})
+                  </dt>
                 </div>
                 <div class="col-md-6 d-flex flex-row-reverse">
                   <dd class="text-right">
@@ -1207,12 +1209,14 @@
               </div>
               <div class="row p-0 m-0">
                 <div class="col-md-6">
-                  <dt>Reference no.:</dt>
+                  <dt v-if="payMethod === 'noncash'">Reference no.:</dt>
+                  <dt v-else>OS-OR No.:</dt>
                 </div>
                 <div class="col-md-6 d-flex flex-row-reverse">
                   <dd class="text-right">
                     <input
                       type="text"
+                      ref="referenceno"
                       v-model="referenceno"
                       class="form-control"
                     />
@@ -1952,7 +1956,10 @@
                     type="button"
                     class="m-btn btn-light btn btn-default"
                     style="font-size: small; width: 20px"
-                    @click="this.stock.stocks++"
+                    @click="
+                      this.stock.stocks++;
+                      updateInventory();
+                    "
                   >
                     <i class="fa fa-plus"></i>
                   </button>
@@ -1964,13 +1971,10 @@
         <div class="modal-footer">
           <button
             type="button"
-            class="btn btn-primary"
-            @click="updateInventory"
+            @click="resetInventory"
+            class="btn btn-danger"
+            data-bs-dismiss="modal"
           >
-            Save
-          </button>
-          &nbsp;
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
             Close
           </button>
         </div>
@@ -2263,6 +2267,8 @@ export default {
       taxValue: 12,
       discountType: "percentage",
       discountValue: 0,
+      discountOpt: "Regular",
+      discountRef: "",
       imageFile: null,
       imageFileName: null,
       resto_order: [],
@@ -2550,9 +2556,11 @@ export default {
           const searchCode =
             item.name + "~" + item.description + "~" + item.sku;
           const items = JSON.parse(item.inventory);
+          const stocks = item.stocks.toFixed(2);
           return {
             ...item,
             items,
+            stocks,
             searchCode,
           };
         })
@@ -2637,6 +2645,23 @@ export default {
       this.getRestoOnholds();
       this.getAllOrders();
       this.getCurrentOrders();
+    },
+    resetInventory() {
+      this.stock = {
+        name: "",
+        imageUrl: "",
+        imageFileName: "",
+        description: "",
+        sku: "",
+        category: "",
+        stocks: 0,
+        price: 0,
+        inventory: "",
+        isAvailable: "",
+      };
+      this.isUpdatingInventory = false;
+      this.imageFileName = null;
+      this.imageFile = null;
     },
     viewStock(id) {
       const stock = this.itemarray.find((item) => item.id === id);
@@ -2843,7 +2868,27 @@ export default {
         <input type="radio" class="form-check-input" id="percentageDiscount" name="discountType" value="percentage">
         <label for="percentageDiscount" class="form-check-label">Percentage</label>
         <br><br>
-        <input type="number" class="form-control" id="discountValue" v-model="discount" placeholder="Enter discount value" min="0" step="any">
+        
+        <br>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <select class="form-select" id="discopt">
+            <option value="Regular">Regular</option>
+            <option value="Senior">Senior</option>
+            <option value="PWD">PWD</option>
+          </select>
+          </div>
+          <input type="number" class="form-control" id="discountValue" placeholder="Enter discount value" min="0" step="any">
+        </div>
+
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Reference no.</span>
+            </div>
+            <input type="text" class="form-control" id="discref">
+          </div>
+        
       </div>
     `,
           showCancelButton: true,
@@ -2854,14 +2899,17 @@ export default {
             const discountType = document.querySelector(
               'input[name="discountType"]:checked'
             ).value;
+            const discopt = document.getElementById("discopt").value;
+            const discref = document.getElementById("discref").value;
             const discountValue =
               document.getElementById("discountValue").value;
-            return { discountType, discountValue };
+            return { discountType, discountValue, discopt, discref };
           },
         })
         .then((result) => {
           if (result.isConfirmed) {
-            const { discountType, discountValue } = result.value;
+            const { discountType, discountValue, discopt, discref } =
+              result.value;
             if (discountValue !== "") {
               if (discountType === "fixed") {
                 // Apply fixed discount
@@ -2872,6 +2920,8 @@ export default {
                 this.discountType = "percentage";
                 this.discountValue = parseFloat(discountValue).toFixed(2);
               }
+              this.discountOpt = discopt;
+              this.discountRef = discref;
               this.$refs.tenderedCash.focus();
             }
           }
@@ -3624,7 +3674,12 @@ export default {
         axios
           .post(`${this.API_URL}restotransaction/`, {
             taxValue: this.taxValue,
-            discountType: this.discountType,
+            discountType:
+              this.discountType +
+              "-" +
+              this.discountOpt +
+              "-" +
+              this.discountRef,
             discountValue: this.discountValue,
             subTotal: this.subTotal,
             totalCharge: this.totalCost,
@@ -3853,7 +3908,7 @@ export default {
                   title: "Item updated successfully",
                 }).then(async (result) => {
                   await this.saveImageFile().then((response) => {
-                    document.location.reload();
+                    this.getInventory();
                   });
                 });
                 // this.getInventory();
@@ -3877,57 +3932,73 @@ export default {
       } else {
         axios
           .post(`${this.API_URL}restoitem/filter/`, {
-            columnName: "name",
-            columnKey: this.stock.name,
+            columnName: "sku",
+            columnKey: this.stock.sku,
           })
           .then((response) => {
             if (response.data.length > 0) {
               this.$swal({
                 icon: "error",
-                title: "Item already exists",
+                title: "This sku code already exists",
               });
             } else {
-              this.stock.inventory = `[{"type":"stockin","qty":${
-                this.stock.stocks
-              },"stocks":${this.stock.stocks},"date_created":"${formatDate(
-                new Date()
-              )}", "processedBy": "${
-                this.userdata.fName + " " + this.userdata.lName
-              }"}]`;
               axios
-                .post(`${this.API_URL}restoitem/`, {
-                  ...this.stock,
-                  imageFileName: this.imageFileName,
+                .post(`${this.API_URL}restoitem/filter/`, {
+                  columnName: "name",
+                  columnKey: this.stock.name,
                 })
                 .then((response) => {
-                  this.$swal({
-                    icon: "success",
-                    title: "Item saved successfully",
-                  }).then(async (result) => {
-                    await this.saveImageFile().then((response) => {
-                      document.location.reload();
+                  if (response.data.length > 0) {
+                    this.$swal({
+                      icon: "error",
+                      title: "Item already exists",
                     });
-                  });
-                  // this.getInventory();
-                  // this.stock = {
-                  //   id: null,
-                  //   name: "",
-                  //   imageUrl: "",
-                  //   description: "",
-                  //   sku: "",
-                  //   category: "",
-                  //   stocks: 0,
-                  //   price: 0,
-                  //   isAvailable: "",
-                  // };
+                  } else {
+                    this.stock.inventory = `[{"type":"stockin","qty":${
+                      this.stock.stocks
+                    },"stocks":${
+                      this.stock.stocks
+                    },"date_created":"${formatDate(
+                      new Date()
+                    )}", "processedBy": "${
+                      this.userdata.fName + " " + this.userdata.lName
+                    }"}]`;
+                    axios
+                      .post(`${this.API_URL}restoitem/`, {
+                        ...this.stock,
+                        imageFileName: this.imageFileName,
+                      })
+                      .then((response) => {
+                        this.$swal({
+                          icon: "success",
+                          title: "Item saved successfully",
+                        }).then(async (result) => {
+                          await this.saveImageFile().then((response) => {
+                            this.getInventory();
+                          });
+                        });
+                        // this.getInventory();
+                        // this.stock = {
+                        //   id: null,
+                        //   name: "",
+                        //   imageUrl: "",
+                        //   description: "",
+                        //   sku: "",
+                        //   category: "",
+                        //   stocks: 0,
+                        //   price: 0,
+                        //   isAvailable: "",
+                        // };
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                  }
                 })
                 .catch((error) => {
                   console.log(error);
                 });
             }
-          })
-          .catch((error) => {
-            console.log(error);
           });
       }
     },

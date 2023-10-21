@@ -38,6 +38,8 @@ urlpatterns = [
             restotables_list, name='restotables-detail'),
     re_path(r'^restotables/filter/$', restotables_filter,
             name='restotables-filter'),
+    re_path(r'^restotransaction/filter/$', restotransaction_filter,
+            name='restotransaction-filter'),
     re_path(r'^restotransaction/delete/(?P<pk>\d+)/$',
             restotransaction_delete, name='restotransaction-delete'),
     re_path(r'^restotransaction/$', restotransaction_list,
