@@ -7350,6 +7350,8 @@ export default {
     bookAll() {
       this.bookalltoggle = true;
       this.newtoggle = false;
+      this.isCheckinToggle = false;
+      this.isCheckoutToggle = false;
       this.reservation.clientNationality = "Filipino";
       this.reservation.clientType = "in-house";
       this.reservation.roomName = this.cartItems;
