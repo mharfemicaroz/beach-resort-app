@@ -1,13 +1,7 @@
 <template :key="componentKey">
   <TopNavBarComponent />
   <div class="container-fluid main">
-    <div
-      class="d-flex justify-content-center align-items-center"
-      v-if="calendarItems.length === 0"
-    >
-      <img src="/src/assets/loading.gif" />
-    </div>
-    <div v-else>
+    <div>
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li
           v-if="userdata.role === 'superuser'"
@@ -159,21 +153,34 @@
                     ></a>
                   </h2>
                   <div class="form-outline col-md-3">
-                    <input
-                      type="search"
-                      id="form1"
-                      class="form-control"
-                      placeholder="Type query"
-                      v-model="booksearchtext"
-                      @input="populateCalendarItems"
-                      @click="showAutosuggestions = false"
-                      @blur="hideAutosuggestions"
-                      aria-label="Search"
-                      ref="searchQuery"
-                      autocomplete="off"
-                      aria-autocomplete="off"
-                    />
-                    <ul
+                    <div class="input-group">
+                      <span class="input-group-prepend">
+                        <button
+                          class="btn btn-primary"
+                          @click="insertNewBooking"
+                        >
+                          <i class="fa fa-plus"></i>
+                          &nbsp; Add new
+                        </button>
+                        &nbsp;
+                      </span>
+                      <input
+                        type="search"
+                        id="form1"
+                        class="form-control"
+                        placeholder="Type query"
+                        v-model="booksearchtext"
+                        @input="populateCalendarItems"
+                        @click="showAutosuggestions = false"
+                        @blur="hideAutosuggestions"
+                        aria-label="Search"
+                        ref="searchQuery"
+                        autocomplete="off"
+                        aria-autocomplete="off"
+                      />
+                    </div>
+
+                    <!-- <ul
                       id="suglist"
                       class="autosuggestions"
                       v-if="!showAutosuggestions"
@@ -184,10 +191,16 @@
                       >
                         {{ suggestion }}
                       </li>
-                    </ul>
+                    </ul> -->
                   </div>
                 </div>
-                <div class="calendar-parent c-p">
+                <div
+                  class="d-flex justify-content-center align-items-center"
+                  v-if="calendarItems.length === 0"
+                >
+                  <img src="/src/assets/loading.gif" />
+                </div>
+                <div v-else class="calendar-parent c-p">
                   <calendar-view
                     :items="calendarItems"
                     :show-date="showDate"
@@ -2601,7 +2614,200 @@
                 >
                   <option value="">-- Please select --</option>
                   <option value="Filipino">Filipino</option>
-                  <option value="Foreign">Foreign</option>
+                  <option value="American">American</option>
+                  <option value="South Korean">South Korean</option>
+                  <option value="Indian">Indian</option>
+                  <option value="Afghan">Afghan</option>
+                  <option value="Albanian">Albanian</option>
+                  <option value="Algerian">Algerian</option>
+                  <option value="Andorran">Andorran</option>
+                  <option value="Angolan">Angolan</option>
+                  <option value="Antiguan/Barbudan">Antiguan/Barbudan</option>
+                  <option value="Argentine">Argentine</option>
+                  <option value="Armenian">Armenian</option>
+                  <option value="Australian">Australian</option>
+                  <option value="Austrian">Austrian</option>
+                  <option value="Azerbaijani">Azerbaijani</option>
+                  <option value="Bahamian">Bahamian</option>
+                  <option value="Bahraini">Bahraini</option>
+                  <option value="Bangladeshi">Bangladeshi</option>
+                  <option value="Barbadian">Barbadian</option>
+                  <option value="Belarusian">Belarusian</option>
+                  <option value="Belgian">Belgian</option>
+                  <option value="Belizean">Belizean</option>
+                  <option value="Beninese">Beninese</option>
+                  <option value="Bhutanese">Bhutanese</option>
+                  <option value="Bolivian">Bolivian</option>
+                  <option value="Bosnian and Herzegovinian">
+                    Bosnian and Herzegovinian
+                  </option>
+                  <option value="Botswanan">Botswanan</option>
+                  <option value="Brazilian">Brazilian</option>
+                  <option value="British">British</option>
+                  <option value="Bruneian">Bruneian</option>
+                  <option value="Bulgarian">Bulgarian</option>
+                  <option value="Burkinabe">Burkinabe</option>
+                  <option value="Burmese">Burmese</option>
+                  <option value="Burundian">Burundian</option>
+                  <option value="Cambodian">Cambodian</option>
+                  <option value="Cameroonian">Cameroonian</option>
+                  <option value="Canadian">Canadian</option>
+                  <option value="Cape Verdean">Cape Verdean</option>
+                  <option value="Central African">Central African</option>
+                  <option value="Chadian">Chadian</option>
+                  <option value="Chilean">Chilean</option>
+                  <option value="Chinese">Chinese</option>
+                  <option value="Colombian">Colombian</option>
+                  <option value="Comorian">Comorian</option>
+                  <option value="Congolese">Congolese</option>
+                  <option value="Costa Rican">Costa Rican</option>
+                  <option value="Croatian">Croatian</option>
+                  <option value="Cuban">Cuban</option>
+                  <option value="Cypriot">Cypriot</option>
+                  <option value="Czech">Czech</option>
+                  <option value="Danish">Danish</option>
+                  <option value="Djiboutian">Djiboutian</option>
+                  <option value="Dominican">Dominican</option>
+                  <option value="Ecuadorian">Ecuadorian</option>
+                  <option value="Egyptian">Egyptian</option>
+                  <option value="Salvadoran">Salvadoran</option>
+                  <option value="Equatorial Guinean">Equatorial Guinean</option>
+                  <option value="Eritrean">Eritrean</option>
+                  <option value="Estonian">Estonian</option>
+                  <option value="Eswatini">Eswatini</option>
+                  <option value="Ethiopian">Ethiopian</option>
+                  <option value="Fijian">Fijian</option>
+                  <option value="Finnish">Finnish</option>
+                  <option value="French">French</option>
+                  <option value="Gabonese">Gabonese</option>
+                  <option value="Gambian">Gambian</option>
+                  <option value="Georgian">Georgian</option>
+                  <option value="German">German</option>
+                  <option value="Ghanaian">Ghanaian</option>
+                  <option value="Greek">Greek</option>
+                  <option value="Grenadian">Grenadian</option>
+                  <option value="Guatemalan">Guatemalan</option>
+                  <option value="Guinea-Bissauan">Guinea-Bissauan</option>
+                  <option value="Guinean">Guinean</option>
+                  <option value="Guyanese">Guyanese</option>
+                  <option value="Haitian">Haitian</option>
+                  <option value="Honduran">Honduran</option>
+                  <option value="Hungarian">Hungarian</option>
+                  <option value="Icelandic">Icelandic</option>
+                  <option value="Indonesian">Indonesian</option>
+                  <option value="Iranian">Iranian</option>
+                  <option value="Iraqi">Iraqi</option>
+                  <option value="Irish">Irish</option>
+                  <option value="Israeli">Israeli</option>
+                  <option value="Italian">Italian</option>
+                  <option value="Ivorian">Ivorian</option>
+                  <option value="Jamaican">Jamaican</option>
+                  <option value="Japanese">Japanese</option>
+                  <option value="Jordanian">Jordanian</option>
+                  <option value="Kazakhstani">Kazakhstani</option>
+                  <option value="Kenyan">Kenyan</option>
+                  <option value="Kittitian and Nevisian">
+                    Kittitian and Nevisian
+                  </option>
+                  <option value="Kuwaiti">Kuwaiti</option>
+                  <option value="Kyrgyz">Kyrgyz</option>
+                  <option value="Laotian">Laotian</option>
+                  <option value="Latvian">Latvian</option>
+                  <option value="Lebanese">Lebanese</option>
+                  <option value="Liberian">Liberian</option>
+                  <option value="Libyan">Libyan</option>
+                  <option value="Liechtensteiner">Liechtensteiner</option>
+                  <option value="Lithuanian">Lithuanian</option>
+                  <option value="Luxembourgish">Luxembourgish</option>
+                  <option value="Macedonian">Macedonian</option>
+                  <option value="Malagasy">Malagasy</option>
+                  <option value="Malawian">Malawian</option>
+                  <option value="Malaysian">Malaysian</option>
+                  <option value="Maldivian">Maldivian</option>
+                  <option value="Malian">Malian</option>
+                  <option value="Maltese">Maltese</option>
+                  <option value="Marshallese">Marshallese</option>
+                  <option value="Mauritanian">Mauritanian</option>
+                  <option value="Mauritian">Mauritian</option>
+                  <option value="Mexican">Mexican</option>
+                  <option value="Micronesian">Micronesian</option>
+                  <option value="Moldovan">Moldovan</option>
+                  <option value="Monacan">Monacan</option>
+                  <option value="Mongolian">Mongolian</option>
+                  <option value="Montenegrin">Montenegrin</option>
+                  <option value="Moroccan">Moroccan</option>
+                  <option value="Mozambican">Mozambican</option>
+                  <option value="Namibian">Namibian</option>
+                  <option value="Nauruan">Nauruan</option>
+                  <option value="Nepalese">Nepalese</option>
+                  <option value="New Zealander">New Zealander</option>
+                  <option value="Nicaraguan">Nicaraguan</option>
+                  <option value="Nigerien">Nigerien</option>
+                  <option value="Nigerian">Nigerian</option>
+                  <option value="North Korean">North Korean</option>
+                  <option value="Norwegian">Norwegian</option>
+                  <option value="Omani">Omani</option>
+                  <option value="Pakistani">Pakistani</option>
+                  <option value="Palauan">Palauan</option>
+                  <option value="Palestinian">Palestinian</option>
+                  <option value="Panamanian">Panamanian</option>
+                  <option value="Papua New Guinean">Papua New Guinean</option>
+                  <option value="Paraguayan">Paraguayan</option>
+                  <option value="Peruvian">Peruvian</option>
+                  <option value="Polish">Polish</option>
+                  <option value="Portuguese">Portuguese</option>
+                  <option value="Qatari">Qatari</option>
+                  <option value="Romanian">Romanian</option>
+                  <option value="Russian">Russian</option>
+                  <option value="Rwandan">Rwandan</option>
+                  <option value="Saint Lucian">Saint Lucian</option>
+                  <option value="Salvadoran">Salvadoran</option>
+                  <option value="Samoan">Samoan</option>
+                  <option value="San Marinese">San Marinese</option>
+                  <option value="Sao Tomean">Sao Tomean</option>
+                  <option value="Saudi">Saudi</option>
+                  <option value="Senegalese">Senegalese</option>
+                  <option value="Serbian">Serbian</option>
+                  <option value="Seychellois">Seychellois</option>
+                  <option value="Sierra Leonean">Sierra Leonean</option>
+                  <option value="Singaporean">Singaporean</option>
+                  <option value="Slovakian">Slovakian</option>
+                  <option value="Slovenian">Slovenian</option>
+                  <option value="Solomon Islander">Solomon Islander</option>
+                  <option value="Somali">Somali</option>
+                  <option value="South African">South African</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="Sri Lankan">Sri Lankan</option>
+                  <option value="Sudanese">Sudanese</option>
+                  <option value="Surinamese">Surinamese</option>
+                  <option value="Swazi">Swazi</option>
+                  <option value="Swedish">Swedish</option>
+                  <option value="Swiss">Swiss</option>
+                  <option value="Syrian">Syrian</option>
+                  <option value="Taiwanese">Taiwanese</option>
+                  <option value="Tajik">Tajik</option>
+                  <option value="Tanzanian">Tanzanian</option>
+                  <option value="Thai">Thai</option>
+                  <option value="Togolese">Togolese</option>
+                  <option value="Tongan">Tongan</option>
+                  <option value="Trinidadian or Tobagonian">
+                    Trinidadian or Tobagonian
+                  </option>
+                  <option value="Tunisian">Tunisian</option>
+                  <option value="Turkish">Turkish</option>
+                  <option value="Tuvaluan">Tuvaluan</option>
+                  <option value="Ugandan">Ugandan</option>
+                  <option value="Ukrainian">Ukrainian</option>
+                  <option value="Uruguayan">Uruguayan</option>
+                  <option value="Uzbekistani">Uzbekistani</option>
+                  <option value="Vanuatuan">Vanuatuan</option>
+                  <option value="Venezuelan">Venezuelan</option>
+                  <option value="Vietnamese">Vietnamese</option>
+                  <option value="Vincentian">Vincentian</option>
+                  <option value="Yemenite">Yemenite</option>
+                  <option value="Zambian">Zambian</option>
+                  <option value="Zimbabwean">Zimbabwean</option>
+                  <option value="Other">Other</option>
                 </select>
               </div>
               <label for="clientType" class="col-sm-2 col-form-label"
@@ -3611,7 +3817,202 @@
                   >
                     <option value="">-- Please select --</option>
                     <option value="Filipino">Filipino</option>
-                    <option value="Foreign">Foreign</option>
+                    <option value="American">American</option>
+                    <option value="South Korean">South Korean</option>
+                    <option value="Indian">Indian</option>
+                    <option value="Afghan">Afghan</option>
+                    <option value="Albanian">Albanian</option>
+                    <option value="Algerian">Algerian</option>
+                    <option value="Andorran">Andorran</option>
+                    <option value="Angolan">Angolan</option>
+                    <option value="Antiguan/Barbudan">Antiguan/Barbudan</option>
+                    <option value="Argentine">Argentine</option>
+                    <option value="Armenian">Armenian</option>
+                    <option value="Australian">Australian</option>
+                    <option value="Austrian">Austrian</option>
+                    <option value="Azerbaijani">Azerbaijani</option>
+                    <option value="Bahamian">Bahamian</option>
+                    <option value="Bahraini">Bahraini</option>
+                    <option value="Bangladeshi">Bangladeshi</option>
+                    <option value="Barbadian">Barbadian</option>
+                    <option value="Belarusian">Belarusian</option>
+                    <option value="Belgian">Belgian</option>
+                    <option value="Belizean">Belizean</option>
+                    <option value="Beninese">Beninese</option>
+                    <option value="Bhutanese">Bhutanese</option>
+                    <option value="Bolivian">Bolivian</option>
+                    <option value="Bosnian and Herzegovinian">
+                      Bosnian and Herzegovinian
+                    </option>
+                    <option value="Botswanan">Botswanan</option>
+                    <option value="Brazilian">Brazilian</option>
+                    <option value="British">British</option>
+                    <option value="Bruneian">Bruneian</option>
+                    <option value="Bulgarian">Bulgarian</option>
+                    <option value="Burkinabe">Burkinabe</option>
+                    <option value="Burmese">Burmese</option>
+                    <option value="Burundian">Burundian</option>
+                    <option value="Cambodian">Cambodian</option>
+                    <option value="Cameroonian">Cameroonian</option>
+                    <option value="Canadian">Canadian</option>
+                    <option value="Cape Verdean">Cape Verdean</option>
+                    <option value="Central African">Central African</option>
+                    <option value="Chadian">Chadian</option>
+                    <option value="Chilean">Chilean</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="Colombian">Colombian</option>
+                    <option value="Comorian">Comorian</option>
+                    <option value="Congolese">Congolese</option>
+                    <option value="Costa Rican">Costa Rican</option>
+                    <option value="Croatian">Croatian</option>
+                    <option value="Cuban">Cuban</option>
+                    <option value="Cypriot">Cypriot</option>
+                    <option value="Czech">Czech</option>
+                    <option value="Danish">Danish</option>
+                    <option value="Djiboutian">Djiboutian</option>
+                    <option value="Dominican">Dominican</option>
+                    <option value="Ecuadorian">Ecuadorian</option>
+                    <option value="Egyptian">Egyptian</option>
+                    <option value="Salvadoran">Salvadoran</option>
+                    <option value="Equatorial Guinean">
+                      Equatorial Guinean
+                    </option>
+                    <option value="Eritrean">Eritrean</option>
+                    <option value="Estonian">Estonian</option>
+                    <option value="Eswatini">Eswatini</option>
+                    <option value="Ethiopian">Ethiopian</option>
+                    <option value="Fijian">Fijian</option>
+                    <option value="Finnish">Finnish</option>
+                    <option value="French">French</option>
+                    <option value="Gabonese">Gabonese</option>
+                    <option value="Gambian">Gambian</option>
+                    <option value="Georgian">Georgian</option>
+                    <option value="German">German</option>
+                    <option value="Ghanaian">Ghanaian</option>
+                    <option value="Greek">Greek</option>
+                    <option value="Grenadian">Grenadian</option>
+                    <option value="Guatemalan">Guatemalan</option>
+                    <option value="Guinea-Bissauan">Guinea-Bissauan</option>
+                    <option value="Guinean">Guinean</option>
+                    <option value="Guyanese">Guyanese</option>
+                    <option value="Haitian">Haitian</option>
+                    <option value="Honduran">Honduran</option>
+                    <option value="Hungarian">Hungarian</option>
+                    <option value="Icelandic">Icelandic</option>
+                    <option value="Indonesian">Indonesian</option>
+                    <option value="Iranian">Iranian</option>
+                    <option value="Iraqi">Iraqi</option>
+                    <option value="Irish">Irish</option>
+                    <option value="Israeli">Israeli</option>
+                    <option value="Italian">Italian</option>
+                    <option value="Ivorian">Ivorian</option>
+                    <option value="Jamaican">Jamaican</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Jordanian">Jordanian</option>
+                    <option value="Kazakhstani">Kazakhstani</option>
+                    <option value="Kenyan">Kenyan</option>
+                    <option value="Kittitian and Nevisian">
+                      Kittitian and Nevisian
+                    </option>
+                    <option value="Kuwaiti">Kuwaiti</option>
+                    <option value="Kyrgyz">Kyrgyz</option>
+                    <option value="Laotian">Laotian</option>
+                    <option value="Latvian">Latvian</option>
+                    <option value="Lebanese">Lebanese</option>
+                    <option value="Liberian">Liberian</option>
+                    <option value="Libyan">Libyan</option>
+                    <option value="Liechtensteiner">Liechtensteiner</option>
+                    <option value="Lithuanian">Lithuanian</option>
+                    <option value="Luxembourgish">Luxembourgish</option>
+                    <option value="Macedonian">Macedonian</option>
+                    <option value="Malagasy">Malagasy</option>
+                    <option value="Malawian">Malawian</option>
+                    <option value="Malaysian">Malaysian</option>
+                    <option value="Maldivian">Maldivian</option>
+                    <option value="Malian">Malian</option>
+                    <option value="Maltese">Maltese</option>
+                    <option value="Marshallese">Marshallese</option>
+                    <option value="Mauritanian">Mauritanian</option>
+                    <option value="Mauritian">Mauritian</option>
+                    <option value="Mexican">Mexican</option>
+                    <option value="Micronesian">Micronesian</option>
+                    <option value="Moldovan">Moldovan</option>
+                    <option value="Monacan">Monacan</option>
+                    <option value="Mongolian">Mongolian</option>
+                    <option value="Montenegrin">Montenegrin</option>
+                    <option value="Moroccan">Moroccan</option>
+                    <option value="Mozambican">Mozambican</option>
+                    <option value="Namibian">Namibian</option>
+                    <option value="Nauruan">Nauruan</option>
+                    <option value="Nepalese">Nepalese</option>
+                    <option value="New Zealander">New Zealander</option>
+                    <option value="Nicaraguan">Nicaraguan</option>
+                    <option value="Nigerien">Nigerien</option>
+                    <option value="Nigerian">Nigerian</option>
+                    <option value="North Korean">North Korean</option>
+                    <option value="Norwegian">Norwegian</option>
+                    <option value="Omani">Omani</option>
+                    <option value="Pakistani">Pakistani</option>
+                    <option value="Palauan">Palauan</option>
+                    <option value="Palestinian">Palestinian</option>
+                    <option value="Panamanian">Panamanian</option>
+                    <option value="Papua New Guinean">Papua New Guinean</option>
+                    <option value="Paraguayan">Paraguayan</option>
+                    <option value="Peruvian">Peruvian</option>
+                    <option value="Polish">Polish</option>
+                    <option value="Portuguese">Portuguese</option>
+                    <option value="Qatari">Qatari</option>
+                    <option value="Romanian">Romanian</option>
+                    <option value="Russian">Russian</option>
+                    <option value="Rwandan">Rwandan</option>
+                    <option value="Saint Lucian">Saint Lucian</option>
+                    <option value="Salvadoran">Salvadoran</option>
+                    <option value="Samoan">Samoan</option>
+                    <option value="San Marinese">San Marinese</option>
+                    <option value="Sao Tomean">Sao Tomean</option>
+                    <option value="Saudi">Saudi</option>
+                    <option value="Senegalese">Senegalese</option>
+                    <option value="Serbian">Serbian</option>
+                    <option value="Seychellois">Seychellois</option>
+                    <option value="Sierra Leonean">Sierra Leonean</option>
+                    <option value="Singaporean">Singaporean</option>
+                    <option value="Slovakian">Slovakian</option>
+                    <option value="Slovenian">Slovenian</option>
+                    <option value="Solomon Islander">Solomon Islander</option>
+                    <option value="Somali">Somali</option>
+                    <option value="South African">South African</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="Sri Lankan">Sri Lankan</option>
+                    <option value="Sudanese">Sudanese</option>
+                    <option value="Surinamese">Surinamese</option>
+                    <option value="Swazi">Swazi</option>
+                    <option value="Swedish">Swedish</option>
+                    <option value="Swiss">Swiss</option>
+                    <option value="Syrian">Syrian</option>
+                    <option value="Taiwanese">Taiwanese</option>
+                    <option value="Tajik">Tajik</option>
+                    <option value="Tanzanian">Tanzanian</option>
+                    <option value="Thai">Thai</option>
+                    <option value="Togolese">Togolese</option>
+                    <option value="Tongan">Tongan</option>
+                    <option value="Trinidadian or Tobagonian">
+                      Trinidadian or Tobagonian
+                    </option>
+                    <option value="Tunisian">Tunisian</option>
+                    <option value="Turkish">Turkish</option>
+                    <option value="Tuvaluan">Tuvaluan</option>
+                    <option value="Ugandan">Ugandan</option>
+                    <option value="Ukrainian">Ukrainian</option>
+                    <option value="Uruguayan">Uruguayan</option>
+                    <option value="Uzbekistani">Uzbekistani</option>
+                    <option value="Vanuatuan">Vanuatuan</option>
+                    <option value="Venezuelan">Venezuelan</option>
+                    <option value="Vietnamese">Vietnamese</option>
+                    <option value="Vincentian">Vincentian</option>
+                    <option value="Yemenite">Yemenite</option>
+                    <option value="Zambian">Zambian</option>
+                    <option value="Zimbabwean">Zimbabwean</option>
+                    <option value="Other">Other</option>
                   </select>
                 </div>
                 <label for="clientType" class="col-sm-2 col-form-label"
@@ -3656,7 +4057,14 @@
                     </div>
                     <div class="col-sm-2">
                       <button
-                        v-if="!toggleselect && !toggleselect2 && !notoggle"
+                        v-if="
+                          !toggleselect &&
+                          !toggleselect2 &&
+                          !notoggle &&
+                          !bookalltoggle &&
+                          !newtoggle &&
+                          reservation.status !== 'checkedout'
+                        "
                         type="button"
                         @click="toggleCheckin"
                         class="btn btn-lg badge rounded-pill d-inline btn-primary"
@@ -3719,7 +4127,14 @@
                     </div>
                     <div class="col-sm-2">
                       <button
-                        v-if="!toggleselect && !toggleselect2 && !notoggle"
+                        v-if="
+                          !toggleselect &&
+                          !toggleselect2 &&
+                          !notoggle &&
+                          !bookalltoggle &&
+                          !newtoggle &&
+                          reservation.status !== 'checkedout'
+                        "
                         type="button"
                         @click="toggleCheckout"
                         class="btn btn-lg badge rounded-pill d-inline btn-primary"
@@ -4222,6 +4637,7 @@ export default {
       roomSelect: "ok",
       toggleselect: false,
       toggleselect2: false,
+      bookalltoggle: false,
       isItNew: false,
       disablebutton: false,
       bookingsOptions: [
@@ -4598,16 +5014,7 @@ export default {
       showAutosuggestions: false,
       origbookings: [],
       walkinID: "",
-      calendarItems: [
-        /*{
-                                      id: id,
-                                      startDate: this.thisMonth(day, hr, min),
-                                      endDate: this.thisMonth(day, hr, min),
-                                      title: book.title,
-                                      classes: "purple",
-                                      tooltip: "This spans multiple days hehe",
-                                  },*/
-      ],
+      calendarItems: [],
       linedata: {
         labels: [
           "January",
@@ -5380,6 +5787,33 @@ export default {
     },
   },
   methods: {
+    insertNewBooking() {
+      const today = new Date();
+      this.toggleselect = false;
+      this.toggleselect2 = false;
+      this.roomSelect = "ok";
+      this.bookalltoggle = false;
+      this.reservation.clientName = "";
+      this.reservation.clientEmail = "";
+      this.reservation.clientAddress = "";
+      this.$refs.address1Field.value = "";
+      this.isCheckinToggle = false;
+      this.isCheckoutToggle = false;
+      this.simulCtrl = false;
+      this.reservation.clientNationality = "Filipino";
+      this.reservation.clientType = "in-house";
+      this.reservation.roomName = "";
+      this.reservation.remarks = "";
+      this.filteredhistlogs = [];
+      this.reservation.clientPhone = "";
+      this.reservation.status = "vacant";
+      this.reservation.checkinDate = formatDate(today);
+      this.reservation.checkoutDate = formatDate(today);
+      this.newtoggle = true;
+      this.isCheckinToggle = true;
+      this.isCheckoutToggle = true;
+      this.toggleItemModal();
+    },
     async toggleCheckin() {
       this.isCheckinToggle = !this.isCheckinToggle;
       if (this.isCheckinToggle) {
@@ -6914,6 +7348,8 @@ export default {
       this.cartItems = [];
     },
     bookAll() {
+      this.bookalltoggle = true;
+      this.newtoggle = false;
       this.reservation.clientNationality = "Filipino";
       this.reservation.clientType = "in-house";
       this.reservation.roomName = this.cartItems;
@@ -8929,7 +9365,9 @@ export default {
         this.toggleselect = false;
         this.toggleselect2 = false;
         this.notoggle = true;
+        this.newtoggle = false;
         this.roomSelect = "ok";
+        this.bookalltoggle = false;
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
         this.reservation.clientAddress = "";
@@ -8993,7 +9431,9 @@ export default {
       this.simulCtrl = false;
       this.toggleselect = false;
       this.toggleselect2 = false;
+      this.bookalltoggle = false;
       this.notoggle = false;
+      this.newtoggle = false;
       this.roomSelect = "ok";
       this.reservation.clientName = this.bookings[this.itemIndex].name;
       this.reservation.clientEmail = this.bookings[this.itemIndex].clientemail;
@@ -9415,10 +9855,24 @@ export default {
       const checkout = parseDate(this.reservation.checkoutDate);
       if (checkout < checkin) {
         this.$swal.fire({
-          title: "error",
-          text: "Check-out date ≥ Check-in date.",
+          title: "Booking Error",
+          text: "The check-out date should be the same as or after the check-in date.",
           icon: "error",
         });
+        this.newtoggle = false;
+        this.bookNowFlag = true;
+        this.toggleItemModal();
+        return false;
+      }
+      if (checkin < new Date().setHours(0, 0, 0, 0)) {
+        this.$swal.fire({
+          title: "Booking Error",
+          text: "Booking for past dates is not allowed.",
+          icon: "error",
+        });
+        this.newtoggle = false;
+        this.bookNowFlag = true;
+        this.toggleItemModal();
         return false;
       }
       //   const initialResPax = this.reservation.roomName[0].pax;
@@ -9462,36 +9916,15 @@ export default {
           //change id format
           let id =
             "e" + new Date().getTime().toString() + this.generateUniqueString();
-          let startDate =
-            this.reservation.checkinDate.split("/")[2] +
-            "-" +
-            this.reservation.checkinDate.split("/")[1] +
-            "-" +
-            this.reservation.checkinDate.split("/")[0];
-          let endDate =
-            this.reservation.checkoutDate.split("/")[2] +
-            "-" +
-            this.reservation.checkoutDate.split("/")[1] +
-            "-" +
-            this.reservation.checkoutDate.split("/")[0];
+          let startDate = parseDateOrig(this.reservation.checkinDate);
+          let endDate = parseDateOrig(this.reservation.checkoutDate);
           let title = res.name + "-" + this.reservation.clientName;
-          const numDays = Math.ceil(
-            (new Date(
-              this.reservation.checkoutDate.split("/")[2] +
-                "-" +
-                this.reservation.checkoutDate.split("/")[1] +
-                "-" +
-                this.reservation.checkoutDate.split("/")[0]
-            ).setHours(0, 0, 0, 0) -
-              new Date(
-                this.reservation.checkinDate.split("/")[2] +
-                  "-" +
-                  this.reservation.checkinDate.split("/")[1] +
-                  "-" +
-                  this.reservation.checkinDate.split("/")[0]
-              ).setHours(0, 0, 0, 0)) /
+          let numDays = Math.ceil(
+            (new Date(endDate).setHours(0, 0, 0, 0) -
+              new Date(startDate).setHours(0, 0, 0, 0)) /
               (1000 * 60 * 60 * 24)
           );
+
           const roomPrice =
             this.rooms.findIndex((o) => o.name === res.name) !== -1
               ? this.rooms[this.rooms.findIndex((o) => o.name === res.name)]
@@ -9510,8 +9943,12 @@ export default {
             clientaddress: this.reservation.clientAddress,
             clientnationality: this.reservation.clientNationality,
             clientType: this.reservation.clientType,
-            checkinDate: this.reservation.checkinDate,
-            checkoutDate: this.reservation.checkoutDate,
+            checkinDate: this.newtoggle
+              ? formatDate2(this.reservation.checkinDate)
+              : this.reservation.checkinDate,
+            checkoutDate: this.newtoggle
+              ? formatDate2(this.reservation.checkoutDate)
+              : this.reservation.checkoutDate,
             room_name: res.name,
             room_price: roomPrice,
             room_type: roomType,
@@ -9575,6 +10012,7 @@ export default {
           `action:/added reservation/client:/${this.reservation.clientName}/`
         );
         this.toggleItemModal();
+        this.newtoggle = false;
         this.reservation.clientName = "";
         this.reservation.clientEmail = "";
         this.reservation.clientAddress = "";
