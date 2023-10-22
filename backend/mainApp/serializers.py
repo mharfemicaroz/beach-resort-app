@@ -60,6 +60,12 @@ class TransactionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ItemCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemCategory
+        fields = '__all__'
+
+
 class TransactionItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransactionItem

@@ -165,6 +165,15 @@ class TransactionRecord(models.Model):
         max_length=255, null=True, blank=True)
 
 
+class ItemCategory(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    description = models.TextField(null=True, blank=True)
+    isAvailable = models.BooleanField(default=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+
 class TransactionItem(models.Model):
     id = models.AutoField(primary_key=True)
     bookingID = models.CharField(max_length=255)

@@ -559,135 +559,22 @@
                   <i class="fa fa-tags"></i> All</a
                 >
               </li>
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  data-bs-toggle="tab"
-                  role="tab"
-                  href="#nav-tab-category1"
-                  @click="setActiveTab('nav-tab-category1')"
-                >
-                  <i class="fa fa-tags"></i>Appetizers</a
-                >
-              </li>
 
-              <li class="nav-item">
+              <li
+                class="nav-item"
+                v-for="(category, index) in itemcategory.filter(
+                  (o) => o.isAvailable == 1
+                )"
+                :key="category.id"
+              >
                 <a
                   class="nav-link"
                   data-bs-toggle="tab"
                   role="tab"
-                  href="#nav-tab-category2"
-                  @click="setActiveTab('nav-tab-category2')"
+                  :href="`#nav-tab-category${index + 1}`"
+                  @click="setActiveTab(`nav-tab-category${index + 1}`)"
                 >
-                  <i class="fa fa-tags"></i>Asian Classics</a
-                >
-              </li>
-
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  data-bs-toggle="tab"
-                  role="tab"
-                  href="#nav-tab-category3"
-                  @click="setActiveTab('nav-tab-category3')"
-                >
-                  <i class="fa fa-tags"></i>Sizzlers</a
-                >
-              </li>
-
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  data-bs-toggle="tab"
-                  role="tab"
-                  href="#nav-tab-category4"
-                  @click="setActiveTab('nav-tab-category4')"
-                >
-                  <i class="fa fa-tags"></i>Soup</a
-                >
-              </li>
-
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  data-bs-toggle="tab"
-                  role="tab"
-                  href="#nav-tab-category5"
-                  @click="setActiveTab('nav-tab-category5')"
-                >
-                  <i class="fa fa-tags"></i>Drinks</a
-                >
-              </li>
-
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  data-bs-toggle="tab"
-                  role="tab"
-                  href="#nav-tab-category6"
-                  @click="setActiveTab('nav-tab-category6')"
-                >
-                  <i class="fa fa-tags"></i>Desserts & Sweets</a
-                >
-              </li>
-
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  data-bs-toggle="tab"
-                  role="tab"
-                  href="#nav-tab-category7"
-                  @click="setActiveTab('nav-tab-category7')"
-                >
-                  <i class="fa fa-tags"></i>Pizza, Pasta, Sandwich</a
-                >
-              </li>
-
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  data-bs-toggle="tab"
-                  role="tab"
-                  href="#nav-tab-category8"
-                  @click="setActiveTab('nav-tab-category8')"
-                >
-                  <i class="fa fa-tags"></i>Breakfast</a
-                >
-              </li>
-
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  data-bs-toggle="tab"
-                  role="tab"
-                  href="#nav-tab-category9"
-                  @click="setActiveTab('nav-tab-category9')"
-                >
-                  <i class="fa fa-tags"></i>Rice</a
-                >
-              </li>
-
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  data-bs-toggle="tab"
-                  role="tab"
-                  href="#nav-tab-category11"
-                  @click="setActiveTab('nav-tab-category11')"
-                >
-                  <i class="fa fa-tags"></i>Buffet</a
-                >
-              </li>
-
-              <li class="nav-item">
-                <a
-                  class="nav-link"
-                  data-bs-toggle="tab"
-                  role="tab"
-                  href="#nav-tab-category10"
-                  @click="setActiveTab('nav-tab-category10')"
-                >
-                  <i class="fa fa-tags"></i>Miscellaneous</a
+                  <i class="fa fa-tags"></i>{{ category.name }}</a
                 >
               </li>
             </ul>
@@ -717,10 +604,13 @@
                 </div>
               </div>
               <div
+                v-for="(category, index) in itemcategory.filter(
+                  (o) => o.isAvailable == 1
+                )"
+                :key="category.id"
                 class="tab-pane fade"
-                id="nav-tab-category1"
+                :id="`nav-tab-category${index + 1}`"
                 role="tabpanel"
-                aria-labelledby="nav-tab-category1"
               >
                 <div class="container-fluid">
                   <div class="row">
@@ -728,213 +618,7 @@
                       <CardItems
                         :itemData="
                           filtereditemarray.filter(
-                            (i) => i.category === 'Appetizers'
-                          )
-                        "
-                        @click-action="addItemToCart"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="nav-tab-category2"
-                role="tabpanel"
-                aria-labelledby="nav-tab-category2"
-              >
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <CardItems
-                        :itemData="
-                          filtereditemarray.filter(
-                            (i) => i.category === 'Asian Classics'
-                          )
-                        "
-                        @click-action="addItemToCart"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="nav-tab-category3"
-                role="tabpanel"
-                aria-labelledby="nav-tab-category3"
-              >
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <CardItems
-                        :itemData="
-                          filtereditemarray.filter(
-                            (i) => i.category === 'Sizzlers'
-                          )
-                        "
-                        @click-action="addItemToCart"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="nav-tab-category4"
-                role="tabpanel"
-                aria-labelledby="nav-tab-category4"
-              >
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <CardItems
-                        :itemData="
-                          filtereditemarray.filter((i) => i.category === 'Soup')
-                        "
-                        @click-action="addItemToCart"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="nav-tab-category5"
-                role="tabpanel"
-                aria-labelledby="nav-tab-category5"
-              >
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <CardItems
-                        :itemData="
-                          filtereditemarray.filter(
-                            (i) => i.category === 'Drinks'
-                          )
-                        "
-                        @click-action="addItemToCart"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="nav-tab-category6"
-                role="tabpanel"
-                aria-labelledby="nav-tab-category6"
-              >
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <CardItems
-                        :itemData="
-                          filtereditemarray.filter(
-                            (i) => i.category === 'Desserts & Sweets'
-                          )
-                        "
-                        @click-action="addItemToCart"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="nav-tab-category7"
-                role="tabpanel"
-                aria-labelledby="nav-tab-category7"
-              >
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <CardItems
-                        :itemData="
-                          filtereditemarray.filter(
-                            (i) => i.category === 'Pizza, Pasta, Sandwich'
-                          )
-                        "
-                        @click-action="addItemToCart"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="nav-tab-category8"
-                role="tabpanel"
-                aria-labelledby="nav-tab-category8"
-              >
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <CardItems
-                        :itemData="
-                          filtereditemarray.filter(
-                            (i) => i.category === 'Breakfast'
-                          )
-                        "
-                        @click-action="addItemToCart"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="nav-tab-category9"
-                role="tabpanel"
-                aria-labelledby="nav-tab-category9"
-              >
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <CardItems
-                        :itemData="
-                          filtereditemarray.filter((i) => i.category === 'Rice')
-                        "
-                        @click-action="addItemToCart"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="nav-tab-category11"
-                role="tabpanel"
-                aria-labelledby="nav-tab-category11"
-              >
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <CardItems
-                        :itemData="
-                          filtereditemarray.filter(
-                            (i) => i.category === 'Buffet'
-                          )
-                        "
-                        @click-action="addItemToCart"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="nav-tab-category10"
-                role="tabpanel"
-                aria-labelledby="nav-tab-category10"
-              >
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <CardItems
-                        :itemData="
-                          filtereditemarray.filter(
-                            (i) => i.category === 'Miscellaneous'
+                            (i) => i.category === category.name
                           )
                         "
                         @click-action="addItemToCart"
@@ -1477,165 +1161,307 @@
       >
         <div class="row">
           <div class="col-md-3">
-            <form @submit.prevent="saveInventory" class="no-print">
-              <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="name"
-                  v-model="stock.name"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="description"
-                  v-model="stock.description"
-                />
-              </div>
-              <div class="mb-3">
-                <label for="sku" class="form-label">SKU</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="SKU"
-                  v-model="stock.sku"
-                  required
-                />
-              </div>
-              <div class="mb-3">
-                <label for="image" class="form-label">Image</label>
-                <input
-                  type="file"
-                  class="form-control"
-                  id="image"
-                  @change="handleImageUpload"
-                />
+            <ul
+              class="nav bg radius nav-pills nav-fill mb-3 bg mt-3"
+              role="tablist"
+            >
+              <li class="nav-item">
                 <a
-                  v-if="stock.imageFileName !== ''"
-                  :href="this.API_URL + 'Photos/' + stock.imageFileName"
-                  target="_blank"
-                  class="text-info"
-                  >{{ stock.imageFileName }}</a
+                  class="nav-link"
+                  data-bs-toggle="tab"
+                  @click=""
+                  role="tab"
+                  href="#restotab1"
                 >
-              </div>
-              <div class="mb-3">
-                <label for="is-available" class="form-label">Category</label>
-                <select
-                  class="form-select"
-                  id="is-available"
-                  v-model="stock.category"
-                  required
+                  <i class="fa fa-tags"></i>Item Category</a
                 >
-                  <option value="">-- Select --</option>
-                  <option value="Appetizers">Appetizers</option>
-                  <option value="Asian Classics">Asian Classics</option>
-                  <option value="Sizzlers">Sizzlers</option>
-                  <option value="Soup">Soup</option>
-                  <option value="Drinks">Drinks</option>
-                  <option value="Desserts & Sweets">Desserts & Sweets</option>
-                  <option value="Pizza, Pasta, Sandwich">
-                    Pizza, Pasta, Sandwich
-                  </option>
-                  <option value="Breakfast">Breakfast</option>
-                  <option value="Rice">Rice</option>
-                  <option value="Buffet">Buffet</option>
-                  <option value="Miscellaneous">Miscellaneous</option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                <label for="qty" class="form-label">Qty</label>
-                <input
-                  type="number"
-                  min="0"
-                  class="form-control"
-                  id="qty"
-                  v-model="stock.stocks"
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="price" class="form-label">Price</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.1"
-                  class="form-control"
-                  id="price"
-                  v-model="stock.price"
-                  required
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="is-available" class="form-label"
-                  >Availability</label
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link active show"
+                  data-bs-toggle="tab"
+                  role="tab"
+                  @click=""
+                  href="#restotab2"
                 >
-                <select
-                  class="form-select"
-                  id="is-available"
-                  v-model="stock.isAvailable"
-                  required
+                  <i class="fa fa-tags"></i>Inventory Management</a
                 >
-                  <option value="">-- Select --</option>
-                  <option value="true">Yes</option>
-                  <option value="false">No</option>
-                </select>
-              </div>
-              <button type="submit" class="btn btn-primary">
-                {{ isUpdatingInventory ? "Update" : "Save" }}
-              </button>
-            </form>
+              </li>
+            </ul>
           </div>
-          <div class="col-md-9">
-            <div>
-              <table-component
-                :mainHeaders="stocksOptions"
-                :mainItems="filtereditemarray"
-                :subHeaders="inventorysubitem"
-                @edit-action="editInventory"
-                :editable="true"
-                @custombtn-action="viewStock"
-                :custombtn="true"
-                :toggleable="true"
-                :slotsub="true"
-              >
-                <template #subcontent="{ data }">
-                  <table-component
-                    :mainHeaders="inventorysubitem"
-                    :mainItems="data"
-                  />
-                </template>
-                <template #content="{ data }">
-                  <template v-if="data.h === 'isAvailable'">
-                    <span v-if="data.dt.isAvailable">Yes</span>
-                    <span v-else>No</span>
-                  </template>
-                  <template v-else="data.h === 'imageUrl'">
-                    <img
-                      v-if="data.dt.imageFileName === null"
-                      :src="data.dt.imageUrl"
-                      class="img-thumbnail"
-                      style="height: 80px; width: 80px"
-                    />
-                    <img
-                      v-else
-                      :src="this.API_URL + 'Photos/' + data.dt.imageFileName"
-                      class="img-thumbnail"
-                      style="height: 80px; width: 80px"
-                    />
-                  </template>
-                </template>
-              </table-component>
+        </div>
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade" id="restotab1" role="tabpanel">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-3">
+                  <form @submit.prevent="saveItemcategory" class="no-print">
+                    <div class="mb-3">
+                      <label for="name" class="form-label">Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="name"
+                        v-model="catitem.name"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="description" class="form-label"
+                        >Description</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="description"
+                        v-model="catitem.description"
+                      />
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="is-available" class="form-label"
+                        >Availability</label
+                      >
+                      <select
+                        class="form-select"
+                        id="is-available"
+                        v-model="catitem.isAvailable"
+                        required
+                      >
+                        <option value="">-- Select --</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                      {{ isUpdatingItemCategory ? "Update" : "Save" }}
+                    </button>
+                  </form>
+                </div>
+                <div class="col-md-9">
+                  <div
+                    style="
+                      height: 550px;
+                      max-height: 550px;
+                      overflow-y: auto;
+                      overflow-x: hidden;
+                      padding-right: 1px;
+                    "
+                  >
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th style="width: 600px">Description</th>
+                          <th>Is Available?</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="item in itemcategory" :key="item.id">
+                          <td>{{ item.name }}</td>
+                          <td>
+                            {{ item.description }}
+                          </td>
+                          <td v-if="item.isAvailable">Yes</td>
+                          <td v-else>No</td>
+                          <td>
+                            <button
+                              type="button"
+                              class="btn btn-primary btn-sm"
+                              @click="editItemcategory(item.id)"
+                            >
+                              <i class="fas fa-edit"></i></button
+                            >&nbsp;
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade show active" id="restotab2" role="tabpanel">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-3">
+                  <form @submit.prevent="saveInventory" class="no-print">
+                    <div class="mb-3">
+                      <label for="name" class="form-label">Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="name"
+                        v-model="stock.name"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="description" class="form-label"
+                        >Description</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="description"
+                        v-model="stock.description"
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="sku" class="form-label">SKU</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="SKU"
+                        v-model="stock.sku"
+                        required
+                      />
+                    </div>
+                    <div class="mb-3">
+                      <label for="image" class="form-label">Image</label>
+                      <input
+                        type="file"
+                        class="form-control"
+                        id="image"
+                        @change="handleImageUpload"
+                      />
+                      <a
+                        v-if="stock.imageFileName !== ''"
+                        :href="this.API_URL + 'Photos/' + stock.imageFileName"
+                        target="_blank"
+                        class="text-info"
+                        >{{ stock.imageFileName }}</a
+                      >
+                    </div>
+                    <div class="mb-3">
+                      <label for="is-available" class="form-label"
+                        >Category</label
+                      >
+                      <div class="input-group">
+                        <select
+                          class="form-select"
+                          id="is-available"
+                          v-model="stock.category"
+                          required
+                        >
+                          <option value="">-- Select --</option>
+                          <option
+                            v-for="category in itemcategory.filter(
+                              (o) => o.isAvailable == 1
+                            )"
+                            :key="category.id"
+                            :value="category.name"
+                          >
+                            {{ category.name }}
+                          </option>
+                        </select>
+                        <span class="input-group-append">
+                          <button
+                            type="button"
+                            class="btn btn-primary"
+                            @click="addItemCategory"
+                          >
+                            <i class="fa fa-plus"></i>
+                          </button>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="qty" class="form-label">Qty</label>
+                      <input
+                        type="number"
+                        min="0"
+                        class="form-control"
+                        id="qty"
+                        v-model="stock.stocks"
+                        required
+                      />
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="price" class="form-label">Price</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        class="form-control"
+                        id="price"
+                        v-model="stock.price"
+                        required
+                      />
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="is-available" class="form-label"
+                        >Availability</label
+                      >
+                      <select
+                        class="form-select"
+                        id="is-available"
+                        v-model="stock.isAvailable"
+                        required
+                      >
+                        <option value="">-- Select --</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                      {{ isUpdatingInventory ? "Update" : "Save" }}
+                    </button>
+                  </form>
+                </div>
+                <div class="col-md-9">
+                  <div>
+                    <table-component
+                      :mainHeaders="stocksOptions"
+                      :mainItems="filtereditemarray"
+                      :subHeaders="inventorysubitem"
+                      @edit-action="editInventory"
+                      :editable="true"
+                      @custombtn-action="viewStock"
+                      :custombtn="true"
+                      :toggleable="true"
+                      :slotsub="true"
+                    >
+                      <template #subcontent="{ data }">
+                        <table-component
+                          :mainHeaders="inventorysubitem"
+                          :mainItems="data"
+                        />
+                      </template>
+                      <template #content="{ data }">
+                        <template v-if="data.h === 'isAvailable'">
+                          <span v-if="data.dt.isAvailable">Yes</span>
+                          <span v-else>No</span>
+                        </template>
+                        <template v-else="data.h === 'imageUrl'">
+                          <img
+                            v-if="data.dt.imageFileName === null"
+                            :src="data.dt.imageUrl"
+                            class="img-thumbnail"
+                            style="height: 80px; width: 80px"
+                          />
+                          <img
+                            v-else
+                            :src="
+                              this.API_URL + 'Photos/' + data.dt.imageFileName
+                            "
+                            class="img-thumbnail"
+                            style="height: 80px; width: 80px"
+                          />
+                        </template>
+                      </template>
+                    </table-component>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
         <div class="row">
           <div class="card" style="height: 60px !important"></div>
         </div>
@@ -1981,6 +1807,53 @@
       </div>
     </div>
   </div>
+  <div
+    class="modal fade show"
+    id="itemcatModal"
+    tabindex="-1"
+    role="dialog"
+    style="display: none; padding-right: 17px"
+    aria-modal="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Add Category</h4>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <input
+              type="text"
+              class="form-control"
+              v-model="newitemcategory"
+              placeholder="Type item category name here"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            @click="addItemCategoryAction"
+            class="btn btn-primary"
+          >
+            Add
+          </button>
+          &nbsp;
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import { useAuthStore } from "@/stores/authStore";
@@ -2047,6 +1920,13 @@ export default {
       barcodeText: "",
       searchText: "",
       isUpdatingInventory: false,
+      isUpdatingItemCategory: false,
+      catitem: {
+        id: null,
+        name: "",
+        description: "",
+        isAvailable: "",
+      },
       stock: {
         name: "",
         imageUrl: "",
@@ -2187,6 +2067,29 @@ export default {
           sortable: true,
         },
       ],
+      itemcategoryOptions: [
+        {
+          label: "Name",
+          field: "name",
+          sortable: true,
+        },
+        {
+          label: "Description",
+          field: "description",
+          sortable: true,
+        },
+        {
+          label: "Is Available?",
+          field: "isAvailable",
+          sortable: true,
+          slot: true,
+        },
+        {
+          label: "",
+          field: "action",
+          sortable: false,
+        },
+      ],
       stocksOptions: [
         {
           label: "",
@@ -2269,6 +2172,7 @@ export default {
       discountValue: 0,
       discountOpt: "Regular",
       discountRef: "",
+      newitemcategory: "",
       imageFile: null,
       imageFileName: null,
       resto_order: [],
@@ -2283,6 +2187,7 @@ export default {
       cartItems: [],
       transactions: [],
       roomcategories: [],
+      itemcategory: [],
       cashDenominations: [
         {
           label: "+1.00",
@@ -2637,6 +2542,7 @@ export default {
     loadAlldata() {
       this.getRoomcategories();
       this.getInventory();
+      this.getItemCategory();
       this.getTransaction();
       this.getRoomTables();
       this.getRoomBookings();
@@ -2662,6 +2568,37 @@ export default {
       this.isUpdatingInventory = false;
       this.imageFileName = null;
       this.imageFile = null;
+    },
+    addItemCategory() {
+      this.newitemcategory = "";
+      $("#itemcatModal").modal("toggle");
+    },
+    async addItemCategoryAction() {
+      if (this.newitemcategory === "") {
+        $("#itemcatModal").modal("toggle");
+        return;
+      }
+      const isExists =
+        this.itemcategory.findIndex((o) => o.name === this.newitemcategory) !==
+        -1;
+      if (!isExists) {
+        await axios.post(`${this.API_URL}restoitem/category/`, {
+          name: this.newitemcategory,
+        });
+        this.getItemCategory();
+        this.$swal.fire(
+          "Added!",
+          "Item category has been successfully added.",
+          "success"
+        );
+      } else {
+        this.$swal({
+          title: "Error",
+          text: "Item category name already exists!",
+          icon: "error",
+        });
+      }
+      $("#itemcatModal").modal("toggle");
     },
     viewStock(id) {
       const stock = this.itemarray.find((item) => item.id === id);
@@ -3723,6 +3660,16 @@ export default {
           console.log(error);
         });
     },
+    getItemCategory() {
+      axios
+        .get(`${this.API_URL}restoitem/category/`)
+        .then((response) => {
+          this.itemcategory = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     getInventory() {
       axios
         .get(`${this.API_URL}restoitem/`)
@@ -3863,6 +3810,68 @@ export default {
       this.isUpdatingInventory = true;
       this.saveInventory();
     },
+    saveItemcategory() {
+      if (this.isUpdatingItemCategory) {
+        axios
+          .put(
+            `${this.API_URL}restoitem/category/${this.catitem.id}/`,
+            this.catitem
+          )
+          .then((response) => {
+            this.$swal({
+              icon: "success",
+              title: "Item category updated successfully",
+            });
+            this.getItemCategory();
+            this.catitem = {
+              id: null,
+              name: "",
+              description: "",
+              isAvailable: "",
+            };
+            this.isUpdatingItemCategory = false;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .post(`${this.API_URL}restoitem/category/filter/`, {
+            columnName: "name",
+            columnKey: this.catitem.name,
+          })
+          .then((response) => {
+            if (response.data.length > 0) {
+              this.$swal({
+                icon: "error",
+                title: "Item category name already exists",
+              });
+            } else {
+              axios
+                .post(`${this.API_URL}restoitem/category/`, this.catitem)
+                .then((response) => {
+                  this.$swal({
+                    icon: "success",
+                    title: "Item category name saved successfully",
+                  });
+                  this.getItemCategory();
+                  this.catitem = {
+                    id: null,
+                    name: "",
+                    description: "",
+                    isAvailable: "",
+                  };
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
     saveInventory() {
       if (this.isUpdatingInventory) {
         axios
@@ -4001,6 +4010,17 @@ export default {
             }
           });
       }
+    },
+    editItemcategory(id) {
+      axios
+        .get(`${this.API_URL}restoitem/category/${id}/`)
+        .then((response) => {
+          this.catitem = response.data;
+          this.isUpdatingItemCategory = true;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     editInventory(id) {
       axios

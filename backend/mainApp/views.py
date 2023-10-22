@@ -208,6 +208,16 @@ def get_transactions_with_items(request, prevday=0):
 
 
 @csrf_exempt
+def itemcategory_list(request, pk=None):
+    return generic_list(request, ItemCategory, ItemCategorySerializer, pk)
+
+
+@csrf_exempt
+def itemcategory_filter(request):
+    return filter_model(request, ItemCategory)
+
+
+@csrf_exempt
 def package_list(request, pk=None):
     return generic_list(request, Package, PackageSerializer, pk)
 
