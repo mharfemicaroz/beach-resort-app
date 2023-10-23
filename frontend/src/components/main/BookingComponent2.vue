@@ -4288,6 +4288,18 @@
                       :disabled="disablebutton"
                       v-show="!toggleselect"
                       type="button"
+                      class="btn btn-danger btn-sm btn-margin rounded"
+                      @click="
+                        earlycheckOutGuest();
+                        disablebutton = true;
+                      "
+                    >
+                      <i class="fas fa-sign-out-alt"></i> Early Check-out
+                    </button>
+                    <button
+                      :disabled="disablebutton"
+                      v-show="!toggleselect"
+                      type="button"
                       class="btn btn-success btn-sm btn-margin rounded"
                       @click="
                         checkOutGuest();
@@ -9161,6 +9173,114 @@ export default {
                     .then((response) => {
                       //document.location.reload();
                     });
+                }
+              });
+          }
+        });
+    },
+    earlycheckOutGuest() {
+      this.toggleItemModal();
+      this.$swal
+        .fire({
+          icon: "warning",
+          title: "Are you sure?",
+          text: "Are you sure you want to check out this guest earlier?",
+          confirmButtonText: "Yes",
+          cancelButtonText: "No",
+          showCancelButton: true,
+        })
+        .then((result) => {
+          // Check if user confirmed the cancellation
+          if (result.isConfirmed) {
+            // Perform reservation cancellation logic here
+            axios
+              .post(`${this.API_URL}restoorders/filter/`, [
+                {
+                  columnName: "customer_name",
+                  columnKey: this.bookings[this.itemIndex].room_name,
+                },
+                { columnName: "status", columnKey: "progress" },
+              ])
+              .then((response) => {
+                let checkTable = null;
+                let restoStatus = null;
+                try {
+                  const tableID = response.data[0].table_id;
+                  restoStatus = response.data[0].status;
+                  checkTable = this.rooms.find(
+                    (table) => table.id === tableID
+                  ).name;
+                } catch (error) {
+                  checkTable = this.bookings[this.itemIndex].room_name;
+                  restoStatus = "closed";
+                }
+                if (checkTable === this.bookings[this.itemIndex].room_name) {
+                  if (restoStatus !== "closed") {
+                    this.$swal.fire({
+                      icon: "error",
+                      title: "Customer Checkout Restricted",
+                      text: "Customer has outstanding payables in the restaurant; cannot be checked out yet!",
+                      confirmButtonText: "OK",
+                    });
+                    return;
+                  } else {
+                    let roomId = -1;
+                    axios
+                      .post(`${this.API_URL}rooms/filter/`, [
+                        {
+                          columnName: "name",
+                          columnKey: this.bookings[this.itemIndex].room_name,
+                        },
+                      ])
+                      .then((response) => {
+                        roomId = response.data[0].id;
+                        axios
+                          .put(`${this.API_URL}rooms/${roomId}/`, {
+                            name: response.data[0].name,
+                            type: response.data[0].type,
+                            price: response.data[0].price,
+                            isAvailable: response.data[0].isAvailable,
+                            status: "dirty",
+                          })
+                          .then((response) => {
+                            let today = new Date();
+                            this.bookings[this.itemIndex].checkoutDate =
+                              formatDate2(today);
+                            this.bookings[this.itemIndex].status = "checkedout";
+                            this.bookings[this.itemIndex].actualCheckoutDate =
+                              new Date();
+                            this.reservation.status = "vacant";
+                            this.updateBookings(
+                              this.bookings[this.itemIndex].id
+                            );
+                            this.populateCalendarItems();
+                            //this.changeItemColor("checkedout");
+                            this.actionRecorder(
+                              `record?type=earlycheckout&bookingID=${
+                                this.bookings[this.itemIndex].itemID
+                              }&groupkey=${
+                                this.bookings[this.itemIndex].groupkey
+                              }`
+                            );
+                            this.taskRecord(
+                              `action:/earlychecked-out guest/client:/${
+                                this.bookings[this.itemIndex].name
+                              }`
+                            );
+                            // Display success message using SweetAlert
+                            this.$swal
+                              .fire({
+                                icon: "success",
+                                title: "Guest Checked Out!",
+                                text: "The guest has been checked out.",
+                                confirmButtonText: "OK",
+                              })
+                              .then((response) => {
+                                //document.location.reload();
+                              });
+                          });
+                      });
+                  }
                 }
               });
           }
