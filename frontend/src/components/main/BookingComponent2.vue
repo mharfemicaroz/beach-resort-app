@@ -2361,28 +2361,6 @@
                   :editable="false"
                   :toggleable="false"
                 />
-                <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                    <thead>
-                      <tr>
-                        <th>Room Name</th>
-                        <th>Checkin Date</th>
-                        <th>Checkout Date</th>
-                        <th>Guest</th>
-                        <th>Contact Number</th>
-                        <th>Email</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
-                        <td>{{ reservation.room_name }}</td>
-                        <td>{{ reservation.checkinDate }}</td>
-                        <td>{{ reservation.checkoutDate }}</td>
-                        <td>{{ reservation.name }}</td>
-                        <td>{{ reservation.contactNumber }}</td>
-                        <td>{{ reservation.clientemail }}</td>
-                      </tr>
-                    </tbody>
-                  </table> -->
               </div>
             </div>
             <div
@@ -2399,28 +2377,6 @@
                   :editable="false"
                   :toggleable="false"
                 />
-                <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                    <thead>
-                      <tr>
-                        <th>Room Name</th>
-                        <th>Checkin Date</th>
-                        <th>Checkout Date</th>
-                        <th>Guest</th>
-                        <th>Contact Number</th>
-                        <th>Email</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
-                        <td>{{ reservation.room_name }}</td>
-                        <td>{{ reservation.checkinDate }}</td>
-                        <td>{{ reservation.checkoutDate }}</td>
-                        <td>{{ reservation.name }}</td>
-                        <td>{{ reservation.contactNumber }}</td>
-                        <td>{{ reservation.clientemail }}</td>
-                      </tr>
-                    </tbody>
-                  </table> -->
               </div>
             </div>
             <div
@@ -2437,28 +2393,6 @@
                   :editable="false"
                   :toggleable="false"
                 />
-                <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                    <thead>
-                      <tr>
-                        <th>Room Name</th>
-                        <th>Checkin Date</th>
-                        <th>Checkout Date</th>
-                        <th>Guest</th>
-                        <th>Contact Number</th>
-                        <th>Email</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
-                        <td>{{ reservation.room_name }}</td>
-                        <td>{{ reservation.checkinDate }}</td>
-                        <td>{{ reservation.checkoutDate }}</td>
-                        <td>{{ reservation.name }}</td>
-                        <td>{{ reservation.contactNumber }}</td>
-                        <td>{{ reservation.clientemail }}</td>
-                      </tr>
-                    </tbody>
-                  </table> -->
               </div>
             </div>
             <div
@@ -2475,28 +2409,6 @@
                   :editable="false"
                   :toggleable="false"
                 />
-                <!-- <table class="table" style="table-layout: fixed;word-wrap: break-word;">
-                    <thead>
-                      <tr>
-                        <th>Room Name</th>
-                        <th>Checkin Date</th>
-                        <th>Checkout Date</th>
-                        <th>Guest</th>
-                        <th>Contact Number</th>
-                        <th>Email</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="reservation in filteredRoomBookings" :key="reservation.id">
-                        <td>{{ reservation.room_name }}</td>
-                        <td>{{ reservation.checkinDate }}</td>
-                        <td>{{ reservation.checkoutDate }}</td>
-                        <td>{{ reservation.name }}</td>
-                        <td>{{ reservation.contactNumber }}</td>
-                        <td>{{ reservation.clientemail }}</td>
-                      </tr>
-                    </tbody>
-                  </table> -->
               </div>
             </div>
             <div
@@ -2505,6 +2417,7 @@
               id="all"
               role="tabpanel"
               aria-labelledby="all-tab"
+              style="height: 475px; overflow-y: auto"
             >
               <div class="container-fluid">
                 <table-component
@@ -2512,6 +2425,8 @@
                   :mainItems="filteredRoomBookings"
                   :editable="false"
                   :toggleable="false"
+                  @custombtn-action="viewBooking"
+                  :custombtn="true"
                 >
                   <template #content="data">
                     <!-- {{ data.data.id  }} -->
@@ -3674,7 +3589,7 @@
                 class="d-flex flex-column align-items-center"
               >
                 <i class="fa fa-calendar-check"></i>
-                <span>History</span>
+                <span>View All</span>
               </a>
             </div>
             <div class="col-md-4">
@@ -3714,7 +3629,15 @@
         <div class="modal-header">
           <h4 id="BookDayModalLabel" class="text-primary">Reservation Info</h4>
           <span>
-            <button type="button" class="close" @click="saveBookingInfo">
+            <button
+              v-if="
+                reservation.status !== 'cancelled' &&
+                reservation.status !== 'checkedout'
+              "
+              type="button"
+              class="close"
+              @click="saveBookingInfo"
+            >
               <span aria-hidden="true"><i class="fa fa-save"></i></span>
             </button>
             &nbsp;
@@ -4063,7 +3986,9 @@
                           !notoggle &&
                           !bookalltoggle &&
                           !newtoggle &&
-                          reservation.status !== 'checkedout'
+                          reservation.status !== 'checkedout' &&
+                          reservation.status !== 'cancelled' &&
+                          booksearchtext === ''
                         "
                         type="button"
                         @click="toggleCheckin"
@@ -4133,7 +4058,9 @@
                           !notoggle &&
                           !bookalltoggle &&
                           !newtoggle &&
-                          reservation.status !== 'checkedout'
+                          reservation.status !== 'checkedout' &&
+                          reservation.status !== 'cancelled' &&
+                          booksearchtext === ''
                         "
                         type="button"
                         @click="toggleCheckout"
@@ -4451,7 +4378,8 @@
                 :disabled="disablebutton"
                 v-if="
                   userdata.role !== 'reservationist' &&
-                  reservation.status !== 'vacant'
+                  reservation.status !== 'vacant' &&
+                  reservation.status !== 'checkedout'
                 "
                 type="button"
                 @click="
@@ -4728,8 +4656,7 @@ export default {
         },
         {
           label: "Action",
-          field: "",
-          slot: true,
+          field: "action",
         },
       ],
       reservationsOptions: [
@@ -9425,6 +9352,10 @@ export default {
       //   return;
       // }
       this.itemIndex = this.bookings.findIndex((o) => o.itemID === e.id);
+      this.showReservation();
+    },
+    viewBooking(id) {
+      this.itemIndex = this.bookings.findIndex((o) => o.id === id);
       this.showReservation();
     },
     showReservation() {
