@@ -8812,7 +8812,7 @@ export default {
             room_type: newroom.type,
             remarks: "",
             contactNumber: this.reservation.clientPhone,
-            isPaid: "no",
+            isPaid: this.reservation.isPaid,
             created_at: moment().format("YYYY-MM-DD hh:mm:ss"),
             totalPrice: (numDays + 1) * parseFloat(newroom.price),
             partialPayment: 0,
