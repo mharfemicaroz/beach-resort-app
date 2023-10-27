@@ -8420,6 +8420,28 @@ export default {
         this.billing.bookingID = existingTransaction.data[0].id;
         this.newbillingbalance = existingTransaction.data[0].balance;
         this.isItNew = true;
+        if (
+          existingTransaction.data[0].payStatus === "full" ||
+          parseFloat(existingTransaction.data[0].balance) === 0
+        ) {
+          this.bookings[this.itemIndex].isPaid = "yes";
+          this.updateBookings(this.bookings[this.itemIndex].id);
+          this.populateCalendarItems();
+          this.toggleItemModal();
+          this.movetocartFlag = true;
+          this.activeAccountFlag = true;
+          this.$swal
+            .fire({
+              icon: "info",
+              title: "Payment status for the reservation has been modified!",
+              message: "A change in the transaction was noticed by the system.",
+              confirmButtonText: "Understood",
+            })
+            .then((result) => {
+              return false;
+            });
+          return false;
+        }
       } else {
         this.billing.bookingID = "";
       }
