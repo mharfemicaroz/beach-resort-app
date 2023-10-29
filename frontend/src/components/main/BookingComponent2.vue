@@ -156,6 +156,7 @@
                     <div class="input-group">
                       <span class="input-group-prepend">
                         <button
+                          v-if="calendarItems.length > 0"
                           class="btn btn-primary"
                           @click="insertNewBooking"
                         >
@@ -194,13 +195,13 @@
                     </ul> -->
                   </div>
                 </div>
-                <div
+                <!-- <div
                   class="d-flex justify-content-center align-items-center"
                   v-if="calendarItems.length === 0"
                 >
                   <img src="/src/assets/loading.gif" />
-                </div>
-                <div v-else class="calendar-parent c-p">
+                </div> -->
+                <div class="calendar-parent c-p">
                   <calendar-view
                     :items="calendarItems"
                     :show-date="showDate"
@@ -9468,6 +9469,9 @@ export default {
       this.toggleShowAllModal();
     },
     onClickDay(d) {
+      if (this.calendarItems.length === 0) {
+        return false;
+      }
       if (this.booksearchtext !== "") {
         this.$swal.fire({
           icon: "error",
@@ -9964,6 +9968,7 @@ export default {
       //       return;
       //     }
       //   }
+
       for (const res of this.reservation.roomName) {
         const hasExistingBooking = this.bookings
           .filter((item) => item.status !== "checkedout")
