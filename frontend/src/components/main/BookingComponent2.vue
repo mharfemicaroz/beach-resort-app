@@ -8425,7 +8425,8 @@ export default {
           (existingTransaction.data[0].payStatus === "full" ||
             parseFloat(existingTransaction.data[0].balance) === 0) &&
           this.bookings[this.itemIndex].status !== "checkedin" &&
-          this.bookings[this.itemIndex].status !== "checkedout"
+          this.bookings[this.itemIndex].status !== "checkedout" &&
+          this.bookings[this.itemIndex].isPaid !== "yes"
         ) {
           this.bookings[this.itemIndex].isPaid = "yes";
           this.updateBookings(this.bookings[this.itemIndex].id);
