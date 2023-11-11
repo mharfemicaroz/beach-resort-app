@@ -282,17 +282,24 @@
                               class="nav bg radius nav-pills nav-fill mb-3 bg mt-3"
                               role="tablist"
                             >
+                              <li class="nav-item">
+                                <a
+                                  class="nav-link active show"
+                                  data-bs-toggle="tab"
+                                  @click="activeroomtable = `all`"
+                                  role="tab"
+                                  href="#roomcategoryall"
+                                >
+                                  <i class="fa fa-tags"></i>All</a
+                                >
+                              </li>
                               <li
                                 class="nav-item"
                                 v-for="(category, index) in roomcategories"
                                 :key="category.id"
                               >
                                 <a
-                                  :class="
-                                    index > 0
-                                      ? 'nav-link'
-                                      : 'nav-link active show'
-                                  "
+                                  class="nav-link"
                                   data-bs-toggle="tab"
                                   @click="activeroomtable = `${category.name}`"
                                   role="tab"
@@ -1902,7 +1909,7 @@ export default {
       payMethod: "cash",
       noncashType: "",
       referenceno: "",
-      activeroomtable: "BEACH ROOM",
+      activeroomtable: "all",
       currentItem: null,
       inquiretoggle: false,
       restypeFilter: "0",
@@ -2337,53 +2344,62 @@ export default {
         .filter((item) => item.status !== "done");
     },
     filteredroom_tables() {
-      return this.room_tables
-        .filter((o) => o.type === this.activeroomtable)
-        .map((item) => {
-          const order = this.resto_order.filter(
-            (o) =>
-              o.table_id === item.id &&
-              o.customer_name === item.name &&
-              o.order_type === "dine-in"
-          );
-          const today = parseDate(new Date().toLocaleDateString("en-GB"));
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-          const formattedYesterday = parseDate(
-            yesterday.toLocaleDateString("en-GB")
-          );
-          const booking = this.bookings.filter(
-            (o) =>
-              o.status === "checkedin" &&
-              o.room_name === item.name &&
-              (parseDate(o.checkinDate) === today ||
-                parseDate(o.checkinDate) === formattedYesterday ||
-                parseDate(o.checkoutDate) >= today)
-          );
-          const b_status = booking.length > 0 ? true : false;
-          if (order.length > 0) {
-            const order_data = order[0];
-            const order_id = order_data.id;
-            const order_type = order_data.order_type;
-            const order_cname = order_data.customer_name;
-            const order_status = order_data.status;
-            const order_items = JSON.parse(order_data.items);
-            return {
-              ...item,
-              order_id,
-              order_type,
-              order_cname,
-              order_status,
-              order_items,
-              b_status,
-            };
-          } else {
-            return {
-              ...item,
-              b_status,
-            };
-          }
-        });
+      const roomtables =
+        this.activeroomtable === "all"
+          ? this.room_tables
+          : this.room_tables.filter((o) => o.type === this.activeroomtable);
+      const filteredroomtables = roomtables.map((item) => {
+        const order = this.resto_order.filter(
+          (o) =>
+            o.table_id === item.id &&
+            o.customer_name === item.name &&
+            o.order_type === "dine-in"
+        );
+        const today = parseDate(new Date().toLocaleDateString("en-GB"));
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const formattedYesterday = parseDate(
+          yesterday.toLocaleDateString("en-GB")
+        );
+        const booking = this.bookings.filter(
+          (o) =>
+            o.status === "checkedin" &&
+            o.room_name === item.name &&
+            (parseDate(o.checkinDate) === today ||
+              parseDate(o.checkinDate) === formattedYesterday ||
+              parseDate(o.checkoutDate) >= today)
+        );
+        const b_status = booking.length > 0 ? true : false;
+        const b_id = b_status ? booking[0].itemID : null;
+        const g_id = b_status ? booking[0].groupkey : null;
+        if (order.length > 0) {
+          const order_data = order[0];
+          const order_id = order_data.id;
+          const order_type = order_data.order_type;
+          const order_cname = order_data.customer_name;
+          const order_status = order_data.status;
+          const order_items = JSON.parse(order_data.items);
+          return {
+            ...item,
+            order_id,
+            order_type,
+            order_cname,
+            order_status,
+            order_items,
+            b_status,
+            b_id,
+            g_id,
+          };
+        } else {
+          return {
+            ...item,
+            b_status,
+            b_id,
+            g_id,
+          };
+        }
+      });
+      return filteredroomtables;
     },
     filteredresto_tables() {
       return this.resto_tables.map((item) => {
@@ -3217,6 +3233,9 @@ export default {
         reference_id: item.id,
         type: "dine-in",
         identifier: item.name,
+        b_status: item.b_status,
+        b_id: item.b_status ? item.b_id : null,
+        g_id: item.b_status ? item.g_id : null,
       };
       if ("order_id" in item) {
         this.cartItems = item.order_items;
@@ -3297,6 +3316,7 @@ export default {
               columnKey: customer_orderId,
             });
             const existingOrder = res.data;
+
             if (existingOrder.length > 0) {
               for (const item of this.cartItems ||
                 this.cartItems.filter(
@@ -3380,6 +3400,26 @@ export default {
                   isAvailable: item.isAvailable,
                   stocks: parseFloat(item.stocks) - parseFloat(item.qty),
                 });
+
+                if (this.customer.b_status) {
+                  const data = {
+                    bookingID: this.customer.b_id,
+                    groupkey: this.customer.g_id,
+                    itemName: item.name,
+                    itemType: "Restaurant Goods",
+                    itemPriceRate: item.price.toFixed(2) + "/pc",
+                    purchaseQty: item.qty,
+                    totalCost: parseFloat(item.price) * parseFloat(item.qty),
+                    category: "main",
+                    itemOption: "resto addons",
+                    dateCreated: new Date(), // Set the dateCreated field to the current date and time
+                    numdays: 0,
+                    totalguest: 0,
+                    totalpax: 0,
+                    currentroom: this.customer.identifier,
+                  };
+                  await axios.post(this.API_URL + `transaction/item/`, data);
+                }
               }
 
               axios.post(`${this.API_URL}restoorders/`, {

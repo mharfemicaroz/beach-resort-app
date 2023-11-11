@@ -1,4 +1,4 @@
-from django.db.models import F, Func, Q
+from django.db.models import F, Func, Q, Value
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
@@ -141,12 +141,43 @@ def generic_getitems(request, ref_model, item_model, item_serializer, identifier
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+class StrToDate(Func):
+    function = 'STR_TO_DATE'
+    template = "%(function)s(%(expressions)s, '%%d/%%m/%%Y')"
+
+
 @api_view(['GET'])
 @csrf_exempt
 def get_transactions_with_items(request, prevday=0):
     today = date.today() - timedelta(days=int(prevday))
     current_month = today.month
     current_year = today.year
+
+    # data = request.data
+    # datestart_str = data.get('datestart')
+    # dateend_str = data.get('dateend')
+
+    # datestart = datetime.strptime(
+    #     datestart_str, '%d/%m/%Y').date() if datestart_str else None
+    # dateend = datetime.strptime(
+    #     dateend_str, '%d/%m/%Y').date() if dateend_str else None
+
+    # # Use the StrToDate function in the filter
+    # bookings = Booking.objects.annotate(
+    #     formatted_checkindate=StrToDate(F('checkinDate'), Value('%d/%m/%Y')),
+    #     formatted_checkoutdate=StrToDate(F('checkoutDate'), Value('%d/%m/%Y'))
+    # )
+
+    # if datestart and dateend:
+    #     bookings = bookings.filter(
+    #         formatted_checkindate__gte=datestart,
+    #         formatted_checkoutdate__lte=dateend
+    #     )
+
+    # booking_ids_in_range = bookings.values_list('itemID', flat=True)
+
+    # transactions = Transaction.objects.filter(
+    #     bookingID__in=booking_ids_in_range)
 
     transactions = Transaction.objects.all()
 

@@ -7766,7 +7766,7 @@ export default {
       checkoutdate.setDate(checkoutdate.getDate() + 1);
       return formatDate2(checkoutdate);
     },
-    resetSummary(no) {
+    async resetSummary(no) {
       this.cart = [];
       this.billing = {
         clientName: "",
@@ -7826,6 +7826,12 @@ export default {
         this.activeAccountFlag = true;
         this.walkinStatus = true;
         // this.toggleAddAccountModal();
+      }
+      if (no === 3) {
+        const response = await axios.get(
+          this.API_URL + "transactions_itemizer/0/"
+        );
+        this.transactions = response.data;
       }
       if (no !== 2) {
         this.activeAccountFlag = false;
@@ -10140,10 +10146,6 @@ export default {
     },
     async loadTransactionData() {
       try {
-        const response = await axios.get(
-          this.API_URL + "transactions_itemizer/0/"
-        );
-        this.transactions = response.data;
         // this.transactions.forEach(async (item, index) => {
         //   try {
         //     let a = null;
