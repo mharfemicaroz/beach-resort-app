@@ -2821,7 +2821,7 @@ export default {
         <input type="radio" class="form-check-input" id="percentageDiscount" name="discountType" value="percentage">
         <label for="percentageDiscount" class="form-check-label">Percentage</label>
         <br><br>
-        
+
         <br>
 
         <div class="input-group mb-3">
@@ -2841,7 +2841,7 @@ export default {
             </div>
             <input type="text" class="form-control" id="discref">
           </div>
-        
+
       </div>
     `,
           showCancelButton: true,
@@ -4115,9 +4115,42 @@ export default {
       this.$refs.tenderedCash.disabled = false;
       this.$refs.tenderedCash.focus();
     },
-    removeFromCart(item) {
-      const index = this.cartItems.indexOf(item);
-      this.cartItems.splice(index, 1);
+    async removeFromCart(item) {
+      this.$swal
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, delete it!",
+        })
+        .then(async (result) => {
+          if (result.isConfirmed) {
+            const index = this.cartItems.indexOf(item);
+            this.cartItems.splice(index, 1);
+
+            const bID = this.customer.b_id;
+            const itemName = item.name;
+
+            await axios
+              .post(this.API_URL + "transaction/item/filter/", [
+                {
+                  columnName: "bookingID",
+                  columnKey: bID,
+                },
+                {
+                  columnName: "itemName",
+                  columnKey: itemName,
+                },
+              ])
+              .then(async (response) => {
+                const itemID = response.data[0].id;
+                axios.get(this.API_URL + `transaction/item/delete/${itemID}/`);
+              });
+          }
+        });
     },
     updatePrice(item) {
       item.totalPrice = item.qty * item.price;

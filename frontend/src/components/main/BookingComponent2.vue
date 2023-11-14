@@ -126,6 +126,7 @@
             <div class="row">
               <div class="col-md-12">
                 <BookingDashboard
+                  v-if="dashboardStatus"
                   :active="dashboardStatus"
                   :key="componentKey"
                 />
@@ -4571,7 +4572,7 @@ export default {
       bookNowFlag: true,
       socket: null,
       test: "",
-      dashboardStatus: true,
+      dashboardStatus: false,
       bookingComponentStatus: true,
       componentKey: 0,
       activeMainTab: "all",
@@ -7818,6 +7819,9 @@ export default {
       this.walkinStatus = false;
       this.walkinview = false;
       this.isItNew = false;
+      if (no === 0) {
+        this.dashboardStatus = true;
+      }
       if (no === 1) {
         this.$refs.searchQuery.focus();
         this.$refs.searchQuery.blur();
