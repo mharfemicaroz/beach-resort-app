@@ -157,7 +157,6 @@
                     <div class="input-group">
                       <span class="input-group-prepend">
                         <button
-                          v-if="calendarItems.length > 0"
                           class="btn btn-primary"
                           @click="insertNewBooking"
                         >
