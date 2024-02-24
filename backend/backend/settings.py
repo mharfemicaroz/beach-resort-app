@@ -10,12 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import pymysql
 from pathlib import Path
 import os
 
-BASE_DIR=Path(__file__).resolve(strict=True).parent.parent
-MEDIA_URL='/Photos/'
-MEDIA_ROOT=os.path.join(BASE_DIR,"Photos")
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+MEDIA_URL = '/Photos/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "Photos")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -45,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'mainApp.apps.MainappConfig'    
+    'mainApp.apps.MainappConfig'
 ]
 
 CHANNEL_LAYERS = {
@@ -56,7 +57,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
 
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -96,7 +96,7 @@ ASGI_APPLICATION = 'backend.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-import pymysql
+pymysql.version_info = (1, 4, 3, "final", 0)
 pymysql.install_as_MySQLdb()
 
 # In your settings.py file

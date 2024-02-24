@@ -3772,7 +3772,7 @@ export default {
     },
     getTransaction() {
       axios
-        .get(`${this.API_URL}restotransaction/`)
+        .get(`${this.API_URL}restotransaction/?N=1000`)
         .then((response) => {
           this.transactions = response.data;
         })

@@ -30,6 +30,18 @@ class AgentsSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class GoKartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoKart
+        fields = '__all__'
+
+
+class GoKartVehicleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GoKartVehicle
+        fields = '__all__'
+
+
 class RoomCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomCategory

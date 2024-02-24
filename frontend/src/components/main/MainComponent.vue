@@ -71,6 +71,17 @@
               </a>
             </li>
             <li class="nav-item">
+              <a
+                class="nav-link text-center"
+                data-bs-toggle="tab"
+                href="#gokart"
+              >
+                <i class="fa fa-car fa-2x"></i>
+                <br />
+                GoKart Cars
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" data-bs-toggle="tab" href="#logs">
                 <i class="fas fa-list fa-2x"></i>
                 <br />
@@ -912,6 +923,148 @@
                 </div>
               </div>
             </div>
+            <div id="gokart" class="tab-pane">
+              <div id="gokart" class="tab-pane">
+                <div class="row">
+                  <div class="col-md-3">
+                    <form @submit.prevent="saveGokart">
+                      <div class="mb-3">
+                        <label for="table-name" class="form-label">Name</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="table-name"
+                          v-model="gokart.name"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="name" class="form-label">Description</label>
+                        <textarea
+                          class="form-control"
+                          v-model="gokart.desc"
+                          rows="4"
+                        ></textarea>
+                      </div>
+                      <div class="mb-3">
+                        <label for="is-available" class="form-label"
+                          >Seat Type</label
+                        >
+                        <select
+                          class="form-select"
+                          v-model="gokart.seattype"
+                          required
+                        >
+                          <option value="">-- Select --</option>
+                          <option value="single">Single</option>
+                          <option value="double">Double</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label for="is-available" class="form-label"
+                          >Color</label
+                        >
+                        <select
+                          class="form-select"
+                          v-model="gokart.color"
+                          required
+                        >
+                          <option value="">-- Select --</option>
+                          <option value="red">Red</option>
+                          <option value="blue">Blue</option>
+                          <option value="yellow">Yellow</option>
+                          <option value="green">Green</option>
+                          <option value="orange">Orange</option>
+                          <option value="purple">Purple</option>
+                          <option value="pink">Pink</option>
+                          <option value="brown">Brown</option>
+                          <option value="black">Black</option>
+                          <option value="white">White</option>
+                          <option value="grey">Grey</option>
+                          <option value="cyan">Cyan</option>
+                          <option value="magenta">Magenta</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label for="seating-capacity" class="form-label"
+                          >Price</label
+                        >
+                        <input
+                          type="number"
+                          class="form-control"
+                          v-model="gokart.price"
+                          min="0"
+                          step="0.1"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label for="is-available" class="form-label"
+                          >Availability</label
+                        >
+                        <select
+                          class="form-select"
+                          id="is-available"
+                          v-model="gokart.isAvailable"
+                          required
+                        >
+                          <option value="">-- Select --</option>
+                          <option value="true">Yes</option>
+                          <option value="false">No</option>
+                        </select>
+                      </div>
+                      <button type="submit" class="btn btn-primary">
+                        {{ isUpdatingGokart ? "Update" : "Save" }}
+                      </button>
+                    </form>
+                  </div>
+                  <div
+                    class="col-md-9"
+                    style="
+                      height: 550px;
+                      max-height: 550px;
+                      overflow-y: auto;
+                      overflow-x: hidden;
+                      padding-right: 1px;
+                    "
+                  >
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Seat Type</th>
+                          <th>Color</th>
+                          <th>Desc</th>
+                          <th>Price</th>
+                          <th>Availability</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="item in gokarts" :key="gokart.id">
+                          <td>{{ item.name }}</td>
+                          <td>{{ item.seattype }}</td>
+                          <td>{{ item.color }}</td>
+                          <td>{{ item.desc }}</td>
+                          <td>{{ item.price }}</td>
+                          <td v-if="item.isAvailable">Yes</td>
+                          <td v-else>No</td>
+                          <td>
+                            <button
+                              type="button"
+                              class="btn btn-primary btn-sm"
+                              @click="editGokart(item.id)"
+                            >
+                              <i class="fas fa-edit"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div id="logs" class="tab-pane">
               <div id="logs" class="tab-pane">
                 <div class="row">
@@ -973,7 +1126,16 @@ export default {
       packages: [],
       leisures: [],
       restaurantTables: [],
+      gokarts: [],
       logs: [],
+      gokart: {
+        name: "",
+        desc: "",
+        color: "",
+        seattype: "",
+        price: 0,
+        isAvailable: "",
+      },
       agent: {
         name: "",
         type: "",
@@ -1081,6 +1243,7 @@ export default {
     this.getLeisures();
     this.getRestaurantTables();
     this.getLogs();
+    this.getGokarts();
   },
   computed: {
     userdata() {
@@ -1117,6 +1280,16 @@ export default {
         .get(`${this.API_URL}package/`)
         .then((response) => {
           this.packages = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getGokarts() {
+      axios
+        .get(`${this.API_URL}gokartvehicle/`)
+        .then((response) => {
+          this.gokarts = response.data;
         })
         .catch((error) => {
           console.log(error);
@@ -1393,6 +1566,71 @@ export default {
                     id: null,
                     name: "",
                     desc: "",
+                    isAvailable: "",
+                  };
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    },
+    saveGokart() {
+      if (this.isUpdatingGokart) {
+        axios
+          .put(`${this.API_URL}rooms/category/${this.gokart.id}/`, this.gokart)
+          .then((response) => {
+            this.$swal({
+              icon: "success",
+              title: "Gokart updated successfully",
+            });
+            this.getGokarts();
+            this.gokart = {
+              id: null,
+              name: "",
+              desc: "",
+              color: "",
+              seattype: "",
+              price: 0,
+              isAvailable: "",
+            };
+            this.isUpdatingGokart = false;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios
+          .post(`${this.API_URL}gokartvehicle/filter/`, {
+            columnName: "name",
+            columnKey: this.gokart.name,
+          })
+          .then((response) => {
+            if (response.data.length > 0) {
+              this.$swal({
+                icon: "error",
+                title: "Gokart name already exists",
+              });
+            } else {
+              axios
+                .post(`${this.API_URL}gokartvehicle/`, this.gokart)
+                .then((response) => {
+                  this.$swal({
+                    icon: "success",
+                    title: "GoKart saved successfully",
+                  });
+                  this.getGokarts();
+                  this.gokart = {
+                    id: null,
+                    name: "",
+                    desc: "",
+                    color: "",
+                    seattype: "",
+                    price: 0,
                     isAvailable: "",
                   };
                 })
@@ -1717,6 +1955,17 @@ export default {
         .then((response) => {
           this.package = response.data;
           this.isUpdatingPackage = true;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    editPackage(id) {
+      axios
+        .get(`${this.API_URL}gokartvehicle/${id}/`)
+        .then((response) => {
+          this.gokart = response.data;
+          this.isUpdatingGokart = true;
         })
         .catch((error) => {
           console.log(error);

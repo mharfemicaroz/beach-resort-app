@@ -79,6 +79,15 @@
                 </li>
                 <li>
                   <router-link
+                    to="/gokart"
+                    tag="a"
+                    target="_blank"
+                    class="dropdown-item"
+                    >GoKart</router-link
+                  >
+                </li>
+                <li>
+                  <router-link
                     to="/taskmgr"
                     tag="a"
                     target="_blank"

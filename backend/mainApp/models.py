@@ -44,6 +44,37 @@ class Booking(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
 
+class GoKart(models.Model):
+    id = models.AutoField(primary_key=True)
+    clientname = models.CharField(max_length=255)
+    desc = models.CharField(max_length=255, null=True, blank=True)
+    actualStartTime = models.CharField(max_length=50)
+    startDate = models.CharField(max_length=50)
+    endDate = models.CharField(max_length=50)
+    vehicle = models.CharField(max_length=255)
+    status = models.CharField(max_length=50)
+    itemID = models.CharField(max_length=128)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    processedBy = models.CharField(max_length=128)
+    isCompleted = models.BooleanField(default=False)
+    completionDate = models.CharField(max_length=50, blank=True, null=True)
+    duebal = models.DecimalField(max_digits=10, decimal_places=2)
+    isPaid = models.BooleanField(default=False)
+
+
+class GoKartVehicle(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255, unique=True)
+    desc = models.CharField(max_length=255, null=True, blank=True)
+    color = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    seattype = models.CharField(max_length=50)
+    isAvailable = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+
 class Task(models.Model):
     id = models.AutoField(primary_key=True)
     taskname = models.CharField(max_length=255)

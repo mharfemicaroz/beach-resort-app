@@ -7832,7 +7832,7 @@ export default {
       }
       if (no === 3) {
         const response = await axios.get(
-          this.API_URL + "transactions_itemizer/0/"
+          this.API_URL + "transactions_itemizer/0/?N=1000"
         );
         this.transactions = response.data;
       }
@@ -11560,6 +11560,45 @@ img {
 
 .cv-item.hotel-checkedout {
   background-color: #ff7043;
+  /* adjust the color as needed */
+}
+
+.cv-item.task-rented {
+  background-color: rgb(0, 170, 255);
+  color: white;
+  font-family:
+    Avenir,
+    Avenir Next,
+    Segoe UI,
+    Helvetica,
+    Arial,
+    sans-serif;
+  /* adjust the color as needed */
+}
+
+.cv-item.task-returned {
+  background-color: rgb(46, 215, 216);
+  color: white;
+  font-family:
+    Avenir,
+    Avenir Next,
+    Segoe UI,
+    Helvetica,
+    Arial,
+    sans-serif;
+  /* adjust the color as needed */
+}
+
+.cv-item.task-booked {
+  background-color: rgb(208, 31, 46);
+  color: white;
+  font-family:
+    Avenir,
+    Avenir Next,
+    Segoe UI,
+    Helvetica,
+    Arial,
+    sans-serif;
   /* adjust the color as needed */
 }
 

@@ -9,6 +9,7 @@ import Restaurant from "../components/main/RestaurantComponent.vue";
 import Inventory from "../components/main/InventoryComponent.vue";
 import GuestCounter from "../components/main/GuestCounter.vue";
 import TaskManager from "../components/main/TaskManager.vue";
+import GoKart from "../components/main/GoKart.vue";
 // import ReceptionHotel from "../components/main/ReceptionHotel.vue";
 import Error403 from "../components/main/ErrorPage.vue";
 import ExpiredPage from "../components/main/ExpiredPage.vue";
@@ -105,6 +106,15 @@ const router = createRouter({
           "foodserver",
           "restoinventory",
         ],
+      },
+    },
+    {
+      path: "/gokart",
+      name: "gokart",
+      component: GoKart,
+      meta: {
+        requiresAuth: true,
+        roles: ["superuser"],
       },
     },
     {

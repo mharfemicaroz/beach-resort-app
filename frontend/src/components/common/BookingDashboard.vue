@@ -1366,7 +1366,7 @@ export default {
           transactionItemsData.data.filter((o) => o.itemType === "ENTRANCE")
         );
         const trans_itemizer_data = await axios.get(
-          this.API_URL + `transactions_itemizer/${daycount}/`
+          this.API_URL + `transactions_itemizer/${daycount}/?N=1000`
         );
 
         // const nonAgentIncome = trans_itemizer_data.data

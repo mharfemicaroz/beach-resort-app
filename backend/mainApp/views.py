@@ -1,3 +1,4 @@
+from django.db.models import F
 from django.db.models import F, Func, Q, Value
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
@@ -64,17 +65,22 @@ def filter_model(request, o):
 @csrf_exempt
 def generic_list(request, o, s, pk=None):
     if request.method == 'GET':
-        if pk is not None:
+        # Get the value of N from query parameters
+        n = request.query_params.get('N')
+        if n is not None:
             try:
-                dt = o.objects.get(id=pk)
-            except o.DoesNotExist:
-                return Response(status=status.HTTP_404_NOT_FOUND)
-            ds = s(dt)
-            return Response(ds.data)
+                n = int(n)
+            except ValueError:
+                return Response({"error": "Invalid value for N. N must be an integer."}, status=status.HTTP_400_BAD_REQUEST)
+            if n <= 0:
+                return Response({"error": "Invalid value for N. N must be a positive integer."}, status=status.HTTP_400_BAD_REQUEST)
+            dt = o.objects.all().order_by(
+                '-id')[:n]  # Query the last N records
         else:
             dt = o.objects.all()
-            ds = s(dt, many=True)
-            return Response(ds.data)
+
+        ds = s(dt, many=True)
+        return Response(ds.data)
 
     elif request.method == 'POST':
         ds = s(data=request.data)
@@ -179,7 +185,19 @@ def get_transactions_with_items(request, prevday=0):
     # transactions = Transaction.objects.filter(
     #     bookingID__in=booking_ids_in_range)
 
-    transactions = Transaction.objects.all()
+    # Get the value of N from query parameters
+    n = request.query_params.get('N')
+    if n is not None:
+        try:
+            n = int(n)
+        except ValueError:
+            return JsonResponse({"error": "Invalid value for N. N must be an integer."}, status=400)
+        if n <= 0:
+            return JsonResponse({"error": "Invalid value for N. N must be a positive integer."}, status=400)
+        transactions = Transaction.objects.all().order_by(
+            '-transaction_date')[:n]  # Query the last N records
+    else:
+        transactions = Transaction.objects.all()
 
     if type == 'month':
         transactions = transactions.filter(
@@ -276,6 +294,36 @@ def task_filter(request):
 @csrf_exempt
 def task_delete(request, pk=None):
     return generic_delete(request, Task, pk)
+
+
+@csrf_exempt
+def gokartvehicle_list(request, pk=None):
+    return generic_list(request, GoKartVehicle, GoKartVehicleSerializer, pk)
+
+
+@csrf_exempt
+def gokartvehicle_filter(request):
+    return filter_model(request, GoKartVehicle)
+
+
+@csrf_exempt
+def gokartvehicle_delete(request, pk=None):
+    return generic_delete(request, GoKartVehicle, pk)
+
+
+@csrf_exempt
+def gokart_list(request, pk=None):
+    return generic_list(request, GoKart, GoKartSerializer, pk)
+
+
+@csrf_exempt
+def gokart_filter(request):
+    return filter_model(request, GoKart)
+
+
+@csrf_exempt
+def gokart_delete(request, pk=None):
+    return generic_delete(request, GoKart, pk)
 
 
 @csrf_exempt

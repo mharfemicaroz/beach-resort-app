@@ -87,6 +87,22 @@ urlpatterns = [
     re_path(r'^users/(?P<pk>\d+)/$', users_list, name='users-detail'),
     re_path(r'^users/filter/$', users_filter, name='users-filter'),
     re_path(r'^user/delete/(?P<pk>\d+)/$', user_delete, name='user-delete'),
+
+    re_path(r'^gokart/$', gokart_list, name='gokart-list'),
+    re_path(r'^gokart/(?P<pk>\d+)/$', gokart_list, name='gokart-detail'),
+    re_path(r'^gokart/filter/$', gokart_filter, name='gokart-filter'),
+    re_path(r'^gokart/delete/(?P<pk>\d+)/$',
+            gokart_delete, name='gokart-delete'),
+
+    re_path(r'^gokartvehicle/$', gokartvehicle_list,
+            name='gokartvehicle-list'),
+    re_path(r'^gokartvehicle/(?P<pk>\d+)/$',
+            gokartvehicle_list, name='gokartvehicle-detail'),
+    re_path(r'^gokartvehicle/filter/$', gokartvehicle_filter,
+            name='gokartvehicle-filter'),
+    re_path(r'^gokartvehicle/delete/(?P<pk>\d+)/$',
+            gokartvehicle_delete, name='gokartvehicle-delete'),
+
     re_path(r'^bookings/$', booking_list, name='booking-list'),
     re_path(r'^bookings/filter/$', booking_filter, name='booking-filter'),
     re_path(r'^bookings/(?P<pk>\d+)/$', booking_list, name='booking-detail'),
