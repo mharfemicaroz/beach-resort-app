@@ -76,6 +76,13 @@ def generic_list(request, o, s, pk=None):
                 return Response({"error": "Invalid value for N. N must be a positive integer."}, status=status.HTTP_400_BAD_REQUEST)
             dt = o.objects.all().order_by(
                 '-id')[:n]  # Query the last N records
+        elif pk is not None:
+            try:
+                dt = o.objects.get(id=pk)
+            except o.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            ds = s(dt)
+            return Response(ds.data)
         else:
             dt = o.objects.all()
 
