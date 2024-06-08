@@ -97,14 +97,14 @@
                 </li>
                 <hr class="dropdown-divider" />
               </div>
-              <li>
+              <!--<li>
                 <a
                   class="dropdown-item"
                   href="#"
                   @click="toggleShowTransModal()"
                   ><i class="fas fa-eye me-1"></i>Show Transactions</a
                 >
-              </li>
+              </li>-->
               <li>
                 <a
                   class="dropdown-item"
