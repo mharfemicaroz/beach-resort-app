@@ -347,7 +347,7 @@
           <div class="container-fluid">
             <div class="row">
               <ReceptionHotel
-                :bookingsdata="bookings"
+                :bookingsdata="bookingsReception"
                 :roomsdata="rooms"
                 :roomcategoriesdata="roomcategories"
                 @clickItem-action="handleReceptionItemAction"
@@ -5020,6 +5020,7 @@ export default {
       clientAddress: "",
       clientNationality: "",
       clientType: "",
+      bookingsReception: [],
       transactions: [],
       roomcategories: [],
       agents: [],
@@ -10922,6 +10923,11 @@ export default {
         end_date_str: this.periodEnd,
       });
 
+      const bookingPromise = axios.get(this.API_URL + "bookings/");
+      bookingPromise.then((reservationsResponse) => {
+        this.bookingsReception = reservationsResponse.data;
+      });
+
       reservationsPromise.then((reservationsResponse) => {
         this.origbookings = reservationsResponse.data;
         this.populateCalendarItems();
@@ -10930,6 +10936,7 @@ export default {
       const [histlogsResponse] = await Promise.all([
         histlogsPromise,
         reservationsPromise,
+        bookingPromise,
       ]);
 
       this.histlogs = histlogsResponse.data.filter((item) =>

@@ -470,7 +470,130 @@
       </div>
     </div>
     <div class="tab-pane fade" id="itemstab" role="tabpanel">
-      <div class="container-fluid"></div>
+      <div class="container-fluid">
+        <div class="row mb-4">
+          <div class="col-md-3 d-flex">
+            <div class="card text-white bg-dark flex-fill">
+              <div class="card-body">
+                <h5 class="card-title display-4">$3.5M</h5>
+                <p class="card-text">Revenue this year</p>
+                <div class="progress">
+                  <div
+                    class="progress-bar"
+                    role="progressbar"
+                    style="width: 95%"
+                    aria-valuenow="95"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  >
+                    $3.6M
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 d-flex">
+            <div class="card text-white bg-dark flex-fill">
+              <div class="card-body">
+                <h5 class="card-title">By product</h5>
+                <ul class="list-group">
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
+                  >
+                    Kos
+                    <span class="badge badge-primary badge-pill">$0.56M</span>
+                  </li>
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
+                  >
+                    Ildsjel
+                    <span class="badge badge-primary badge-pill">$0.76M</span>
+                  </li>
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
+                  >
+                    Freyr
+                    <span class="badge badge-primary badge-pill">$1.41M</span>
+                  </li>
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
+                  >
+                    Lege
+                    <span class="badge badge-primary badge-pill">$0.72M</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 d-flex">
+            <div class="card text-white bg-dark flex-fill">
+              <div class="card-body">
+                <h5 class="card-title display-4">16.8k</h5>
+                <p class="card-text">Units sold this year</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 d-flex">
+            <div class="card text-white bg-dark flex-fill">
+              <div class="card-body">
+                <h5 class="card-title">By product</h5>
+                <ul class="list-group">
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
+                  >
+                    Kos
+                    <span class="badge badge-primary badge-pill">3,117</span>
+                  </li>
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
+                  >
+                    Ildsjel
+                    <span class="badge badge-primary badge-pill">2,835</span>
+                  </li>
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
+                  >
+                    Freyr
+                    <span class="badge badge-primary badge-pill">7,077</span>
+                  </li>
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
+                  >
+                    Lege
+                    <span class="badge badge-primary badge-pill">3,820</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <div class="card text-white bg-dark">
+              <div class="card-body">
+                <h5 class="card-title">Monthly revenue</h5>
+                <img
+                  src="path/to/monthly_revenue_chart.png"
+                  alt="Monthly Revenue Chart"
+                  class="img-fluid"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card text-white bg-dark">
+              <div class="card-body">
+                <h5 class="card-title">By product</h5>
+                <img
+                  src="path/to/product_revenue_chart.png"
+                  alt="Product Revenue Chart"
+                  class="img-fluid"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="tab-pane fade" id="frontdesktab" role="tabpanel">
       <div class="container-fluid">
