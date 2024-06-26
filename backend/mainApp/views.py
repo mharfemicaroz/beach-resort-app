@@ -1,6 +1,7 @@
 from django.db.models import F
-from django.db.models import F, Func, Q, Value
+from django.db.models import F, Func, Q, ExpressionWrapper, DateField, Value
 from datetime import datetime
+from django.forms import DateField
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
@@ -14,6 +15,11 @@ from decimal import Decimal
 from django.db.models import Sum
 from datetime import datetime, time, date, timedelta
 from dateutil import parser
+from asgiref.sync import sync_to_async
+# import logging
+
+# logging.basicConfig(level=logging.DEBUG)
+# logger = logging.getLogger(__name__)
 
 
 @csrf_exempt
@@ -25,7 +31,7 @@ def login(request):
         try:
             user = CustomUser.objects.get(username=username, password=password)
             response_data = {'status': True, 'role': user.role, 'fName': user.FirstName, 'lName': user.LastName,
-                             'username': user.username, 'isActive': user.isActive, 'id': user.id, 'route': user.route}
+                             'username': user.username, 'isActive': user.isActive, 'id': user.id, 'route': user.route, 'imageFileName': user.imageFileName}
         except CustomUser.DoesNotExist:
             response_data = {'status': False}
         return JsonResponse(response_data)
@@ -545,40 +551,60 @@ def booking_list(request, pk=None):
     return generic_list(request, Booking, BookingSerializer, pk)
 
 
-# @api_view(['GET', 'POST', 'PUT', 'DELETE'])
-# @csrf_exempt
-# def booking_lister(request, pk=None):
-#     o = Booking
-#     s = BookingSerializer
-#     data = request.data
-#     start_date_str = datetime.strptime(
-#         data.get('start_date_str'), '%d/%m/%Y').date()
-#     end_date_str = datetime.strptime(
-#         data.get('end_date_str'), '%d/%m/%Y').date()
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+@csrf_exempt
+def booking_lister(request, pk=None):
+    o = Booking
+    s = BookingSerializer
+    data = request.data
+    start_date_str = datetime.strptime(
+        data.get('start_date_str'), '%d/%m/%Y').date()
+    end_date_str = datetime.strptime(
+        data.get('end_date_str'), '%d/%m/%Y').date()
 
-#     if request.method == 'POST':
-#         if pk is not None:
-#             try:
-#                 dt = o.objects.get(id=pk)
-#             except o.DoesNotExist:
-#                 return Response(status=status.HTTP_404_NOT_FOUND)
-#             ds = s(dt)
-#             return Response(ds.data)
-#         else:
-#             dt = o.objects.annotate(
-#                 checkin_as_date=Func(F('checkinDate'), function='STR_TO_DATE',
-#                                      template='%(function)s(%(expressions)s, \'DD/MM/YYYY\')'),
-#                 checkout_as_date=Func(F('checkoutDate'), function='STR_TO_DATE',
-#                                       template='%(function)s(%(expressions)s, \'DD/MM/YYYY\')')
-#             )
-#             # Add filter to only get items within the date range
-#             filtered_objects = dt.filter(
-#                 Q(checkin_as_date__gte=start_date_str, checkin_as_date__lte=end_date_str) |
-#                 Q(checkout_as_date__gte=start_date_str,
-#                   checkout_as_date__lte=end_date_str)
-#             )
-#             ds = s(filtered_objects, many=True)
-#             return Response(ds.data)
+    if request.method == 'POST':
+        if pk is not None:
+            try:
+                dt = o.objects.get(id=pk)
+            except o.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            ds = s(dt)
+            return Response(ds.data)
+        else:
+
+            # Note the double percentage signs to escape them properly in the template string
+            format_ = '%%d/%%m/%%Y'
+            dt = o.objects.annotate(
+                checkin_as_date=Func(
+                    F('checkinDate'),
+                    function='STR_TO_DATE',
+                    template='%(function)s(%(expressions)s, "%(format)s")',
+                    format=format_
+                ),
+                checkout_as_date=Func(
+                    F('checkoutDate'),
+                    function='STR_TO_DATE',
+                    template='%(function)s(%(expressions)s, "%(format)s")',
+                    format=format_
+                )
+            )
+            # # Log the queryset
+            # logger.debug(f"Annotated QuerySet: {dt.query}")
+
+            # Add filter to only get items within the date range
+            filtered_objects = dt.filter(
+                Q(checkin_as_date__gte=start_date_str, checkin_as_date__lte=end_date_str) |
+                Q(checkout_as_date__gte=start_date_str,
+                  checkout_as_date__lte=end_date_str)
+            )
+
+            # # Log the filtered queryset
+            # logger.debug(f"Filtered QuerySet: {filtered_objects.query}")
+
+            ds = s(filtered_objects, many=True)
+            return Response(ds.data)
+
+    return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @csrf_exempt

@@ -9,6 +9,7 @@ class CustomUser(models.Model):
     password = models.CharField(max_length=128, null=True)
     FirstName = models.CharField(max_length=50)
     LastName = models.CharField(max_length=50)
+    imageFileName = models.CharField(max_length=256, null=True, blank=True)
     role = models.CharField(max_length=50)
     lastAccessed = models.DateTimeField(auto_now=True)
     isActive = models.BooleanField(default=False)

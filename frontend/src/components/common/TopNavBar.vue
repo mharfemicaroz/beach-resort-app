@@ -125,7 +125,7 @@
     </div>
   </nav>
 
-  <div
+  <!-- <div
     class="modal fade show"
     id="showTransModal"
     tabindex="-1"
@@ -165,7 +165,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <div
     class="modal fade show"

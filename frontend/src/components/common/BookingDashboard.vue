@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-5">
       <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
         <li class="nav-item">
           <a
@@ -10,7 +10,29 @@
             role="tab"
             href="#reportstab"
           >
-            <i class="fa fa-tags"></i>Reports</a
+            <i class="fa fa-tags"></i> Reservation Reports</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            role="tab"
+            @click=""
+            href="#itemstab"
+          >
+            <i class="fa fa-tags"></i> Items Reports</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            data-bs-toggle="tab"
+            role="tab"
+            @click=""
+            href="#frontdesktab"
+          >
+            <i class="fa fa-tags"></i> Sales Reports</a
           >
         </li>
         <li class="nav-item">
@@ -21,7 +43,7 @@
             @click=""
             href="#workflowstab"
           >
-            <i class="fa fa-tags"></i>Work Flows</a
+            <i class="fa fa-tags"></i> Work Flows</a
           >
         </li>
       </ul>
@@ -447,6 +469,235 @@
         </div>
       </div>
     </div>
+    <div class="tab-pane fade" id="itemstab" role="tabpanel">
+      <div class="container-fluid"></div>
+    </div>
+    <div class="tab-pane fade" id="frontdesktab" role="tabpanel">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="team-sales card shadow-sm mb-4">
+              <div class="card-body text-center">
+                <h2 class="card-title font-weight-bold mb-4">Team Sales</h2>
+                <p class="sales-data h5">
+                  <strong>Php{{ filteredTransByYear }}</strong> this year
+                </p>
+                <p class="sales-data h5">
+                  <strong>Php{{ filteredTransByMonth }}</strong> this month
+                </p>
+                <p class="sales-data h5">
+                  <strong>Php{{ filteredTransByWeek }}</strong> this week
+                </p>
+                <p class="sales-data h5">
+                  <strong>Php{{ filteredTransByToday }}</strong> today
+                </p>
+                <p class="sales-change h5 mt-4">
+                  <span
+                    :class="weekDifference < 0 ? 'text-danger' : 'text-success'"
+                  >
+                    {{ weekDifference < 0 ? "-" : "+" }} Php{{
+                      Math.abs(weekDifference)
+                    }}
+                  </span>
+                  last week
+                </p>
+              </div>
+            </div>
+
+            <div class="leaderboard card shadow-sm mb-4">
+              <div class="card-body">
+                <h2 class="card-title font-weight-bold mb-4 text-center">
+                  Leaderboard this Month
+                </h2>
+                <p
+                  class="card-text h5"
+                  v-for="agent in filteredTransByUserByMonth.slice(0, 5)"
+                  :key="agent.id"
+                  style="display: flex; justify-content: space-between"
+                >
+                  <span>{{ agent.name }}</span>
+                  <span>Php{{ agent.total }}</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="weekly-sales card shadow-sm mb-4">
+              <div class="card-body">
+                <h2 class="card-title font-weight-bold mb-4 text-center">
+                  Weekly Sales
+                </h2>
+                <div
+                  class="chart d-flex justify-content-center align-items-center"
+                  style="height: 300px"
+                >
+                  <line-chart
+                    :key="componentKey"
+                    v-if="
+                      loaded[8] && (line4Data.datasets[0].data || []).length > 0
+                    "
+                    :chartData="line4Data"
+                  />
+                  <div v-else class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="row">
+              <template v-for="person in personells" :key="person.id">
+                <div
+                  class="col-md-3 mb-4"
+                  v-if="
+                    parseFloat(
+                      filteredTransByUserByYear.find(
+                        (o) =>
+                          o.name.toLowerCase() ===
+                          person.FirstName.toLowerCase() +
+                            ' ' +
+                            person.LastName.toLowerCase()
+                      ).total
+                    ) > 0
+                  "
+                >
+                  <div class="card h-100 shadow-sm">
+                    <div
+                      class="card-img-container d-flex justify-content-center align-items-center"
+                      style="height: 200px; background-color: #f8f9fa"
+                    >
+                      <img
+                        v-if="person.imageFileName !== null"
+                        :src="this.API_URL + 'Photos/' + person.imageFileName"
+                        class="card-img rounded-circle"
+                        style="height: 180px; width: 180px; object-fit: cover"
+                      />
+                      <img
+                        v-else
+                        :src="this.API_URL + 'Photos/user_default.png'"
+                        class="card-img rounded-circle"
+                        style="height: 180px; width: 180px; object-fit: cover"
+                      />
+                    </div>
+                    <div class="card-body text-center">
+                      <h5 class="card-title font-weight-bold">
+                        {{ person.LastName }}
+                      </h5>
+                      <p class="card-text text-muted">{{ person.FirstName }}</p>
+                      <p class="sales-data">
+                        <strong
+                          >Php{{
+                            filteredTransByUserByYear.find(
+                              (o) =>
+                                o.name.toLowerCase() ===
+                                person.FirstName.toLowerCase() +
+                                  " " +
+                                  person.LastName.toLowerCase()
+                            ).total
+                          }}</strong
+                        >
+                        this year
+                      </p>
+                      <p class="sales-data">
+                        <strong
+                          >Php{{
+                            filteredTransByUserByMonth.find(
+                              (o) =>
+                                o.name.toLowerCase() ===
+                                person.FirstName.toLowerCase() +
+                                  " " +
+                                  person.LastName.toLowerCase()
+                            ).total
+                          }}</strong
+                        >
+                        this month
+                      </p>
+                      <p class="sales-data">
+                        <strong
+                          >Php{{
+                            filteredTransByUserByWeek.find(
+                              (o) =>
+                                o.name.toLowerCase() ===
+                                person.FirstName.toLowerCase() +
+                                  " " +
+                                  person.LastName.toLowerCase()
+                            ).total
+                          }}</strong
+                        >
+                        this week
+                      </p>
+                      <p class="sales-data">
+                        <strong
+                          >Php{{
+                            filteredTransByUserByToday.find(
+                              (o) =>
+                                o.name.toLowerCase() ===
+                                person.FirstName.toLowerCase() +
+                                  " " +
+                                  person.LastName.toLowerCase()
+                            ).total
+                          }}</strong
+                        >
+                        today
+                      </p>
+
+                      <div
+                        class="card-body chart d-flex justify-content-center align-items-center"
+                        style="height: 120px !important"
+                      >
+                        <LineChartV2
+                          :key="componentKey"
+                          v-if="
+                            loaded[8] &&
+                            (
+                              filterLineChartDataByUserByWeek(
+                                person.FirstName.toLowerCase() +
+                                  ' ' +
+                                  person.LastName.toLowerCase()
+                              ).datasets[0].data || []
+                            ).length > 0
+                          "
+                          :chartData="
+                            filterLineChartDataByUserByWeek(
+                              person.FirstName.toLowerCase() +
+                                ' ' +
+                                person.LastName.toLowerCase()
+                            )
+                          "
+                        />
+                        <div
+                          v-else
+                          class="spinner-border text-primary"
+                          role="status"
+                        >
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                      </div>
+
+                      <a
+                        href="#"
+                        class="btn btn-primary mt-3"
+                        @click="
+                          toggleShowTransModal(
+                            person.FirstName.toLowerCase() +
+                              ' ' +
+                              person.LastName.toLowerCase()
+                          )
+                        "
+                        >View Details</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="card" style="height: 60px !important"></div>
+      </div>
+    </div>
     <div class="tab-pane fade" id="workflowstab" role="tabpanel">
       <div class="container-fluid">
         <div class="row row justify-content-center">
@@ -574,6 +825,48 @@
       </div>
     </div>
   </div>
+
+  <div
+    class="modal fade show"
+    id="showTransModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="showTransModalLabel"
+    style="display: none; padding-right: 17px"
+    aria-modal="true"
+  >
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content" style="">
+        <div class="modal-header">
+          <h4 class="modal-title" id="showTransModalLabel">
+            Show all Today's Transactions
+          </h4>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div
+          class="modal-body"
+          style="height: 600px; overflow-y: auto; overflow-x: hidden"
+        >
+          <div>
+            <table-component
+              :mainHeaders="transactionhistory"
+              :mainItems="transrecordstoday"
+              :editable="false"
+              :toggleable="false"
+              :currentNoPage="999999"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import TableComponent from "@/components/common/GenericTable.vue";
@@ -581,8 +874,10 @@ import arima from "arima/async";
 import PieChart from "./charts/PieChart.vue";
 import BarChart from "./charts/BarChart.vue";
 import LineChart from "./charts/LineChart.vue";
+
 import axios from "axios";
 import async from "arima/async";
+import LineChartV2 from "./charts/LineChartV2.vue";
 
 function formatdate(currentDate) {
   const year = currentDate.getFullYear();
@@ -628,6 +923,7 @@ export default {
     PieChart,
     BarChart,
     LineChart,
+    LineChartV2,
   },
   props: {
     active: {
@@ -704,6 +1000,52 @@ export default {
           slot: true,
         },
       ],
+      transactionhistory: [
+        {
+          label: "Trans ID",
+          field: "transaction",
+        },
+        {
+          label: "Method",
+          field: "paymentMethod",
+        },
+        {
+          label: "Ref. No.",
+          field: "nonCashReference",
+        },
+        {
+          label: "Total",
+          field: "totalAmountToPay",
+        },
+        {
+          label: "Amount Paid",
+          field: "cashAmountPay",
+        },
+        {
+          label: "Balance",
+          field: "balance",
+        },
+        {
+          label: "Discount Mode",
+          field: "discountMode",
+        },
+        {
+          label: "Discount Value",
+          field: "discountValue",
+        },
+        {
+          label: "Processed by",
+          field: "processedBy",
+        },
+        {
+          label: "Status",
+          field: "payStatus",
+        },
+        {
+          label: "Date",
+          field: "transaction_date",
+        },
+      ],
       dateFilter: "",
       paymentMethodFilter: "",
       agentFilter: "",
@@ -726,12 +1068,15 @@ export default {
       transrecords: [],
       actors: [],
       agents: ["agoda"],
+      personells: [],
+      tdata: [],
       numReservations: 0,
       numGuests: 0,
       availableRooms: 0,
       grossIncome: 0,
       collectibles: 0,
       loaded: {},
+      currentAgent: "",
       pie1Data: {
         labels: ["cancelled", "reserved", "checkedin", "checkedout"],
         datasets: [
@@ -830,9 +1175,309 @@ export default {
           },
         ],
       },
+      line4Data: {
+        labels: [],
+        datasets: [
+          {
+            data: [],
+            borderColor: "#FFCE56",
+          },
+          {
+            data: [],
+            borderColor: "#FFCE56",
+          },
+        ],
+      },
     };
   },
   computed: {
+    transrecordstoday() {
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      const filtered = this.transrecords.filter((record) => {
+        const transactionDate = new Date(record.transaction_date);
+        transactionDate.setHours(0, 0, 0, 0); // Set to the start of the day
+        return (
+          transactionDate.getTime() === currentDate.getTime() &&
+          record.processedBy.toLowerCase() === this.currentAgent
+        );
+      });
+
+      return filtered;
+    },
+    filteredTransByToday() {
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      const filtered = this.tdata.filter((record) => {
+        const transactionDate = new Date(record.transaction_date);
+        transactionDate.setHours(0, 0, 0, 0); // Set to the start of the day
+        return transactionDate.getTime() === currentDate.getTime();
+      });
+
+      let total = filtered
+        .filter((item) => !item.paymentMethod.includes("agent"))
+        .reduce((accumulator, currentValue) => {
+          return accumulator + parseFloat(currentValue.cashAmountPay);
+        }, 0);
+      total = (Math.round(total * 100) / 100).toFixed(2);
+
+      return total;
+    },
+    filteredTransByUserByToday() {
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      const filtered = this.tdata.filter((record) => {
+        const transactionDate = new Date(record.transaction_date);
+        transactionDate.setHours(0, 0, 0, 0); // Set to the start of the day
+        return transactionDate.getTime() === currentDate.getTime();
+      });
+
+      const processedByList = this.personells.map(
+        (record) =>
+          record.FirstName.toLowerCase() + " " + record.LastName.toLowerCase()
+      );
+      const uniqueProcessedByList = [...new Set(processedByList)].filter(
+        (name) => name !== ""
+      );
+
+      let collection = [];
+      for (const name of uniqueProcessedByList) {
+        let total = filtered
+          .filter(
+            (item) =>
+              item.processedBy.toLowerCase() === name &&
+              !item.paymentMethod.includes("agent")
+          )
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.cashAmountPay);
+          }, 0);
+        total = (Math.round(total * 100) / 100).toFixed(2);
+        collection.push({ name: name, total: total });
+      }
+
+      return collection;
+    },
+    filteredTransByWeek() {
+      const currentDate = new Date();
+      const startOfWeek = new Date(
+        currentDate.setDate(currentDate.getDate() - currentDate.getDay())
+      ); // Sunday
+      startOfWeek.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
+      endOfWeek.setHours(23, 59, 59, 999); // Set to the end of the day
+
+      const filtered = this.tdata.filter((record) => {
+        const transactionDate = new Date(record.transaction_date);
+        return transactionDate >= startOfWeek && transactionDate <= endOfWeek;
+      });
+
+      let total = filtered
+        .filter((item) => !item.paymentMethod.includes("agent"))
+        .reduce((accumulator, currentValue) => {
+          return accumulator + parseFloat(currentValue.cashAmountPay);
+        }, 0);
+      total = (Math.round(total * 100) / 100).toFixed(2);
+
+      return total;
+    },
+    filteredTransByUserByWeek() {
+      const currentDate = new Date();
+      const startOfWeek = new Date(
+        currentDate.setDate(currentDate.getDate() - currentDate.getDay())
+      ); // Sunday
+      startOfWeek.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
+      endOfWeek.setHours(23, 59, 59, 999); // Set to the end of the day
+
+      const filtered = this.tdata.filter((record) => {
+        const transactionDate = new Date(record.transaction_date);
+        return transactionDate >= startOfWeek && transactionDate <= endOfWeek;
+      });
+
+      const processedByList = this.personells.map(
+        (record) =>
+          record.FirstName.toLowerCase() + " " + record.LastName.toLowerCase()
+      );
+      const uniqueProcessedByList = [...new Set(processedByList)].filter(
+        (name) => name !== ""
+      );
+
+      let collection = [];
+      for (const name of uniqueProcessedByList) {
+        let total = filtered
+          .filter(
+            (item) =>
+              item.processedBy.toLowerCase() === name &&
+              !item.paymentMethod.includes("agent")
+          )
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.cashAmountPay);
+          }, 0);
+        total = (Math.round(total * 100) / 100).toFixed(2);
+        collection.push({ name: name, total: parseFloat(total) });
+      }
+
+      // Sort the collection based on total from highest to lowest
+      collection.sort((a, b) => b.total - a.total);
+
+      return collection;
+    },
+    filteredTransByMonth() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth(); // Note: getMonth() returns a zero-based value (0 for January, 1 for February, etc.)
+
+      const filtered = this.tdata.filter((record) => {
+        const transactionDate = new Date(record.transaction_date);
+        const transactionYear = transactionDate.getFullYear();
+        const transactionMonth = transactionDate.getMonth();
+        return (
+          transactionYear === currentYear && transactionMonth === currentMonth
+        );
+      });
+
+      let total = filtered
+        .filter((item) => !item.paymentMethod.includes("agent"))
+        .reduce((accumulator, currentValue) => {
+          return accumulator + parseFloat(currentValue.cashAmountPay);
+        }, 0);
+      total = (Math.round(total * 100) / 100).toFixed(2);
+
+      return total;
+    },
+    filteredTransByUserByMonth() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth(); // Note: getMonth() returns a zero-based value (0 for January, 1 for February, etc.)
+
+      const filtered = this.tdata.filter((record) => {
+        const transactionDate = new Date(record.transaction_date);
+        const transactionYear = transactionDate.getFullYear();
+        const transactionMonth = transactionDate.getMonth();
+        return (
+          transactionYear === currentYear && transactionMonth === currentMonth
+        );
+      });
+
+      const processedByList = this.personells.map(
+        (record) =>
+          record.FirstName.toLowerCase() + " " + record.LastName.toLowerCase()
+      );
+      const uniqueProcessedByList = [...new Set(processedByList)].filter(
+        (name) => name !== ""
+      );
+
+      let collection = [];
+      for (const name of uniqueProcessedByList) {
+        let total = filtered
+          .filter(
+            (item) =>
+              item.processedBy.toLowerCase() === name &&
+              !item.paymentMethod.includes("agent")
+          )
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.cashAmountPay);
+          }, 0);
+        total = (Math.round(total * 100) / 100).toFixed(2);
+        collection.push({ name: name, total: total });
+      }
+      collection.sort((a, b) => b.total - a.total);
+      return collection;
+    },
+    weekDifference() {
+      return (
+        Math.round(
+          (this.filteredTransByWeek - this.filteredTransByPrevWeek) * 100
+        ) / 100
+      );
+    },
+    filteredTransByPrevWeek() {
+      const currentDate = new Date();
+      const startOfCurrentWeek = new Date(
+        currentDate.setDate(currentDate.getDate() - currentDate.getDay())
+      ); // Start of the current week (Sunday)
+      startOfCurrentWeek.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      // Calculate the start of the previous week (7 days before the start of the current week)
+      const startOfPrevWeek = new Date(startOfCurrentWeek);
+      startOfPrevWeek.setDate(startOfPrevWeek.getDate() - 7);
+
+      // Calculate the end of the previous week (one day before the start of the current week)
+      const endOfPrevWeek = new Date(startOfCurrentWeek);
+      endOfPrevWeek.setMilliseconds(-1); // Set to the end of the day before the start of the current week
+
+      const filtered = this.tdata.filter((record) => {
+        const transactionDate = new Date(record.transaction_date);
+        return (
+          transactionDate >= startOfPrevWeek && transactionDate <= endOfPrevWeek
+        );
+      });
+
+      let total = filtered
+        .filter((item) => !item.paymentMethod.includes("agent"))
+        .reduce((accumulator, currentValue) => {
+          return accumulator + parseFloat(currentValue.cashAmountPay);
+        }, 0);
+      total = (Math.round(total * 100) / 100).toFixed(2);
+
+      return total;
+    },
+
+    filteredTransByYear() {
+      const currentYear = new Date().getFullYear();
+      const filtered = this.tdata.filter((record) => {
+        const transactionYear = new Date(record.transaction_date).getFullYear();
+        return transactionYear === currentYear;
+      });
+
+      let total = filtered
+        .filter((item) => !item.paymentMethod.includes("agent"))
+        .reduce((accumulator, currentValue) => {
+          return accumulator + parseFloat(currentValue.cashAmountPay);
+        }, 0);
+      total = (Math.round(total * 100) / 100).toFixed(2);
+
+      return total;
+    },
+    filteredTransByUserByYear() {
+      const currentYear = new Date().getFullYear();
+      const filtered = this.tdata.filter((record) => {
+        const transactionYear = new Date(record.transaction_date).getFullYear();
+        return transactionYear === currentYear;
+      });
+      const processedByList = this.personells.map(
+        (record) =>
+          record.FirstName.toLowerCase() + " " + record.LastName.toLowerCase()
+      );
+      const uniqueProcessedByList = [...new Set(processedByList)].filter(
+        (name) => name !== ""
+      );
+
+      let collection = [];
+      for (const name of uniqueProcessedByList) {
+        let total = filtered
+          .filter(
+            (item) =>
+              item.processedBy.toLowerCase() === name &&
+              !item.paymentMethod.includes("agent")
+          )
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.cashAmountPay);
+          }, 0);
+        total = (Math.round(total * 100) / 100).toFixed(2);
+        collection.push({ name: name, total: total });
+      }
+
+      return collection;
+    },
+
     filteredtransrecord() {
       let filtered = this.transrecords
         .filter(
@@ -894,6 +1539,79 @@ export default {
     },
   },
   methods: {
+    toggleShowTransModal(agent) {
+      this.currentAgent = agent;
+      $("#showTransModal").modal("toggle");
+    },
+    filterLineChartDataByUserByWeek(agent) {
+      const getYearMonth = (date) => {
+        const d = new Date(date);
+        const month = d.getMonth() + 1;
+        const year = d.getFullYear();
+        return `${year}-${month < 10 ? "0" : ""}${month}`;
+      };
+      const currentYear = new Date().getFullYear();
+      const summary = this.tdata
+        .filter(
+          (item) =>
+            item.processedBy.toLowerCase() === agent.toLowerCase() &&
+            !item.paymentMethod.includes("agent") &&
+            new Date(this.parseDate3(item.transaction_date)).getFullYear() ===
+              currentYear
+        )
+        .reduce(
+          (acc, curr) => {
+            const yearMonth = getYearMonth(
+              this.parseDate3(curr.transaction_date)
+            );
+
+            const index = acc.dates.indexOf(yearMonth);
+
+            if (index === -1) {
+              acc.dates.push(yearMonth);
+              acc.totals.push(parseFloat(curr.cashAmountPay));
+            } else {
+              acc.totals[index] += parseFloat(curr.cashAmountPay);
+            }
+
+            return acc;
+          },
+          { dates: [], totals: [] }
+        );
+
+      const result = {
+        dates: summary.dates,
+        totalCashAmountPay: summary.totals,
+      };
+
+      const o = result.dates.map((date, index) => ({
+        date,
+        totalCashAmountPay: result.totalCashAmountPay[index],
+      }));
+
+      o.sort((a, b) => new Date(a.date) - new Date(b.date));
+      result.totalCashAmountPay = o.map((item) => item.totalCashAmountPay);
+      result.dates = o.map((item, index, arr) =>
+        index === 0 || item.date !== arr[index - 1].date ? item.date : ""
+      );
+
+      result.dates.unshift("");
+      result.totalCashAmountPay.unshift(0);
+      const datasets = result.totalCashAmountPay;
+      const labels = result.dates;
+
+      let lineData = {
+        labels: labels,
+        datasets: [
+          {
+            data: datasets,
+            borderColor: "#FFCE56",
+          },
+        ],
+      };
+
+      return lineData;
+    },
     async batchAction(arr) {
       for (const id of arr) {
         await axios
@@ -1117,6 +1835,60 @@ export default {
       this.line1Data.labels = actualdates;
       this.line1Data.datasets[1].data = actualdata;
     },
+
+    line4Datasets(data) {
+      const getYearMonth = (date) => {
+        const d = new Date(date);
+        const month = d.getMonth() + 1;
+        const year = d.getFullYear();
+        return `${year}-${month < 10 ? "0" : ""}${month}`;
+      };
+
+      const summary = data.reduce(
+        (acc, curr) => {
+          const yearMonth = getYearMonth(
+            this.parseDate3(curr.transaction_date)
+          );
+
+          const index = acc.dates.indexOf(yearMonth);
+
+          if (index === -1) {
+            acc.dates.push(yearMonth);
+            acc.totals.push(parseFloat(curr.cashAmountPay));
+          } else {
+            acc.totals[index] += parseFloat(curr.cashAmountPay);
+          }
+
+          return acc;
+        },
+        { dates: [], totals: [] }
+      );
+
+      const result = {
+        dates: summary.dates,
+        totalCashAmountPay: summary.totals,
+      };
+
+      const o = result.dates.map((date, index) => ({
+        date,
+        totalCashAmountPay: result.totalCashAmountPay[index],
+      }));
+
+      o.sort((a, b) => new Date(a.date) - new Date(b.date));
+      result.totalCashAmountPay = o.map((item) => item.totalCashAmountPay);
+      result.dates = o.map((item, index, arr) =>
+        index === 0 || item.date !== arr[index - 1].date ? item.date : ""
+      );
+
+      result.dates.unshift("");
+      result.totalCashAmountPay.unshift(0);
+      const actualdata = result.totalCashAmountPay;
+      const actualdates = result.dates;
+
+      this.line4Data.labels = actualdates;
+      this.line4Data.datasets[0].data = actualdata;
+    },
+
     line2Datasets(data) {
       const summary = data.reduce(
         (acc, curr) => {
@@ -1249,29 +2021,49 @@ export default {
         curday.setDate(today.getDate() - daycount);
         this.chosenDate = curday.toDateString();
 
-        const guestcounterdata = await axios.get(
-          this.API_URL + "guestcounter/"
-        );
+        const [
+          guestcounterdata,
+          personData,
+          bookingData,
+          transactionData,
+          transactionItemsData,
+          transactionRecordsData,
+          roomscatResponse,
+          agentsResponse,
+          roomsData,
+          trans_itemizer_data,
+        ] = await Promise.all([
+          axios.get(this.API_URL + "guestcounter/"),
+          axios.get(this.API_URL + "users/"),
+          axios.get(this.API_URL + "bookings/"),
+          axios.get(this.API_URL + "transaction/"),
+          axios.get(this.API_URL + "transaction/item/"),
+          axios.get(this.API_URL + "transaction/record/"),
+          axios.get(this.API_URL + "rooms/category/"),
+          axios.get(this.API_URL + "agents/"),
+          axios.get(this.API_URL + "rooms/"),
+          axios.get(this.API_URL + `transactions_itemizer/${daycount}/?N=1000`),
+        ]);
 
         const foundItem = guestcounterdata.data.find(
           (item) => formatDate2(item.date_created) === parseDate(new Date())
         );
-        if (foundItem) {
-          this.counter = parseFloat(foundItem.counter);
-        } else {
-          this.counter = 0;
-        }
+        this.counter = foundItem ? parseFloat(foundItem.counter) : 0;
 
-        const bookingData = await axios.get(this.API_URL + "bookings/");
-        const transactionData = await axios.get(this.API_URL + "transaction/");
-        const transactionItemsData = await axios.get(
-          this.API_URL + "transaction/item/"
-        );
-        const transactionRecordsData = await axios.get(
-          this.API_URL + "transaction/record/"
-        );
+        this.personells = personData.data
+          .filter((o) => o.role === "cashier" || o.role === "frontdesk")
+          .reduce((acc, current) => {
+            const x = acc.find(
+              (item) =>
+                item.FirstName === current.FirstName &&
+                item.LastName === current.LastName
+            );
+            return x ? acc : acc.concat([current]);
+          }, []);
 
         this.transrecords = transactionRecordsData.data;
+
+        this.tdata = transactionData.data;
 
         const processedByList = this.transrecords
           .filter(
@@ -1280,26 +2072,17 @@ export default {
               o.paymentMethod.includes("credit")
           )
           .map((record) => record.processedBy);
-        const uniqueProcessedByList = [...new Set(processedByList)].filter(
+        this.actors = [...new Set(processedByList)].filter(
           (name) => name !== ""
         );
-        this.actors = uniqueProcessedByList;
 
-        const roomscatResponse = await axios.get(
-          this.API_URL + "rooms/category/"
+        this.agents = agentsResponse.data.map((agent) =>
+          agent.name.toLowerCase()
         );
-
-        const agentsResponse = await axios.get(this.API_URL + "agents/");
-        this.agents = [];
-        for (const agent of agentsResponse.data) {
-          this.agents.push(agent.name.toLowerCase());
-        }
 
         this.roomcategories = roomscatResponse.data
           .filter((item) => item.isAvailable === true)
-          .map((o) => {
-            return o.name;
-          });
+          .map((o) => o.name);
 
         this.bar1Data.labels = this.roomcategories;
         this.bar2Data.labels = this.roomcategories;
@@ -1313,8 +2096,6 @@ export default {
           this.prevransItems = transactionItemsData.data;
           this.loaded = Array(10).fill(false);
         }
-
-        const roomsData = await axios.get(this.API_URL + "rooms/");
 
         this.numReservations = bookingData.data.filter(
           (item) => item.checkinDate === curday.toLocaleDateString("en-GB")
@@ -1334,7 +2115,6 @@ export default {
           }, 0);
 
         this.availableRooms = roomsData.data.filter((room) => {
-          // Check if there are any bookings for this room that overlap with the specified date range
           const overlappingBookings = bookingData.data.filter((booking) => {
             return (
               booking.room_name === room.name &&
@@ -1342,8 +2122,6 @@ export default {
               booking.checkinDate === curday.toLocaleDateString("en-GB")
             );
           });
-
-          // Return true if there are no overlapping bookings
           return overlappingBookings.length === 0;
         }).length;
 
@@ -1362,36 +2140,10 @@ export default {
           bookingData.data.filter((o) => o.status === "checkedout")
         );
         this.line2Datasets(transactionData.data);
+        this.line4Datasets(transactionData.data);
         this.line3Datasets(
           transactionItemsData.data.filter((o) => o.itemType === "ENTRANCE")
         );
-        const trans_itemizer_data = await axios.get(
-          this.API_URL + `transactions_itemizer/${daycount}/?N=1000`
-        );
-
-        // const nonAgentIncome = trans_itemizer_data.data
-        //   .filter((item) => {
-        //     const transactionDate = new Date(item.transaction_date);
-        //     const isAgentRecord =
-        //       item.items2.filter((o) => o.paymentMethod.includes("agent"))
-        //         .length > 0;
-        //     return (
-        //       !isAgentRecord &&
-        //       transactionDate >= new Date(curday.setHours(0, 0, 0, 0)) &&
-        //       transactionDate <
-        //         new Date(
-        //           new Date(new Date(curday.getTime() + 86400000)).setHours(
-        //             0,
-        //             0,
-        //             0,
-        //             0
-        //           )
-        //         )
-        //     );
-        //   })
-        //   .reduce((accumulator, currentValue) => {
-        //     return accumulator + parseFloat(currentValue.actualIncomeOfThisDay);
-        //   }, 0);
 
         const nonAgentIncome = transactionRecordsData.data
           .filter((item) => {
@@ -1594,7 +2346,9 @@ export default {
         );
 
         this.loaded = Array(10).fill(true);
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
   async mounted() {
@@ -1625,7 +2379,7 @@ export default {
   },
 };
 </script>
-<style>
+<style scoped>
 .card.x,
 .card-header.x {
   border: none;
@@ -1634,5 +2388,27 @@ export default {
 
 .card-body.chart {
   height: 400px !important;
+}
+
+.card {
+  border: none;
+  margin-bottom: 20px;
+}
+
+.team-sales,
+.leaderboard,
+.weekly-sales {
+  padding: 20px;
+}
+.team-sales h2,
+.leaderboard h2,
+.weekly-sales h2 {
+  margin-bottom: 20px;
+}
+.sales-data {
+  margin-bottom: 10px;
+}
+.sales-change {
+  color: #4caf50;
 }
 </style>

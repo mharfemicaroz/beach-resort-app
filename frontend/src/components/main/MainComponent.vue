@@ -171,6 +171,22 @@
                           <option value="errand">Errand</option>
                         </select>
                       </div>
+                      <div class="mb-3">
+                        <label for="image" class="form-label">Image</label>
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="image"
+                          @change="handleImageUpload"
+                        />
+                        <a
+                          v-if="user.imageFileName !== ''"
+                          :href="this.API_URL + 'Photos/' + user.imageFileName"
+                          target="_blank"
+                          class="text-info"
+                          >{{ user.imageFileName }}</a
+                        >
+                      </div>
                       <button type="submit" class="btn btn-primary">
                         {{ isUpdatingUser ? "Update" : "Save" }}
                       </button>
@@ -189,6 +205,7 @@
                     <table class="table">
                       <thead>
                         <tr>
+                          <th>Image</th>
                           <th>Username</th>
                           <th>First Name</th>
                           <th>Last Name</th>
@@ -199,6 +216,22 @@
                       </thead>
                       <tbody>
                         <tr v-for="user in users" :key="user.id">
+                          <td>
+                            <img
+                              v-if="user.imageFileName !== null"
+                              :src="
+                                this.API_URL + 'Photos/' + user.imageFileName
+                              "
+                              class="img-thumbnail"
+                              style="height: 80px; width: 80px"
+                            />
+                            <img
+                              v-else
+                              :src="this.API_URL + 'Photos/user_default.png'"
+                              class="img-thumbnail"
+                              style="height: 80px; width: 80px"
+                            />
+                          </td>
                           <td>{{ user.username }}</td>
                           <td>{{ user.FirstName }}</td>
                           <td>{{ user.LastName }}</td>
@@ -1149,6 +1182,7 @@ export default {
         LastName: "",
         role: "",
         route: "",
+        imageFileName: "",
       },
       room: {
         // object representing the current room being edited or added
@@ -1197,6 +1231,8 @@ export default {
       isUpdatingRoom: false,
       isUpdatingLeisure: false,
       isUpdatingTable: false,
+      imageFile: null,
+      imageFileName: null,
     };
   },
   async created() {
@@ -1253,6 +1289,73 @@ export default {
     },
   },
   methods: {
+    async saveImageFile() {
+      try {
+        const formData = new FormData();
+        formData.append("file", this.imageFile, this.imageFileName);
+
+        const response = await axios.post(
+          this.API_URL + "users/savefile",
+          formData
+        );
+
+        // Handle the response as needed
+        console.log("Image file saved successfully!", response.data);
+      } catch (error) {
+        // Handle any errors that occur during the request
+        console.error("Error saving image file:", error);
+      }
+    },
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+
+      // Check if a file was selected
+      if (!file) {
+        // Handle error when no file is selected
+        this.$swal({
+          title: "Error",
+          text: "No file selected.",
+          icon: "error",
+        });
+        return;
+      }
+
+      // Check if the file is an image
+      if (!file.type.startsWith("image/")) {
+        // Handle error when selected file is not an image
+        this.$swal({
+          title: "Error",
+          text: "Selected file is not an image.",
+          icon: "error",
+        });
+        return;
+      }
+
+      // Check if the file size is within the limit (2MB)
+      const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+      if (file.size > maxSizeInBytes) {
+        // Handle error when file size exceeds the limit
+        this.$swal({
+          title: "Error",
+          text: "Selected file exceeds the size limit (2MB).",
+          icon: "error",
+        });
+        return;
+      }
+
+      // File passed all the validation checks, proceed with setting properties
+      this.imageFile = file;
+
+      const currentDate = new Date()
+        .toISOString()
+        .slice(0, 10)
+        .replace(/-/g, "_");
+      const uniqueID = Math.floor(100000 + Math.random() * 900000);
+      const fileExtension = file.name.split(".").pop(); // Get the actual file extension
+      const fileName = `user_${currentDate}_${uniqueID}.${fileExtension}`;
+      this.imageFileName = fileName;
+      this.user.imageFileName = fileName;
+    },
     async logout() {
       const authStore = useAuthStore();
       const user = {
@@ -1396,24 +1499,31 @@ export default {
       }
 
       if (this.isUpdatingUser) {
+        this.user.imageFileName = this.imageFileName;
         axios
           .put(`${this.API_URL}users/${this.user.id}/`, this.user)
           .then((response) => {
             this.$swal({
               icon: "success",
               title: "User updated successfully",
+            }).then(async (result) => {
+              await this.saveImageFile().then((response) => {
+                this.getUsers();
+                this.user = {
+                  id: null,
+                  username: "",
+                  password: "",
+                  firstName: "",
+                  lastName: "",
+                  role: "",
+                  imageFileName: "",
+                  route: "", // Add the route property to the empty user object
+                };
+                this.isUpdatingUser = false;
+                this.imageFile = null;
+                this.imageFileName = null;
+              });
             });
-            this.getUsers();
-            this.user = {
-              id: null,
-              username: "",
-              password: "",
-              firstName: "",
-              lastName: "",
-              role: "",
-              route: "", // Add the route property to the empty user object
-            };
-            this.isUpdatingUser = false;
           })
           .catch((error) => {
             console.log(error);
@@ -1431,22 +1541,29 @@ export default {
                 title: "Username already exists",
               });
             } else {
+              this.user.imageFileName = this.imageFileName;
               axios
                 .post(`${this.API_URL}users/`, this.user)
                 .then((response) => {
                   this.$swal({
                     icon: "success",
                     title: "User saved successfully",
+                  }).then(async (result) => {
+                    await this.saveImageFile().then((response) => {
+                      this.getUsers();
+                      this.user = {
+                        username: "",
+                        password: "",
+                        FirstName: "",
+                        LastName: "",
+                        imageFileName: "",
+                        role: "",
+                        route: "", // Add the route property to the empty user object
+                      };
+                      this.imageFile = null;
+                      this.imageFileName = null;
+                    });
                   });
-                  this.getUsers();
-                  this.user = {
-                    username: "",
-                    password: "",
-                    FirstName: "",
-                    LastName: "",
-                    role: "",
-                    route: "", // Add the route property to the empty user object
-                  };
                 })
                 .catch((error) => {
                   console.log(error);

@@ -111,11 +111,13 @@ export default {
               LastName: response.data.lName,
               role: response.data.role,
               route: response.data.route,
+              imageFileName: "",
             };
             axios
               .put(`${this.API_URL}users/${response.data.id}/`, {
                 ...user,
                 isActive: true,
+                imageFileName: user.imageFileName,
               })
               .then(() => {
                 const role = response.data.role;

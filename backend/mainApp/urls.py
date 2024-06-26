@@ -10,6 +10,7 @@ urlpatterns = [
     re_path(r'^task/delete/(?P<pk>\d+)/$', task_delete, name='task-delete'),
     re_path(r'^bugreports/savefile', SaveFile),
     re_path(r'^restoitem/savefile', SaveFile),
+    re_path(r'^users/savefile', SaveFile),
     re_path(r'^bugreports/$', bugreports_list, name='bugreports-list'),
     re_path(r'^bugreports/(?P<pk>\d+)/$',
             bugreports_list, name='bugreports-detail'),
@@ -102,6 +103,8 @@ urlpatterns = [
             name='gokartvehicle-filter'),
     re_path(r'^gokartvehicle/delete/(?P<pk>\d+)/$',
             gokartvehicle_delete, name='gokartvehicle-delete'),
+
+    re_path(r'^bookings-v2/$', booking_lister, name='booking-lister'),
 
     re_path(r'^bookings/$', booking_list, name='booking-list'),
     re_path(r'^bookings/filter/$', booking_filter, name='booking-filter'),

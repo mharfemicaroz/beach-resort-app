@@ -1388,6 +1388,19 @@
                     </div>
 
                     <div class="mb-3">
+                      <label for="price" class="form-label">SRP</label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.1"
+                        class="form-control"
+                        id="price"
+                        v-model="stock.srp"
+                        required
+                      />
+                    </div>
+
+                    <div class="mb-3">
                       <label for="price" class="form-label">Price</label>
                       <input
                         type="number"
@@ -1942,6 +1955,7 @@ export default {
         sku: "",
         category: "",
         stocks: 0,
+        srp: 0,
         price: 0,
         inventory: "",
         isAvailable: "",
@@ -2131,6 +2145,11 @@ export default {
         {
           label: "Qty",
           field: "stocks",
+          sortable: true,
+        },
+        {
+          label: "SRP",
+          field: "srp",
           sortable: true,
         },
         {
