@@ -347,7 +347,7 @@
           <div class="container-fluid">
             <div class="row">
               <ReceptionHotel
-                :bookingsdata="bookingsReception"
+                :bookingsdata="bookings"
                 :roomsdata="rooms"
                 :roomcategoriesdata="roomcategories"
                 @clickItem-action="handleReceptionItemAction"
@@ -10918,15 +10918,17 @@ export default {
       const histlogsPromise = axios.get(this.API_URL + "task/record/");
       // const reservationsPromise = axios.get(this.API_URL + "bookings/");
 
-      const reservationsPromise = axios.post(this.API_URL + "bookings-v2/", {
-        start_date_str: this.periodStart,
-        end_date_str: this.periodEnd,
-      });
+      // const reservationsPromise = axios.post(this.API_URL + "bookings-v2/", {
+      //   start_date_str: this.periodStart,
+      //   end_date_str: this.periodEnd,
+      // });
 
-      const bookingPromise = axios.get(this.API_URL + "bookings/");
-      bookingPromise.then((reservationsResponse) => {
-        this.bookingsReception = reservationsResponse.data;
-      });
+      const reservationsPromise = axios.get(this.API_URL + "bookings/");
+
+      // const bookingPromise = axios.get(this.API_URL + "bookings/");
+      // bookingPromise.then((reservationsResponse) => {
+      //   this.bookings = reservationsResponse.data;
+      // });
 
       reservationsPromise.then((reservationsResponse) => {
         this.origbookings = reservationsResponse.data;
