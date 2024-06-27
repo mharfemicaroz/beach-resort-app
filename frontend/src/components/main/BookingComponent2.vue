@@ -10916,19 +10916,7 @@ export default {
     async computeCalendar() {
       this.calendarItems = [];
       const histlogsPromise = axios.get(this.API_URL + "task/record/");
-      // const reservationsPromise = axios.get(this.API_URL + "bookings/");
-
-      // const reservationsPromise = axios.post(this.API_URL + "bookings-v2/", {
-      //   start_date_str: this.periodStart,
-      //   end_date_str: this.periodEnd,
-      // });
-
       const reservationsPromise = axios.get(this.API_URL + "bookings/");
-
-      // const bookingPromise = axios.get(this.API_URL + "bookings/");
-      // bookingPromise.then((reservationsResponse) => {
-      //   this.bookings = reservationsResponse.data;
-      // });
 
       reservationsPromise.then((reservationsResponse) => {
         this.origbookings = reservationsResponse.data;
@@ -10938,7 +10926,6 @@ export default {
       const [histlogsResponse] = await Promise.all([
         histlogsPromise,
         reservationsPromise,
-        bookingPromise,
       ]);
 
       this.histlogs = histlogsResponse.data.filter((item) =>

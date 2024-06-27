@@ -1321,9 +1321,10 @@ export default {
       const filtered = this.transrecords.filter((record) => {
         const transactionDate = new Date(record.transaction_date);
         transactionDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
         return (
           transactionDate.getTime() === currentDate.getTime() &&
-          record.processedBy.toLowerCase() === this.currentAgent
+          record.processedBy.toLowerCase() === this.currentAgent.toLowerCase()
         );
       });
 
@@ -1352,7 +1353,7 @@ export default {
       const currentDate = new Date();
       currentDate.setHours(0, 0, 0, 0); // Set to the start of the day
 
-      const filtered = this.tdata.filter((record) => {
+      const filtered = this.transrecords.filter((record) => {
         const transactionDate = new Date(record.transaction_date);
         transactionDate.setHours(0, 0, 0, 0); // Set to the start of the day
         return transactionDate.getTime() === currentDate.getTime();
@@ -1419,7 +1420,7 @@ export default {
       endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
       endOfWeek.setHours(23, 59, 59, 999); // Set to the end of the day
 
-      const filtered = this.tdata.filter((record) => {
+      const filtered = this.transrecords.filter((record) => {
         const transactionDate = new Date(record.transaction_date);
         return transactionDate >= startOfWeek && transactionDate <= endOfWeek;
       });
@@ -1480,7 +1481,7 @@ export default {
       const currentYear = currentDate.getFullYear();
       const currentMonth = currentDate.getMonth(); // Note: getMonth() returns a zero-based value (0 for January, 1 for February, etc.)
 
-      const filtered = this.tdata.filter((record) => {
+      const filtered = this.transrecords.filter((record) => {
         const transactionDate = new Date(record.transaction_date);
         const transactionYear = transactionDate.getFullYear();
         const transactionMonth = transactionDate.getMonth();
@@ -1571,7 +1572,7 @@ export default {
     },
     filteredTransByUserByYear() {
       const currentYear = new Date().getFullYear();
-      const filtered = this.tdata.filter((record) => {
+      const filtered = this.transrecords.filter((record) => {
         const transactionYear = new Date(record.transaction_date).getFullYear();
         return transactionYear === currentYear;
       });
@@ -2174,7 +2175,12 @@ export default {
         this.counter = foundItem ? parseFloat(foundItem.counter) : 0;
 
         this.personells = personData.data
-          .filter((o) => o.role === "cashier" || o.role === "frontdesk")
+          .filter(
+            (o) =>
+              o.role === "cashier" ||
+              o.role === "frontdesk" ||
+              o.role === "superuser"
+          )
           .reduce((acc, current) => {
             const x = acc.find(
               (item) =>

@@ -516,6 +516,7 @@ export default {
         LastName: authStore.user.lName,
         role: authStore.user.role,
         route: authStore.user.route,
+        imageFileName: authStore.user.imageFileName,
       };
       const response = await axios.put(
         `${this.API_URL}users/${authStore.user.id}/`,
