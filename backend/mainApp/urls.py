@@ -4,6 +4,30 @@ from django.conf import settings
 from .views import *
 
 urlpatterns = [
+    re_path(r'^booking/stats/$',
+            booking_agg, name='booking_agg'),
+
+    re_path(r'^transaction/item/stats/$',
+            transactionitem_agg, name='transactionitem_agg'),
+
+    re_path(r'^transaction/record/stats/$',
+            transactionrecord_agg, name='transactionrecord_agg'),
+
+    re_path(r'^transaction/stats/$',
+            transaction_agg, name='transaction_agg'),
+
+    re_path(r'^guestcounter/stats/$',
+            transactionrecord_agg, name='guestcounter_agg'),
+
+    re_path(r'^rooms/category/stats/$',
+            roomscategory_agg, name='roomscategory_agg'),
+
+    re_path(r'^rooms/stats/$',
+            rooms_agg, name='rooms_agg'),
+
+    re_path(r'^agents/stats/$',
+            agents_agg, name='agents_agg'),
+
     re_path(r'^task/$', task_list, name='task-list'),
     re_path(r'^task/(?P<pk>\d+)/$', task_list, name='task-detail'),
     re_path(r'^task/filter/$', task_filter, name='task-filter'),

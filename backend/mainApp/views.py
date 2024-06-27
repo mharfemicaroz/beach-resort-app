@@ -16,10 +16,156 @@ from django.db.models import Sum
 from datetime import datetime, time, date, timedelta
 from dateutil import parser
 from asgiref.sync import sync_to_async
-# import logging
+from django.db import connection
 
-# logging.basicConfig(level=logging.DEBUG)
-# logger = logging.getLogger(__name__)
+
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
+
+@api_view(['GET'])
+@csrf_exempt
+def generic_aggregate(request, model_name):
+    if request.method == 'GET':
+        # Construct the table name
+        table_name = f"mainapp_{model_name.lower()}"
+
+        # Get the column name and aggregate function from query parameters
+        column_name = request.query_params.get('column')
+        aggregate_function = request.query_params.get(
+            'function', 'SUM').upper()
+
+        if column_name is None and aggregate_function != 'COUNT':
+            return Response({"error": "Column name must be specified for functions other than COUNT."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate the aggregate function
+        if aggregate_function not in ['SUM', 'COUNT', 'MAX', 'MIN', 'AVG']:
+            return Response({"error": "Invalid aggregate function. Must be one of 'SUM', 'COUNT', 'MAX', 'MIN', 'AVG'."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Handle the case where N is provided
+        n = request.query_params.get('N')
+        limit_clause = ''
+        if n is not None:
+            try:
+                n = int(n)
+                if n <= 0:
+                    raise ValueError
+                limit_clause = f'LIMIT {n}'
+            except ValueError:
+                return Response({"error": "Invalid value for N. N must be a positive integer."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Parse multiple conditions
+        conditions = []
+        condition_values = []
+        for i in range(1, 4):
+            condition_column = request.query_params.get(f'conditioncolumn{i}')
+            condition_value = request.query_params.get(f'conditionvalue{i}')
+            condition_operator = request.query_params.get(
+                f'conditionoperator{i}')
+            logical_operator = request.query_params.get(
+                f'logicaloperator{i}', 'AND').upper()
+
+            if condition_column and condition_value and condition_operator:
+                if condition_operator not in ['<', '=', '>', '>=', '<=', '<>', 'NOT LIKE', 'LIKE', 'NOT']:
+                    return Response({"error": f"Invalid condition operator for condition {i}. Must be one of '<', '=', '>'."}, status=status.HTTP_400_BAD_REQUEST)
+                if logical_operator not in ['AND', 'OR']:
+                    return Response({"error": f"Invalid logical operator for condition {i}. Must be 'AND' or 'OR'."}, status=status.HTTP_400_BAD_REQUEST)
+                conditions.append(
+                    f"{condition_column} {condition_operator} %s")
+                condition_values.append(condition_value)
+                if i > 1:
+                    conditions[-1] = f"{logical_operator} " + conditions[-1]
+
+        condition_clause = ''
+        if conditions:
+            condition_clause = 'WHERE ' + ' '.join(conditions)
+
+        # Handle the date condition columns and values
+        date_condition_column = request.query_params.get('dateconditioncolumn')
+        date_value_start = request.query_params.get('datevaluestart')
+        date_value_end = request.query_params.get('datevalueend')
+        date_exact_value = request.query_params.get('dateexactvalue')
+        date_condition_clause = ''
+
+        if date_condition_column and date_exact_value:
+            try:
+                date_exact = datetime.strptime(
+                    date_exact_value, '%Y-%m-%d').date()
+                date_condition_clause = f"{'' if not condition_clause else 'AND '}DATE({date_condition_column}) = %s"
+                condition_values.append(date_exact)
+            except ValueError:
+                return Response({"error": "Invalid date format. Use 'YYYY-MM-DD'."}, status=status.HTTP_400_BAD_REQUEST)
+        elif date_condition_column and date_value_start and date_value_end:
+            try:
+                date_start = datetime.strptime(date_value_start, '%Y-%m-%d')
+                date_end = datetime.strptime(date_value_end, '%Y-%m-%d')
+                date_condition_clause = f"{'' if not condition_clause else 'AND '}{date_condition_column} BETWEEN %s AND %s"
+                condition_values.extend([date_start, date_end])
+            except ValueError:
+                return Response({"error": "Invalid date format. Use 'YYYY-MM-DD'."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Construct raw SQL query for the specified aggregate function
+        if aggregate_function == 'COUNT':
+            query = f"SELECT {aggregate_function}(*) as result FROM {table_name}"
+        else:
+            query = f"SELECT {aggregate_function}({column_name}) as result FROM {table_name}"
+
+        if condition_clause:
+            query += f" {condition_clause}"
+        if date_condition_clause:
+            query += f" {date_condition_clause}"
+        if limit_clause:
+            query += f" {limit_clause}"
+
+        # Log the constructed query
+        logger.debug(f"Constructed SQL query: {query}")
+
+        with connection.cursor() as cursor:
+            cursor.execute(query, condition_values)
+            row = cursor.fetchone()
+            result = row[0] if row else 0
+
+        if result is None:
+            result = 0
+
+        return Response({"result": result})
+
+
+@csrf_exempt
+def booking_agg(request):
+    return generic_aggregate(request, 'Booking')
+
+
+@csrf_exempt
+def roomscategory_agg(request):
+    return generic_aggregate(request, 'RoomCategory')
+
+
+@csrf_exempt
+def rooms_agg(request):
+    return generic_aggregate(request, 'Room')
+
+
+@csrf_exempt
+def agents_agg(request):
+    return generic_aggregate(request, 'Agents')
+
+
+@csrf_exempt
+def transactionrecord_agg(request):
+    return generic_aggregate(request, 'TransactionRecord')
+
+
+@csrf_exempt
+def transactionitem_agg(request):
+    return generic_aggregate(request, 'TransactionItem')
+
+
+@csrf_exempt
+def transaction_agg(request):
+    return generic_aggregate(request, 'Transaction')
 
 
 @csrf_exempt
