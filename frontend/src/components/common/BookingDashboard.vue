@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-md-5">
+    <div class="col-md-12">
       <ul class="nav bg radius nav-pills nav-fill mb-3 bg mt-3" role="tablist">
         <li class="nav-item">
           <a
@@ -977,14 +977,45 @@
           class="modal-body"
           style="height: 600px; overflow-y: auto; overflow-x: hidden"
         >
-          <div>
-            <table-component
-              :mainHeaders="transactionhistory"
-              :mainItems="transrecordstoday"
-              :editable="false"
-              :toggleable="false"
-              :currentNoPage="999999"
-            />
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="date-filter">Date Filter:</label>
+                <select
+                  class="form-control"
+                  id="date-filter"
+                  v-model="resdateFilter"
+                >
+                  <option value="today">Today</option>
+                  <option value="range">Date Range</option>
+                </select>
+                <div v-if="resdateFilter === 'range'">
+                  <div class="form-group">
+                    <input
+                      type="date"
+                      class="form-control"
+                      v-model="resfromDate"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input
+                      type="date"
+                      class="form-control"
+                      v-model="restoDate"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-9">
+              <table-component
+                :mainHeaders="transactionhistory"
+                :mainItems="filteredTransactions"
+                :editable="false"
+                :toggleable="false"
+                :currentNoPage="999999"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -1034,6 +1065,12 @@ function xparseDate(dateString) {
   return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
 }
 function xparseDate2(dateString) {
+  const index = dateString.indexOf("T");
+  const result = dateString.substring(0, index);
+  const [year, month, day] = result.split("-");
+  return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
+}
+function parseDate2(dateString) {
   const index = dateString.indexOf("T");
   const result = dateString.substring(0, index);
   const [year, month, day] = result.split("-");
@@ -1143,6 +1180,7 @@ export default {
         {
           label: "Amount Paid",
           field: "cashAmountPay",
+          reducible: true,
         },
         {
           label: "Balance",
@@ -1200,6 +1238,9 @@ export default {
       collectibles: 0,
       loaded: {},
       currentAgent: "",
+      resdateFilter: "today",
+      resfromDate: null,
+      restoDate: null,
       pie1Data: {
         labels: ["cancelled", "reserved", "checkedin", "checkedout"],
         datasets: [
@@ -1314,6 +1355,48 @@ export default {
     };
   },
   computed: {
+    filteredTransactions() {
+      let filtered = this.transrecords;
+
+      const parseDate = (dateString) => {
+        const [year, month, day] = dateString.split("-");
+        return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
+      };
+
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      // Filter by date
+      if (
+        this.resdateFilter === "range" &&
+        this.resfromDate &&
+        this.restoDate
+      ) {
+        filtered = filtered.filter((transaction) => {
+          return (
+            parseDate2(transaction.transaction_date) >=
+              parseDate(this.resfromDate) &&
+            parseDate2(transaction.transaction_date) <=
+              parseDate(this.restoDate) &&
+            transaction.processedBy.toLowerCase() ===
+              this.currentAgent.toLowerCase()
+          );
+        });
+      } else {
+        // Default to filtering transactions for "today"
+        filtered = filtered.filter((record) => {
+          const transactionDate = new Date(record.transaction_date);
+          transactionDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
+          // Compare the numeric values of the two dates
+          return (
+            transactionDate.getTime() === currentDate.getTime() &&
+            record.processedBy.toLowerCase() === this.currentAgent.toLowerCase()
+          );
+        });
+      }
+      return filtered;
+    },
     transrecordstoday() {
       const currentDate = new Date();
       currentDate.setHours(0, 0, 0, 0); // Set to the start of the day
