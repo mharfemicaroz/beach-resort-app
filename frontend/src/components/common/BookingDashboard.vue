@@ -1748,6 +1748,9 @@ export default {
   methods: {
     toggleShowTransModal(agent) {
       this.currentAgent = agent;
+      this.resdateFilter = "today";
+      this.resfromDate = null;
+      this.restoDate = null;
       $("#showTransModal").modal("toggle");
     },
     filterLineChartDataByUserByWeek(agent) {
