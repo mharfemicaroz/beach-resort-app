@@ -572,11 +572,11 @@
             <div class="card text-white bg-dark">
               <div class="card-body">
                 <h5 class="card-title">Monthly revenue</h5>
-                <img
+                <!-- <img
                   src="path/to/monthly_revenue_chart.png"
                   alt="Monthly Revenue Chart"
                   class="img-fluid"
-                />
+                /> -->
               </div>
             </div>
           </div>
