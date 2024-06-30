@@ -5020,7 +5020,6 @@ export default {
       clientAddress: "",
       clientNationality: "",
       clientType: "",
-      bookingsReception: [],
       transactions: [],
       roomcategories: [],
       agents: [],
@@ -9444,8 +9443,6 @@ export default {
       this.periodEnd = parseDateOrig2(
         range._value.displayLastDate._value.toLocaleDateString()
       );
-      console.log([this.periodStart, this.periodEnd]);
-      this.computeCalendar();
     },
     thisMonth(d, h, m) {
       const t = new Date();
@@ -9906,9 +9903,9 @@ export default {
             return "partial";
         }
       }
-      // setTimeout(function () {
-      //   $(".currentPeriod").click();
-      // }, 2000);
+      setTimeout(function () {
+        $(".currentPeriod").click();
+      }, 2000);
 
       // let suggestionsArray = this.rooms.map((room) => room.name);
       // const roomStatus = ["cancelled", "reserved", "checkedin", "checkedout"];
@@ -10110,8 +10107,8 @@ export default {
             `record?type=book&bookingID=${id}&groupkey=${gkey}`
           );
         });
-        this.computeCalendar();
-
+        this.reloadData();
+        this.populateCalendarItems();
         this.taskRecord(
           `action:/added reservation/client:/${this.reservation.clientName}/`
         );
@@ -10908,29 +10905,22 @@ export default {
           (item) => item.isAvailable === true
         );
 
-        this.computeCalendar();
+        const histlogsResponse = await axios.get(this.API_URL + "task/record/");
+        this.histlogs = histlogsResponse.data.filter((item) =>
+          item.task.includes("record?type=")
+        );
+
+        /*
+                          this.bookings.filter(booking => booking.room_name === this.bookings[this.itemIndex].room_name );
+                                  */
+        const reservationsResponse = await axios.get(
+          this.API_URL + "bookings/"
+        );
+        this.origbookings = reservationsResponse.data;
+        this.populateCalendarItems();
       } catch (error) {
         console.log(error);
       }
-    },
-    async computeCalendar() {
-      this.calendarItems = [];
-      const histlogsPromise = axios.get(this.API_URL + "task/record/");
-      const reservationsPromise = axios.get(this.API_URL + "bookings/");
-
-      reservationsPromise.then((reservationsResponse) => {
-        this.origbookings = reservationsResponse.data;
-        this.populateCalendarItems();
-      });
-
-      const [histlogsResponse] = await Promise.all([
-        histlogsPromise,
-        reservationsPromise,
-      ]);
-
-      this.histlogs = histlogsResponse.data.filter((item) =>
-        item.task.includes("record?type=")
-      );
     },
     vacantRoom(roomNumber) {
       const bookingIndex = this.reservations.findIndex(
@@ -11363,7 +11353,6 @@ export default {
     // this.$refs.searchQuery.blur();
     $(".currentPeriod").click();
     $("#suglist").hide();
-
     this.newItemStartDate = CalendarMath.isoYearMonthDay(CalendarMath.today());
     this.newItemEndDate = CalendarMath.isoYearMonthDay(CalendarMath.today());
     this.$nextTick(() => {
@@ -11378,9 +11367,6 @@ export default {
     );
     //this.socket = new WebSocket('ws://192.168.1.222:8081/ws/realtime/');
     const vm = this;
-    // $(".nextPeriod").click(function () {
-    //   vm.computeCalendar();
-    // });
     this.socket.onmessage = function (e) {
       const data = JSON.parse(e.data);
       console.log(data.message);
