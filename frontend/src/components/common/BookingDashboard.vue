@@ -1328,6 +1328,11 @@ export default {
           field: "purchaseQty",
         },
         {
+          label: "Cost",
+          field: "totalCost",
+          reducible: true,
+        },
+        {
           label: "Date",
           field: "dateCreated",
         },
