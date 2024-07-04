@@ -477,17 +477,44 @@
               <div class="card-body text-center">
                 <h2 class="card-title font-weight-bold mb-4">Total Revenue</h2>
                 <p class="sales-data h5">
-                  <strong>Php{{ filteredTransProductByYear }}</strong> this year
+                  <strong
+                    >₱{{
+                      formatNumberWithCommas(
+                        parseFloat(filteredTransProductByYear)
+                      )
+                    }}</strong
+                  >
+                  this year
                 </p>
                 <p class="sales-data h5">
-                  <strong>Php{{ filteredTransProductByMonth }}</strong> this
-                  month
+                  <strong
+                    >₱{{
+                      formatNumberWithCommas(
+                        parseFloat(filteredTransProductByMonth)
+                      )
+                    }}</strong
+                  >
+                  this month
                 </p>
                 <p class="sales-data h5">
-                  <strong>Php{{ filteredTransProductByWeek }}</strong> this week
+                  <strong
+                    >₱{{
+                      formatNumberWithCommas(
+                        parseFloat(filteredTransProductByWeek)
+                      )
+                    }}</strong
+                  >
+                  this week
                 </p>
                 <p class="sales-data h5">
-                  <strong>Php{{ filteredTransProductByToday }}</strong> today
+                  <strong
+                    >₱{{
+                      formatNumberWithCommas(
+                        parseFloat(filteredTransProductByToday)
+                      )
+                    }}</strong
+                  >
+                  today
                 </p>
                 <p class="sales-change h5 mt-4">
                   <span
@@ -495,8 +522,10 @@
                       weekDifference_ < 0 ? 'text-danger' : 'text-success'
                     "
                   >
-                    {{ weekDifference_ < 0 ? "-" : "+" }} Php{{
-                      Math.abs(weekDifference_)
+                    {{ weekDifference_ < 0 ? "-" : "+" }} ₱{{
+                      formatNumberWithCommas(
+                        parseFloat(Math.abs(weekDifference_))
+                      )
                     }}
                   </span>
                   last week
@@ -516,7 +545,9 @@
                   style="display: flex; justify-content: space-between"
                 >
                   <span>{{ item.name }}</span>
-                  <span>Php{{ item.total }}</span>
+                  <span
+                    >₱{{ formatNumberWithCommas(parseFloat(item.total)) }}</span
+                  >
                 </p>
               </div>
             </div>
@@ -551,9 +582,14 @@
                   class="col-md-3 mb-4"
                   v-if="
                     parseFloat(
-                      filteredTransByProductByYear.find(
-                        (o) => o.name.toLowerCase() === item.item.toLowerCase()
-                      ).total
+                      formatNumberWithCommas(
+                        parseFloat(
+                          filteredTransByProductByYear.find(
+                            (o) =>
+                              o.name.toLowerCase() === item.item.toLowerCase()
+                          ).total
+                        )
+                      )
                     ) > 0
                   "
                 >
@@ -582,44 +618,64 @@
                       <p class="card-text text-muted">{{ item.type }}</p>
                       <p class="sales-data">
                         <strong
-                          >Php{{
-                            filteredTransByProductByYear.find(
-                              (o) =>
-                                o.name.toLowerCase() === item.item.toLowerCase()
-                            ).total
+                          >₱{{
+                            formatNumberWithCommas(
+                              parseFloat(
+                                filteredTransByProductByYear.find(
+                                  (o) =>
+                                    o.name.toLowerCase() ===
+                                    item.item.toLowerCase()
+                                ).total
+                              )
+                            )
                           }}</strong
                         >
                         this year
                       </p>
                       <p class="sales-data">
                         <strong
-                          >Php{{
-                            filteredTransByProductByMonth.find(
-                              (o) =>
-                                o.name.toLowerCase() === item.item.toLowerCase()
-                            ).total
+                          >₱{{
+                            formatNumberWithCommas(
+                              parseFloat(
+                                filteredTransByProductByMonth.find(
+                                  (o) =>
+                                    o.name.toLowerCase() ===
+                                    item.item.toLowerCase()
+                                ).total
+                              )
+                            )
                           }}</strong
                         >
                         this month
                       </p>
                       <p class="sales-data">
                         <strong
-                          >Php{{
-                            filteredTransByProductByWeek.find(
-                              (o) =>
-                                o.name.toLowerCase() === item.item.toLowerCase()
-                            ).total
+                          >₱{{
+                            formatNumberWithCommas(
+                              parseFloat(
+                                filteredTransByProductByWeek.find(
+                                  (o) =>
+                                    o.name.toLowerCase() ===
+                                    item.item.toLowerCase()
+                                ).total
+                              )
+                            )
                           }}</strong
                         >
                         this week
                       </p>
                       <p class="sales-data">
                         <strong
-                          >Php{{
-                            filteredTransByProductByToday.find(
-                              (o) =>
-                                o.name.toLowerCase() === item.item.toLowerCase()
-                            ).total
+                          >₱{{
+                            formatNumberWithCommas(
+                              parseFloat(
+                                filteredTransByProductByToday.find(
+                                  (o) =>
+                                    o.name.toLowerCase() ===
+                                    item.item.toLowerCase()
+                                ).total
+                              )
+                            )
                           }}</strong
                         >
                         today
@@ -680,23 +736,45 @@
               <div class="card-body text-center">
                 <h2 class="card-title font-weight-bold mb-4">Team Sales</h2>
                 <p class="sales-data h5">
-                  <strong>Php{{ filteredTransByYear }}</strong> this year
+                  <strong
+                    >₱{{
+                      formatNumberWithCommas(parseFloat(filteredTransByYear))
+                    }}</strong
+                  >
+                  this year
                 </p>
                 <p class="sales-data h5">
-                  <strong>Php{{ filteredTransByMonth }}</strong> this month
+                  <strong
+                    >₱{{
+                      formatNumberWithCommas(parseFloat(filteredTransByMonth))
+                    }}</strong
+                  >
+                  this month
                 </p>
                 <p class="sales-data h5">
-                  <strong>Php{{ filteredTransByWeek }}</strong> this week
+                  <strong
+                    >₱{{
+                      formatNumberWithCommas(parseFloat(filteredTransByWeek))
+                    }}</strong
+                  >
+                  this week
                 </p>
                 <p class="sales-data h5">
-                  <strong>Php{{ filteredTransByToday }}</strong> today
+                  <strong
+                    >₱{{
+                      formatNumberWithCommas(parseFloat(filteredTransByToday))
+                    }}</strong
+                  >
+                  today
                 </p>
                 <p class="sales-change h5 mt-4">
                   <span
                     :class="weekDifference < 0 ? 'text-danger' : 'text-success'"
                   >
-                    {{ weekDifference < 0 ? "-" : "+" }} Php{{
-                      Math.abs(weekDifference)
+                    {{ weekDifference < 0 ? "-" : "+" }} ₱{{
+                      formatNumberWithCommas(
+                        parseFloat(Math.abs(weekDifference))
+                      )
                     }}
                   </span>
                   last week
@@ -716,7 +794,11 @@
                   style="display: flex; justify-content: space-between"
                 >
                   <span>{{ agent.name }}</span>
-                  <span>Php{{ agent.total }}</span>
+                  <span
+                    >₱{{
+                      formatNumberWithCommas(parseFloat(agent.total))
+                    }}</span
+                  >
                 </p>
               </div>
             </div>
@@ -786,56 +868,72 @@
                       <p class="card-text text-muted">{{ person.FirstName }}</p>
                       <p class="sales-data">
                         <strong
-                          >Php{{
-                            filteredTransByUserByYear.find(
-                              (o) =>
-                                o.name.toLowerCase() ===
-                                person.FirstName.toLowerCase() +
-                                  " " +
-                                  person.LastName.toLowerCase()
-                            ).total
+                          >₱{{
+                            formatNumberWithCommas(
+                              parseFloat(
+                                filteredTransByUserByYear.find(
+                                  (o) =>
+                                    o.name.toLowerCase() ===
+                                    person.FirstName.toLowerCase() +
+                                      " " +
+                                      person.LastName.toLowerCase()
+                                ).total
+                              )
+                            )
                           }}</strong
                         >
                         this year
                       </p>
                       <p class="sales-data">
                         <strong
-                          >Php{{
-                            filteredTransByUserByMonth.find(
-                              (o) =>
-                                o.name.toLowerCase() ===
-                                person.FirstName.toLowerCase() +
-                                  " " +
-                                  person.LastName.toLowerCase()
-                            ).total
+                          >₱{{
+                            formatNumberWithCommas(
+                              parseFloat(
+                                filteredTransByUserByMonth.find(
+                                  (o) =>
+                                    o.name.toLowerCase() ===
+                                    person.FirstName.toLowerCase() +
+                                      " " +
+                                      person.LastName.toLowerCase()
+                                ).total
+                              )
+                            )
                           }}</strong
                         >
                         this month
                       </p>
                       <p class="sales-data">
                         <strong
-                          >Php{{
-                            filteredTransByUserByWeek.find(
-                              (o) =>
-                                o.name.toLowerCase() ===
-                                person.FirstName.toLowerCase() +
-                                  " " +
-                                  person.LastName.toLowerCase()
-                            ).total
+                          >₱{{
+                            formatNumberWithCommas(
+                              parseFloat(
+                                filteredTransByUserByWeek.find(
+                                  (o) =>
+                                    o.name.toLowerCase() ===
+                                    person.FirstName.toLowerCase() +
+                                      " " +
+                                      person.LastName.toLowerCase()
+                                ).total
+                              )
+                            )
                           }}</strong
                         >
                         this week
                       </p>
                       <p class="sales-data">
                         <strong
-                          >Php{{
-                            filteredTransByUserByToday.find(
-                              (o) =>
-                                o.name.toLowerCase() ===
-                                person.FirstName.toLowerCase() +
-                                  " " +
-                                  person.LastName.toLowerCase()
-                            ).total
+                          >₱{{
+                            formatNumberWithCommas(
+                              parseFloat(
+                                filteredTransByUserByToday.find(
+                                  (o) =>
+                                    o.name.toLowerCase() ===
+                                    person.FirstName.toLowerCase() +
+                                      " " +
+                                      person.LastName.toLowerCase()
+                                ).total
+                              )
+                            )
                           }}</strong
                         >
                         today
@@ -2244,6 +2342,12 @@ export default {
     },
   },
   methods: {
+    formatNumberWithCommas(number) {
+      if (typeof number !== "number") {
+        return number;
+      }
+      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
     toggleShowTransModal(agent) {
       this.currentAgent = agent;
       this.resdateFilter = "today";
