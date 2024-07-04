@@ -471,127 +471,204 @@
     </div>
     <div class="tab-pane fade" id="itemstab" role="tabpanel">
       <div class="container-fluid">
-        <div class="row mb-4">
-          <div class="col-md-3 d-flex">
-            <div class="card text-white bg-dark flex-fill">
-              <div class="card-body">
-                <h5 class="card-title display-4">$3.5M</h5>
-                <p class="card-text">Revenue this year</p>
-                <div class="progress">
-                  <div
-                    class="progress-bar"
-                    role="progressbar"
-                    style="width: 95%"
-                    aria-valuenow="95"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
+        <div class="row">
+          <div class="col-md-4">
+            <div class="team-sales card shadow-sm mb-4">
+              <div class="card-body text-center">
+                <h2 class="card-title font-weight-bold mb-4">Total Revenue</h2>
+                <p class="sales-data h5">
+                  <strong>Php{{ filteredTransProductByYear }}</strong> this year
+                </p>
+                <p class="sales-data h5">
+                  <strong>Php{{ filteredTransProductByMonth }}</strong> this
+                  month
+                </p>
+                <p class="sales-data h5">
+                  <strong>Php{{ filteredTransProductByWeek }}</strong> this week
+                </p>
+                <p class="sales-data h5">
+                  <strong>Php{{ filteredTransProductByToday }}</strong> today
+                </p>
+                <p class="sales-change h5 mt-4">
+                  <span
+                    :class="
+                      weekDifference_ < 0 ? 'text-danger' : 'text-success'
+                    "
                   >
-                    $3.6M
+                    {{ weekDifference_ < 0 ? "-" : "+" }} Php{{
+                      Math.abs(weekDifference_)
+                    }}
+                  </span>
+                  last week
+                </p>
+              </div>
+            </div>
+
+            <div class="leaderboard card shadow-sm mb-4">
+              <div class="card-body">
+                <h2 class="card-title font-weight-bold mb-4 text-center">
+                  Top ITEMS this Month
+                </h2>
+                <p
+                  class="card-text h5"
+                  v-for="item in filteredTransByProductByMonth.slice(0, 10)"
+                  :key="item.id"
+                  style="display: flex; justify-content: space-between"
+                >
+                  <span>{{ item.name }}</span>
+                  <span>Php{{ item.total }}</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="weekly-sales card shadow-sm mb-4">
+              <div class="card-body">
+                <h2 class="card-title font-weight-bold mb-4 text-center">
+                  Weekly Product Sales
+                </h2>
+                <div
+                  class="chart d-flex justify-content-center align-items-center"
+                  style="height: 300px"
+                >
+                  <line-chart
+                    :key="componentKey"
+                    v-if="
+                      loaded[9] && (line5Data.datasets[0].data || []).length > 0
+                    "
+                    :chartData="line5Data"
+                  />
+                  <div v-else class="spinner-border text-primary" role="status">
+                    <span class="sr-only">Loading...</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-md-3 d-flex">
-            <div class="card text-white bg-dark flex-fill">
-              <div class="card-body">
-                <h5 class="card-title">By product</h5>
-                <ul class="list-group">
-                  <li
-                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
-                  >
-                    Kos
-                    <span class="badge badge-primary badge-pill">$0.56M</span>
-                  </li>
-                  <li
-                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
-                  >
-                    Ildsjel
-                    <span class="badge badge-primary badge-pill">$0.76M</span>
-                  </li>
-                  <li
-                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
-                  >
-                    Freyr
-                    <span class="badge badge-primary badge-pill">$1.41M</span>
-                  </li>
-                  <li
-                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
-                  >
-                    Lege
-                    <span class="badge badge-primary badge-pill">$0.72M</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3 d-flex">
-            <div class="card text-white bg-dark flex-fill">
-              <div class="card-body">
-                <h5 class="card-title display-4">16.8k</h5>
-                <p class="card-text">Units sold this year</p>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-3 d-flex">
-            <div class="card text-white bg-dark flex-fill">
-              <div class="card-body">
-                <h5 class="card-title">By product</h5>
-                <ul class="list-group">
-                  <li
-                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
-                  >
-                    Kos
-                    <span class="badge badge-primary badge-pill">3,117</span>
-                  </li>
-                  <li
-                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
-                  >
-                    Ildsjel
-                    <span class="badge badge-primary badge-pill">2,835</span>
-                  </li>
-                  <li
-                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
-                  >
-                    Freyr
-                    <span class="badge badge-primary badge-pill">7,077</span>
-                  </li>
-                  <li
-                    class="list-group-item d-flex justify-content-between align-items-center bg-dark text-white"
-                  >
-                    Lege
-                    <span class="badge badge-primary badge-pill">3,820</span>
-                  </li>
-                </ul>
-              </div>
+          <div class="col-md-8">
+            <div class="row">
+              <template v-for="item in leisures" :key="item.id">
+                <div
+                  class="col-md-3 mb-4"
+                  v-if="
+                    parseFloat(
+                      filteredTransByProductByYear.find(
+                        (o) => o.name.toLowerCase() === item.item.toLowerCase()
+                      ).total
+                    ) > 0
+                  "
+                >
+                  <div class="card h-100 shadow-sm">
+                    <div
+                      class="card-img-container d-flex justify-content-center align-items-center"
+                      style="height: 200px; background-color: #f8f9fa"
+                    >
+                      <img
+                        v-if="item.imageFileName !== null"
+                        :src="this.API_URL + 'Photos/' + item.imageFileName"
+                        class="card-img rounded-circle"
+                        style="height: 180px; width: 180px; object-fit: cover"
+                      />
+                      <img
+                        v-else
+                        :src="this.API_URL + 'Photos/addons_default.png'"
+                        class="card-img rounded-circle"
+                        style="height: 180px; width: 180px; object-fit: cover"
+                      />
+                    </div>
+                    <div class="card-body text-center">
+                      <h5 class="card-title font-weight-bold">
+                        {{ item.item }}
+                      </h5>
+                      <p class="card-text text-muted">{{ item.type }}</p>
+                      <p class="sales-data">
+                        <strong
+                          >Php{{
+                            filteredTransByProductByYear.find(
+                              (o) =>
+                                o.name.toLowerCase() === item.item.toLowerCase()
+                            ).total
+                          }}</strong
+                        >
+                        this year
+                      </p>
+                      <p class="sales-data">
+                        <strong
+                          >Php{{
+                            filteredTransByProductByMonth.find(
+                              (o) =>
+                                o.name.toLowerCase() === item.item.toLowerCase()
+                            ).total
+                          }}</strong
+                        >
+                        this month
+                      </p>
+                      <p class="sales-data">
+                        <strong
+                          >Php{{
+                            filteredTransByProductByWeek.find(
+                              (o) =>
+                                o.name.toLowerCase() === item.item.toLowerCase()
+                            ).total
+                          }}</strong
+                        >
+                        this week
+                      </p>
+                      <p class="sales-data">
+                        <strong
+                          >Php{{
+                            filteredTransByProductByToday.find(
+                              (o) =>
+                                o.name.toLowerCase() === item.item.toLowerCase()
+                            ).total
+                          }}</strong
+                        >
+                        today
+                      </p>
+
+                      <div
+                        class="card-body chart d-flex justify-content-center align-items-center"
+                        style="height: 120px !important"
+                      >
+                        <LineChartV2
+                          :key="componentKey"
+                          v-if="
+                            loaded[8] &&
+                            (
+                              filterLineChartDataByProductByWeek(
+                                item.item.toLowerCase()
+                              ).datasets[0].data || []
+                            ).length > 0
+                          "
+                          :chartData="
+                            filterLineChartDataByProductByWeek(
+                              item.item.toLowerCase()
+                            )
+                          "
+                        />
+                        <div
+                          v-else
+                          class="spinner-border text-primary"
+                          role="status"
+                        >
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                      </div>
+
+                      <a
+                        href="#"
+                        class="btn btn-primary mt-3"
+                        @click="toggleShowTransModal_(item.item.toLowerCase())"
+                        >View Details</a
+                      >
+                    </div>
+                  </div>
+                </div>
+              </template>
             </div>
           </div>
         </div>
-        <div class="row mb-4">
-          <div class="col-md-6">
-            <div class="card text-white bg-dark">
-              <div class="card-body">
-                <h5 class="card-title">Monthly revenue</h5>
-                <!-- <img
-                  src="path/to/monthly_revenue_chart.png"
-                  alt="Monthly Revenue Chart"
-                  class="img-fluid"
-                /> -->
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="card text-white bg-dark">
-              <div class="card-body">
-                <h5 class="card-title">By product</h5>
-                <img
-                  src="path/to/product_revenue_chart.png"
-                  alt="Product Revenue Chart"
-                  class="img-fluid"
-                />
-              </div>
-            </div>
-          </div>
+        <div class="row">
+          <div class="card" style="height: 60px !important"></div>
         </div>
       </div>
     </div>
@@ -1021,6 +1098,79 @@
       </div>
     </div>
   </div>
+
+  <div
+    class="modal fade show"
+    id="showTransModal_"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="showTransModal_Label"
+    style="display: none; padding-right: 17px"
+    aria-modal="true"
+  >
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content" style="">
+        <div class="modal-header">
+          <h4 class="modal-title" id="showTransModal_Label">
+            Show all Today's Transactions
+          </h4>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div
+          class="modal-body"
+          style="height: 600px; overflow-y: auto; overflow-x: hidden"
+        >
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label for="date-filter">Date Filter:</label>
+                <select
+                  class="form-control"
+                  id="date-filter"
+                  v-model="resdateFilter"
+                >
+                  <option value="today">Today</option>
+                  <option value="range">Date Range</option>
+                </select>
+                <div v-if="resdateFilter === 'range'">
+                  <div class="form-group">
+                    <input
+                      type="date"
+                      class="form-control"
+                      v-model="resfromDate"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <input
+                      type="date"
+                      class="form-control"
+                      v-model="restoDate"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-9">
+              <table-component
+                :mainHeaders="transactionhistory_"
+                :mainItems="filteredTransactions_"
+                :editable="false"
+                :toggleable="false"
+                :currentNoPage="999999"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import TableComponent from "@/components/common/GenericTable.vue";
@@ -1160,6 +1310,28 @@ export default {
           slot: true,
         },
       ],
+      transactionhistory_: [
+        {
+          label: "ID",
+          field: "id",
+        },
+        {
+          label: "Name",
+          field: "itemName",
+        },
+        {
+          label: "Type",
+          field: "itemType",
+        },
+        {
+          label: "Qty",
+          field: "purchaseQty",
+        },
+        {
+          label: "Date",
+          field: "dateCreated",
+        },
+      ],
       transactionhistory: [
         {
           label: "Trans ID",
@@ -1230,7 +1402,9 @@ export default {
       actors: [],
       agents: ["agoda"],
       personells: [],
+      leisures: [],
       tdata: [],
+      transitems: [],
       numReservations: 0,
       numGuests: 0,
       availableRooms: 0,
@@ -1238,6 +1412,7 @@ export default {
       collectibles: 0,
       loaded: {},
       currentAgent: "",
+      currentItem: "",
       resdateFilter: "today",
       resfromDate: null,
       restoDate: null,
@@ -1352,9 +1527,63 @@ export default {
           },
         ],
       },
+      line5Data: {
+        labels: [],
+        datasets: [
+          {
+            data: [],
+            borderColor: "#FFCE56",
+          },
+          {
+            data: [],
+            borderColor: "#FFCE56",
+          },
+        ],
+      },
     };
   },
   computed: {
+    filteredTransactions_() {
+      let filtered = this.transitems;
+
+      const parseDate = (dateString) => {
+        const [year, month, day] = dateString.split("-");
+        return new Date(`${year}-${month}-${day}`).setHours(0, 0, 0, 0);
+      };
+
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      // Filter by date
+      if (
+        this.resdateFilter === "range" &&
+        this.resfromDate &&
+        this.restoDate
+      ) {
+        filtered = filtered.filter((transaction) => {
+          return (
+            parseDate2(transaction.dateCreated) >=
+              parseDate(this.resfromDate) &&
+            parseDate2(transaction.dateCreated) <= parseDate(this.restoDate) &&
+            transaction.itemName.toLowerCase() ===
+              this.currentItem.toLowerCase()
+          );
+        });
+      } else {
+        // Default to filtering transactions for "today"
+        filtered = filtered.filter((record) => {
+          const transactionDate = new Date(record.dateCreated);
+          transactionDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
+          // Compare the numeric values of the two dates
+          return (
+            transactionDate.getTime() === currentDate.getTime() &&
+            record.itemName.toLowerCase() === this.currentItem.toLowerCase()
+          );
+        });
+      }
+      return filtered;
+    },
     filteredTransactions() {
       let filtered = this.transrecords;
 
@@ -1467,6 +1696,37 @@ export default {
 
       return collection;
     },
+    filteredTransByProductByToday() {
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      const filtered = this.transrecords.filter((record) => {
+        const transactionDate = new Date(record.dateCreated);
+        transactionDate.setHours(0, 0, 0, 0); // Set to the start of the day
+        return transactionDate.getTime() === currentDate.getTime();
+      });
+
+      const processedByList = this.leisures.map((record) =>
+        record.item.toLowerCase()
+      );
+
+      const uniqueProcessedByList = [...new Set(processedByList)].filter(
+        (name) => name !== ""
+      );
+
+      let collection = [];
+      for (const name of uniqueProcessedByList) {
+        let total = filtered
+          .filter((item) => item.itemName.toLowerCase() === name)
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.totalCost);
+          }, 0);
+        total = (Math.round(total * 100) / 100).toFixed(2);
+        collection.push({ name: name, total: total });
+      }
+
+      return collection;
+    },
     filteredTransByWeek() {
       const currentDate = new Date();
       const startOfWeek = new Date(
@@ -1536,6 +1796,45 @@ export default {
 
       return collection;
     },
+    filteredTransByProductByWeek() {
+      const currentDate = new Date();
+      const startOfWeek = new Date(
+        currentDate.setDate(currentDate.getDate() - currentDate.getDay())
+      ); // Sunday
+      startOfWeek.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
+      endOfWeek.setHours(23, 59, 59, 999); // Set to the end of the day
+
+      const filtered = this.transitems.filter((record) => {
+        const transactionDate = new Date(record.dateCreated);
+        return transactionDate >= startOfWeek && transactionDate <= endOfWeek;
+      });
+
+      const processedByList = this.leisures.map((record) =>
+        record.item.toLowerCase()
+      );
+      const uniqueProcessedByList = [...new Set(processedByList)].filter(
+        (name) => name !== ""
+      );
+
+      let collection = [];
+      for (const name of uniqueProcessedByList) {
+        let total = filtered
+          .filter((item) => item.itemName.toLowerCase() === name)
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.totalCost);
+          }, 0);
+        total = (Math.round(total * 100) / 100).toFixed(2);
+        collection.push({ name: name, total: parseFloat(total) });
+      }
+
+      // Sort the collection based on total from highest to lowest
+      collection.sort((a, b) => b.total - a.total);
+
+      return collection;
+    },
     filteredTransByMonth() {
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
@@ -1558,6 +1857,43 @@ export default {
       total = (Math.round(total * 100) / 100).toFixed(2);
 
       return total;
+    },
+    filteredTransByProductByMonth() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
+
+      const filtered = this.transitems.filter((record) => {
+        const transactionDate = new Date(record.dateCreated);
+        const transactionYear = transactionDate.getFullYear();
+        const transactionMonth = transactionDate.getMonth();
+        return (
+          transactionYear === currentYear &&
+          transactionMonth === currentMonth &&
+          record.itemOption === "addons"
+        );
+      });
+
+      const processedByList = this.leisures.map((record) =>
+        record.item.toLowerCase()
+      );
+
+      const uniqueProcessedByList = [...new Set(processedByList)].filter(
+        (name) => name !== ""
+      );
+
+      let collection = [];
+      for (const name of uniqueProcessedByList) {
+        let total = filtered
+          .filter((item) => item.itemName.toLowerCase() === name)
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.totalCost);
+          }, 0);
+        total = (Math.round(total * 100) / 100).toFixed(2);
+        collection.push({ name: name, total: total });
+      }
+      collection.sort((a, b) => b.total - a.total);
+      return collection;
     },
     filteredTransByUserByMonth() {
       const currentDate = new Date();
@@ -1653,6 +1989,163 @@ export default {
 
       return total;
     },
+    filteredTransProductByYear() {
+      const currentYear = new Date().getFullYear();
+      const filtered = this.transitems.filter((record) => {
+        const transactionYear = new Date(record.dateCreated).getFullYear();
+        return (
+          transactionYear === currentYear && record.itemOption === "addons"
+        );
+      });
+
+      let total = filtered.reduce((accumulator, currentValue) => {
+        return accumulator + parseFloat(currentValue.totalCost);
+      }, 0);
+      total = (Math.round(total * 100) / 100).toFixed(2);
+
+      return total;
+    },
+    filteredTransProductByMonth() {
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const currentMonth = currentDate.getMonth();
+
+      const filtered = this.transitems.filter((record) => {
+        const transactionDate = new Date(record.dateCreated);
+        const transactionYear = transactionDate.getFullYear();
+        const transactionMonth = transactionDate.getMonth();
+        return (
+          transactionYear === currentYear &&
+          transactionMonth === currentMonth &&
+          record.itemOption === "addons"
+        );
+      });
+
+      let total = filtered.reduce((accumulator, currentValue) => {
+        return accumulator + parseFloat(currentValue.totalCost);
+      }, 0);
+      total = (Math.round(total * 100) / 100).toFixed(2);
+
+      return total;
+    },
+    filteredTransProductByWeek() {
+      const currentDate = new Date();
+      const startOfWeek = new Date(
+        currentDate.setDate(currentDate.getDate() - currentDate.getDay())
+      ); // Sunday
+      startOfWeek.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6); // Saturday
+      endOfWeek.setHours(23, 59, 59, 999); // Set to the end of the day
+
+      const filtered = this.transitems.filter((record) => {
+        const transactionDate = new Date(record.dateCreated);
+        return (
+          transactionDate >= startOfWeek &&
+          transactionDate <= endOfWeek &&
+          record.itemOption === "addons"
+        );
+      });
+
+      let total = filtered.reduce((accumulator, currentValue) => {
+        return accumulator + parseFloat(currentValue.totalCost);
+      }, 0);
+      total = (Math.round(total * 100) / 100).toFixed(2);
+
+      return total;
+    },
+
+    filteredTransProductByPrevWeek() {
+      const currentDate = new Date();
+      const startOfCurrentWeek = new Date(
+        currentDate.setDate(currentDate.getDate() - currentDate.getDay())
+      ); // Start of the current week (Sunday)
+      startOfCurrentWeek.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      // Calculate the start of the previous week (7 days before the start of the current week)
+      const startOfPrevWeek = new Date(startOfCurrentWeek);
+      startOfPrevWeek.setDate(startOfPrevWeek.getDate() - 7);
+
+      // Calculate the end of the previous week (one day before the start of the current week)
+      const endOfPrevWeek = new Date(startOfCurrentWeek);
+      endOfPrevWeek.setMilliseconds(-1); // Set to the end of the day before the start of the current week
+
+      const filtered = this.transitems.filter((record) => {
+        const transactionDate = new Date(record.dateCreated);
+        return (
+          transactionDate >= startOfPrevWeek &&
+          transactionDate <= endOfPrevWeek &&
+          record.itemOption === "addons"
+        );
+      });
+
+      let total = filtered.reduce((accumulator, currentValue) => {
+        return accumulator + parseFloat(currentValue.totalCost);
+      }, 0);
+      total = (Math.round(total * 100) / 100).toFixed(2);
+
+      return total;
+    },
+
+    weekDifference_() {
+      return (
+        Math.round(
+          (this.filteredTransProductByWeek -
+            this.filteredTransProductByPrevWeek) *
+            100
+        ) / 100
+      );
+    },
+
+    filteredTransProductByToday() {
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0); // Set to the start of the day
+
+      const filtered = this.transitems.filter((record) => {
+        const transactionDate = new Date(record.dateCreated);
+        transactionDate.setHours(0, 0, 0, 0); // Set to the start of the day
+        return (
+          transactionDate.getTime() === currentDate.getTime() &&
+          record.itemOption === "addons"
+        );
+      });
+
+      let total = filtered.reduce((accumulator, currentValue) => {
+        return accumulator + parseFloat(currentValue.totalCost);
+      }, 0);
+      total = (Math.round(total * 100) / 100).toFixed(2);
+
+      return total;
+    },
+
+    filteredTransByProductByYear() {
+      const currentYear = new Date().getFullYear();
+      const filtered = this.transitems.filter((record) => {
+        const transactionYear = new Date(record.dateCreated).getFullYear();
+        return transactionYear === currentYear;
+      });
+      const processedByList = this.leisures.map((record) =>
+        record.item.toLowerCase()
+      );
+      const uniqueProcessedByList = [...new Set(processedByList)].filter(
+        (name) => name !== ""
+      );
+
+      let collection = [];
+      for (const name of uniqueProcessedByList) {
+        let total = filtered
+          .filter((item) => item.itemName.toLowerCase() === name)
+          .reduce((accumulator, currentValue) => {
+            return accumulator + parseFloat(currentValue.totalCost);
+          }, 0);
+        total = (Math.round(total * 100) / 100).toFixed(2);
+        collection.push({ name: name, total: total });
+      }
+
+      return collection;
+    },
+
     filteredTransByUserByYear() {
       const currentYear = new Date().getFullYear();
       const filtered = this.transrecords.filter((record) => {
@@ -1752,6 +2245,79 @@ export default {
       this.resfromDate = null;
       this.restoDate = null;
       $("#showTransModal").modal("toggle");
+    },
+    toggleShowTransModal_(item) {
+      this.currentItem = item;
+      this.resdateFilter = "today";
+      this.resfromDate = null;
+      this.restoDate = null;
+      $("#showTransModal_").modal("toggle");
+    },
+    filterLineChartDataByProductByWeek(proditem) {
+      const getYearMonth = (date) => {
+        const d = new Date(date);
+        const month = d.getMonth() + 1;
+        const year = d.getFullYear();
+        return `${year}-${month < 10 ? "0" : ""}${month}`;
+      };
+      const currentYear = new Date().getFullYear();
+      const summary = this.transitems
+        .filter(
+          (item) =>
+            item.itemName.toLowerCase() === proditem.toLowerCase() &&
+            new Date(this.parseDate3(item.dateCreated)).getFullYear() ===
+              currentYear
+        )
+        .reduce(
+          (acc, curr) => {
+            const yearMonth = getYearMonth(this.parseDate3(curr.dateCreated));
+
+            const index = acc.dates.indexOf(yearMonth);
+
+            if (index === -1) {
+              acc.dates.push(yearMonth);
+              acc.totals.push(parseFloat(curr.totalCost));
+            } else {
+              acc.totals[index] += parseFloat(curr.totalCost);
+            }
+
+            return acc;
+          },
+          { dates: [], totals: [] }
+        );
+
+      const result = {
+        dates: summary.dates,
+        totalCashAmountPay: summary.totals,
+      };
+
+      const o = result.dates.map((date, index) => ({
+        date,
+        totalCashAmountPay: result.totalCashAmountPay[index],
+      }));
+
+      o.sort((a, b) => new Date(a.date) - new Date(b.date));
+      result.totalCashAmountPay = o.map((item) => item.totalCashAmountPay);
+      result.dates = o.map((item, index, arr) =>
+        index === 0 || item.date !== arr[index - 1].date ? item.date : ""
+      );
+
+      result.dates.unshift("");
+      result.totalCashAmountPay.unshift(0);
+      const datasets = result.totalCashAmountPay;
+      const labels = result.dates;
+
+      let lineData = {
+        labels: labels,
+        datasets: [
+          {
+            data: datasets,
+            borderColor: "#FFCE56",
+          },
+        ],
+      };
+
+      return lineData;
     },
     filterLineChartDataByUserByWeek(agent) {
       const getYearMonth = (date) => {
@@ -2045,7 +2611,56 @@ export default {
       this.line1Data.labels = actualdates;
       this.line1Data.datasets[1].data = actualdata;
     },
+    line5Datasets(data) {
+      const getYearMonth = (date) => {
+        const d = new Date(date);
+        const month = d.getMonth() + 1;
+        const year = d.getFullYear();
+        return `${year}-${month < 10 ? "0" : ""}${month}`;
+      };
 
+      const summary = data.reduce(
+        (acc, curr) => {
+          const yearMonth = getYearMonth(this.parseDate3(curr.dateCreated));
+
+          const index = acc.dates.indexOf(yearMonth);
+
+          if (index === -1) {
+            acc.dates.push(yearMonth);
+            acc.totals.push(parseFloat(curr.totalCost));
+          } else {
+            acc.totals[index] += parseFloat(curr.totalCost);
+          }
+
+          return acc;
+        },
+        { dates: [], totals: [] }
+      );
+
+      const result = {
+        dates: summary.dates,
+        totalCashAmountPay: summary.totals,
+      };
+
+      const o = result.dates.map((date, index) => ({
+        date,
+        totalCashAmountPay: result.totalCashAmountPay[index],
+      }));
+
+      o.sort((a, b) => new Date(a.date) - new Date(b.date));
+      result.totalCashAmountPay = o.map((item) => item.totalCashAmountPay);
+      result.dates = o.map((item, index, arr) =>
+        index === 0 || item.date !== arr[index - 1].date ? item.date : ""
+      );
+
+      result.dates.unshift("");
+      result.totalCashAmountPay.unshift(0);
+      const actualdata = result.totalCashAmountPay;
+      const actualdates = result.dates;
+
+      this.line5Data.labels = actualdates;
+      this.line5Data.datasets[0].data = actualdata;
+    },
     line4Datasets(data) {
       const getYearMonth = (date) => {
         const d = new Date(date);
@@ -2242,6 +2857,7 @@ export default {
           agentsResponse,
           roomsData,
           trans_itemizer_data,
+          leisuresData,
         ] = await Promise.all([
           axios.get(this.API_URL + "guestcounter/"),
           axios.get(this.API_URL + "users/"),
@@ -2253,12 +2869,16 @@ export default {
           axios.get(this.API_URL + "agents/"),
           axios.get(this.API_URL + "rooms/"),
           axios.get(this.API_URL + `transactions_itemizer/${daycount}/?N=1000`),
+          axios.get(this.API_URL + "leisures/"),
         ]);
 
         const foundItem = guestcounterdata.data.find(
           (item) => formatDate2(item.date_created) === parseDate(new Date())
         );
         this.counter = foundItem ? parseFloat(foundItem.counter) : 0;
+
+        this.leisures = leisuresData.data.filter((o) => o.isAvailable);
+        this.transitems = transactionItemsData.data;
 
         this.personells = personData.data
           .filter(
@@ -2356,6 +2976,7 @@ export default {
         );
         this.line2Datasets(transactionData.data);
         this.line4Datasets(transactionData.data);
+        this.line5Datasets(transactionItemsData.data);
         this.line3Datasets(
           transactionItemsData.data.filter((o) => o.itemType === "ENTRANCE")
         );

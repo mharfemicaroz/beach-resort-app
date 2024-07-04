@@ -699,6 +699,24 @@
                           <option value="false">No</option>
                         </select>
                       </div>
+                      <div class="mb-3">
+                        <label for="image" class="form-label">Image</label>
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="image2"
+                          @change="handleImageUpload2"
+                        />
+                        <a
+                          v-if="leisure.imageFileName !== ''"
+                          :href="
+                            this.API_URL + 'Photos/' + leisure.imageFileName
+                          "
+                          target="_blank"
+                          class="text-info"
+                          >{{ leisure.imageFileName }}</a
+                        >
+                      </div>
                       <button type="submit" class="btn btn-primary">
                         {{ isUpdatingLeisure ? "Update" : "Save" }}
                       </button>
@@ -717,6 +735,7 @@
                     <table class="table">
                       <thead>
                         <tr>
+                          <th>Image</th>
                           <th>Item Name</th>
                           <th>Type</th>
                           <th>Price Rate</th>
@@ -728,6 +747,22 @@
                       </thead>
                       <tbody>
                         <tr v-for="leisure in leisures" :key="leisure.id">
+                          <td>
+                            <img
+                              v-if="leisure.imageFileName !== null"
+                              :src="
+                                this.API_URL + 'Photos/' + leisure.imageFileName
+                              "
+                              class="img-thumbnail"
+                              style="height: 80px; width: 80px"
+                            />
+                            <img
+                              v-else
+                              :src="this.API_URL + 'Photos/addons_default.png'"
+                              class="img-thumbnail"
+                              style="height: 80px; width: 80px"
+                            />
+                          </td>
                           <td>{{ leisure.item }}</td>
                           <td>{{ leisure.type }}</td>
                           <td>{{ leisure.priceRate }}</td>
@@ -1217,6 +1252,7 @@ export default {
         counter: "",
         package_name: "no package",
         isAvailable: "",
+        imageFileName: "",
       },
       restaurantTable: {
         id: null,
@@ -1233,6 +1269,8 @@ export default {
       isUpdatingTable: false,
       imageFile: null,
       imageFileName: null,
+      imageFile2: null,
+      imageFileName2: null,
     };
   },
   async created() {
@@ -1306,6 +1344,23 @@ export default {
         console.error("Error saving image file:", error);
       }
     },
+    async saveImageFile2() {
+      try {
+        const formData = new FormData();
+        formData.append("file", this.imageFile2, this.imageFileName2);
+
+        const response = await axios.post(
+          this.API_URL + "users/savefile",
+          formData
+        );
+
+        // Handle the response as needed
+        console.log("Image file saved successfully!", response.data);
+      } catch (error) {
+        // Handle any errors that occur during the request
+        console.error("Error saving image file:", error);
+      }
+    },
     handleImageUpload(event) {
       const file = event.target.files[0];
 
@@ -1355,6 +1410,56 @@ export default {
       const fileName = `user_${currentDate}_${uniqueID}.${fileExtension}`;
       this.imageFileName = fileName;
       this.user.imageFileName = fileName;
+    },
+    handleImageUpload2(event) {
+      const file = event.target.files[0];
+
+      // Check if a file was selected
+      if (!file) {
+        // Handle error when no file is selected
+        this.$swal({
+          title: "Error",
+          text: "No file selected.",
+          icon: "error",
+        });
+        return;
+      }
+
+      // Check if the file is an image
+      if (!file.type.startsWith("image/")) {
+        // Handle error when selected file is not an image
+        this.$swal({
+          title: "Error",
+          text: "Selected file is not an image.",
+          icon: "error",
+        });
+        return;
+      }
+
+      // Check if the file size is within the limit (2MB)
+      const maxSizeInBytes = 2 * 1024 * 1024; // 2MB
+      if (file.size > maxSizeInBytes) {
+        // Handle error when file size exceeds the limit
+        this.$swal({
+          title: "Error",
+          text: "Selected file exceeds the size limit (2MB).",
+          icon: "error",
+        });
+        return;
+      }
+
+      // File passed all the validation checks, proceed with setting properties
+      this.imageFile2 = file;
+
+      const currentDate = new Date()
+        .toISOString()
+        .slice(0, 10)
+        .replace(/-/g, "_");
+      const uniqueID = Math.floor(100000 + Math.random() * 900000);
+      const fileExtension = file.name.split(".").pop(); // Get the actual file extension
+      const fileName = `addons_${currentDate}_${uniqueID}.${fileExtension}`;
+      this.imageFileName2 = fileName;
+      this.leisure.imageFileName2 = fileName;
     },
     async logout() {
       const authStore = useAuthStore();
@@ -1953,6 +2058,7 @@ export default {
     },
     saveLeisure() {
       if (this.isUpdatingLeisure) {
+        this.leisure.imageFileName = this.imageFileName2;
         axios
           // .put(`${this.API_URL}leisures/${this.leisure.id}/`, (this.leisure.item.toLowerCase() !== 'general entrance') ? {
           //     id: this.leisure.id,
@@ -1967,18 +2073,24 @@ export default {
             this.$swal({
               icon: "success",
               title: "Item updated successfully",
+            }).then(async (result) => {
+              await this.saveImageFile2().then((response) => {
+                this.getLeisures();
+                this.leisure = {
+                  id: null,
+                  item: "",
+                  type: "",
+                  priceRate: null,
+                  counter: "",
+                  package_name: "no package",
+                  isAvailable: null,
+                  imageFileName2: "",
+                };
+                this.isUpdatingLeisure = false;
+                this.imageFile2 = null;
+                this.imageFileName2 = null;
+              });
             });
-            this.getLeisures();
-            this.leisure = {
-              id: null,
-              item: "",
-              type: "",
-              priceRate: null,
-              counter: "",
-              package_name: "no package",
-              isAvailable: null,
-            };
-            this.isUpdatingLeisure = false;
           })
           .catch((error) => {
             console.log(error);
@@ -1996,23 +2108,30 @@ export default {
                 title: "Item already exists",
               });
             } else {
+              this.leisure.imageFileName = this.imageFileName2;
               axios
                 .post(`${this.API_URL}leisures/`, this.leisure)
                 .then((response) => {
                   this.$swal({
                     icon: "success",
                     title: "Item saved successfully",
+                  }).then(async (result) => {
+                    await this.saveImageFile2().then((response) => {
+                      this.getLeisures();
+                      this.leisure = {
+                        id: null,
+                        item: "",
+                        type: "",
+                        priceRate: null,
+                        counter: "",
+                        package_name: "no package",
+                        isAvailable: "",
+                        imageFileName: "",
+                      };
+                      this.imageFile2 = null;
+                      this.imageFileName2 = null;
+                    });
                   });
-                  this.getLeisures();
-                  this.room = {
-                    id: null,
-                    item: "",
-                    type: "",
-                    priceRate: null,
-                    counter: "",
-                    package_name: "no package",
-                    isAvailable: "",
-                  };
                 })
                 .catch((error) => {
                   console.log(error);

@@ -150,6 +150,7 @@ class LeisureItem(models.Model):
     isAvailable = models.BooleanField(default=True)
     package_name = models.CharField(
         max_length=100, default='no package', blank=True, null=True)
+    imageFileName = models.CharField(max_length=256, null=True, blank=True)
 
 
 class Transaction(models.Model):
