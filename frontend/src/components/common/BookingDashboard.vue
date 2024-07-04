@@ -1700,7 +1700,7 @@ export default {
       const currentDate = new Date();
       currentDate.setHours(0, 0, 0, 0); // Set to the start of the day
 
-      const filtered = this.transrecords.filter((record) => {
+      const filtered = this.transitems.filter((record) => {
         const transactionDate = new Date(record.dateCreated);
         transactionDate.setHours(0, 0, 0, 0); // Set to the start of the day
         return transactionDate.getTime() === currentDate.getTime();
