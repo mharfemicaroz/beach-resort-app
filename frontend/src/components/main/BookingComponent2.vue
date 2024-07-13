@@ -1990,71 +1990,7 @@
               <hr />
               <div class="row">
                 <div class="col-12">
-                  <span style="font-size: small">TO OUR VALUED GUESTS</span>
-                  <p>
-                    Thank you for choosing {{ APP_NAME }}! It is our main
-                    priority to meet up with your expectations. We would like to
-                    remind you of our minimal Rules and Regulations to make your
-                    stay satisfying.
-                  </p>
-                  <p>
-                    1. The resort is not liable for any injury and/or death due
-                    to sickness or negligence of the guest.
-                  </p>
-                  <p>2. Safety deposit box is available at the Cashier Area.</p>
-                  <p>
-                    3. The resort is not liable in loss of valuables in the room
-                    or within the resort premises.
-                  </p>
-                  <p>
-                    4. Cancellation of bookings upon arrival is Non-Refundable.
-                    Payments made shall not be refunded.
-                  </p>
-                  <p>
-                    5. Room is good for 2 persons and maximum of 4 persons only.
-                    Extra person/s will be charged.
-                  </p>
-                  <p>
-                    6. Check-in time is 3:00PM. Check-out is 11:00AM. Excess
-                    hour will be charged Php 350 per hour. Stay beyond 4:00PM
-                    will be charged full or overnight rate.
-                  </p>
-                  <p>
-                    7. Bringing of food is strictly not allowed. We charge
-                    corkage of Php 500 per dish and Php 500 per bottle for
-                    drinks
-                  </p>
-                  <p>
-                    8. Any delivery of food from outside, we charge corkage
-                    500.00 per order.
-                  </p>
-                  <p>9. Lost key is charge Php 1,000.</p>
-                  <p>
-                    10. Stains such as Henna, Ink, Dye, Oil or any sort of
-                    stains on linen shall be charged to guest.
-                  </p>
-                  <p>11. Unavailed package inclusions are non-refundable.</p>
-                  <p>12. Breakfast is served from 6:00AM to 9:00AM.</p>
-                  <hr />
-                  <p>
-                    We agree to abide the safety rules and regulations imposed
-                    by
-                    {{ APP_NAME }}. Should any accident or any incident occurs
-                    while in the premises, I/We hereby voluntarily release and
-                    discharge Marilou Resort from any and all liabilities that
-                    may arise from any accident whether or not such may result
-                    to bodily injury or loss of life. I/We also solemnly
-                    undertake to refrain from filing in any court or
-                    quasi-judicial government body any and all kinds of legal
-                    action, whether civil, criminal and/or administrative by
-                    reason of such incident against the resort, its owner,
-                    officers and employees.
-                  </p>
-                  <hr />
-                  <p>
-                    I have gone through the terms and conditions of my stay in
-                    the resort and I agree to same.
-                  </p>
+                  <div v-html="docContent1"></div>
                 </div>
               </div>
             </div>
@@ -2107,66 +2043,7 @@
               <hr />
               <div class="row">
                 <div class="col-12">
-                  <span style="font-size: small">Terms &amp; Conditions:</span>
-                  <p>
-                    1. Since water sport needs the skill and know-how of the
-                    operator, the lessee warrants that he/she can properly
-                    operate the water sport.
-                  </p>
-                  <p>
-                    2. In no case shall Water Sport be used by any other person
-                    other than the lessee.
-                  </p>
-                  <p>
-                    3. The Water Sports shall be operated only 300 meters radius
-                    from the resort.
-                  </p>
-                  <p>
-                    4. In the event of any wrong use, abuse or negligence on the
-                    part of the lessee and the Water Sport suffers any damage,
-                    the lessee/s hold himself/herself/themselves personally
-                    liable for the cost of damage, repairs spare parts and loss
-                    on income.
-                  </p>
-                  <p>
-                    5. The lessee/s shall abide by all laws, rules and
-                    guidelines in the operation of Water Sports.
-                  </p>
-                  <p>
-                    6. Any untoward incident resulting to the Operation of Water
-                    Sports
-                  </p>
-                  <p>
-                    7. Never start the engine if you are less than 3 feet deep.
-                    Otherwise, pebbles and sands could be sucked into the jet
-                    intake, causing impelled damage.
-                  </p>
-                  <p>
-                    8. Your are advised to slow down if you are still on the
-                    shallow area.
-                  </p>
-                  <p>
-                    9. Be careful with the swimmers, boat, people, sharp
-                    objects, ropes and floating debris.
-                  </p>
-                  <p>
-                    10. Observed distance to any WATER SPORTS to prevent any
-                    collision.
-                  </p>
-                  <p>
-                    11. The lessor has the right to stop the operation of the
-                    WATER SPORT and the amount paid or deposit shall be
-                    forfeited if the rules and regulations are not followed
-                    accordingly.
-                  </p>
-                  <p>
-                    12. No one is allowed to operate the WATER SPORTS if the
-                    person is under the influence of liquor/drugs.
-                  </p>
-                  <p>
-                    13. Upon signing hereof, the lessee/s hereby agree/s to all
-                    the above terms and conditions.
-                  </p>
+                  <div v-html="docContent2"></div>
                 </div>
               </div>
               <div class="row">
@@ -4543,6 +4420,8 @@ export default {
   },
   data() {
     return {
+      docContent1: "",
+      docContent2: "",
       filteredhistlogs: [],
       histlogs: [],
       autocomplete: null,
@@ -5138,6 +5017,10 @@ export default {
       }
     }
     this.loadAlldata();
+    this.loadDocs([
+      { url: "ROOM_RULES.docx", vModel: "docContent1" },
+      { url: "LEISURES_RULES.docx", vModel: "docContent2" },
+    ]);
   },
   watch: {
     "reservation.checkinDate": function (newPrice, oldPrice) {
@@ -5736,6 +5619,38 @@ export default {
     },
   },
   methods: {
+    loadDocs(fileConfigs) {
+      const promises = fileConfigs.map((config) => {
+        return fetch(config.url)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok for " + config.url);
+            }
+            return response.arrayBuffer();
+          })
+          .then((arrayBuffer) =>
+            mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
+          )
+          .then((result) => {
+            this[config.vModel] = result.value;
+          })
+          .catch((error) => {
+            console.error("Error loading the document:", error);
+            this[config.vModel] =
+              "Failed to load content from " +
+              config.url +
+              ". Please try again later.";
+          });
+      });
+
+      Promise.all(promises)
+        .then(() => {
+          console.log("All documents loaded successfully");
+        })
+        .catch((error) => {
+          console.error("Error loading one or more documents:", error);
+        });
+    },
     insertNewBooking() {
       const today = new Date();
       this.toggleselect = false;

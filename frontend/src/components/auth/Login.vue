@@ -3,6 +3,11 @@
     class="container-fluid login-background"
     :style="`background-image:${currentBackground}`"
   >
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6 col-xl-5">
+        <div id="rulesContainer"></div>
+      </div>
+    </div>
     <div class="row justify-content-center align-items-center vh-100">
       <div class="col-md-3">
         <form @submit.prevent="login" class="animated-form login-form">

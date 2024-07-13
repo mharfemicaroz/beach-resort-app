@@ -16,6 +16,7 @@ app.config.globalProperties = {
   AUTHORIZATION_KEY: import.meta.env.VITE_AUTHORIZATION_KEY,
   AUTHORIZATION_KEY2: import.meta.env.VITE_AUTHORIZATION_KEY2,
   APP_NAME: import.meta.env.VITE_APP_NAME,
+  APP_RULE1: import.meta.env.VITE_RULE1,
   APP_LOGO_NAME: import.meta.env.VITE_APP_LOGO_NAME,
   SITE_ADDRESS: import.meta.env.VITE_SITE_ADDRESS,
   LOGIN_BG: import.meta.env.VITE_LOGIN_BG.split(" "),
